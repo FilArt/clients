@@ -126,7 +126,7 @@ export default {
         return
       }
       this.$axios
-        .post('users/reset_password/', this.form)
+        .post('users/register_user/reset_password/', this.form)
         .then(() =>
           this.$swal({
             title:
