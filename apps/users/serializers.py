@@ -18,7 +18,7 @@ class RegisterSerializer(serializers.ModelSerializer):
             user.set_password(1)
             user.save(update_fields=['password'])
             return user
-        user.email_user(subject='New users', message='email: %s\npassword: %s' % (email, password))
+        user.email_user('New users', 'email: %s\npassword: %s' % (email, password))
         return user
 
 
