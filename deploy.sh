@@ -12,4 +12,5 @@ python manage.py collectstatic
 
 rsync -rvzz --delete -e ssh frontend/dist/ cv:/var/django/clients
 
-ssh cv "cd /srv/http/crm; git pull; ./manage.py migrate"
+ssh cv "cd /srv/http/clients; git pull; ./manage.py migrate; touch touch"
+
