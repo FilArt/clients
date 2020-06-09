@@ -5,7 +5,6 @@ from .models import Offer, Company
 
 class CalculatorSerializer(serializers.ModelSerializer):
     period = serializers.IntegerField(min_value=1)
-    power = serializers.FloatField(min_value=0)
     annual_consumption = serializers.FloatField(min_value=0)
     c1 = serializers.FloatField(min_value=0)
     c2 = serializers.FloatField(default=0, min_value=0)
@@ -20,7 +19,6 @@ class CalculatorSerializer(serializers.ModelSerializer):
             "company",
             "tarif",
             "period",
-            "power",
             "annual_consumption",
             "client_type",
             "c1",

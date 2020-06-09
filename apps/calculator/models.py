@@ -107,7 +107,6 @@ class Offer(models.Model):
         company: Company = None,
         tarif: str = "",
         period: int = 0,
-        power: float = 0,
         annual_consumption: float = 0,
         client_type: str = "",
         c1: float = 0,
@@ -126,12 +125,15 @@ class Offer(models.Model):
         epd = calculator_settings.get_equip(tarif)
         rental = epd * period
 
+        power_min = min(filter((lambda n: n != 0), (p1, p2, p3)))
+        power_max = max(filter((lambda n: n != 0), (p1, p2, p3)))
+
         return (
             Offer.objects.exclude(company=company,)
             .filter(
                 Q(
-                    Q(power_max__isnull=True) | Q(power_max__gte=power),
-                    Q(power_min__isnull=True) | Q(power_min__lte=power),
+                    Q(power_max__isnull=True) | Q(power_max__gte=power_min),
+                    Q(power_min__isnull=True) | Q(power_min__lte=power_max),
                     Q(consumption_max__isnull=True)
                     | Q(consumption_max__gte=annual_consumption),
                     Q(consumption_min__isnull=True)

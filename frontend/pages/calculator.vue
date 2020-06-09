@@ -2,7 +2,7 @@
   <v-card>
     <v-form @submit.prevent="submit" novalidate>
       <v-card-title>
-        Calculator
+        Comparador
       </v-card-title>
       <v-card-text>
         <company-select
@@ -15,24 +15,15 @@
         />
         <v-text-field
           v-model="form.period"
-          label="Period"
+          label="Periodo"
           :error-messages="errorMessages.period"
         />
         <v-text-field
-          v-model="form.power"
-          label="Power"
-          :error-messages="errorMessages.power"
-        />
-        <v-text-field
           v-model="form.annual_consumption"
-          label="Annual consumption"
+          label="Annual consumo"
           :error-messages="errorMessages.annual_consumption"
         />
-        <v-text-field
-          v-model="form.client_type"
-          label="Client type"
-          :error-messages="errorMessages.client_type"
-        />
+        <client-type-select v-model="form.client_type" />
         <v-text-field
           v-model="form.c1"
           label="C1"
@@ -75,8 +66,9 @@
 import SubmitButton from '~/components/buttons/submitButton'
 import CompanySelect from '~/components/selects/CompanySelect'
 import TarifSelect from '~/components/selects/TarifSelect'
+import ClientTypeSelect from '~/components/selects/ClientTypeSelect'
 export default {
-  components: { TarifSelect, CompanySelect, SubmitButton },
+  components: { ClientTypeSelect, TarifSelect, CompanySelect, SubmitButton },
   data() {
     return {
       errorMessages: {},
@@ -85,7 +77,6 @@ export default {
         company: null,
         tarif: null,
         period: 0,
-        power: 0,
         annual_consumption: 0,
         client_type: 0,
         c1: 0,
