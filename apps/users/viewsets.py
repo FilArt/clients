@@ -1,5 +1,6 @@
 from django.contrib.auth.base_user import BaseUserManager
 from django.core.mail import send_mail
+from django.conf import settings
 from rest_framework import viewsets, mixins
 from rest_framework.decorators import action
 from rest_framework.generics import get_object_or_404
@@ -22,5 +23,5 @@ class RegisterViewSet(viewsets.GenericViewSet, mixins.CreateModelMixin):
         user.set_password(password)
         user.save(update_fields=['password'])
         subject, message = 'Reset password', 'New password: %s' % password
-        send_mail(subject, message, recipient_list=[email])
+        send_mail(subject, message, settings.EMAIL_HOST_USER, [email])
 
