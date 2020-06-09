@@ -4,7 +4,7 @@
     :items="companies"
     :loading="loading"
     :error-messages="errorMessages"
-    label="Company"
+    label="Comercializadora"
     item-text="name"
     item-value="id"
     @input="$emit('input', company)"

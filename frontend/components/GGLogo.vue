@@ -1,15 +1,14 @@
 <template>
-  <img
-    class="VuetifyLogo"
-    alt="Vuetify Logo"
-    src="/vuetify-logo.svg"
-  >
+  <img class="GGLogo" alt="Vuetify Logo" src="/gg_logo_white.png" />
 </template>
-
+<script>
+export default {
+  name: 'GGLogo'
+}
+</script>
 <style>
-.VuetifyLogo {
-  height:180px;
-  width: 180px;
+.GGLogo {
+  height: 200px;
   transform: rotateY(560deg);
   animation: turn 3.5s ease-out forwards 1s;
 }

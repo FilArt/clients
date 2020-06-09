@@ -64,28 +64,28 @@ export default {
       items: [
         {
           icon: 'mdi-account',
-          title: 'Profile',
+          title: 'Perfil',
           to: '/profile'
         },
         {
           icon: 'mdi-briefcase',
-          title: 'Bids',
+          title: 'Cartera',
           to: '/bids'
         },
 
         {
           icon: 'mdi-calculator',
-          title: 'Calculator',
+          title: 'Comparador',
           to: '/calculator'
         },
         {
           icon: 'mdi-offer',
-          title: 'Offers',
+          title: 'Ofertas',
           to: '/offers'
         },
         {
           icon: 'mdi-cog',
-          title: 'Settings',
+          title: 'Ajustes',
           to: '/settings'
         }
       ],
