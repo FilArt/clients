@@ -129,7 +129,9 @@ export default {
         .post('users/reset_password/', this.form)
         .then(() =>
           this.$swal({
-            title: 'Email sent'
+            title:
+              'Сorreo electrónico con una nueva contraseña ha sido enviado a su correo.',
+            icon: 'success'
           })
         )
         .catch(e => (this.error = e.response.data))
