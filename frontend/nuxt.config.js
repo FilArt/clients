@@ -1,7 +1,10 @@
 import colors from 'vuetify/es5/util/colors'
 
+const DEV = process.env.NODE_ENV !== 'production'
+
 export default {
   mode: 'spa',
+  dev: DEV,
   /*
    ** Headers of the page
    */
@@ -54,11 +57,15 @@ export default {
    ** See https://axios.nuxtjs.org/options
    */
   axios: {
-    browserBaseURL: 'http://localhost:8000/api',
+    browserBaseURL: !DEV
+      ? 'https://areaclientes.gestiongroup.es/api'
+      : 'http://localhost:8000/api',
     proxy: true
   },
   proxy: {
-    '/api/': 'http://localhost:8000/'
+    '/api/': !DEV
+      ? 'https://areaclientes.gestiongroup.es/'
+      : 'http://localhost:8000/'
   },
   auth: {
     redirect: {

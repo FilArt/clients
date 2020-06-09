@@ -1,8 +1,7 @@
 from rest_framework import viewsets, mixins
-from rest_framework.decorators import action
 
 from .models import CustomUser
-from .serializers import RegisterSerializer, UserSerializer
+from .serializers import RegisterSerializer
 
 
 class RegisterViewSet(viewsets.GenericViewSet, mixins.CreateModelMixin):
