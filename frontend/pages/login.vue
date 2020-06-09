@@ -63,10 +63,24 @@
               ></v-text-field>
             </v-card-text>
             <v-card-actions>
-              <v-btn type="submit" color="primary" block
+              <v-btn
+                type="submit"
+                color="primary"
+                block
+                :disabled="!privacyAccepted"
                 >Registrarse
                 <v-icon right>mdi-account-plus</v-icon>
               </v-btn>
+            </v-card-actions>
+            <v-card-actions>
+              <v-checkbox
+                :success="privacyAccepted"
+                :error="!privacyAccepted"
+                v-model="privacyAccepted"
+                persistent-hint
+                hint="Sus datos personales se utilizarán para simplificar su trabajo con el sitio, controlar el acceso a su cuenta y para otros fines descritos en nuestra política de privacidad."
+                label="Estoy de acuerdo"
+              />
             </v-card-actions>
           </v-form>
         </v-card>
@@ -81,6 +95,7 @@ export default {
   components: { GGLogo },
   middleware: 'auth',
   data: () => ({
+    privacyAccepted: false,
     error: null,
     errorMessages2: { email: null },
     form: {
