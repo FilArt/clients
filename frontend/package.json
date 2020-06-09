@@ -1,8 +1,8 @@
 {
   "name": "frontend",
   "version": "1.0.0",
-  "description": "clients frontend",
-  "author": "FilArt",
+  "description": "Area de clientes Gestion Group",
+  "author": "Gestion Group",
   "private": true,
   "scripts": {
     "dev": "nuxt",

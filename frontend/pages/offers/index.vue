@@ -1,7 +1,7 @@
 <template>
   <v-card>
     <v-card-title>
-      Offers
+      Ofertas
     </v-card-title>
     <v-card-text>
       <div :class="`d-flex justify-space-around mb-6 flex-wrap`">
