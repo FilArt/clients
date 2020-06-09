@@ -9,4 +9,4 @@ rules
 django-import-export
 Pillow
 sentry_sdk
-
+django-cors-headers
