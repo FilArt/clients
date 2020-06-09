@@ -5,6 +5,7 @@ from rest_framework import viewsets, mixins
 from rest_framework.decorators import action
 from rest_framework.generics import get_object_or_404
 from rest_framework.request import Request
+from rest_framework.response import Response
 
 from .models import CustomUser
 from .serializers import RegisterSerializer
@@ -24,4 +25,5 @@ class RegisterViewSet(viewsets.GenericViewSet, mixins.CreateModelMixin):
         user.save(update_fields=['password'])
         subject, message = 'Reset password', 'New password: %s' % password
         send_mail(subject, message, settings.EMAIL_HOST_USER, [email])
+        return Response('Ok')
 
