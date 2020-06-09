@@ -1,37 +1,52 @@
 <template>
-  <v-flex>
-    <v-card class="elevation-12">
-      <v-row>
-        <v-col>
-          <v-toolbar dark color="primary">
-            <v-toolbar-title>Login</v-toolbar-title>
+  <div>
+    <v-row class="text-center">
+      <v-col>
+        <g-g-logo />
+      </v-col>
+    </v-row>
+    <v-row class="flex-wrap">
+      <v-col>
+        <v-card>
+          <v-toolbar>
+            <v-toolbar-title>Acceder</v-toolbar-title>
           </v-toolbar>
           <v-form @submit.prevent="submit" novalidate>
             <v-card-text>
-              <p class="error" v-if="error">{{ error }}</p>
+              <v-alert v-if="error" type="error">{{ error }}</v-alert>
               <v-text-field
                 prepend-icon="mdi-account"
                 name="email"
                 label="Email"
                 type="text"
                 v-model="form.email"
+                @input="error = null"
               ></v-text-field>
               <v-text-field
                 id="password"
                 prepend-icon="mdi-lock"
                 name="password"
-                label="Password"
+                label="Сontraseña"
                 type="password"
                 v-model="form.password"
               ></v-text-field>
             </v-card-text>
             <v-card-actions>
-              <v-spacer></v-spacer>
-              <v-btn type="submit" color="primary">Login</v-btn>
+              <v-btn block type="submit" color="primary"
+                >Acceder
+                <v-icon right>mdi-logout</v-icon>
+              </v-btn>
+            </v-card-actions>
+            <v-card-actions>
+              <v-btn block color="warning" @click="passwordForgotten">
+                ¿Olvidasde la contraseña?
+              </v-btn>
             </v-card-actions>
           </v-form>
-        </v-col>
-        <v-col>
+        </v-card>
+      </v-col>
+      <v-col>
+        <v-card>
           <v-toolbar>
             <v-toolbar-title>Registrarse</v-toolbar-title>
           </v-toolbar>
@@ -44,47 +59,80 @@
                 type="text"
                 :error-messages="errorMessages2.email"
                 v-model="form.email"
+                @input="errorMessages2.email = null"
               ></v-text-field>
             </v-card-text>
             <v-card-actions>
-              <v-spacer></v-spacer>
-              <v-btn type="submit" color="primary">Registrarse</v-btn>
+              <v-btn type="submit" color="primary" block
+                >Registrarse
+                <v-icon right>mdi-account-plus</v-icon>
+              </v-btn>
             </v-card-actions>
           </v-form>
-        </v-col>
-      </v-row>
-    </v-card>
-  </v-flex>
+        </v-card>
+      </v-col>
+    </v-row>
+  </div>
 </template>
 
 <script>
+import GGLogo from '~/components/GGLogo'
 export default {
+  components: { GGLogo },
   middleware: 'auth',
   data: () => ({
     error: null,
     errorMessages2: { email: null },
     form: {
-      email: '',
-      password: ''
+      email: null,
+      password: null
     }
   }),
   methods: {
     async submit() {
+      if (!this.form.email || !this.form.email.length) {
+        this.error = 'Ingrese su Email'
+        return
+      }
+
       this.error = null
       try {
         const response = await this.$auth.login({ data: this.form })
         this.$auth.setRefreshToken('local', response.data.refresh)
       } catch (e) {
-        this.error = 'Login failed.'
+        const errorMsg = e.response.data.detail
+        if (errorMsg === 'No active account found with the given credentials') {
+          this.error = 'La cuenta no existe'
+        } else {
+          this.error = 'Autorización fallida'
+        }
       }
     },
     async submitRegister() {
+      if (!this.form.email || !this.form.email.length) {
+        this.errorMessages2.email = ['Ingrese su Email']
+        return
+      }
       this.errorMessages2 = { email: null }
       try {
         await this.$axios.post('users/register_user/', this.form)
       } catch (e) {
         this.errorMessages2 = e.response.data
       }
+    },
+    passwordForgotten() {
+      if (!this.form.email || !this.form.email.length) {
+        this.error = 'Ingrese su Email'
+        return
+      }
+      this.$axios
+        .post('users/reset_password/', this.form)
+        .then(() =>
+          this.$swal({
+            title: 'Email sent'
+          })
+        )
+        .catch(e => (this.error = e.response.data))
     }
   }
 }
