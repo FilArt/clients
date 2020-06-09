@@ -9,7 +9,7 @@ export default {
    ** Headers of the page
    */
   head: {
-    titleTemplate: '%s - ' + 'Area de clientes Gestion Group',
+    titleTemplate: '%s',
     title: 'Area de clientes Gestion Group',
     meta: [
       { charset: 'utf-8' },

@@ -1,21 +1,13 @@
 <template>
-  <img class="GGLogo" alt="Vuetify Logo" src="/gg_logo_white.png" />
+  <img
+    alt="Gestion Group Logo"
+    src="/gg_logo_white.png"
+    height="200"
+    style="max-width: 100%;"
+  />
 </template>
 <script>
 export default {
   name: 'GGLogo'
 }
 </script>
-<style>
-.GGLogo {
-  height: 200px;
-  transform: rotateY(560deg);
-  animation: turn 3.5s ease-out forwards 1s;
-}
-
-@keyframes turn {
-  100% {
-    transform: rotateY(0deg);
-  }
-}
-</style>
