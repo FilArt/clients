@@ -58,6 +58,7 @@ export default {
   name: 'Default',
   data() {
     return {
+      refreshTokenIntervalId: null,
       clipped: false,
       drawer: false,
       fixed: false,
@@ -65,41 +66,55 @@ export default {
         {
           icon: 'mdi-account',
           title: 'Perfil',
-          to: '/profile'
+          to: '/profile',
         },
         {
           icon: 'mdi-briefcase',
           title: 'Cartera',
-          to: '/bids'
+          to: '/bids',
         },
 
         {
           icon: 'mdi-calculator',
           title: 'Comparador',
-          to: '/calculator'
+          to: '/calculator',
         },
         {
           icon: 'mdi-offer',
           title: 'Ofertas',
-          to: '/offers'
+          to: '/offers',
         },
         {
           icon: 'mdi-cog',
           title: 'Ajustes',
-          to: '/settings'
-        }
+          to: '/settings',
+        },
       ],
       miniVariant: false,
-      title: 'Vuetify.js'
+      title: 'Vuetify.js',
     }
   },
   async mounted() {
-    const refreshToken = this.$auth.getRefreshToken('local')
-    if (!refreshToken) return
-    const responseData = await this.$axios.$post('users/refresh', {
-      refresh: refreshToken
-    })
-    this.$auth.setToken('local', 'Bearer ' + responseData.access)
-  }
+    await this.refreshToken()
+    if (this.refreshTokenIntervalId) {
+      clearInterval(this.refreshTokenIntervalId)
+    }
+    this.refreshTokenIntervalId = setInterval(this.refreshToken, 1000 * 60) // refresh minute
+  },
+  methods: {
+    async refreshToken() {
+      if (!this.$auth.loggedIn) return
+      const refreshToken = this.$auth.getRefreshToken('local')
+      if (!refreshToken) return
+      try {
+        const responseData = await this.$axios.$post('users/refresh', {
+          refresh: refreshToken,
+        })
+        await this.$auth.setToken('local', 'Bearer ' + responseData.access)
+      } catch (e) {
+        await this.$auth.logout()
+      }
+    },
+  },
 }
 </script>

@@ -87,13 +87,20 @@
           </v-card-actions>
           <v-card-actions>
             <v-checkbox
+              v-model="privacyAccepted"
               :success="privacyAccepted"
               :error="!privacyAccepted"
-              v-model="privacyAccepted"
-              persistent-hint
-              hint="Sus datos personales se utilizarán para simplificar su trabajo con el sitio, controlar el acceso a su cuenta y para otros fines descritos en nuestra política de privacidad."
+              :hint="privacyHint + ' política de privacidad.'"
               label="Estoy de acuerdo"
-            />
+              persistent-hint
+            >
+              <template v-slot:message>
+                {{ privacyHint }}
+                <a target="_blank" href="https://gestiongroup.es/privacy_policy"
+                  >política de privacidad.</a
+                >
+              </template>
+            </v-checkbox>
           </v-card-actions>
         </v-form>
       </v-card>
@@ -109,12 +116,15 @@ export default {
     loading: false,
     showLogin: true,
     privacyAccepted: false,
+    privacyHint:
+      'Sus datos personales se utilizarán para simplificar su trabajo con el sitio, controlar el acceso a su cuenta y para otros fines descritos en nuestra',
+
     error: null,
     errorMessages2: { email: null },
     form: {
       email: null,
-      password: null
-    }
+      password: null,
+    },
   }),
   methods: {
     async flipCards() {
@@ -156,6 +166,10 @@ export default {
       this.errorMessages2 = { email: null }
       try {
         await this.$axios.post('users/register_user/', this.form)
+        this.$swal({
+          title: 'Registered!',
+          icon: 'success',
+        }).then(() => this.flipCards())
       } catch (e) {
         this.errorMessages2 = e.response.data
       } finally {
@@ -173,14 +187,14 @@ export default {
         this.$swal({
           title:
             'Сorreo electrónico con una nueva contraseña ha sido enviado a su correo.',
-          icon: 'success'
+          icon: 'success',
         })
       } catch (e) {
         this.error = e.response.data
       } finally {
         this.loading = false
       }
-    }
-  }
+    },
+  },
 }
 </script>

@@ -17,10 +17,10 @@ export default {
       {
         hid: 'description',
         name: 'description',
-        content: process.env.npm_package_description || ''
-      }
+        content: process.env.npm_package_description || '',
+      },
     ],
-    link: [{ rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' }]
+    link: [{ rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' }],
   },
   /*
    ** Customize the progress-bar color
@@ -54,17 +54,18 @@ export default {
     browserBaseURL: !DEV
       ? 'https://areaclientes.gestiongroup.es/api'
       : 'http://localhost:8000/api',
-    proxy: true
+    proxy: true,
   },
   proxy: {
     '/api/': !DEV
       ? 'https://areaclientes.gestiongroup.es/'
-      : 'http://localhost:8000/'
+      : 'http://localhost:8000/',
   },
   auth: {
     redirect: {
+      login: '/offers',
       logout: '/login',
-      home: '/offers'
+      home: '/offers',
     },
     resetOnError: true,
     cookie: false,
@@ -75,17 +76,18 @@ export default {
           login: {
             url: 'users/login',
             method: 'post',
-            propertyName: 'access'
+            propertyName: 'access',
           },
-          user: { url: 'users/me', propertyName: false }
+          user: { url: 'users/me', propertyName: false },
+          logout: false,
         },
         tokenType: 'Bearer',
-        tokenName: 'Authorization'
-      }
-    }
+        tokenName: 'Authorization',
+      },
+    },
   },
   router: {
-    middleware: ['auth']
+    middleware: ['auth', 'authenticated'],
   },
   /*
    ** vuetify module configuration
@@ -103,10 +105,10 @@ export default {
           info: colors.teal.lighten1,
           warning: colors.amber.base,
           error: colors.deepOrange.accent4,
-          success: colors.green.accent3
-        }
-      }
-    }
+          success: colors.green.accent3,
+        },
+      },
+    },
   },
   /*
    ** Build configuration
@@ -115,6 +117,6 @@ export default {
     /*
      ** You can extend webpack config here
      */
-    extend(config, ctx) {}
-  }
+    extend(config, ctx) {},
+  },
 }

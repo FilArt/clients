@@ -25,7 +25,7 @@
               @click="addBid"
             >
               {{ offer.added ? 'Already added' : 'Add to portfel'
-              }}<v-icon>mdi-briefcase</v-icon>
+              }}<v-icon right>mdi-briefcase</v-icon>
             </v-btn>
           </v-col>
           <v-col>
@@ -38,32 +38,21 @@
 </template>
 
 <script>
-import CancelButton from '~/components/buttons/cancelButton'
-import RefreshButton from '~/components/buttons/refreshButton'
-import ReturnButton from '~/components/buttons/returnButton'
 export default {
-  components: { ReturnButton, RefreshButton, CancelButton },
-  data() {
-    return {
-      loading: false,
-      offer: {},
-      id: this.$route.params.id
-    }
+  components: {
+    ReturnButton: () => import('~/components/buttons/returnButton'),
+    RefreshButton: () => import('~/components/buttons/refreshButton'),
+    CancelButton: () => import('~/components/buttons/cancelButton')
   },
-  mounted() {
-    this.refresh()
+  async asyncData({ $axios, params }) {
+    const offer = await $axios.$get(`calculator/offers/${params.id}/`)
+    return { offer, id: params.id }
   },
   methods: {
-    refresh() {
-      this.loading = true
-      this.$axios
-        .$get(`calculator/offers/${this.$route.params.id}/`)
-        .then(data => (this.offer = data))
-        .finally(() => (this.loading = false))
-    },
     addBid() {
       if (this.offer.added) return
-      this.$axios.$post('bids', { offer: this.id }).then(() => {
+      this.$axios.$post('bids/', { offer: this.id }).then(() => {
+        this.offer.added = true
         this.$swal({
           title: 'Bid added!',
           icon: 'success'

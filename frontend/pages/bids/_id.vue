@@ -11,22 +11,13 @@
 </template>
 
 <script>
-import ReturnButton from '~/components/buttons/returnButton'
 export default {
-  components: { ReturnButton },
-  data() {
-    return {
-      bid: null,
-      id: this.$route.params.id
-    }
+  components: {
+    ReturnButton: () => import('~/components/buttons/returnButton')
   },
-  mounted() {
-    this.refresh()
-  },
-  methods: {
-    async refresh() {
-      this.$axios.$get(`bids/${this.id}`).then(data => (this.bid = data))
-    }
+  async asyncData({ $axios, params }) {
+    const bid = await $axios.$get(`bids/${params.id}`)
+    return { bid, id: params.id }
   }
 }
 </script>

@@ -1,13 +1,15 @@
-from rest_framework import viewsets, mixins
+from rest_framework import viewsets
 
 from .models import Bid
-from .serializers import BidSerializer, BidListSerializer
+from .serializers import BidSerializer, BidListSerializer, BidWithOferta
 
 
-class BidViewSet(viewsets.GenericViewSet, mixins.ListModelMixin, mixins.RetrieveModelMixin):
+class BidViewSet(viewsets.ModelViewSet):
     def get_serializer_class(self):
-        if self.detail:
+        if self.action in ('create',):
             return BidSerializer
+        elif self.detail:
+            return BidWithOferta
         return BidListSerializer
 
     def get_queryset(self):
