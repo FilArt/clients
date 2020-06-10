@@ -22,7 +22,6 @@
       <v-responsive class="overflow-y-auto">
         <v-row class="d-flex align-center justify-space-around flex-wrap">
           <v-col v-for="offer in offers" :key="offer.id">
-            {{ $route.fullPath }}
             <v-card
               :to="`/offers/${offer.id}?tarif=${
                 filters.tarif || ''
