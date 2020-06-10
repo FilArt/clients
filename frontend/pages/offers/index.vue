@@ -1,42 +1,55 @@
 <template>
-  <v-card>
-    <v-card-title>
-      Ofertas
-    </v-card-title>
+  <v-container>
+    <v-card-title>Elegir categoria</v-card-title>
     <v-card-text>
-      <div :class="`d-flex justify-space-around mb-6 flex-wrap`">
-        <v-card
-          v-for="offer in offers"
-          :key="offer.id"
-          :to="`offers/${offer.id}`"
-          class="pa-1"
-          nuxt
-          max-width="300"
-        >
-          <v-img v-if="offer.picture" :src="offer.picture" />
-          <v-card-title>
-            {{ offer.name }}
-          </v-card-title>
-        </v-card>
-      </div>
+      <v-row align="center">
+        <v-col>
+          <v-hover v-slot:default="{ hover }">
+            <v-card
+              max-width="400"
+              class="mx-auto"
+              outlined
+              nuxt
+              to="/offers/detail?client_type=individual"
+              :raised="hover"
+            >
+              <v-card-text>
+                <v-img src="/working-at-home.svg" />
+              </v-card-text>
+              <v-divider />
+
+              <v-card-text class="text-center display-1">
+                HOGAR
+              </v-card-text>
+            </v-card>
+          </v-hover>
+        </v-col>
+        <v-col>
+          <v-hover v-slot:default="{ hover }">
+            <v-card
+              max-width="400"
+              class="mx-auto"
+              outlined
+              nuxt
+              to="/offers/detail?client_type=business"
+              :raised="hover"
+            >
+              <v-card-text>
+                <v-img src="/market.svg" />
+              </v-card-text>
+              <v-divider />
+
+              <v-card-text class="text-center display-1">
+                PYME
+              </v-card-text>
+            </v-card>
+          </v-hover>
+        </v-col>
+      </v-row>
     </v-card-text>
-  </v-card>
+  </v-container>
 </template>
 
 <script>
-export default {
-  data() {
-    return {
-      offers: []
-    }
-  },
-  mounted() {
-    this.refresh()
-  },
-  methods: {
-    refresh() {
-      this.$axios.$get('calculator/offers').then(data => (this.offers = data))
-    }
-  }
-}
+export default {}
 </script>

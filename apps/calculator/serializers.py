@@ -37,10 +37,11 @@ class CompanySerializer(serializers.ModelSerializer):
 
 
 class OfferListSerializer(serializers.ModelSerializer):
+    company = serializers.CharField(source='company.name')
 
     class Meta:
         model = Offer
-        fields = ['id', 'name', 'picture']
+        fields = ['id', 'name', 'picture', 'company']
 
     def get_added(self, instance: Offer):
         return self.context['request'].user.bid_set.filter(offer_id=instance.id).exists()
@@ -51,4 +52,5 @@ class OfferSerializer(OfferListSerializer):
 
     class Meta:
         model = Offer
+        depth = 1
         fields = '__all__'

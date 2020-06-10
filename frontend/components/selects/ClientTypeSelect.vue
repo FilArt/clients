@@ -8,22 +8,40 @@
 </template>
 
 <script>
+const clientTypes = [
+  {
+    text: 'Particular',
+    value: 0,
+  },
+  {
+    text: 'Negocios',
+    value: 1,
+  },
+]
 export default {
   name: 'ClientTypeSelect',
+  props: {
+    value: {
+      type: Number,
+      default: -1,
+    },
+  },
   data() {
     return {
-      item: 0,
-      items: [
-        {
-          text: 'Particular',
-          value: 0
-        },
-        {
-          text: 'Negocios',
-          value: 1
-        }
-      ]
+      items: clientTypes,
+      item:
+        this.value !== -1
+          ? clientTypes.find((t) => t.value === this.value)
+          : null,
     }
-  }
+  },
+  watch: {
+    value: {
+      handler: function (val) {
+        this.item = this.items.find((i) => i.value === val)
+      },
+      deep: true,
+    },
+  },
 }
 </script>

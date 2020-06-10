@@ -13,18 +13,27 @@
 export default {
   name: 'TarifSelect',
   props: {
+    value: {
+      type: String,
+      default: null,
+    },
     errorMessages: {
       type: Array,
-      default: () => null
-    }
+      default: () => null,
+    },
   },
   data() {
     return {
       loading: true,
 
-      tarif: null,
-      tarifs: []
+      tarif: this.value,
+      tarifs: [],
     }
+  },
+  watch: {
+    value(val) {
+      this.tarif = val
+    },
   },
   mounted() {
     this.refresh()
@@ -34,11 +43,11 @@ export default {
       this.loading = true
       this.$axios
         .$get('/calculator/tarifs/')
-        .then(tarifs => {
+        .then((tarifs) => {
           this.tarifs = tarifs
         })
         .finally(() => (this.loading = false))
-    }
-  }
+    },
+  },
 }
 </script>

@@ -131,15 +131,17 @@ REST_FRAMEWORK = {
     "DEFAULT_PERMISSION_CLASSES": ("rest_framework.permissions.IsAuthenticated",),
     "DEFAULT_AUTHENTICATION_CLASSES": (
         "rest_framework_simplejwt.authentication.JWTAuthentication",
+        "rest_framework.authentication.SessionAuthentication",
     ),
+    # "DEFAULT_PAGINATION_CLASS": "rest_framework.pagination.PageNumberPagination",
+    "PAGE_SIZE": 12,
 }
-
 AUTH_USER_MODEL = "users.CustomUser"
 
 CORS_ORIGIN_ALLOW_ALL = True
 
-OFFERS_SHEET_URL = ''
-GOOGLE_SERVICE_ACCOUNT_CREDS = '~/.config/gspread/service_account.json'
+OFFERS_SHEET_URL = ""
+GOOGLE_SERVICE_ACCOUNT_CREDS = "~/.config/gspread/service_account.json"
 
 try:
     from .local_settings import *

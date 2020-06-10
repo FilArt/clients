@@ -1,4 +1,5 @@
 from rest_framework import viewsets, mixins
+from rest_framework.pagination import PageNumberPagination
 from rest_framework.response import Response
 
 from .models import Company, ALL_TARIFS, Offer
@@ -17,6 +18,8 @@ class TarifViewSet(viewsets.GenericViewSet, mixins.ListModelMixin):
 
 class OfferViewSet(viewsets.GenericViewSet, mixins.ListModelMixin, mixins.RetrieveModelMixin):
     queryset = Offer.objects.all()
+    filterset_fields = ['tarif', 'client_type']
+    pagination_class = PageNumberPagination
 
     def get_serializer_class(self):
         if self.detail:
