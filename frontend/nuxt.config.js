@@ -37,20 +37,14 @@ export default {
   /*
    ** Nuxt.js dev-modules
    */
-  buildModules: [
-    '@nuxt/typescript-build',
-    '@nuxtjs/vuetify',
-    '@nuxtjs/date-fns'
-  ],
+  buildModules: ['@nuxtjs/vuetify', '@nuxtjs/date-fns'],
   /*
    ** Nuxt.js modules
    */
   modules: [
     // Doc: https://axios.nuxtjs.org/usage
     '@nuxtjs/axios',
-    // Doc: https://github.com/nuxt-community/dotenv-module
-    '@nuxtjs/dotenv',
-    '@nuxtjs/auth'
+    '@nuxtjs/auth',
   ],
   /*
    ** Axios module configuration
