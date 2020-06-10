@@ -184,7 +184,7 @@ export default {
       this.loading = true
       try {
         await this.$axios.post('users/register_user/reset_password/', this.form)
-        this.$swal({
+        await this.$swal({
           title:
             'Сorreo electrónico con una nueva contraseña ha sido enviado a su correo.',
           icon: 'success',
