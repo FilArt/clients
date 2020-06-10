@@ -12,7 +12,7 @@
         </v-container>
         <v-container>
           <tarif-select
-            :value="filters.tarif"
+            :value="$route.query.tarif"
             @input="updateFilters('tarif', $event)"
           />
         </v-container>
@@ -88,19 +88,20 @@ export default {
       offers: [],
       nextUrl: this.$route.query.client_type
         ? baseUrl +
-          `?client_type=${clientTypeShortcuts[this.$route.query.client_type]}`
+          `?client_type=${
+            clientTypeShortcuts[this.$route.query.client_type]
+          }&tarif=${this.$route.query.tarif || ''}`
         : baseUrl,
       total: 0,
       loading: false,
       filters: {
-        tarif: undefined,
+        tarif: null,
         client_type: clientTypeShortcuts[this.$route.query.client_type],
       },
     }
   },
   methods: {
     updateFilters(key, value) {
-      console.log(this.filters.client_type)
       if (!value && key !== 'client_type' && value !== 0) return
       this.filters[key] = value
 
@@ -109,7 +110,7 @@ export default {
       if (key === 'tarif') {
         nextUrl = nextUrl + '&client_type=' + this.filters.client_type
       } else {
-        nextUrl = nextUrl + '&tarif=' + (this.filters.tarif || '')
+        nextUrl = nextUrl + '&tarif=' + this.filters.tarif
       }
       this.offers = []
       this.nextUrl = nextUrl

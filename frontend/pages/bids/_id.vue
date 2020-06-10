@@ -6,7 +6,7 @@
         <v-list-item v-for="(value, name) in bid" :key="name">
           <v-list-item-group v-if="typeof value === 'object'">
             <v-list-item-title>{{ name }}</v-list-item-title>
-            <v-list-item v-for="(v1, n1) in value" class="text-right">
+            <v-list-item v-for="(v1, n1) in value" :key="n1" class="text-right">
               <v-list-item-title>{{ n1 }}: {{ v1 }}</v-list-item-title>
             </v-list-item>
           </v-list-item-group>

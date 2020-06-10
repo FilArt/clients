@@ -16,10 +16,14 @@ class TarifViewSet(viewsets.GenericViewSet, mixins.ListModelMixin):
         return Response(ALL_TARIFS)
 
 
+class OfferPagination(PageNumberPagination):
+    page_size = 12
+
+
 class OfferViewSet(viewsets.GenericViewSet, mixins.ListModelMixin, mixins.RetrieveModelMixin):
     queryset = Offer.objects.all()
     filterset_fields = ['tarif', 'client_type']
-    pagination_class = PageNumberPagination
+    pagination_class = OfferPagination
 
     def get_serializer_class(self):
         if self.detail:
