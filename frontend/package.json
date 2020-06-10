@@ -13,9 +13,11 @@
   "dependencies": {
     "@nuxtjs/auth": "^4.9.1",
     "@nuxtjs/axios": "latest",
-    "nuxt": "latest"
+    "nuxt": "latest",
+    "vue-swal": "^1.0.0"
   },
   "devDependencies": {
+    "@nuxtjs/date-fns": "latest",
     "@nuxtjs/vuetify": "latest",
     "eslint-config-prettier": "latest",
     "eslint-plugin-prettier": "latest",

@@ -12,7 +12,7 @@
           <v-toolbar-title>Acceder</v-toolbar-title>
           <v-spacer />
           <v-toolbar-items>
-            <v-btn small @click="flipCards">Go to signup?</v-btn>
+            <v-btn small @click="flipCards">Regístrate ahora.</v-btn>
           </v-toolbar-items>
         </v-toolbar>
         <v-form @submit.prevent="submit" novalidate>
@@ -44,11 +44,13 @@
           <v-card-actions>
             <v-btn
               block
-              color="warning darken-2"
               :loading="loading"
               @click="passwordForgotten"
+              outlined
+              rounded
             >
               ¿Olvidasde la contraseña?
+              <v-icon right>mdi-lock-reset</v-icon>
             </v-btn>
           </v-card-actions>
         </v-form>
@@ -59,7 +61,7 @@
           <v-toolbar-title>Registrarse</v-toolbar-title>
           <v-spacer />
           <v-toolbar-items>
-            <v-btn small @click="flipCards">Already registered?</v-btn>
+            <v-btn small @click="flipCards">Accede a tu cuenta</v-btn>
           </v-toolbar-items>
         </v-toolbar>
         <v-form @submit.prevent="submitRegister" novalidate>
