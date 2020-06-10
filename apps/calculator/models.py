@@ -4,6 +4,8 @@ from django.db import models
 from django.db.models import F, Value, Q
 from django.utils.translation import gettext_lazy as _
 
+from apps.calculator.fields import NameField
+
 
 def str_to_float(some):
     if isinstance(some, (int, float)):
@@ -74,7 +76,7 @@ class CalculatorSettings(models.Model):
 
 
 class Company(models.Model):
-    name = models.CharField(max_length=50, unique=True)
+    name = NameField(max_length=50, unique=True)
     logo = models.ImageField(blank=True, null=True)
     priority = models.IntegerField(blank=True, null=True, unique=True)
 
@@ -99,7 +101,7 @@ class Offer(models.Model):
 
     uuid = models.UUIDField(unique=True)
     company = models.ForeignKey(Company, on_delete=models.CASCADE)
-    name = models.CharField(max_length=255)
+    name = NameField(max_length=255)
     picture = models.URLField(null=True, blank=True)
     description = models.TextField()
     tarif = models.CharField(max_length=10, choices=TARIF_CHOICES)
@@ -129,7 +131,7 @@ class Offer(models.Model):
                     uuid=item["UUID"],
                     defaults=dict(
                         company=Company.objects.get_or_create(
-                            name=item["COMERCIALIZADORA"]
+                            name=item["COMERCIALIZADORA"].strip().upper(),
                         )[0],
                         name=item["NOMBRE"],
                         tarif=item["TARIFA"],
