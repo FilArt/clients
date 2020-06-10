@@ -138,6 +138,9 @@ AUTH_USER_MODEL = "users.CustomUser"
 
 CORS_ORIGIN_ALLOW_ALL = True
 
+OFFERS_SHEET_URL = ''
+GOOGLE_SERVICE_ACCOUNT_CREDS = '~/.config/gspread/service_account.json'
+
 try:
     from .local_settings import *
 except ImportError:

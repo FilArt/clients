@@ -1,6 +1,18 @@
+import gspread
+from django.conf import settings
 from django.db import models
 from django.db.models import F, Value, Q
 from django.utils.translation import gettext_lazy as _
+
+
+def str_to_float(some):
+    if isinstance(some, (int, float)):
+        return some
+    if "," in some:
+        if some.count(",") > 1 or "." in some:
+            raise Exception("Invalid value: %s" % some)
+        some = some.replace(",", ".")
+    return float(some)
 
 
 class Tarif:
@@ -85,9 +97,10 @@ class Offer(models.Model):
         (1, _("Business")),
     )
 
+    uuid = models.UUIDField(unique=True)
     company = models.ForeignKey(Company, on_delete=models.CASCADE)
     name = models.CharField(max_length=255)
-    picture = models.ImageField()
+    picture = models.URLField(null=True, blank=True)
     description = models.TextField()
     tarif = models.CharField(max_length=10, choices=TARIF_CHOICES)
     power_min = models.FloatField(blank=True, null=True)
@@ -101,6 +114,41 @@ class Offer(models.Model):
     c1 = models.FloatField()
     c2 = models.FloatField()
     c3 = models.FloatField()
+
+    @staticmethod
+    def sync():
+        gc = gspread.service_account(settings.GOOGLE_SERVICE_ACCOUNT_CREDS)
+        spread_sheet = gc.open_by_url(settings.OFFERS_SHEET_URL)
+        work_sheet = spread_sheet.get_worksheet(0)
+        records = [row for row in work_sheet.get_all_records() if row["TYPO"]]
+        offers = []
+        for item in records:
+            client_type = 0 if item["TYPO"] == "F" else 1 if item["TYPO"] == "J" else 2
+            offers.append(
+                Offer.objects.update_or_create(
+                    uuid=item["UUID"],
+                    defaults=dict(
+                        company=Company.objects.get_or_create(
+                            name=item["COMERCIALIZADORA"]
+                        )[0],
+                        name=item["NOMBRE"],
+                        tarif=item["TARIFA"],
+                        picture=item["IMAGINA"],
+                        description=item["DESCRIPCION"],
+                        power_min=str_to_float(item["POTENCIA MIN"]),
+                        power_max=str_to_float(item["POTENCIA MAX"]),
+                        consumption_min=str_to_float(item["CONSUMO MIN"]),
+                        consumption_max=str_to_float(item["CONSUMO MAX"]),
+                        client_type=client_type,
+                        p1=str_to_float(item["P1"]),
+                        p2=str_to_float(item["P2"]),
+                        p3=str_to_float(item["P3"]),
+                        c1=str_to_float(item["C1"]),
+                        c2=str_to_float(item["C2"]),
+                        c3=str_to_float(item["C3"]),
+                    ),
+                )
+            )
 
     @staticmethod
     def calc_all(
