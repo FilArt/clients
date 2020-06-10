@@ -27,7 +27,7 @@
 <script>
 export default {
   components: {
-    DeleteButton: () => import('~/components/buttons/deleteButton')
+    DeleteButton: () => import('~/components/buttons/deleteButton'),
   },
   async asyncData({ $axios }) {
     const bids = await $axios.$get('bids/')
@@ -40,16 +40,16 @@ export default {
         text: 'Once deleted, you will not be able to recover this bid!',
         icon: 'warning',
         buttons: true,
-        dangerMode: true
-      }).then(willDelete => {
+        dangerMode: true,
+      }).then((willDelete) => {
         if (willDelete) {
           this.$axios.$delete(`bids/${bidId}/`).then(() => {
-            this.bids = this.bids.filter(bid => bid.id !== bidId)
-            this.$swal('Deleted!', { icon: 'success' })
+            this.bids = this.bids.filter((bid) => bid.id !== bidId)
+            this.$swal({ title: 'Solicitud eliminada!', icon: 'success' })
           })
         }
       })
-    }
-  }
+    },
+  },
 }
 </script>

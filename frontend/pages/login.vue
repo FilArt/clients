@@ -168,10 +168,11 @@ export default {
       this.errorMessages2 = { email: null }
       try {
         await this.$axios.post('users/register_user/', this.form)
-        this.$swal({
-          title: 'Registered!',
+        await this.$swal({
+          title: 'Registrado!',
           icon: 'success',
-        }).then(() => this.flipCards())
+        })
+        await this.flipCards()
       } catch (e) {
         this.errorMessages2 = e.response.data
       } finally {

@@ -42,7 +42,7 @@ export default {
   components: {
     ReturnButton: () => import('~/components/buttons/returnButton'),
     RefreshButton: () => import('~/components/buttons/refreshButton'),
-    CancelButton: () => import('~/components/buttons/cancelButton')
+    CancelButton: () => import('~/components/buttons/cancelButton'),
   },
   async asyncData({ $axios, params }) {
     const offer = await $axios.$get(`calculator/offers/${params.id}/`)
@@ -54,11 +54,11 @@ export default {
       this.$axios.$post('bids/', { offer: this.id }).then(() => {
         this.offer.added = true
         this.$swal({
-          title: 'Bid added!',
-          icon: 'success'
+          title: 'Se ha agregado una solicitud de contrato a la cartera.',
+          icon: 'success',
         })
       })
-    }
-  }
+    },
+  },
 }
 </script>

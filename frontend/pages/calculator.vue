@@ -63,12 +63,13 @@
   </v-card>
 </template>
 <script>
-import SubmitButton from '~/components/buttons/submitButton'
-import CompanySelect from '~/components/selects/CompanySelect'
-import TarifSelect from '~/components/selects/TarifSelect'
-import ClientTypeSelect from '~/components/selects/ClientTypeSelect'
 export default {
-  components: { ClientTypeSelect, TarifSelect, CompanySelect, SubmitButton },
+  components: {
+    ClientTypeSelect: () => import('~/components/selects/ClientTypeSelect'),
+    TarifSelect: () => import('~/components/selects/TarifSelect'),
+    CompanySelect: () => import('~/components/selects/CompanySelect'),
+    SubmitButton: () => import('~/components/buttons/submitButton'),
+  },
   data() {
     return {
       errorMessages: {},
@@ -84,8 +85,8 @@ export default {
         c3: 0,
         p1: 0,
         p2: 0,
-        p3: 0
-      }
+        p3: 0,
+      },
     }
   },
   methods: {
@@ -93,15 +94,15 @@ export default {
       this.errorMessages = {}
       this.$axios
         .$post('calculator/calculate', this.form)
-        .then(data => {
+        .then((data) => {
           this.$swal({
-            title: 'Results ',
+            title: 'Resultados de la comparación:',
             icon: 'success',
-            text: JSON.stringify(data)
+            text: JSON.stringify(data),
           })
         })
-        .catch(e => (this.errorMessages = e.response.data))
-    }
-  }
+        .catch((e) => (this.errorMessages = e.response.data))
+    },
+  },
 }
 </script>
