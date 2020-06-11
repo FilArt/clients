@@ -61,7 +61,12 @@ export default {
   },
   methods: {
     addBid() {
-      this.$axios.$post('bids/', { offer: this.id }).then(() => {
+      let data = { offer: this.id }
+      if (this.$route.query.fromCalculator === 'true') {
+        data = this.$store.state.calculatorForm
+        data.offer = this.id
+      }
+      this.$axios.$post('bids/', data).then(() => {
         this.$swal({
           title: 'Se ha agregado una solicitud de contrato a la cartera.',
           icon: 'success',

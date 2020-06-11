@@ -12,11 +12,11 @@ class BidListSerializer(serializers.ModelSerializer):
 class BidSerializer(serializers.ModelSerializer):
     class Meta:
         model = Bid
-        fields = ["id", "offer"]
+        exclude = ['user']
 
 
 class BidWithOferta(serializers.ModelSerializer):
     class Meta:
         model = Bid
         depth = 1
-        fields = ["id", "offer"]
+        exclude = ['user']

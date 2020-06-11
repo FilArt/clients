@@ -15,7 +15,7 @@
         v-for="offer in offers"
         :key="offer.id"
         nuxt
-        :to="`offers/${offer.id}?back=${$route.fullPath}`"
+        :to="`offers/${offer.id}?back=${$route.fullPath}&fromCalculator=true`"
       >
         <v-list-item-avatar>
           <v-img :src="offer.picture || '/no-image.svg'" />
