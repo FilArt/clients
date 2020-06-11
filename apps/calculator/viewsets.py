@@ -2,7 +2,7 @@ from rest_framework import viewsets, mixins
 from rest_framework.pagination import PageNumberPagination
 from rest_framework.response import Response
 
-from .models import Company, ALL_TARIFS, Offer
+from .models import Company, Offer, Tarif
 from .serializers import CompanySerializer, OfferSerializer, OfferListSerializer
 
 
@@ -13,16 +13,18 @@ class CompanyViewSet(viewsets.GenericViewSet, mixins.ListModelMixin):
 
 class TarifViewSet(viewsets.GenericViewSet, mixins.ListModelMixin):
     def list(self, request, *args, **kwargs):
-        return Response(ALL_TARIFS)
+        return Response(Tarif.all())
 
 
 class OfferPagination(PageNumberPagination):
     page_size = 12
 
 
-class OfferViewSet(viewsets.GenericViewSet, mixins.ListModelMixin, mixins.RetrieveModelMixin):
+class OfferViewSet(
+    viewsets.GenericViewSet, mixins.ListModelMixin, mixins.RetrieveModelMixin
+):
     queryset = Offer.objects.all()
-    filterset_fields = ['tarif', 'client_type']
+    filterset_fields = ["tarif", "client_type"]
     pagination_class = OfferPagination
 
     def get_serializer_class(self):
