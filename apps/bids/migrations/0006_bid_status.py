@@ -7,13 +7,17 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('bids', '0005_remove_bid_annual_consumption'),
+        ("bids", "0005_remove_bid_annual_consumption"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='bid',
-            name='status',
-            field=models.CharField(choices=[('Pendient', 'Pendient')], default=apps.bids.models.BidStatus['initial'], max_length=50),
+            model_name="bid",
+            name="status",
+            field=models.CharField(
+                choices=apps.bids.models.Bid.BID_STATUS_CHOICES,
+                default="initial",
+                max_length=50,
+            ),
         ),
     ]

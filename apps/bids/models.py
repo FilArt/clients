@@ -18,24 +18,16 @@ class PositiveNullableFloatField(models.FloatField):
         self.validators.append(validators.MinValueValidator(0))
 
 
-@unique
-class BidStatus(Enum):
-    initial = _('Pendient')
-
-    @staticmethod
-    def all():
-        return [status.value for status in BidStatus]
-
-    @staticmethod
-    def choices():
-        return tuple((status, status) for status in BidStatus.all())
-
-
 class Bid(models.Model):
+    BID_STATUS_CHOICES = (("initial", _("Pendient")),)
     user = models.ForeignKey("users.CustomUser", on_delete=models.CASCADE)
     offer = models.ForeignKey("calculator.Offer", on_delete=models.CASCADE)
-    status = models.CharField(choices=BidStatus.choices(), default=BidStatus.initial, max_length=50)
-
+    card = models.ForeignKey(
+        "cards.Card", on_delete=models.CASCADE, blank=True, null=True
+    )
+    status = models.CharField(
+        choices=BID_STATUS_CHOICES, default="initial", max_length=50
+    )
     created_at = models.DateTimeField(auto_now_add=True)
 
     # показатели объекта (дом, кафе и тд)
