@@ -1,3 +1,5 @@
+from enum import Enum, unique
+
 import gspread
 from django.conf import settings
 from django.db import models
@@ -17,7 +19,8 @@ def str_to_float(some):
     return float(some)
 
 
-class Tarif:
+@unique
+class Tarif(Enum):
     T20A = "2.0A"
     T20DHA = "2.0DHA"
     T20DHS = "2.0DHS"
@@ -27,8 +30,16 @@ class Tarif:
     T30A = "3.0A"
     T31A = "3.1A"
 
+    @staticmethod
+    def all():
+        return [t.value for t in Tarif]
 
-ALL_TARIFS = [getattr(Tarif, t) for t in dir(Tarif) if not t.startswith("_")]
+    @staticmethod
+    def choices():
+        return tuple((t, t) for t in Tarif.all())
+
+
+assert [t for t in Tarif]
 
 
 class CalculatorSettings(models.Model):
@@ -46,12 +57,15 @@ class CalculatorSettings(models.Model):
 
     def get_equip(self, tarif):
         return {
-            Tarif.T20A: self.equip_rent_t20,
-            Tarif.T20DHA: self.equip_rent_t20dha,
-            Tarif.T21A: self.equip_rent_t21,
-            Tarif.T21DHA: self.equip_rent_t21dha,
-            Tarif.T30A: self.equip_rent_t30,
-            Tarif.T31A: self.equip_rent_t31,
+            k.value: v
+            for k, v in {
+                Tarif.T20A: self.equip_rent_t20,
+                Tarif.T20DHA: self.equip_rent_t20dha,
+                Tarif.T21A: self.equip_rent_t21,
+                Tarif.T21DHA: self.equip_rent_t21dha,
+                Tarif.T30A: self.equip_rent_t30,
+                Tarif.T31A: self.equip_rent_t31,
+            }.items()
         }[tarif]
 
     def save(self, *args, **kwargs):
@@ -93,7 +107,6 @@ class Company(models.Model):
 
 
 class Offer(models.Model):
-    TARIF_CHOICES = ((t, t) for t in ALL_TARIFS)
     CLIENT_TYPE_CHOICES = (
         (0, _("Individual")),
         (1, _("Business")),
@@ -104,7 +117,7 @@ class Offer(models.Model):
     name = NameField(max_length=255)
     picture = models.URLField(null=True, blank=True)
     description = models.TextField()
-    tarif = models.CharField(max_length=10, choices=TARIF_CHOICES)
+    tarif = models.CharField(max_length=10, choices=Tarif.choices())
     power_min = models.FloatField(blank=True, null=True)
     power_max = models.FloatField(blank=True, null=True)
     consumption_min = models.FloatField(blank=True, null=True)
@@ -157,7 +170,6 @@ class Offer(models.Model):
         company: Company = None,
         tarif: str = "",
         period: int = 0,
-        annual_consumption: float = 0,
         client_type: str = "",
         c1: float = 0,
         c2: float = 0,
@@ -168,8 +180,11 @@ class Offer(models.Model):
     ):
         if not isinstance(period, int) or period <= 0:
             raise ValueError("invalid period: %s" % period)
-        if tarif not in ALL_TARIFS:
-            raise ValueError("invalid tarif: %s. available: [%s]" % (tarif, ALL_TARIFS))
+        if tarif not in Tarif.all():
+            raise ValueError(
+                "invalid tarif: %s. available: [%s]" % (tarif, Tarif.all())
+            )
+        assert p1 > 0 and c1 > 0
 
         calculator_settings = CalculatorSettings.objects.first()
         epd = calculator_settings.get_equip(tarif)
@@ -177,6 +192,7 @@ class Offer(models.Model):
 
         power_min = min(filter((lambda n: n != 0), (p1, p2, p3)))
         power_max = max(filter((lambda n: n != 0), (p1, p2, p3)))
+        annual_consumption = ((c1 + c2 + c3) / period) * 365
 
         return (
             Offer.objects.exclude(company=company,)
@@ -214,4 +230,4 @@ class Offer(models.Model):
                 iva=F("after_rental") * calculator_settings.iva,
             )
             .annotate(total=F("after_rental") + F("iva") + F("tax"),)
-        ).values()
+        )

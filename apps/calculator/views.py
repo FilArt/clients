@@ -1,14 +1,30 @@
+from rest_framework import serializers
 from rest_framework.decorators import api_view
 from rest_framework.request import Request
 from rest_framework.response import Response
 
-from .models import Offer
-from .serializers import CalculatorSerializer
+from .models import Offer, Tarif, Company
+from .serializers import OfferListSerializer
+from ..bids.models import Bid
 
 
-@api_view(http_method_names=['POST'])
+class CalculatorSerializer(serializers.ModelSerializer):
+    company = serializers.PrimaryKeyRelatedField(
+        source="offer.company", queryset=Company.objects.all()
+    )
+    period = serializers.IntegerField(min_value=1)
+    tarif = serializers.ChoiceField(choices=Tarif.choices())
+    client_type = serializers.ChoiceField(choices=Offer.CLIENT_TYPE_CHOICES)
+
+    class Meta:
+        model = Bid
+        exclude = ["user", "offer"]
+
+
+@api_view(http_method_names=["POST"])
 def calculate(request: Request):
     serializer = CalculatorSerializer(data=request.data)
     serializer.is_valid(raise_exception=True)
-    results = Offer.calc_all(**serializer.validated_data)
-    return Response(results)
+    company = serializer.validated_data.pop("offer")["company"]
+    results = Offer.calc_all(company=company, **serializer.validated_data)
+    return Response(OfferListSerializer(results, many=True).data)
