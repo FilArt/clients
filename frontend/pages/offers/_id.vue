@@ -24,16 +24,8 @@
       <v-card-actions>
         <v-row>
           <v-col>
-            <v-btn
-              :disabled="offer.added"
-              rounded
-              block
-              outlined
-              color="success"
-              @click="addBid"
-            >
-              {{ offer.added ? 'Already added' : 'Add to portfel'
-              }}<v-icon right>mdi-briefcase</v-icon>
+            <v-btn rounded block outlined color="success" @click="addBid">
+              Add to portfel<v-icon right>mdi-briefcase</v-icon>
             </v-btn>
           </v-col>
           <v-col>
@@ -60,16 +52,16 @@ export default {
   },
   async asyncData({ $axios, params, query }) {
     const offer = await $axios.$get(`calculator/offers/${params.id}/`)
-    const back = `/offers/detail?client_type=${
-      clientTypeShortcuts[query.client_type || offer.client_type]
-    }&tarif=${query.tarif || offer.tarif}`
+    const back = query.back
+      ? query.back
+      : `/offers/detail?client_type=${
+          clientTypeShortcuts[query.client_type || offer.client_type]
+        }&tarif=${query.tarif || offer.tarif}`
     return { offer, id: params.id, back }
   },
   methods: {
     addBid() {
-      if (this.offer.added) return
       this.$axios.$post('bids/', { offer: this.id }).then(() => {
-        this.offer.added = true
         this.$swal({
           title: 'Se ha agregado una solicitud de contrato a la cartera.',
           icon: 'success',

@@ -30,18 +30,30 @@
 export default {
   name: 'CompanySelect',
   props: {
+    value: {
+      type: Number,
+      default: 0,
+    },
     errorMessages: {
       type: Array,
-      default: () => null
-    }
+      default: () => null,
+    },
   },
   data() {
     return {
       loading: true,
 
-      company: null,
-      companies: []
+      company: this.value,
+      companies: [],
     }
+  },
+  watch: {
+    value: {
+      handler: function (val) {
+        this.company = this.companies.find((c) => c.id === val)
+      },
+      deep: false,
+    },
   },
   mounted() {
     this.refresh()
@@ -51,11 +63,11 @@ export default {
       this.loading = true
       this.$axios
         .$get('/calculator/companies/')
-        .then(companies => {
+        .then((companies) => {
           this.companies = companies
         })
         .finally(() => (this.loading = false))
-    }
-  }
+    },
+  },
 }
 </script>

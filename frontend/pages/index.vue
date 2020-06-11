@@ -2,7 +2,7 @@
 <script>
 export default {
   async mounted() {
-    this.$router.push('/offers')
+    await this.$router.push('/offers')
   },
 }
 </script>

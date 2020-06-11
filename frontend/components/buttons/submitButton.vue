@@ -3,15 +3,17 @@
     <template v-slot:activator="{ on }">
       <v-btn
         v-on="on"
-        icon
-        color="success"
+        :icon="!label"
         :disabled="disabled"
+        :block="block"
+        color="success"
         @click="$emit('click')"
       >
-        <v-icon>mdi-check</v-icon>
+        {{ label }}
+        <v-icon :right="!!label">mdi-check</v-icon>
       </v-btn>
     </template>
-    <span>Submit</span>
+    <span>{{ label ? label : 'Submit' }}</span>
   </v-tooltip>
 </template>
 
@@ -21,8 +23,16 @@ export default {
   props: {
     disabled: {
       type: Boolean,
-      default: false
-    }
-  }
+      default: false,
+    },
+    block: {
+      type: Boolean,
+      default: false,
+    },
+    label: {
+      type: String,
+      default: null,
+    },
+  },
 }
 </script>

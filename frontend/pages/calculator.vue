@@ -1,70 +1,109 @@
 <template>
-  <v-card>
-    <v-form @submit.prevent="submit" novalidate>
+  <v-card :loading="loading">
+    <v-snackbar v-model="loading">
+      <p>
+        Считаем...
+      </p>
+      <v-progress-circular indeterminate />
+    </v-snackbar>
+    <v-list v-if="$route.query.showResults">
+      <v-alert type="warning" :value="!offers.length">
+        Offers not found
+      </v-alert>
+
+      <v-list-item
+        v-for="offer in offers"
+        :key="offer.id"
+        nuxt
+        :to="`offers/${offer.id}?back=${$route.fullPath}`"
+      >
+        <v-list-item-avatar>
+          <v-img :src="offer.picture || '/no-image.svg'" />
+        </v-list-item-avatar>
+        <v-list-item-title v-text="offer.name" />
+        <v-list-item-subtitle v-text="offer.company" />
+      </v-list-item>
+
+      <v-list-item>
+        <v-btn block nuxt to="/calculator">
+          Вернуться к расчетам
+          <v-icon>mdi-keyboard-return</v-icon>
+        </v-btn>
+      </v-list-item>
+    </v-list>
+    <v-form v-else @submit.prevent="submit" novalidate>
       <v-card-title>
         Comparador
       </v-card-title>
       <v-card-text>
         <company-select
-          v-model="form.company"
+          :value="form.company"
           :error-messages="errorMessages.company"
+          @input="updateForm('company', $event)"
         />
         <tarif-select
-          v-model="form.tarif"
+          :value="form.tarif"
           :error-messages="errorMessages.tarif"
+          @input="updateForm('tarif', $event)"
         />
         <v-text-field
-          v-model="form.period"
           label="Periodo"
+          :value="form.period"
           :error-messages="errorMessages.period"
+          @input="updateForm('period', $event)"
+        />
+        <client-type-select
+          :value="form.client_type"
+          @input="updateForm('client_type', $event)"
         />
         <v-text-field
-          v-model="form.annual_consumption"
-          label="Annual consumo"
-          :error-messages="errorMessages.annual_consumption"
-        />
-        <client-type-select v-model="form.client_type" />
-        <v-text-field
-          v-model="form.c1"
           label="C1"
+          :value="form.c1"
           :error-messages="errorMessages.c1"
+          @input="updateForm('c1', $event)"
         />
         <v-text-field
-          v-model="form.c2"
           label="C2"
+          :value="form.c2"
           :error-messages="errorMessages.c2"
+          @input="updateForm('c2', $event)"
         />
         <v-text-field
-          v-model="form.c3"
           label="C3"
+          :value="form.c3"
           :error-messages="errorMessages.c3"
+          @input="updateForm('c3', $event)"
         />
         <v-text-field
-          v-model="form.p1"
           label="P1"
+          :value="form.p1"
           :error-messages="errorMessages.p1"
+          @input="updateForm('p1', $event)"
         />
         <v-text-field
-          v-model="form.p2"
           label="P2"
+          :value="form.p2"
           :error-messages="errorMessages.p2"
+          @input="updateForm('p2', $event)"
         />
         <v-text-field
-          v-model="form.p3"
           label="P3"
+          :value="form.p3"
           :error-messages="errorMessages.p3"
+          @input="updateForm('p3', $event)"
         />
       </v-card-text>
       <v-card-actions>
-        <v-spacer />
-        <submit-button @click="submit" />
+        <submit-button block label="Calculate" @click="submit" />
       </v-card-actions>
     </v-form>
   </v-card>
 </template>
 <script>
+import ReturnButton from '~/components/buttons/returnButton'
 export default {
   components: {
+    ReturnButton,
     ClientTypeSelect: () => import('~/components/selects/ClientTypeSelect'),
     TarifSelect: () => import('~/components/selects/TarifSelect'),
     CompanySelect: () => import('~/components/selects/CompanySelect'),
@@ -73,35 +112,35 @@ export default {
   data() {
     return {
       errorMessages: {},
-
-      form: {
-        company: null,
-        tarif: null,
-        period: 0,
-        annual_consumption: 0,
-        client_type: 0,
-        c1: 0,
-        c2: 0,
-        c3: 0,
-        p1: 0,
-        p2: 0,
-        p3: 0,
-      },
+      loading: false,
     }
   },
+  computed: {
+    offers() {
+      return this.$store.state.calculatedOffers
+    },
+    form() {
+      return this.$store.state.calculatorForm
+    },
+  },
   methods: {
+    updateForm(key, value) {
+      this.$store.commit('updateCalculatorForm', {
+        key: key,
+        value: value,
+      })
+    },
     submit() {
       this.errorMessages = {}
+      this.loading = true
       this.$axios
         .$post('calculator/calculate', this.form)
         .then((data) => {
-          this.$swal({
-            title: 'Resultados de la comparación:',
-            icon: 'success',
-            text: JSON.stringify(data),
-          })
+          this.$store.commit('setCalculatedOffers', data)
+          this.$router.replace({ query: { showResults: true } })
         })
         .catch((e) => (this.errorMessages = e.response.data))
+        .finally(() => (this.loading = false))
     },
   },
 }
