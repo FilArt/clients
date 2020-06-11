@@ -29,4 +29,3 @@ class Bid(models.Model):
     p1 = PositiveNullableFloatField(validators=[more_than_zero])
     p2 = PositiveNullableFloatField()
     p3 = PositiveNullableFloatField()
-    annual_consumption = PositiveNullableFloatField()
