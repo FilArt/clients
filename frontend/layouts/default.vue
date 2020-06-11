@@ -1,12 +1,11 @@
 <template>
-  <v-app dark>
+  <v-app>
     <v-navigation-drawer
       v-if="$auth.loggedIn"
       v-model="drawer"
-      :mini-variant="miniVariant"
-      :clipped="clipped"
       fixed
       app
+      clipped
     >
       <v-list>
         <v-list-item
@@ -25,19 +24,12 @@
         </v-list-item>
       </v-list>
     </v-navigation-drawer>
-    <v-app-bar :clipped-left="clipped" fixed app v-if="$auth.loggedIn">
+
+    <v-app-bar fixed app v-if="$auth.loggedIn" clipped-left>
       <v-app-bar-nav-icon @click.stop="drawer = !drawer" />
-      <v-btn icon @click.stop="miniVariant = !miniVariant">
-        <v-icon>mdi-{{ `chevron-${miniVariant ? 'right' : 'left'}` }}</v-icon>
-      </v-btn>
-      <v-btn icon @click.stop="clipped = !clipped">
-        <v-icon>mdi-application</v-icon>
-      </v-btn>
-      <v-btn icon @click.stop="fixed = !fixed">
-        <v-icon>mdi-minus</v-icon>
-      </v-btn>
       <v-toolbar-title v-text="title" />
       <v-spacer />
+      <theme-switcher />
       <v-btn v-if="$auth" icon @click.stop="$auth.logout">
         <v-icon>mdi-logout</v-icon>
       </v-btn>
@@ -51,14 +43,14 @@
 </template>
 
 <script>
+import ThemeSwitcher from '~/components/ThemeSwitcher'
 export default {
   name: 'Default',
+  components: { ThemeSwitcher },
   data() {
     return {
       refreshTokenIntervalId: null,
-      clipped: false,
-      drawer: false,
-      fixed: false,
+      drawer: true,
       items: [
         {
           icon: 'mdi-account',
@@ -87,8 +79,7 @@ export default {
           to: '/settings',
         },
       ],
-      miniVariant: false,
-      title: 'Vuetify.js',
+      title: 'Gestion Group',
     }
   },
   async mounted() {
