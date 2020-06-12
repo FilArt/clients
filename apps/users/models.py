@@ -1,4 +1,5 @@
 from django.contrib.auth.models import AbstractUser
+from django.contrib.postgres.fields import ArrayField
 from django.core.exceptions import ValidationError
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
@@ -22,10 +23,30 @@ class PhoneNumberField(models.CharField):
         self.validators.append(phone_number_validator)
 
 
+PERMISSIONS_CHOICES = (
+    ("profile", _("Profile")),
+    ("bids", _("Bids")),
+    ("offers", _("Offers")),
+    ("calculator", _("calculator")),
+)
+
+
+def get_default_user_permissions():
+    return [p[0] for p in PERMISSIONS_CHOICES]
+
+
 class CustomUser(AbstractUser):
     username = None
     email = models.EmailField(_("email address"), unique=True)
     phone = PhoneNumberField(_("phone number"), null=True, blank=True)
+
+    permissions = ArrayField(
+        models.CharField(choices=PERMISSIONS_CHOICES, max_length=30),
+        default=get_default_user_permissions,
+        help_text=_("Possible values:")
+        + " "
+        + ", ".join(get_default_user_permissions()),
+    )
 
     USERNAME_FIELD = "email"
     REQUIRED_FIELDS = []

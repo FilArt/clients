@@ -15,5 +15,6 @@ def me(request: Request):
             "first_name": user.first_name,
             "last_name": user.last_name,
             "phone": user.phone,
+            "permissions": user.permissions,
         }
     )
