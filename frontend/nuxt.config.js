@@ -60,6 +60,9 @@ export default {
     '/api/': !DEV
       ? 'https://areaclientes.gestiongroup.es/'
       : 'http://localhost:8000/',
+    '/media/': !DEV
+      ? 'https://areaclientes.gestiongroup.es/'
+      : 'http://localhost:8000/',
   },
   auth: {
     redirect: {

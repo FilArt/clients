@@ -11,6 +11,7 @@ class CompanySerializer(serializers.ModelSerializer):
 
 
 class OfferListSerializer(DynamicFieldsMixin, serializers.ModelSerializer):
+    picture = serializers.CharField(source='image', read_only=True)
     company = serializers.CharField(source="company.name")
 
     class Meta:

@@ -130,6 +130,11 @@ class Offer(models.Model):
     c2 = models.FloatField()
     c3 = models.FloatField()
 
+    @property
+    def image(self):
+        company_logo = self.company.logo.url if self.company.logo else None
+        return self.picture or company_logo
+
     @staticmethod
     def sync():
         gc = gspread.service_account(settings.GOOGLE_SERVICE_ACCOUNT_CREDS)
