@@ -24,7 +24,7 @@ class OfferViewSet(
     viewsets.GenericViewSet, mixins.ListModelMixin, mixins.RetrieveModelMixin
 ):
     queryset = Offer.objects.all()
-    filterset_fields = ["tarif", "client_type"]
+    filterset_fields = ["tarif", "client_type", "company"]
     pagination_class = OfferPagination
 
     def get_serializer_class(self):

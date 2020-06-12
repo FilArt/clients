@@ -7,14 +7,17 @@
     label="Comercializadora"
     item-text="name"
     item-value="id"
+    dense
     @input="$emit('input', company)"
   >
     <template v-slot:selection="{ item }">
-      <v-avatar>
-        <v-img v-if="item['logo']" :src="item['logo']" />
-        <v-icon v-else>mdi-cancel</v-icon>
-      </v-avatar>
-      {{ item.name }}
+      <v-chip close @click:close="closeItem">
+        <v-avatar>
+          <v-img v-if="item['logo']" :src="item['logo']" />
+          <v-icon v-else>mdi-cancel</v-icon>
+        </v-avatar>
+        {{ item.name }}
+      </v-chip>
     </template>
     <template v-slot:item="{ item }">
       <v-avatar>
@@ -59,6 +62,10 @@ export default {
     this.refresh()
   },
   methods: {
+    closeItem() {
+      this.company = null
+      this.$emit('input', null)
+    },
     refresh() {
       this.loading = true
       this.$axios

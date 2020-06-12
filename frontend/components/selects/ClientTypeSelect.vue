@@ -3,6 +3,9 @@
     v-model="item"
     :items="items"
     label="Typo de cliente"
+    chips
+    dense
+    deletable-chips
     @input="$emit('input', item)"
   />
 </template>

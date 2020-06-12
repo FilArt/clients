@@ -5,6 +5,9 @@
     :loading="loading"
     :error-messages="errorMessages"
     label="Tarif"
+    dense
+    chips
+    deletable-chips
     @input="$emit('input', tarif)"
   />
 </template>

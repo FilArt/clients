@@ -1,23 +1,21 @@
 <template>
   <v-container>
-    <v-toolbar>
-      <v-toolbar-title> Ofertas (totales: {{ total }}) </v-toolbar-title>
-      <v-spacer />
-      <v-toolbar-items class="pa-1">
-        <v-container>
-          <client-type-select
-            :value="clientTypeShortcuts[$route.query.client_type]"
-            @input="updateFilters('client_type', $event)"
-          />
-        </v-container>
-        <v-container>
-          <tarif-select
-            :value="$route.query.tarif"
-            @input="updateFilters('tarif', $event)"
-          />
-        </v-container>
-      </v-toolbar-items>
-    </v-toolbar>
+    <v-card-text>
+      <v-card-title>Ofertas (totales: {{ total }})</v-card-title>
+      <v-card-text>
+        <v-row align="center">
+          <v-col>
+            <client-type-select v-model="filters.client_type" />
+          </v-col>
+          <v-col>
+            <company-select v-model="filters.company" />
+          </v-col>
+          <v-col>
+            <tarif-select v-model="filters.tarif" />
+          </v-col>
+        </v-row>
+      </v-card-text>
+    </v-card-text>
     <v-card-text>
       <v-responsive class="overflow-y-auto">
         <v-row class="d-flex align-center justify-space-around flex-wrap">
@@ -71,60 +69,71 @@
 
 <script>
 const baseUrl = 'calculator/offers/'
-const clientTypeShortcuts = {
-  0: 'individual',
-  individual: 0,
-  1: 'business',
-  business: 1,
-}
 export default {
   components: {
+    CompanySelect: () => import('~/components/selects/CompanySelect'),
     TarifSelect: () => import('~/components/selects/TarifSelect'),
     ClientTypeSelect: () => import('~/components/selects/ClientTypeSelect'),
   },
   data() {
     return {
-      clientTypeShortcuts,
       offers: [],
-      nextUrl: this.$route.query.client_type
-        ? baseUrl +
-          `?client_type=${
-            clientTypeShortcuts[this.$route.query.client_type]
-          }&tarif=${this.$route.query.tarif || ''}`
-        : baseUrl,
+      nextUrl: this.getNextUrl(),
       total: 0,
       loading: false,
       filters: {
-        tarif: null,
-        client_type: clientTypeShortcuts[this.$route.query.client_type],
+        company: this.$route.query.company
+          ? parseInt(this.$route.query.company)
+          : null,
+        tarif: this.$route.query.tarif || '',
+        client_type: parseInt(this.$route.query.client_type || '0'),
       },
     }
   },
+  watch: {
+    filters: {
+      handler: async function (v) {
+        this.offers = []
+        this.nextUrl =
+          baseUrl +
+          `?client_type=${v.client_type || ''}&tarif=${v.tarif || ''}&company=${
+            v.company || ''
+          }`
+        await this.$router.replace({ query: v })
+        await this.fetch()
+      },
+      deep: true,
+    },
+  },
   methods: {
-    updateFilters(key, value) {
-      if (!value && key !== 'client_type' && value !== 0) return
-      this.filters[key] = value
-
-      let nextUrl = baseUrl + '?' + key + '=' + value
-
-      if (key === 'tarif') {
-        nextUrl = nextUrl + '&client_type=' + this.filters.client_type
-      } else {
-        nextUrl = nextUrl + '&tarif=' + this.filters.tarif
-      }
-      this.offers = []
-      this.nextUrl = nextUrl
-      this.fetch()
+    getNextUrl() {
+      return this.$route.query.client_type
+        ? baseUrl +
+            `?client_type=${this.$route.query.client_type}&tarif=${
+              this.$route.query.tarif || ''
+            }`
+        : baseUrl
     },
     async fetch() {
       if (this.loading === true || !this.nextUrl) return
       this.loading = true
-      const data = await this.$axios.$get(this.nextUrl)
-
-      this.offers = [...(this.offers || []), ...data.results]
-      this.nextUrl = data.next
-      this.total = data.count
-      this.loading = false
+      try {
+        const data = await this.$axios.$get(this.nextUrl)
+        this.offers = [...(this.offers || []), ...data.results]
+        this.nextUrl = data.next
+        this.total = data.count
+      } catch (e) {
+        const errData = e.response.data
+        this.$swal({
+          title: 'Error',
+          icon: 'error',
+          text: Object.keys(errData)
+            .map((key) => key + ': ' + errData[key].join(', '))
+            .join('\n'),
+        })
+      } finally {
+        this.loading = false
+      }
     },
     async onIntersect() {
       await this.fetch()
