@@ -1,3 +1,4 @@
+from drf_dynamic_fields import DynamicFieldsMixin
 from rest_framework import serializers
 
 from .models import Offer, Company
@@ -9,12 +10,12 @@ class CompanySerializer(serializers.ModelSerializer):
         fields = "__all__"
 
 
-class OfferListSerializer(serializers.ModelSerializer):
+class OfferListSerializer(DynamicFieldsMixin, serializers.ModelSerializer):
     company = serializers.CharField(source="company.name")
 
     class Meta:
         model = Offer
-        fields = ["id", "name", "picture", "company"]
+        exclude = ["uuid"]
 
 
 class OfferSerializer(OfferListSerializer):

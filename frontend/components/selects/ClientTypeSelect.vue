@@ -14,28 +14,25 @@
 const clientTypes = [
   {
     text: 'Particular',
-    value: 0,
+    value: '0',
   },
   {
     text: 'Negocios',
-    value: 1,
+    value: '1',
   },
 ]
 export default {
   name: 'ClientTypeSelect',
   props: {
     value: {
-      type: Number,
-      default: -1,
+      type: String,
+      default: '',
     },
   },
   data() {
     return {
       items: clientTypes,
-      item:
-        this.value !== -1
-          ? clientTypes.find((t) => t.value === this.value)
-          : null,
+      item: clientTypes.find((t) => t.value === this.value),
     }
   },
   watch: {

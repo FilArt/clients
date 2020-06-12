@@ -1,17 +1,17 @@
 <template>
   <v-container>
     <v-card-text>
-      <v-card-title>Ofertas (totales: {{ total }})</v-card-title>
+      <v-card-title>Ofertas (totales: {{ offers.length }})</v-card-title>
       <v-card-text>
         <v-row align="center">
           <v-col>
-            <client-type-select v-model="filters.client_type" />
+            <client-type-select v-model="filters.client_type" @input="fetch" />
           </v-col>
           <v-col>
-            <company-select v-model="filters.company" />
+            <company-select v-model="filters.company" @input="fetch" />
           </v-col>
           <v-col>
-            <tarif-select v-model="filters.tarif" />
+            <tarif-select v-model="filters.tarif" @input="fetch" />
           </v-col>
         </v-row>
       </v-card-text>
@@ -21,9 +21,10 @@
         <v-row class="d-flex align-center justify-space-around flex-wrap">
           <v-col v-for="offer in offers" :key="offer.id">
             <v-card
-              :to="`/offers/${offer.id}?tarif=${
-                filters.tarif || ''
-              }&client_type=${filters.client_type}`"
+              :to="`/offers/${offer.id}?back=${$route.fullPath.replaceAll(
+                '&',
+                '@'
+              )}`"
               nuxt
               class="mx-auto"
               max-width="300"
@@ -68,7 +69,6 @@
 </template>
 
 <script>
-const baseUrl = 'calculator/offers/'
 export default {
   components: {
     CompanySelect: () => import('~/components/selects/CompanySelect'),
@@ -78,50 +78,33 @@ export default {
   data() {
     return {
       offers: [],
-      nextUrl: this.getNextUrl(),
-      total: 0,
       loading: false,
       filters: {
+        fields: 'id,name,picture,company',
         company: this.$route.query.company
           ? parseInt(this.$route.query.company)
           : null,
         tarif: this.$route.query.tarif || '',
-        client_type: parseInt(this.$route.query.client_type || '0'),
+        client_type: this.$route.query.client_type,
       },
     }
   },
   watch: {
     filters: {
-      handler: async function (v) {
-        this.offers = []
-        this.nextUrl =
-          baseUrl +
-          `?client_type=${v.client_type || ''}&tarif=${v.tarif || ''}&company=${
-            v.company || ''
-          }`
-        await this.$router.replace({ query: v })
-        await this.fetch()
+      handler: function (v) {
+        this.$router.replace({ query: v })
       },
       deep: true,
     },
   },
   methods: {
-    getNextUrl() {
-      return this.$route.query.client_type
-        ? baseUrl +
-            `?client_type=${this.$route.query.client_type}&tarif=${
-              this.$route.query.tarif || ''
-            }`
-        : baseUrl
-    },
     async fetch() {
-      if (this.loading === true || !this.nextUrl) return
+      if (this.loading === true) return
       this.loading = true
       try {
-        const data = await this.$axios.$get(this.nextUrl)
-        this.offers = [...(this.offers || []), ...data.results]
-        this.nextUrl = data.next
-        this.total = data.count
+        this.offers = await this.$axios.$get('calculator/offers/', {
+          params: this.filters,
+        })
       } catch (e) {
         const errData = e.response.data
         this.$swal({
