@@ -10,7 +10,7 @@
               class="mx-auto"
               outlined
               nuxt
-              to="/offers/detail?client_type=individual"
+              to="/offers/detail?client_type=0"
               :raised="hover"
             >
               <v-card-text>
@@ -31,7 +31,7 @@
               class="mx-auto"
               outlined
               nuxt
-              to="/offers/detail?client_type=business"
+              to="/offers/detail?client_type=1"
               :raised="hover"
             >
               <v-card-text>
@@ -49,7 +49,3 @@
     </v-card-text>
   </v-container>
 </template>
-
-<script>
-export default {}
-</script>
