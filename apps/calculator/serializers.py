@@ -17,6 +17,7 @@ class OfferListSerializer(DynamicFieldsMixin, serializers.ModelSerializer):
     class Meta:
         model = Offer
         fields = [
+            "id",
             "company",
             "company_logo",
             "c1",
