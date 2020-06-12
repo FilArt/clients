@@ -8,7 +8,7 @@ from rest_framework.request import Request
 from rest_framework.response import Response
 
 from .models import CustomUser
-from .serializers import RegisterSerializer
+from .serializers import RegisterSerializer, AccountSerializer
 
 
 class RegisterViewSet(viewsets.GenericViewSet, mixins.CreateModelMixin):
@@ -27,3 +27,16 @@ class RegisterViewSet(viewsets.GenericViewSet, mixins.CreateModelMixin):
             subject, message = "Reset password", "New password: %s" % password
             send_mail(subject, message, settings.EMAIL_HOST_USER, [email])
         return Response("Ok")
+
+
+class AccountViewSet(
+    viewsets.GenericViewSet,
+    mixins.RetrieveModelMixin,
+    mixins.UpdateModelMixin,
+    mixins.DestroyModelMixin,
+):
+    queryset = CustomUser.objects.all()
+    serializer_class = AccountSerializer
+
+    def get_queryset(self):
+        return CustomUser.objects.filter(id=self.request.user.id)

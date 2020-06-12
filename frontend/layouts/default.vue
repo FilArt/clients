@@ -73,11 +73,6 @@ export default {
           title: 'Ofertas',
           to: '/offers',
         },
-        {
-          icon: 'mdi-cog',
-          title: 'Ajustes',
-          to: '/settings',
-        },
       ],
       title: 'Gestion Group',
     }

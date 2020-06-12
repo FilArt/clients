@@ -3,6 +3,7 @@
     <template v-slot:activator="{ on }">
       <v-btn
         v-on="on"
+        type="submit"
         :icon="!label"
         :disabled="disabled"
         :block="block"

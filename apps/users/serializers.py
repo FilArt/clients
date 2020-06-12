@@ -8,22 +8,22 @@ from apps.users.models import CustomUser
 class RegisterSerializer(serializers.ModelSerializer):
     class Meta:
         model = CustomUser
-        fields = ['email']
+        fields = ["email"]
 
     def save(self):
-        email = self.validated_data['email']
+        email = self.validated_data["email"]
         password = BaseUserManager().make_random_password()
         user = CustomUser.objects.create_user(email, password)
         if settings.DEBUG:
             user.set_password(1)
-            user.save(update_fields=['password'])
+            user.save(update_fields=["password"])
             return user
-        user.email_user('New users', 'email: %s\npassword: %s' % (email, password))
+        user.email_user("New users", "email: %s\npassword: %s" % (email, password))
         return user
 
 
-class UserSerializer(serializers.ModelSerializer):
+class AccountSerializer(serializers.ModelSerializer):
     class Meta:
         model = CustomUser
-        fields = '__all__'
-        extra_kwargs = {'password': {'write_only': True}}
+        fields = ["email", "first_name", "last_name", "phone", "password"]
+        extra_kwargs = {"password": {"write_only": True}}
