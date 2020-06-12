@@ -115,7 +115,6 @@ class Offer(models.Model):
     uuid = models.UUIDField(unique=True)
     company = models.ForeignKey(Company, on_delete=models.CASCADE)
     name = NameField(max_length=255)
-    picture = models.URLField(null=True, blank=True)
     description = models.TextField()
     tarif = models.CharField(max_length=10, choices=Tarif.choices())
     power_min = models.FloatField(blank=True, null=True)
@@ -129,11 +128,6 @@ class Offer(models.Model):
     c1 = models.FloatField()
     c2 = models.FloatField()
     c3 = models.FloatField()
-
-    @property
-    def image(self):
-        company_logo = self.company.logo.url if self.company.logo else None
-        return self.picture or company_logo
 
     @staticmethod
     def sync():
@@ -153,7 +147,6 @@ class Offer(models.Model):
                         )[0],
                         name=item["NOMBRE"],
                         tarif=item["TARIFA"],
-                        picture=item["IMAGINA"],
                         description=item["DESCRIPCION"],
                         power_min=str_to_float(item["POTENCIA MIN"]),
                         power_max=str_to_float(item["POTENCIA MAX"]),

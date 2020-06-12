@@ -1,5 +1,5 @@
 <template>
-  <v-container>
+  <div>
     <v-card-text>
       <v-card-title>Ofertas (totales: {{ offers.length }})</v-card-title>
       <v-card-text>
@@ -65,7 +65,7 @@
     >
       <v-icon>mdi-arrow-up</v-icon>
     </v-btn>
-  </v-container>
+  </div>
 </template>
 
 <script>

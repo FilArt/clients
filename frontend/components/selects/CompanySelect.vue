@@ -7,7 +7,9 @@
     label="Comercializadora"
     item-text="name"
     item-value="id"
-    dense
+    chips
+    deletable-chips
+    style="min-width: 150px;"
     @input="$emit('input', company)"
   >
     <template v-slot:selection="{ item }">

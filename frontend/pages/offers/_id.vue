@@ -1,5 +1,5 @@
 <template>
-  <v-card>
+  <v-container>
     <v-fab-transition>
       <v-btn
         v-if="!isBottomIntersecting && !isTopIntersecting"
@@ -18,53 +18,116 @@
       </v-btn>
     </v-fab-transition>
 
-    <v-container>
-      <v-card v-intersect="onIntersectTop">
-        <return-button :to="back" />
+    <div>
+      <v-card
+        v-intersect="onIntersectTop"
+        elevation="0"
+        style="margin-bottom: 1em;"
+      >
+        <return-button v-if="!isBottomIntersecting" :to="back" />
       </v-card>
 
-      <div v-for="offer in offers" :key="offer.id">
+      <v-card
+        v-for="offer in offers"
+        :key="offer.id"
+        style="margin-bottom: 1em;"
+      >
         <v-row justify="space-between">
           <v-col cols="auto">
-            <v-img
-              height="300"
-              width="300"
-              :src="offer.picture || '/no-image.svg'"
-            />
+            <v-img :src="offer.picture || '/no-image.svg'" max-width="600" />
           </v-col>
           <v-col>
-            <v-card-title v-text="offer.name" />
+            <v-card-title>
+              {{ offer.name }}
+            </v-card-title>
             <v-divider />
             <v-card-text>
-              <p v-for="key in Object.keys(offer)" :key="key">
-                {{ key }}: {{ offer[key] }}
-              </p>
-              {{ offer.description }}
+              <v-simple-table class="pa-0" style="max-width: 100%;">
+                <template v-slot:default>
+                  <tr>
+                    <td>Comercializadora</td>
+                    <td>{{ offer.company }}</td>
+                  </tr>
+                  <tr>
+                    <td colspan="2">{{ offer.description }}</td>
+                  </tr>
+
+                  <tr>
+                    <td>Tarif:</td>
+                    <td>{{ offer.tarif }}</td>
+                  </tr>
+
+                  <tr>
+                    <td>Potencia contratada:</td>
+                    <td>
+                      desde {{ offer.power_min }} kW hasta
+                      {{ offer.power_max }} kW
+                    </td>
+                  </tr>
+
+                  <tr>
+                    <td>Consumo anual:</td>
+                    <td>
+                      desde {{ offer.consumption_min }} kW/h hasta
+                      {{ offer.consumption_max }}
+                      kW/h
+                    </td>
+                  </tr>
+
+                  <tr>
+                    <td>Typo de oferta:</td>
+                    <td>
+                      {{ offer.client_type === 0 ? 'Particular' : 'Negocio' }}
+                    </td>
+                  </tr>
+
+                  <tr>
+                    <td>Precio por potencia:</td>
+                    <td class="d-flex">
+                      <v-chip
+                        v-for="p in ['p1', 'p2', 'p3'].filter((p) => offer[p])"
+                        :key="p"
+                      >
+                        {{ p.toUpperCase() }}:
+                        {{ offer[p] ? offer[p] + ' €' : '-' }}
+                      </v-chip>
+                    </td>
+                  </tr>
+
+                  <tr>
+                    <td>Precio por consumo:</td>
+                    <td class="d-flex">
+                      <v-chip
+                        v-for="p in ['c1', 'c2', 'c3'].filter((p) => offer[p])"
+                        :key="p"
+                      >
+                        {{ p.replace('c', 'p').toUpperCase() }}:
+                        {{ offer[p] ? offer[p] + ' €' : '-' }}
+                      </v-chip>
+                    </td>
+                  </tr>
+                </template>
+              </v-simple-table>
             </v-card-text>
+            <v-card-actions>
+              <v-btn
+                rounded
+                block
+                outlined
+                color="success"
+                @click="addBid(offer.id)"
+              >
+                Add to portfel<v-icon right>mdi-briefcase</v-icon>
+              </v-btn>
+            </v-card-actions>
           </v-col>
-          <v-card-actions>
-            <v-row>
-              <v-col>
-                <v-btn
-                  rounded
-                  block
-                  outlined
-                  color="success"
-                  @click="addBid(offer.id)"
-                >
-                  Add to portfel<v-icon right>mdi-briefcase</v-icon>
-                </v-btn>
-              </v-col>
-            </v-row>
-          </v-card-actions>
         </v-row>
-        <v-divider />
-      </div>
-      <v-card v-intersect="onIntersectBottom">
+      </v-card>
+      <v-card v-intersect="onIntersectBottom" elevation="0">
         <return-button :to="back" />
       </v-card>
-    </v-container>
-  </v-card>
+    </div>
+  </v-container>
 </template>
 
 <script>

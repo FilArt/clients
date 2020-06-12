@@ -5,7 +5,7 @@
     :loading="loading"
     :error-messages="errorMessages"
     label="Tarif"
-    dense
+    style="min-width: 50px;"
     chips
     deletable-chips
     @input="$emit('input', tarif)"

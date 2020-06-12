@@ -11,12 +11,28 @@ class CompanySerializer(serializers.ModelSerializer):
 
 
 class OfferListSerializer(DynamicFieldsMixin, serializers.ModelSerializer):
-    picture = serializers.CharField(source='image', read_only=True)
-    company = serializers.CharField(source="company.name")
+    company = serializers.CharField(source="company.name", read_only=True)
+    company_logo = serializers.ImageField(source="company.logo", read_only=True)
 
     class Meta:
         model = Offer
-        exclude = ["uuid"]
+        fields = [
+            "company",
+            "company_logo",
+            "c1",
+            "c2",
+            "c3",
+            "p1",
+            "p2",
+            "p3",
+            "tarif",
+            "description",
+            "power_min",
+            "power_max",
+            "consumption_min",
+            "consumption_max",
+            "client_type",
+        ]
 
 
 class OfferSerializer(OfferListSerializer):

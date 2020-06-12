@@ -1,4 +1,5 @@
 from rest_framework import viewsets, mixins
+from rest_framework.generics import get_object_or_404
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
@@ -26,7 +27,7 @@ class OfferViewSet(
     def get_queryset(self):
         name_id = self.request.query_params.get("by_name_id")
         if name_id:
-            return Offer.objects.filter(name=Offer.objects.get(id=name_id).name)
+            return Offer.objects.filter(name=get_object_or_404(Offer, id=name_id) .name)
         return Offer.objects.order_by("name").distinct("name")
 
     def get_serializer_class(self):
