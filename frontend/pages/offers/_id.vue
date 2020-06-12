@@ -34,7 +34,10 @@
       >
         <v-row justify="space-between">
           <v-col cols="auto">
-            <v-img :src="offer.picture || '/no-image.svg'" max-width="600" />
+            <v-img
+              :src="offer.company_logo || '/no-image.svg'"
+              max-width="600"
+            />
           </v-col>
           <v-col>
             <v-card-title>

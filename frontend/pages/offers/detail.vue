@@ -29,7 +29,7 @@
               class="mx-auto"
               max-width="300"
             >
-              <v-img :src="offer.picture || '/no-image.svg'" />
+              <v-img :src="offer.company_logo || '/no-image.svg'" />
               <v-card-subtitle
                 v-text="offer.company + ' (id:' + offer.id + ')'"
               />

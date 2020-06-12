@@ -18,7 +18,7 @@
         :to="`offers/${offer.id}?back=${$route.fullPath}&fromCalculator=true`"
       >
         <v-list-item-avatar>
-          <v-img :src="offer.picture || '/no-image.svg'" />
+          <v-img :src="offer.company_logo || '/no-image.svg'" />
         </v-list-item-avatar>
         <v-list-item-title v-text="offer.name" />
         <v-list-item-subtitle v-text="offer.company" />
