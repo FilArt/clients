@@ -28,6 +28,7 @@ class OfferListSerializer(serializers.ModelSerializer):
             "p3",
             "tarif",
             "description",
+            "name",
             "power_min",
             "power_max",
             "consumption_min",
