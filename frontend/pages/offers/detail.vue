@@ -21,9 +21,9 @@
         <v-row class="d-flex align-center justify-space-around flex-wrap">
           <v-col v-for="offer in offers" :key="offer.id">
             <v-card
-              :to="`/offers/${offer.id}?back=${$route.fullPath.replaceAll(
-                '&',
-                '@'
+              :to="`/offers/${offer.id}?back=${$route.fullPath.replace(
+                /@/,
+                '&'
               )}`"
               nuxt
               class="mx-auto"
@@ -106,6 +106,7 @@ export default {
           params: this.filters,
         })
       } catch (e) {
+        console.log(e)
         const errData = e.response.data
         this.$swal({
           title: 'Error',

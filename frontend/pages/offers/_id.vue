@@ -54,7 +54,7 @@ export default {
     const offers = await $axios.$get(
       `calculator/offers/?by_name_id=${params.id}`
     )
-    return { offers, back: query.back.replaceAll('@', '&') }
+    return { offers, back: query.back.replace(/@/, '&') }
   },
   methods: {
     addBid(bidId) {
