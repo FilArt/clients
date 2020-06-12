@@ -10,7 +10,7 @@ class CompanySerializer(serializers.ModelSerializer):
         fields = "__all__"
 
 
-class OfferListSerializer(DynamicFieldsMixin, serializers.ModelSerializer):
+class OfferListSerializer(serializers.ModelSerializer):
     company = serializers.CharField(source="company.name", read_only=True)
     company_logo = serializers.ImageField(source="company.logo", read_only=True)
 
