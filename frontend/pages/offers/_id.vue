@@ -84,7 +84,10 @@ export default {
     const offers = await $axios.$get(
       `calculator/offers/?by_name_id=${params.id}`
     )
-    return { offers, back: query.back.replace(/@/, '&') }
+    return {
+      offers,
+      back: query.back ? query.back.replace(/@/, '&') : '/offers',
+    }
   },
   methods: {
     onIntersectBottom(entries) {
@@ -99,10 +102,27 @@ export default {
         data = this.$store.state.calculatorForm
         data.offer = bidId
       }
-      this.$axios.$post('bids/', data).then(() => {
+      this.$axios.$post('bids/', data).then((createdBidData) => {
         this.$swal({
           title: 'Se ha agregado una solicitud de contrato a la cartera.',
           icon: 'success',
+          buttons: {
+            cancel: true,
+            goToPortfel: {
+              text: 'Go to portfel',
+              value: 'bids',
+            },
+            goToBid: {
+              text: 'Go to bid',
+              value: 'bid',
+            },
+          },
+        }).then((value) => {
+          if (value === 'bids') {
+            this.$router.push('/bids')
+          } else if (value === 'bid') {
+            this.$router.push(`/bids/${createdBidData.id}`)
+          }
         })
       })
     },
