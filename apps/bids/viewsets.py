@@ -1,13 +1,17 @@
 from rest_framework import viewsets
 from rest_framework.decorators import action
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.request import Request
 from rest_framework.response import Response
 
 from .models import Bid
+from .permissions import BidsPermission
 from .serializers import BidSerializer, BidListSerializer, BidWithOferta
 
 
 class BidViewSet(viewsets.ModelViewSet):
+    permission_classes = (BidsPermission, IsAuthenticated)
+
     def get_serializer_class(self):
         if self.action in ("create",):
             return BidSerializer
