@@ -43,15 +43,19 @@
 </template>
 
 <script>
-import ThemeSwitcher from '~/components/ThemeSwitcher'
 export default {
   name: 'Default',
-  components: { ThemeSwitcher },
+  components: { ThemeSwitcher: () => import('~/components/ThemeSwitcher') },
   data() {
     return {
       refreshTokenIntervalId: null,
       drawer: true,
-      items: [
+      title: 'Gestion Group',
+    }
+  },
+  computed: {
+    items() {
+      const items = [
         {
           icon: 'mdi-account',
           title: 'Perfil',
@@ -62,20 +66,23 @@ export default {
           title: 'Cartera',
           to: '/bids',
         },
-
-        {
+      ]
+      if (this.$auth.user.permissions.includes('calculator')) {
+        items.push({
           icon: 'mdi-calculator',
           title: 'Comparador',
           to: '/calculator',
-        },
-        {
+        })
+      }
+      if (this.$auth.user.permissions.includes('offers')) {
+        items.push({
           icon: 'mdi-offer',
           title: 'Ofertas',
           to: '/offers',
-        },
-      ],
-      title: 'Gestion Group',
-    }
+        })
+      }
+      return items
+    },
   },
   async mounted() {
     await this.refreshToken()

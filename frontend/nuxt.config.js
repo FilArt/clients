@@ -25,7 +25,7 @@ export default {
   /*
    ** Customize the progress-bar color
    */
-  loading: { color: '#fff' },
+  // loading: { color: '#fff' },
   /*
    ** Global CSS
    */
@@ -63,9 +63,7 @@ export default {
   },
   auth: {
     redirect: {
-      login: '/offers',
       logout: '/login',
-      home: '/offers',
     },
     resetOnError: true,
     cookie: false,

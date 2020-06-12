@@ -148,6 +148,9 @@ export default {
       try {
         const response = await this.$auth.login({ data: this.form })
         this.$auth.setRefreshToken('local', response.data.refresh)
+        this.$auth.user.permissions.offers
+          ? await this.$router.push('/offers')
+          : await this.$router.push('/bids')
       } catch (e) {
         const errorMsg = e.response.data.detail
         if (errorMsg === 'No active account found with the given credentials') {
