@@ -38,8 +38,6 @@ INSTALLED_APPS = [
     "corsheaders",
     "rest_framework",
     "django_filters",
-    "rules",
-    "import_export",
     "apps.cards",
     "apps.users",
     "apps.calculator",
@@ -123,11 +121,6 @@ STATIC_ROOT = "/var/django/clients/static"
 MEDIA_URL = "/media/"
 # noinspection PyUnresolvedReferences
 MEDIA_ROOT = "/var/django/clients/media"
-
-AUTHENTICATION_BACKENDS = (
-    "rules.permissions.ObjectPermissionBackend",
-    "django.contrib.auth.backends.ModelBackend",
-)
 
 REST_FRAMEWORK = {
     "DEFAULT_FILTER_BACKENDS": ("django_filters.rest_framework.DjangoFilterBackend",),
