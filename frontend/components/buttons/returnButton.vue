@@ -1,7 +1,7 @@
 <template>
   <v-tooltip bottom>
     <template v-slot:activator="{ on }">
-      <v-btn nuxt :to="to" rounded block outlined color="info">
+      <v-btn nuxt :to="to" rounded block color="primary">
         Back
         <v-icon>mdi-keyboard-return</v-icon>
       </v-btn>

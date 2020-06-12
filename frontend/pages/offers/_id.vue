@@ -1,6 +1,28 @@
 <template>
   <v-card>
+    <v-fab-transition>
+      <v-btn
+        v-if="!isBottomIntersecting && !isTopIntersecting"
+        min-width="30%"
+        color="primary"
+        fixed
+        style="z-index: 1000;"
+        bottom
+        rounded
+        right
+        nuxt
+        :to="back"
+      >
+        Back
+        <v-icon right>mdi-keyboard-return</v-icon>
+      </v-btn>
+    </v-fab-transition>
+
     <v-container>
+      <v-card v-intersect="onIntersectTop">
+        <return-button :to="back" />
+      </v-card>
+
       <div v-for="offer in offers" :key="offer.id">
         <v-row justify="space-between">
           <v-col cols="auto">
@@ -38,7 +60,9 @@
         </v-row>
         <v-divider />
       </div>
-      <return-button :to="back" />
+      <v-card v-intersect="onIntersectBottom">
+        <return-button :to="back" />
+      </v-card>
     </v-container>
   </v-card>
 </template>
@@ -50,6 +74,12 @@ export default {
     RefreshButton: () => import('~/components/buttons/refreshButton'),
     CancelButton: () => import('~/components/buttons/cancelButton'),
   },
+  data() {
+    return {
+      isBottomIntersecting: false,
+      isTopIntersecting: true,
+    }
+  },
   async asyncData({ $axios, params, query }) {
     const offers = await $axios.$get(
       `calculator/offers/?by_name_id=${params.id}`
@@ -57,6 +87,12 @@ export default {
     return { offers, back: query.back.replace(/@/, '&') }
   },
   methods: {
+    onIntersectBottom(entries) {
+      this.isBottomIntersecting = entries[0].isIntersecting
+    },
+    onIntersectTop(entries) {
+      this.isTopIntersecting = entries[0].isIntersecting
+    },
     addBid(bidId) {
       let data = { offer: bidId }
       if (this.$route.query.fromCalculator === 'true') {
