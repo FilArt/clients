@@ -1,5 +1,5 @@
 <template>
-  <v-container>
+  <v-card>
     <v-card-title>Elegir categoria</v-card-title>
     <v-card-text>
       <v-row align="center">
@@ -47,5 +47,5 @@
         </v-col>
       </v-row>
     </v-card-text>
-  </v-container>
+  </v-card>
 </template>
