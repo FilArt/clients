@@ -1,5 +1,4 @@
 from rest_framework import viewsets, mixins
-from rest_framework.generics import get_object_or_404
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
@@ -21,14 +20,15 @@ class TarifViewSet(viewsets.GenericViewSet, mixins.ListModelMixin):
 class OfferViewSet(
     viewsets.GenericViewSet, mixins.ListModelMixin, mixins.RetrieveModelMixin
 ):
-    filterset_fields = ["tarif", "client_type", "company"]
+    queryset = Offer.objects.all()
+    filterset_fields = ["tarif", "client_type", "company", "name"]
     permission_classes = (OffersAccessPermission, IsAuthenticated)
+    ordering = ("name",)
 
     def get_queryset(self):
-        name_id = self.request.query_params.get("by_name_id")
-        if name_id:
-            return Offer.objects.filter(name=get_object_or_404(Offer, id=name_id) .name)
-        return Offer.objects.order_by("name").distinct("name")
+        if "name" in self.request.query_params:
+            return super().get_queryset()
+        return super().get_queryset().distinct("name")
 
     def get_serializer_class(self):
         if self.detail:

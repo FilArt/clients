@@ -21,10 +21,7 @@
         <v-row class="d-flex align-center justify-space-around flex-wrap">
           <v-col v-for="offer in offers" :key="offer.id">
             <v-card
-              :to="`/offers/${offer.id}?back=${$route.fullPath.replace(
-                /@/,
-                '&'
-              )}`"
+              :to="`/offers/${offer.id}?name=${myEscape(offer.name)}`"
               nuxt
               class="mx-auto"
               max-width="300"
@@ -69,6 +66,7 @@
 </template>
 
 <script>
+const filterFields = ['id', 'company', 'company_logo', 'name', 'slug'].join(',')
 export default {
   components: {
     CompanySelect: () => import('~/components/selects/CompanySelect'),
@@ -77,14 +75,13 @@ export default {
   },
   data() {
     return {
-      offers: [],
       loading: false,
+      offers: [],
       filters: {
-        fields: 'id,name,picture,company',
         company: this.$route.query.company
-          ? parseInt(this.$route.query.company)
+          ? parseInt(this.$route.query.company || '1')
           : null,
-        tarif: this.$route.query.tarif || '',
+        tarif: this.$route.query.tarif,
         client_type: this.$route.query.client_type,
       },
     }
@@ -98,12 +95,15 @@ export default {
     },
   },
   methods: {
+    myEscape(some) {
+      return window.escape(some)
+    },
     async fetch() {
       if (this.loading === true) return
       this.loading = true
       try {
         this.offers = await this.$axios.$get('calculator/offers/', {
-          params: this.filters,
+          params: { ...this.filters, fields: filterFields },
         })
       } catch (e) {
         console.log(e)
