@@ -16,7 +16,7 @@ class BidListSerializer(serializers.ModelSerializer):
 
     # noinspection PyMethodMayBeStatic
     def get_created_at(self, instance: Bid):
-        return arrow.get(instance.created_at).humanize(locale=settings.LANGUAGE_CODE)
+        return arrow.get(instance.created_at).humanize(locale=self.context['request'].LANGUAGE_CODE)
 
     # noinspection PyMethodMayBeStatic
     def get_status(self, instance: Bid):

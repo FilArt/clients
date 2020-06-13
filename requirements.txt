@@ -10,3 +10,4 @@ sentry_sdk
 gspread
 drf-dynamic-fields
 arrow
+pytz
