@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div style="max-width: 750px; margin: auto;">
     <v-row class="text-center">
       <v-col>
         <g-g-logo />
