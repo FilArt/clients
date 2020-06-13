@@ -1,55 +1,75 @@
 <template>
-  <v-container>
+  <v-card>
     <v-alert v-if="bids.length === 0">
       No bids so far.
     </v-alert>
-    <v-list v-else nav>
-      <v-list-item
-        :key="bid.id"
-        v-for="bid in bids"
-        :to="`bids/${bid.id}`"
-        link
-      >
-        <v-list-item-content>
-          <v-list-item-subtitle>{{ bid.id }}</v-list-item-subtitle>
-          <v-list-item-title>
-            {{ $dateFns.format(bid.created_at, 'dd/MM/yyyy') }}
-          </v-list-item-title>
-        </v-list-item-content>
-        <v-list-item-action @click.prevent="deleteBid(bid.id)">
-          <delete-button />
-        </v-list-item-action>
-      </v-list-item>
-    </v-list>
-  </v-container>
+
+    <div v-else>
+      <v-card-title>
+        <p class="flex-grow-1">Bids</p>
+        <status-select v-model="status" multiple />
+      </v-card-title>
+
+      <v-card-text>
+        <v-list nav>
+          <v-list-item>
+            <v-list-item-subtitle>№</v-list-item-subtitle>
+
+            <v-list-item-title>
+              Created at
+            </v-list-item-title>
+
+            <v-list-item-title>
+              Offer
+            </v-list-item-title>
+
+            <v-list-item-title>
+              Status
+            </v-list-item-title>
+          </v-list-item>
+
+          <v-list-item
+            v-for="bid in (status ? bids.filter(b => b.status === status) : bids)"
+            :key="bid.id"
+            :to="`bids/${bid.id}`"
+            link
+          >
+            <v-list-item-subtitle>{{ bid.id }}</v-list-item-subtitle>
+
+            <v-list-item-title>
+              {{ bid.created_at }}
+            </v-list-item-title>
+
+            <v-list-item-title>
+              {{ bid.offer_name }}
+            </v-list-item-title>
+
+            <v-list-item-title>
+              {{ bid.status }}
+            </v-list-item-title>
+          </v-list-item>
+        </v-list>
+      </v-card-text>
+
+      <go-up-button />
+    </div>
+  </v-card>
 </template>
 
 <script>
+import ClientTypeSelect from '~/components/selects/ClientTypeSelect'
+import StatusSelect from '~/components/selects/StatusSelect'
+import GoUpButton from '~/components/buttons/goUpButton'
 export default {
-  components: {
-    DeleteButton: () => import('~/components/buttons/deleteButton'),
+  components: { GoUpButton, StatusSelect, ClientTypeSelect },
+  data() {
+    return {
+      status: null,
+    }
   },
   async asyncData({ $axios }) {
     const data = await $axios.$get('bids/')
     return { bids: data }
-  },
-  methods: {
-    deleteBid(bidId) {
-      this.$swal({
-        title: `Delete bid ${bidId}?`,
-        text: 'Once deleted, you will not be able to recover this bid!',
-        icon: 'warning',
-        buttons: true,
-        dangerMode: true,
-      }).then((willDelete) => {
-        if (willDelete) {
-          this.$axios.$delete(`bids/${bidId}/`).then(() => {
-            this.bids = this.bids.filter((bid) => bid.id !== bidId)
-            this.$swal({ title: 'Solicitud eliminada!', icon: 'success' })
-          })
-        }
-      })
-    },
   },
 }
 </script>

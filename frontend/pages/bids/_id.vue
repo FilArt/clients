@@ -16,7 +16,7 @@
       </v-list>
     </v-card-text>
     <v-card-actions>
-      <return-button to="/bids" />
+      <delete-button @click="deleteBid" />
     </v-card-actions>
   </v-card>
 </template>
@@ -24,11 +24,31 @@
 <script>
 export default {
   components: {
-    ReturnButton: () => import('~/components/buttons/returnButton'),
+    DeleteButton: () => import('~/components/buttons/deleteButton'),
   },
   async asyncData({ $axios, params }) {
     const bid = await $axios.$get(`bids/${params.id}`)
     return { bid, id: params.id }
+  },
+  methods: {
+    deleteBid() {
+      const bidId = this.bid.id
+      this.$swal({
+        title: `Delete bid ${bidId}?`,
+        text: 'Once deleted, you will not be able to recover this bid!',
+        icon: 'warning',
+        buttons: true,
+        dangerMode: true,
+      }).then((willDelete) => {
+        if (willDelete) {
+          this.$axios.$delete(`bids/${bidId}/`).then(() => {
+            this.bids = this.bids.filter((bid) => bid.id !== bidId)
+            this.$swal({ title: 'Solicitud eliminada!', icon: 'success' })
+          })
+          this.$router.push('/bids')
+        }
+      })
+    },
   },
 }
 </script>

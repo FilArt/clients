@@ -11,6 +11,7 @@ from .serializers import BidSerializer, BidListSerializer, BidWithOferta
 
 class BidViewSet(viewsets.ModelViewSet):
     permission_classes = (BidsPermission, IsAuthenticated)
+    ordering = ("-created_at",)
 
     def get_serializer_class(self):
         if self.action in ("create",):
@@ -33,3 +34,7 @@ class BidViewSet(viewsets.ModelViewSet):
         bid_serializer.is_valid(raise_exception=True)
         bid_serializer.save(user=request.user)
         return Response(bid_serializer.data)
+
+    @action(methods=["GET"], detail=False)
+    def statuses(self, _):
+        return Response([s for _, s in Bid.BID_STATUS_CHOICES])
