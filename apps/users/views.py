@@ -3,18 +3,11 @@ from rest_framework.request import Request
 from rest_framework.response import Response
 
 from apps.users.models import CustomUser
+from apps.users.serializers import AccountSerializer
 
 
 @api_view()
 def me(request: Request):
     user: CustomUser = request.user
-    return Response(
-        {
-            "id": user.id,
-            "email": user.email,
-            "first_name": user.first_name,
-            "last_name": user.last_name,
-            "phone": user.phone,
-            "permissions": user.permissions,
-        }
-    )
+    serializer = AccountSerializer(user)
+    return Response(serializer.data)

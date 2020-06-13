@@ -56,5 +56,20 @@ class CustomUser(AbstractUser):
     class Meta:
         db_table = "users"
 
+    def settings(self):
+        if hasattr(self, 'usersettings'):
+            return self.usersettings.to_dict()
+        return {}
+
     def __str__(self):
         return self.email
+
+
+class UserSettings(models.Model):
+    user = models.OneToOneField(CustomUser, on_delete=models.CASCADE)
+    dark_theme = models.BooleanField(default=True)
+
+    def to_dict(self):
+        return {
+            'dark_theme': self.dark_theme,
+        }
