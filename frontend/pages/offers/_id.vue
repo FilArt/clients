@@ -121,11 +121,6 @@ const filterFields = [
   'client_type',
 ].join(',')
 export default {
-  components: {
-    ReturnButton: () => import('~/components/buttons/returnButton'),
-    RefreshButton: () => import('~/components/buttons/refreshButton'),
-    CancelButton: () => import('~/components/buttons/cancelButton'),
-  },
   data() {
     return {
       isBottomIntersecting: false,
@@ -139,12 +134,6 @@ export default {
     return { offers }
   },
   methods: {
-    onIntersectBottom(entries) {
-      this.isBottomIntersecting = entries[0].isIntersecting
-    },
-    onIntersectTop(entries) {
-      this.isTopIntersecting = entries[0].isIntersecting
-    },
     addBid(bidId) {
       let data = { offer: bidId }
       if (this.$route.query.fromCalculator === 'true') {
