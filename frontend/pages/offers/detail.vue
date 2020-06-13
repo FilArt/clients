@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <v-card>
     <v-card-text>
       <v-card-title>Ofertas (totales: {{ offers.length }})</v-card-title>
       <v-card-text>
@@ -49,26 +49,15 @@
       </v-responsive>
     </v-card-text>
 
-    <v-btn
-      fab
-      x-large
-      icon
-      large
-      fixed
-      bottom
-      right
-      color="yellow"
-      @click="$vuetify.goTo(0)"
-    >
-      <v-icon>mdi-arrow-up</v-icon>
-    </v-btn>
-  </div>
+    <go-up-button />
+  </v-card>
 </template>
 
 <script>
 const filterFields = ['id', 'company', 'company_logo', 'name', 'slug'].join(',')
 export default {
   components: {
+    GoUpButton: () => import('~/components/buttons/goUpButton'),
     CompanySelect: () => import('~/components/selects/CompanySelect'),
     TarifSelect: () => import('~/components/selects/TarifSelect'),
     ClientTypeSelect: () => import('~/components/selects/ClientTypeSelect'),
