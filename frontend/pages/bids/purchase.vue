@@ -208,13 +208,11 @@ export default {
         })
         await this.$router.push(`/bids/${this.bid.id}`)
       } catch (e) {
-        console.log(e)
         this.error = e.response.data
       }
     },
     async loadFiles(cardId) {
       for (let fileKey in this.files) {
-        console.log(fileKey)
         const file = this.files[fileKey]
         if (!file) continue
         const form = new FormData()
@@ -224,7 +222,6 @@ export default {
         try {
           await this.$axios.$post('/cards/attachments/', form)
         } catch (e) {
-          console.log(e)
           this.fileErrors = e.response.data
         }
       }

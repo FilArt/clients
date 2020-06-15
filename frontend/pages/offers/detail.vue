@@ -95,7 +95,6 @@ export default {
           params: { ...this.filters, fields: filterFields },
         })
       } catch (e) {
-        console.log(e)
         const errData = e.response.data
         this.$swal({
           title: 'Error',
