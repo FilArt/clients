@@ -82,11 +82,6 @@
           v-model="files.photo_cif2"
           label="Foto cif reverso"
         />
-        <v-file-input
-          v-if="!isIndividual"
-          v-model="files.photo_autonomo"
-          label="Foto autonomo"
-        />
 
         <submit-button block label="Buy" />
       </v-form>
@@ -128,7 +123,6 @@ export default {
         photo_dni2: null,
         photo_cif1: null,
         photo_cif2: null,
-        photo_autonomo: null,
       },
       error: {},
     }
