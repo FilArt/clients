@@ -6,7 +6,7 @@ from rest_framework.response import Response
 
 from .models import Bid
 from .permissions import BidsPermission
-from .serializers import BidSerializer, BidListSerializer, BidWithOferta
+from .serializers import BidSerializer, BidListSerializer
 
 
 class BidViewSet(viewsets.ModelViewSet):
@@ -14,10 +14,8 @@ class BidViewSet(viewsets.ModelViewSet):
     ordering = ("-created_at",)
 
     def get_serializer_class(self):
-        if self.action in ("create",):
+        if self.detail:
             return BidSerializer
-        elif self.detail:
-            return BidWithOferta
         return BidListSerializer
 
     def get_queryset(self):

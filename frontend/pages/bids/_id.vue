@@ -1,22 +1,28 @@
 <template>
   <v-card>
-    <v-card-title> Bid {{ $route.params.id }} </v-card-title>
+    <v-card-title>Bid <v-chip v-text="bid.status" /></v-card-title>
     <v-card-text>
-      <v-list>
-        <v-list-item v-for="(value, name) in bid" :key="name">
-          <v-list-item-group v-if="typeof value === 'object'">
-            <v-list-item-title>{{ name }}</v-list-item-title>
-            <v-list-item v-for="(v1, n1) in value" :key="n1" class="text-right">
-              <v-list-item-title>{{ n1 }}: {{ v1 }}</v-list-item-title>
-            </v-list-item>
-          </v-list-item-group>
-
-          <v-list-item-title v-else>{{ name }}: {{ value }}</v-list-item-title>
-        </v-list-item>
-      </v-list>
+      <detail-offer :offer="bid.offer" />
     </v-card-text>
+
     <v-card-actions>
-      <delete-button @click="deleteBid" />
+      <v-row class="text-center">
+        <v-col>
+          <v-btn
+            nuxt
+            :to="`/bids/purchase?bid=${bid.id}&isIndividual=${
+              bid.client_type === 0
+            }`"
+            color="success"
+          >
+            {{ bid.card ? 'Change' : 'Buy' }}
+            <v-icon right>{{ bid.card ? 'mdi-pencil' : 'mdi-plus' }}</v-icon>
+          </v-btn>
+        </v-col>
+        <v-col>
+          <delete-button @click="deleteBid" />
+        </v-col>
+      </v-row>
     </v-card-actions>
   </v-card>
 </template>
@@ -24,11 +30,12 @@
 <script>
 export default {
   components: {
+    DetailOffer: () => import('~/components/detailOffer'),
     DeleteButton: () => import('~/components/buttons/deleteButton'),
   },
   async asyncData({ $axios, params }) {
     const bid = await $axios.$get(`bids/${params.id}`)
-    return { bid, id: params.id }
+    return { bid }
   },
   methods: {
     deleteBid() {
@@ -42,10 +49,9 @@ export default {
       }).then((willDelete) => {
         if (willDelete) {
           this.$axios.$delete(`bids/${bidId}/`).then(() => {
-            this.bids = this.bids.filter((bid) => bid.id !== bidId)
             this.$swal({ title: 'Solicitud eliminada!', icon: 'success' })
+            this.$router.push('/bids')
           })
-          this.$router.push('/bids')
         }
       })
     },

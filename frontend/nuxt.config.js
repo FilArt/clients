@@ -33,7 +33,10 @@ export default {
   /*
    ** Plugins to load before mounting the App
    */
-  plugins: [{ src: '~/plugins/vue-swal', mode: 'client' }],
+  plugins: [
+    { src: '~/plugins/vue-swal', mode: 'client' },
+    { src: '~/plugins/vue-mask', mode: 'client' },
+  ],
   /*
    ** Nuxt.js dev-modules
    */

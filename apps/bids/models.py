@@ -2,6 +2,7 @@ from django.core import validators
 from django.core.exceptions import ValidationError
 from django.db import models
 from django.utils.translation import gettext_lazy as _
+from django_fsm import FSMField, transition
 
 
 def more_than_zero(value):
@@ -17,15 +18,10 @@ class PositiveNullableFloatField(models.FloatField):
 
 
 class Bid(models.Model):
-    BID_STATUS_CHOICES = (("initial", _("Pendient")),)
+    BID_STATUS_CHOICES = (("initial", _("Pendient")), ("purchased", _("Purchased")))
     user = models.ForeignKey("users.CustomUser", on_delete=models.CASCADE)
     offer = models.ForeignKey("calculator.Offer", on_delete=models.CASCADE)
-    card = models.ForeignKey(
-        "cards.Card", on_delete=models.CASCADE, blank=True, null=True
-    )
-    status = models.CharField(
-        choices=BID_STATUS_CHOICES, default="initial", max_length=50
-    )
+    status = FSMField(default='new', protected=True)
     created_at = models.DateTimeField(auto_now_add=True)
 
     # показатели объекта (дом, кафе и тд)
@@ -35,3 +31,7 @@ class Bid(models.Model):
     p1 = PositiveNullableFloatField(validators=[more_than_zero])
     p2 = PositiveNullableFloatField()
     p3 = PositiveNullableFloatField()
+
+    @transition(field=status, source='new', target='purchase', on_error='failed')
+    def purchase(self):
+        ...

@@ -11,3 +11,4 @@ gspread
 drf-dynamic-fields
 arrow
 pytz
+django-fsm

@@ -31,7 +31,7 @@
           <v-list-item
             v-for="bid in (status ? bids.filter(b => b.status === status) : bids)"
             :key="bid.id"
-            :to="`bids/${bid.id}`"
+            :to="`/bids/${bid.id}`"
             link
           >
             <v-list-item-subtitle>{{ bid.id }}</v-list-item-subtitle>

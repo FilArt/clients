@@ -10,7 +10,6 @@
 export default {
   name: 'ThemeSwitcher',
   async created() {
-    console.log(this)
     const settings = this.$auth.user.settings
     let isDark = true
     if (settings && settings.hasOwnProperty('dark_theme')) {
