@@ -21,7 +21,7 @@ class OfferViewSet(
     viewsets.GenericViewSet, mixins.ListModelMixin, mixins.RetrieveModelMixin
 ):
     queryset = Offer.objects.all()
-    filterset_fields = ["tarif", "client_type", "company", "name"]
+    filterset_fields = ["tarif", "client_type", "company", "name", "id"]
     permission_classes = (OffersAccessPermission, IsAuthenticated)
     ordering = ("name",)
 

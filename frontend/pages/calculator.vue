@@ -6,7 +6,7 @@
       </p>
       <v-progress-circular indeterminate />
     </v-snackbar>
-    <v-list v-if="$route.query.showResults">
+    <v-list v-if="showResults">
       <v-alert type="warning" :value="!offers.length">
         Offers not found
       </v-alert>
@@ -15,7 +15,7 @@
         v-for="offer in offers"
         :key="offer.id"
         nuxt
-        :to="`offers/${offer.id}?back=${$route.fullPath}&fromCalculator=true`"
+        :to="`offers/${offer.id}?id=${offer.id}&back=${$route.fullPath}&fromCalculator=true`"
       >
         <v-list-item-avatar>
           <v-img :src="offer.company_logo || '/no-image.svg'" />
@@ -25,7 +25,7 @@
       </v-list-item>
 
       <v-list-item>
-        <v-btn block nuxt to="/calculator">
+        <v-btn block @click="showResults = false">
           Вернуться к расчетам
           <v-icon>mdi-keyboard-return</v-icon>
         </v-btn>
@@ -112,6 +112,7 @@ export default {
     return {
       errorMessages: {},
       loading: false,
+      showResults: false,
     }
   },
   computed: {
@@ -136,7 +137,7 @@ export default {
         .$post('calculator/calculate', this.form)
         .then((data) => {
           this.$store.commit('setCalculatedOffers', data)
-          this.$router.replace({ query: { showResults: true } })
+          this.showResults = true
         })
         .catch((e) => (this.errorMessages = e.response.data))
         .finally(() => (this.loading = false))
