@@ -1,5 +1,3 @@
-from enum import unique, Enum
-
 from django.core import validators
 from django.core.exceptions import ValidationError
 from django.db import models
