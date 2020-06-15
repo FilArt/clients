@@ -212,7 +212,7 @@ export default {
       }
     },
     async loadFiles(cardId) {
-      for (let fileKey in this.files) {
+      for await (let fileKey of Object.keys(this.files)) {
         const file = this.files[fileKey]
         if (!file) continue
         const form = new FormData()
