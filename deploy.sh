@@ -10,6 +10,6 @@ cd ..
 
 python manage.py collectstatic
 
-rsync -rvzz --delete -e ssh frontend/dist/ cv:/var/django/clients
+rsync -rvzz --delete -e ssh frontend/dist/ cv:/var/django/clients/static
 
 exec ./backend_deploy.sh
