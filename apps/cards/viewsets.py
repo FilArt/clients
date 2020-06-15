@@ -10,9 +10,7 @@ class CardViewSet(viewsets.ModelViewSet):
     serializer_class = CardSerializer
 
     def get_queryset(self):
-        return self.filter_queryset(
-            super().get_queryset().filter(user=self.request.user)
-        )
+        return self.queryset.filter(bid__user=self.request.user)
 
     @transaction.atomic
     def perform_create(self, serializer):

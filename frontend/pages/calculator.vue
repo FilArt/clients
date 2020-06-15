@@ -54,6 +54,7 @@
         />
         <client-type-select
           :value="form.client_type"
+          :error-messages="errorMessages.client_type"
           @input="updateForm('client_type', $event)"
         />
         <v-text-field
@@ -100,10 +101,8 @@
   </v-card>
 </template>
 <script>
-import ReturnButton from '~/components/buttons/returnButton'
 export default {
   components: {
-    ReturnButton,
     ClientTypeSelect: () => import('~/components/selects/ClientTypeSelect'),
     TarifSelect: () => import('~/components/selects/TarifSelect'),
     CompanySelect: () => import('~/components/selects/CompanySelect'),

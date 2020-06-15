@@ -2,6 +2,7 @@
   <v-autocomplete
     v-model="item"
     :items="items"
+    :error-messages="errorMessages"
     label="Typo de cliente"
     style="min-width: 150px;"
     chips
@@ -28,6 +29,10 @@ export default {
     value: {
       type: String,
       default: '',
+    },
+    errorMessages: {
+      value: Array,
+      default: () => [],
     },
   },
   data() {

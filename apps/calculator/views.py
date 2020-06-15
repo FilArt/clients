@@ -16,6 +16,8 @@ class CalculatorSerializer(serializers.ModelSerializer):
     period = serializers.IntegerField(min_value=1)
     tarif = serializers.ChoiceField(choices=Tarif.choices())
     client_type = serializers.ChoiceField(choices=Offer.CLIENT_TYPE_CHOICES)
+    c1 = serializers.FloatField(min_value=0)
+    p1 = serializers.FloatField(min_value=0)
 
     class Meta:
         model = Bid

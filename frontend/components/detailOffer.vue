@@ -106,7 +106,7 @@ export default {
     addBid(bidId) {
       let data = { offer: bidId }
       if (this.$route.query.fromCalculator === 'true') {
-        data = this.$store.state.calculatorForm
+        data = { ...data, ...this.$store.state.calculatorForm }
       }
       this.$axios.$post('bids/', data).then((createdBidData) => {
         this.$swal({

@@ -6,7 +6,7 @@ from rest_framework.response import Response
 
 from .models import Bid
 from .permissions import BidsPermission
-from .serializers import BidSerializer, BidListSerializer
+from .serializers import BidSerializer, BidListSerializer, CreateBidSerializer
 
 
 class BidViewSet(viewsets.ModelViewSet):
@@ -14,7 +14,9 @@ class BidViewSet(viewsets.ModelViewSet):
     ordering = ("-created_at",)
 
     def get_serializer_class(self):
-        if self.detail:
+        if self.action == "create":
+            return CreateBidSerializer
+        elif self.detail:
             return BidSerializer
         return BidListSerializer
 
@@ -28,10 +30,8 @@ class BidViewSet(viewsets.ModelViewSet):
     def from_calculator(self, request: Request):
         serializer = BidSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
-        bid_serializer = BidWithOferta(data=serializer.validated_data)
-        bid_serializer.is_valid(raise_exception=True)
-        bid_serializer.save(user=request.user)
-        return Response(bid_serializer.data)
+        serializer.save(user=request.user)
+        return Response(serializer.data)
 
     @action(methods=["GET"], detail=False)
     def statuses(self, _):

@@ -2,7 +2,6 @@
   <v-card>
     <v-card-title>
       <p class="flex-grow-1">Buy offer {{ bid.id }}</p>
-      <close-button @click="close" />
     </v-card-title>
 
     <v-card-text>
@@ -116,7 +115,6 @@ export default {
   },
   data() {
     return {
-      form: defaultForm,
       files: {
         photo_factura: null,
         photo_dni1: null,
@@ -127,31 +125,37 @@ export default {
       error: {},
     }
   },
-  async asyncData({ route }) {
+  async asyncData({ route, $axios }) {
+    let form = defaultForm
+    let cardId = route.query.card
+    if (cardId && /^\d+$/.test(cardId)) {
+      form = (await $axios.$get(`cards/${cardId}`)).data
+    } else {
+      cardId = null
+    }
     return {
+      cardId: cardId,
+      form: form,
       bid: { id: route.query.bid },
       isIndividual: route.query.isIndividual === 'true',
     }
   },
   methods: {
     submit() {
-      this.$axios
-        .$post('cards', { bid: this.bid.id, ...{ data: this.form } })
-        .then((data) => {
-          this.$swal({
-            title: 'Created',
-            icon: 'success',
-          })
-            .catch((e) => {
-              this.error = e.response.data
-            })
-            .then(() => {
-              this.close()
-            })
+      const axiosFunc = this.cardId ? this.$axios.$patch : this.$axios.$post
+      const aep = this.cardId ? `cards/${this.cardId}/` : 'cards/'
+      axiosFunc(aep, { bid: this.bid.id, ...{ data: this.form } }).then(() => {
+        this.$swal({
+          title: this.cardId ? 'Updated!' : 'Created!',
+          icon: 'success',
         })
-    },
-    close() {
-      this.$router.push(`/bids/${this.bid.id}`)
+          .catch((e) => {
+            this.error = e.response.data
+          })
+          .then(() => {
+            this.$router.push(`/bids/${this.bid.id}`)
+          })
+      })
     },
   },
 }

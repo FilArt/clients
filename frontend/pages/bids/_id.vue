@@ -12,7 +12,7 @@
             nuxt
             :to="`/bids/purchase?bid=${bid.id}&isIndividual=${
               bid.client_type === 0
-            }`"
+            }&card=${bid.card}`"
             color="success"
           >
             {{ bid.card ? 'Change' : 'Buy' }}

@@ -3,7 +3,6 @@ from rest_framework import serializers
 
 from apps.calculator.serializers import OfferSerializer
 from .models import Bid
-from ..cards.serializers import CardSerializer
 
 
 class BidListSerializer(serializers.ModelSerializer):
@@ -23,9 +22,23 @@ class BidListSerializer(serializers.ModelSerializer):
 
 class BidSerializer(serializers.ModelSerializer):
     offer = OfferSerializer()
-    card = CardSerializer()
 
     class Meta:
         model = Bid
         fields = ["card", "status", "id", "offer"]
         extra_kwargs = {"card": {"read_only": True}}
+
+
+class CreateBidSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Bid
+        fields = [
+            "id",
+            "offer",
+            "c1",
+            "c2",
+            "c3",
+            "p1",
+            "p2",
+            "p3",
+        ]
