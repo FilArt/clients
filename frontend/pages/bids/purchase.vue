@@ -67,20 +67,37 @@
         />
         <v-text-field v-model="form.address" label="Direccion" />
 
-        <v-file-input v-model="files.photo_factura" label="Foto factura" />
-        <v-file-input v-model="files.photo_dni1" label="Foto dni anverso" />
-        <v-file-input v-model="files.photo_dni2" label="Foto dni reverso" />
-
-        <v-file-input
-          v-if="!isIndividual"
-          v-model="files.photo_cif1"
-          label="Foto cif anverso"
-        />
-        <v-file-input
-          v-if="!isIndividual"
-          v-model="files.photo_cif2"
-          label="Foto cif reverso"
-        />
+        <v-row
+          v-for="fileField in fileFields"
+          :key="fileField.name"
+          v-if="!(isIndividual && fileField.onlyBusiness)"
+          align="center"
+        >
+          <v-col>
+            <v-file-input
+              v-model="files[fileField.name]"
+              :label="fileField.label"
+              :error-messages="fileErrors[fileField.name]"
+            />
+          </v-col>
+          <v-col
+            v-for="attachment in attachments.filter(
+              (a) => a.attachment_type === fileField.name
+            )"
+            :key="attachment.id"
+          >
+            <v-chip
+              close
+              link
+              exact
+              target="_blank"
+              :href="attachment.attachment"
+              @click:close="deleteAttachment(attachment.id)"
+            >
+              Attachment {{ attachment.id }}
+            </v-chip>
+          </v-col>
+        </v-row>
 
         <submit-button block label="Buy" />
       </v-form>
@@ -115,6 +132,33 @@ export default {
   },
   data() {
     return {
+      error: {},
+
+      fileFields: [
+        {
+          name: 'factura',
+          label: 'Foto factura',
+        },
+        {
+          name: 'dni1',
+          label: 'Foto DNI anverso',
+        },
+        {
+          name: 'dni2',
+          label: 'Foto DNI reverso',
+        },
+        {
+          name: 'cif1',
+          label: 'Foto CIF anverso',
+          onlyBusiness: true,
+        },
+        {
+          name: 'cif2',
+          label: 'Foto CIF reverso',
+          onlyBusiness: true,
+        },
+      ],
+
       files: {
         photo_factura: null,
         photo_dni1: null,
@@ -122,18 +166,22 @@ export default {
         photo_cif1: null,
         photo_cif2: null,
       },
-      error: {},
+      fileErrors: {},
     }
   },
   async asyncData({ route, $axios }) {
+    let attachments = []
     let form = defaultForm
     let cardId = route.query.card
     if (cardId && /^\d+$/.test(cardId)) {
-      form = (await $axios.$get(`cards/${cardId}`)).data
+      const data = await $axios.$get(`cards/cards/${cardId}/`)
+      form = data.data
+      attachments = data.attachments
     } else {
       cardId = null
     }
     return {
+      attachments: attachments,
       cardId: cardId,
       form: form,
       bid: { id: route.query.bid },
@@ -141,20 +189,62 @@ export default {
     }
   },
   methods: {
-    submit() {
+    async submit() {
       const axiosFunc = this.cardId ? this.$axios.$patch : this.$axios.$post
-      const aep = this.cardId ? `cards/${this.cardId}/` : 'cards/'
-      axiosFunc(aep, { bid: this.bid.id, ...{ data: this.form } }).then(() => {
+      const aep = this.cardId ? `cards/cards/${this.cardId}/` : 'cards/cards/'
+
+      try {
+        const card = await axiosFunc(aep, {
+          bid: this.bid.id,
+          ...{ data: this.form },
+        })
+
+        await this.loadFiles(card.id)
+        if (Object.keys(this.fileErrors).length !== 0) return
+
         this.$swal({
           title: this.cardId ? 'Updated!' : 'Created!',
           icon: 'success',
         })
-          .catch((e) => {
-            this.error = e.response.data
+        await this.$router.push(`/bids/${this.bid.id}`)
+      } catch (e) {
+        console.log(e)
+        this.error = e.response.data
+      }
+    },
+    async loadFiles(cardId) {
+      for (let fileKey in this.files) {
+        console.log(fileKey)
+        const file = this.files[fileKey]
+        if (!file) continue
+        const form = new FormData()
+        form.append('attachment_type', fileKey)
+        form.append('attachment', file)
+        form.append('card', cardId)
+        try {
+          await this.$axios.$post('/cards/attachments/', form)
+        } catch (e) {
+          console.log(e)
+          this.fileErrors = e.response.data
+        }
+      }
+    },
+    deleteAttachment(attachmentId) {
+      this.$swal({
+        title: `Delete attachment ${attachmentId}?`,
+        text: 'Once deleted, you will not be able to recover this!',
+        icon: 'warning',
+        buttons: true,
+        dangerMode: true,
+      }).then((willDelete) => {
+        if (willDelete) {
+          this.$axios.$delete(`cards/attachments/${attachmentId}/`).then(() => {
+            this.$swal({ title: 'Solicitud eliminada!', icon: 'success' })
+            this.attachments = this.attachments.filter(
+              (a) => a.id !== attachmentId
+            )
           })
-          .then(() => {
-            this.$router.push(`/bids/${this.bid.id}`)
-          })
+        }
       })
     },
   },

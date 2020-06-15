@@ -15,3 +15,17 @@ class Card(models.Model):
 
     class Meta:
         db_table = "cards"
+
+
+class CardAttachment(models.Model):
+    ATTACHMENT_TYPE_CHOICES = (
+        ("factura", _("Factura")),
+        ("dni1", _("DNI")),
+        ("dni2", _("DNI reverse side")),
+        ("cif1", _("CIF")),
+        ("cif2", _("CIF reverse side")),
+    )
+
+    card = models.ForeignKey(Card, on_delete=models.CASCADE)
+    attachment_type = models.CharField(max_length=10, choices=ATTACHMENT_TYPE_CHOICES)
+    attachment = models.FileField()

@@ -12,3 +12,4 @@ drf-dynamic-fields
 arrow
 pytz
 django-fsm
+django-cleanup
