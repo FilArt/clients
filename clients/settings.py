@@ -117,11 +117,11 @@ USE_TZ = True
 
 STATIC_URL = "/static/"
 # noinspection PyUnresolvedReferences
-STATIC_ROOT = "/var/django/clients/static"
+STATIC_ROOT = "/var/django/clients/django/static"
 
 MEDIA_URL = "/media/"
 # noinspection PyUnresolvedReferences
-MEDIA_ROOT = "/var/django/clients/media"
+MEDIA_ROOT = "/var/django/clients/django/media"
 REST_FRAMEWORK = {
     "DEFAULT_FILTER_BACKENDS": (
         "django_filters.rest_framework.DjangoFilterBackend",
