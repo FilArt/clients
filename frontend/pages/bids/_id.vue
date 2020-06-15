@@ -34,7 +34,7 @@ export default {
     DeleteButton: () => import('~/components/buttons/deleteButton'),
   },
   async asyncData({ $axios, params }) {
-    const bid = await $axios.$get(`bids/${params.id}`)
+    const bid = await $axios.$get(`bids/${params.id}/`)
     return { bid }
   },
   methods: {
