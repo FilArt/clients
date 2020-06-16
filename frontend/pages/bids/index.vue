@@ -11,16 +11,20 @@
       </v-card-title>
 
       <v-card-text>
-        <v-list nav>
+        <v-list nav shaped subheader>
           <v-list-item>
-            <v-list-item-subtitle>№</v-list-item-subtitle>
-
-            <v-list-item-title>
-              Created at
-            </v-list-item-title>
+            <v-col>
+              <small>
+                №
+              </small>
+            </v-col>
 
             <v-list-item-title>
               Offer
+            </v-list-item-title>
+
+            <v-list-item-title>
+              Created at
             </v-list-item-title>
 
             <v-list-item-title>
@@ -34,14 +38,16 @@
             :to="`/bids/${bid.id}`"
             link
           >
-            <v-list-item-subtitle>{{ bid.id }}</v-list-item-subtitle>
-
-            <v-list-item-title>
-              {{ bid.created_at }}
-            </v-list-item-title>
+            <v-col>
+              <small> {{ bid.id }} </small>
+            </v-col>
 
             <v-list-item-title>
               {{ bid.offer_name }}
+            </v-list-item-title>
+
+            <v-list-item-title>
+              {{ bid.created_at }}
             </v-list-item-title>
 
             <v-list-item-title>
