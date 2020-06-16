@@ -2,7 +2,7 @@ from django.contrib.auth.models import AbstractUser
 from django.contrib.postgres.fields import ArrayField
 from django.core.exceptions import ValidationError
 from django.db import models
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import ugettext_lazy as _, pgettext_lazy
 
 from .managers import CustomUserManager
 
@@ -27,7 +27,7 @@ PERMISSIONS_CHOICES = (
     ("profile", _("Profile")),
     ("bids", _("Bids")),
     ("offers", _("Offers")),
-    ("calculator", _("calculator")),
+    ("calculator", _("Calculator")),
 )
 
 
@@ -48,7 +48,7 @@ class CustomUser(AbstractUser):
     permissions = ArrayField(
         models.CharField(choices=PERMISSIONS_CHOICES, max_length=30),
         default=get_default_user_permissions,
-        help_text=_("Possible values:")
+        help_text=pgettext_lazy("help text for user permissions field", "Possible values:")
         + " "
         + ", ".join(get_default_user_permissions()),
     )
