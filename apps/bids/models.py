@@ -18,10 +18,10 @@ class PositiveNullableFloatField(models.FloatField):
 
 
 class Bid(models.Model):
-    BID_STATUS_CHOICES = (("initial", _("Pendient")), ("purchased", _("Purchased")))
+    BID_STATUS_CHOICES = (("new", _("New")), ("purchased", _("Purchased")))
     user = models.ForeignKey("users.CustomUser", on_delete=models.CASCADE)
     offer = models.ForeignKey("calculator.Offer", on_delete=models.CASCADE)
-    status = FSMField(default='new', protected=True)
+    status = FSMField(default="new", protected=True, choices=BID_STATUS_CHOICES)
     created_at = models.DateTimeField(auto_now_add=True)
 
     # показатели объекта (дом, кафе и тд)
@@ -32,6 +32,18 @@ class Bid(models.Model):
     p2 = PositiveNullableFloatField()
     p3 = PositiveNullableFloatField()
 
-    @transition(field=status, source='new', target='purchase', on_error='failed')
+    @transition(field=status, source="new", target="purchase", on_error="failed")
     def purchase(self):
+        self.bidstory_set.create(
+            user=self.user, old_status="new", new_status="purchase",
+        )
         ...
+
+
+class BidStory(models.Model):
+    user = models.ForeignKey("users.CustomUser", on_delete=models.CASCADE)
+    bid = models.ForeignKey(Bid, on_delete=models.CASCADE)
+    old_status = models.CharField(max_length=20, choices=Bid.BID_STATUS_CHOICES)
+    new_status = models.CharField(max_length=20, choices=Bid.BID_STATUS_CHOICES)
+    message = models.TextField(null=True, blank=True)
+    dt = models.DateTimeField(auto_now_add=True)

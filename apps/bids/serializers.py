@@ -2,7 +2,8 @@ import arrow
 from rest_framework import serializers
 
 from apps.calculator.serializers import OfferSerializer
-from .models import Bid
+from .models import Bid, BidStory
+from ..users.serializers import AccountSerializer
 
 
 class BidListSerializer(serializers.ModelSerializer):
@@ -42,3 +43,24 @@ class CreateBidSerializer(serializers.ModelSerializer):
             "p2",
             "p3",
         ]
+
+
+class BidStorySerializer(serializers.ModelSerializer):
+    dt = serializers.SerializerMethodField()
+    user = serializers.SerializerMethodField()
+
+    class Meta:
+        model = BidStory
+        fields = "__all__"
+
+    # noinspection PyMethodMayBeStatic
+    def get_dt(self, instance: BidStory):
+        return arrow.get(instance.dt).humanize(
+            locale=self.context["request"].LANGUAGE_CODE
+        )
+
+    # noinspection PyMethodMayBeStatic
+    def get_user(self, instance: BidStory):
+        if instance.user == self.context["request"].user:
+            return "me"
+        return AccountSerializer(instance=instance.user).data

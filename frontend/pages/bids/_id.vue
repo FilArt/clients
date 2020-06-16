@@ -24,6 +24,30 @@
         </v-col>
       </v-row>
     </v-card-actions>
+    <v-card-text>
+      <v-timeline>
+        <v-timeline-item
+          v-for="story in history"
+          :key="story.id"
+          class="text-left"
+          :left="story.user === 'me'"
+        >
+          <span slot="icon">
+            <v-icon>{{ !story.old_status ? 'mdi-plus' : '' }}</v-icon>
+          </span>
+          <span slot="opposite">{{ story.dt }}</span>
+          <v-card class="elevation-2">
+            <v-card-title class="headline">
+              <span v-if="!story.old_status">Created</span>
+              <span v-else>{{ story.new_status }}</span>
+            </v-card-title>
+            <v-card-text>
+              {{ story.message }}
+            </v-card-text>
+          </v-card>
+        </v-timeline-item>
+      </v-timeline>
+    </v-card-text>
   </v-card>
 </template>
 
@@ -35,7 +59,8 @@ export default {
   },
   async asyncData({ $axios, params }) {
     const bid = await $axios.$get(`bids/${params.id}/`)
-    return { bid }
+    const history = await $axios.$get(`bids/${params.id}/history/`)
+    return { bid, history }
   },
   methods: {
     deleteBid() {
