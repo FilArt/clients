@@ -8,6 +8,7 @@ from ..users.serializers import AccountSerializer
 
 
 class BidListSerializer(serializers.ModelSerializer):
+    status = serializers.CharField(source="get_status_display")
     offer_name = serializers.CharField(read_only=True, source="offer.name")
     created_at = serializers.SerializerMethodField()
 
@@ -78,7 +79,7 @@ class SupportBidSerializer(BidSerializer):
 
     class Meta:
         model = Bid
-        fields = '__all__'
+        fields = "__all__"
 
 
 class ValidateBidSerializer(serializers.ModelSerializer):
@@ -87,4 +88,4 @@ class ValidateBidSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Bid
-        fields = ['status', 'message']
+        fields = ["status", "message"]
