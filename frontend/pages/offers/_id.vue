@@ -37,7 +37,7 @@ export default {
   },
   async asyncData({ $axios, query }) {
     let params = { name: query.name, fields: filterFields, id: query.id }
-    const offers = await $axios.$get('calculator/offers', { params })
+    const offers = await $axios.$get('calculator/offers/', { params })
     return { offers }
   },
 }
