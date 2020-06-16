@@ -1,0 +1,167 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2020-06-16 17:37+0200\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+#: apps/bids/models.py:10
+msgid "Ensure this value is greater than 0."
+msgstr ""
+
+#: apps/bids/models.py:22
+msgid "New"
+msgstr ""
+
+#: apps/bids/models.py:23
+msgid "Purchase"
+msgstr ""
+
+#: apps/bids/models.py:24
+msgid "Purchase updated"
+msgstr ""
+
+#: apps/bids/models.py:25
+msgid "Success"
+msgstr ""
+
+#: apps/bids/models.py:26
+msgid "Error"
+msgstr ""
+
+#: apps/bids/viewsets.py:23
+msgid "ID"
+msgstr ""
+
+#: apps/bids/viewsets.py:24
+msgid "User"
+msgstr ""
+
+#: apps/bids/viewsets.py:25
+msgid "Status"
+msgstr ""
+
+#: apps/bids/viewsets.py:26
+msgid "Created at"
+msgstr ""
+
+#: apps/calculator/fields.py:10
+#, python-format
+msgid "%(value)s is not in upper case"
+msgstr ""
+
+#: apps/calculator/models.py:88
+msgid "This field can not be negative."
+msgstr ""
+
+#: apps/calculator/models.py:111
+msgid "Individual"
+msgstr ""
+
+#: apps/calculator/models.py:112
+msgid "Business"
+msgstr ""
+
+#: apps/cards/models.py:7
+msgid "Default"
+msgstr ""
+
+#: apps/cards/models.py:22
+msgid "Factura"
+msgstr ""
+
+#: apps/cards/models.py:23
+msgid "DNI"
+msgstr ""
+
+#: apps/cards/models.py:24
+msgid "DNI reverse side"
+msgstr ""
+
+#: apps/cards/models.py:25
+msgid "CIF"
+msgstr ""
+
+#: apps/cards/models.py:26
+msgid "CIF reverse side"
+msgstr ""
+
+#: apps/users/admin.py:11
+msgid "Personal info"
+msgstr ""
+
+#: apps/users/admin.py:12
+msgid "Permissions"
+msgstr ""
+
+#: apps/users/admin.py:15
+msgid "Important dates"
+msgstr ""
+
+#: apps/users/managers.py:16
+msgid "The Email must be set"
+msgstr ""
+
+#: apps/users/managers.py:32
+msgid "Superuser must have is_staff=True."
+msgstr ""
+
+#: apps/users/managers.py:34
+msgid "Superuser must have is_superuser=True."
+msgstr ""
+
+#: apps/users/models.py:14
+msgid "Numbers only"
+msgstr ""
+
+#: apps/users/models.py:16
+msgid "Should contain 9 digits"
+msgstr ""
+
+#: apps/users/models.py:27
+msgid "Profile"
+msgstr ""
+
+#: apps/users/models.py:28
+msgid "Bids"
+msgstr ""
+
+#: apps/users/models.py:29
+msgid "Offers"
+msgstr ""
+
+#: apps/users/models.py:30
+msgid "calculator"
+msgstr ""
+
+#: apps/users/models.py:40
+msgid "Client"
+msgstr ""
+
+#: apps/users/models.py:41
+msgid "Support"
+msgstr ""
+
+#: apps/users/models.py:44
+msgid "email address"
+msgstr ""
+
+#: apps/users/models.py:45
+msgid "phone number"
+msgstr ""
+
+#: apps/users/models.py:51
+msgid "Possible values:"
+msgstr ""

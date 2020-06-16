@@ -1,0 +1,170 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2020-06-16 17:19+0200\n"
+"PO-Revision-Date: 2020-06-16 17:27+0200\n"
+"Language: ru\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=4; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n"
+"%10<=4 && (n%100<12 || n%100>14) ? 1 : n%10==0 || (n%10>=5 && n%10<=9) || (n"
+"%100>=11 && n%100<=14)? 2 : 3);\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"X-Generator: Poedit 2.3\n"
+
+#: apps/bids/models.py:10
+msgid "Ensure this value is greater than 0."
+msgstr "Убедитесь, что это значение больше 0."
+
+#: apps/bids/models.py:22
+msgid "New"
+msgstr "Новое"
+
+#: apps/bids/models.py:23
+msgid "Purchase"
+msgstr "Куплено"
+
+#: apps/bids/models.py:24
+msgid "Purchase updated"
+msgstr "Обновлено"
+
+#: apps/bids/models.py:25
+msgid "Success"
+msgstr "Успех"
+
+#: apps/bids/models.py:26
+msgid "Error"
+msgstr "Ошибка"
+
+#: apps/bids/viewsets.py:23
+msgid "ID"
+msgstr ""
+
+#: apps/bids/viewsets.py:24
+msgid "User"
+msgstr "Пользователь"
+
+#: apps/bids/viewsets.py:25
+msgid "Status"
+msgstr "Статус"
+
+#: apps/bids/viewsets.py:26
+msgid "Created at"
+msgstr "Создано"
+
+#: apps/calculator/fields.py:10
+#, python-format
+msgid "%(value)s is not in upper case"
+msgstr ""
+
+#: apps/calculator/models.py:88
+msgid "This field can not be negative."
+msgstr "Это значение должно быть больше нуля."
+
+#: apps/calculator/models.py:111
+msgid "Individual"
+msgstr "Частный"
+
+#: apps/calculator/models.py:112
+msgid "Business"
+msgstr "Юридический"
+
+#: apps/cards/models.py:7
+msgid "Default"
+msgstr "Стандартный"
+
+#: apps/cards/models.py:22
+msgid "Factura"
+msgstr "Фактура"
+
+#: apps/cards/models.py:23
+msgid "DNI"
+msgstr ""
+
+#: apps/cards/models.py:24
+msgid "DNI reverse side"
+msgstr "DNI обратная сторона"
+
+#: apps/cards/models.py:25
+msgid "CIF"
+msgstr ""
+
+#: apps/cards/models.py:26
+msgid "CIF reverse side"
+msgstr "CIF обратная сторона"
+
+#: apps/users/admin.py:11
+msgid "Personal info"
+msgstr "Личная информация"
+
+#: apps/users/admin.py:12
+msgid "Permissions"
+msgstr "Разрешения"
+
+#: apps/users/admin.py:15
+msgid "Important dates"
+msgstr "Важные даты"
+
+#: apps/users/managers.py:16
+msgid "The Email must be set"
+msgstr "Нужно указать почтовый ящик"
+
+#: apps/users/managers.py:32
+msgid "Superuser must have is_staff=True."
+msgstr ""
+
+#: apps/users/managers.py:34
+msgid "Superuser must have is_superuser=True."
+msgstr ""
+
+#: apps/users/models.py:14
+msgid "Numbers only"
+msgstr "Только численные значения"
+
+#: apps/users/models.py:16
+msgid "Should contain 9 digits"
+msgstr "Должен состоять из 9 цифр"
+
+#: apps/users/models.py:27
+msgid "Profile"
+msgstr "Профиль"
+
+#: apps/users/models.py:28
+msgid "Bids"
+msgstr "Заявки"
+
+#: apps/users/models.py:29
+msgid "Offers"
+msgstr "Предложения"
+
+#: apps/users/models.py:30
+msgid "calculator"
+msgstr "калькулятор"
+
+#: apps/users/models.py:40
+msgid "Client"
+msgstr "Клиент"
+
+#: apps/users/models.py:41
+msgid "Support"
+msgstr "Поддержка"
+
+#: apps/users/models.py:44
+msgid "email address"
+msgstr "электронная почта"
+
+#: apps/users/models.py:45
+msgid "phone number"
+msgstr "номер телефона"
+
+#: apps/users/models.py:51
+msgid "Possible values:"
+msgstr "Возможные значения:"
