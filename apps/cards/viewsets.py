@@ -19,6 +19,17 @@ class CardViewSet(viewsets.ModelViewSet):
         bid.purchase()
         bid.save()
 
+    @transaction.atomic
+    def perform_update(self, serializer):
+        card = self.get_object()
+        bid = card.bid
+        old_status = bid.status
+        serializer.save()
+        if old_status == 'error' and self.request.user == bid.user:
+            message = self.request.data.get('message')
+            bid.purchase_updated(message or None)
+            bid.save()
+
 
 class CardAttachmentViewSet(viewsets.ModelViewSet):
     queryset = CardAttachment.objects.all()

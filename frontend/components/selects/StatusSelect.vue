@@ -3,12 +3,13 @@
     v-model="item"
     :items="statuses"
     :multiple="multiple"
-    label="Estados"
+    :label="multiple ? 'Estados' : 'Estado'"
+    :error-messages="errors"
     style="min-width: 150px;"
     chips
     dense
     deletable-chips
-    @input="$emit('input', status)"
+    @input="$emit('input', item)"
   />
 </template>
 
@@ -16,13 +17,17 @@
 export default {
   name: 'StatusSelect',
   props: {
+    errors: {
+      type: Array,
+      default: () => [],
+    },
     value: {
       type: String,
       default: '',
     },
     multiple: {
-      type: String,
-      default: '',
+      type: Boolean,
+      default: false,
     },
   },
   data() {

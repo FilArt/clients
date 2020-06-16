@@ -18,7 +18,16 @@ class PositiveNullableFloatField(models.FloatField):
 
 
 class Bid(models.Model):
-    BID_STATUS_CHOICES = (("new", _("New")), ("purchased", _("Purchased")))
+    BID_STATUS_CHOICES = (
+        ("new", _("New")),
+        ("purchase", _("Purchase")),
+        ("purchase_updated", _("Purchase updated")),
+        ("success", _("Success")),
+        ("error", _("Error")),
+    )
+    VALIDATION_STATUS_CHOICES = [
+        item for item in BID_STATUS_CHOICES if item[0] in ("success", "error",)
+    ]
     user = models.ForeignKey("users.CustomUser", on_delete=models.CASCADE)
     offer = models.ForeignKey("calculator.Offer", on_delete=models.CASCADE)
     status = FSMField(default="new", protected=True, choices=BID_STATUS_CHOICES)
@@ -32,10 +41,49 @@ class Bid(models.Model):
     p2 = PositiveNullableFloatField()
     p3 = PositiveNullableFloatField()
 
-    @transition(field=status, source="new", target="purchase", on_error="failed")
+    @transition(field=status, source="new", target="purchase", on_error="error")
     def purchase(self):
         self.bidstory_set.create(
-            user=self.user, old_status="new", new_status="purchase",
+            user=self.user, old_status=self.status, new_status="purchase",
+        )
+        ...
+
+    @transition(
+        field=status,
+        source=["purchase", "purchase_updated"],
+        target="success",
+        on_error="error",
+    )
+    def success(self, user, message):
+        self.bidstory_set.create(
+            user=user, old_status=self.status, new_status="success", message=message,
+        )
+        ...
+
+    @transition(
+        field=status,
+        source=["purchase", "purchase_updated"],
+        target="error",
+        on_error="error",
+    )
+    def error(self, user, message):
+        self.bidstory_set.create(
+            user=user, old_status=self.status, new_status="error", message=message,
+        )
+        ...
+
+    @transition(
+        field=status,
+        source=["error", "success"],
+        target="purchase_updated",
+        on_error="error",
+    )
+    def purchase_updated(self, message=None):
+        self.bidstory_set.create(
+            user=self.user,
+            old_status=self.status,
+            new_status="purchase_updated",
+            message=message,
         )
         ...
 

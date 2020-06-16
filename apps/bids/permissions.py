@@ -8,4 +8,4 @@ class BidsPermission(BasePermission):
         return 'bids' in request.user.permissions
 
     def has_object_permission(self, request, view, obj: Bid):
-        return obj.user == request.user
+        return obj.user == request.user or request.user.role == 'support'

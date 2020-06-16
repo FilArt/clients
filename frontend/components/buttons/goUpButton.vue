@@ -19,5 +19,3 @@ export default {
   name: 'goUpButton',
 }
 </script>
-
-<style scoped></style>

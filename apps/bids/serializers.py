@@ -3,6 +3,7 @@ from rest_framework import serializers
 
 from apps.calculator.serializers import OfferSerializer
 from .models import Bid, BidStory
+from ..cards.serializers import CardSerializer
 from ..users.serializers import AccountSerializer
 
 
@@ -64,3 +65,26 @@ class BidStorySerializer(serializers.ModelSerializer):
         if instance.user == self.context["request"].user:
             return "me"
         return AccountSerializer(instance=instance.user).data
+
+
+class SupportBidListSerializer(BidListSerializer):
+    class Meta:
+        model = Bid
+        fields = ["id", "status", "user", "created_at"]
+
+
+class SupportBidSerializer(BidSerializer):
+    card = CardSerializer()
+
+    class Meta:
+        model = Bid
+        fields = '__all__'
+
+
+class ValidateBidSerializer(serializers.ModelSerializer):
+    status = serializers.ChoiceField(choices=Bid.VALIDATION_STATUS_CHOICES)
+    message = serializers.CharField()
+
+    class Meta:
+        model = Bid
+        fields = ['status', 'message']

@@ -84,7 +84,7 @@ export default {
         items.push({
           icon: role === 'support' ? 'mdi-lifebuoy' : '',
           title: role === 'support' ? 'Support' : '',
-          to: role,
+          to: '/' + role,
         })
       }
       return items

@@ -31,11 +31,16 @@
           :key="story.id"
           class="text-left"
           :left="story.user === 'me'"
+          :right="story.user !== 'me'"
         >
           <span slot="icon">
             <v-icon>{{ !story.old_status ? 'mdi-plus' : '' }}</v-icon>
           </span>
-          <span slot="opposite">{{ story.dt }}</span>
+          <span slot="opposite">
+            {{ story.dt }}
+            <br />
+            {{ story.user.email || story.user }}
+          </span>
           <v-card class="elevation-2">
             <v-card-title class="headline">
               <span v-if="!story.old_status">Created</span>
