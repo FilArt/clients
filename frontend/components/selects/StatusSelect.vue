@@ -32,7 +32,7 @@ export default {
     }
   },
   async mounted() {
-    this.statuses = await this.$axios.$get('bids/statuses')
+    this.statuses = await this.$axios.$get('bids/statuses/')
   },
   watch: {
     value: {
