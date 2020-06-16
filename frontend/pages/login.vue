@@ -153,7 +153,9 @@ export default {
       try {
         const response = await this.$auth.login({ data: this.form })
         this.$auth.setRefreshToken('local', response.data.refresh)
-        this.$auth.user.permissions.includes('offers')
+        this.$auth.user.role === 'support'
+          ? await this.$router.push('/support')
+          : this.$auth.user.permissions.includes('offers')
           ? await this.$router.push('/offers')
           : await this.$router.push('/bids')
       } catch (e) {

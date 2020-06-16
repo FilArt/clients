@@ -79,6 +79,14 @@ export default {
           to: '/offers',
         })
       }
+      const role = this.$auth.user.role
+      if (role) {
+        items.push({
+          icon: role === 'support' ? 'mdi-lifebuoy' : '',
+          title: role === 'support' ? 'Support' : '',
+          to: role,
+        })
+      }
       return items
     },
   },

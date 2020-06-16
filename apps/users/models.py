@@ -36,9 +36,14 @@ def get_default_user_permissions():
 
 
 class CustomUser(AbstractUser):
-    username = None
+    USER_ROLES_CHOICES = (
+        (None, _("Client")),
+        ("support", _("Support")),
+    )
+    username = models.CharField(blank=True, null=True, max_length=30)
     email = models.EmailField(_("email address"), unique=True)
     phone = PhoneNumberField(_("phone number"), null=True, blank=True)
+    role = models.CharField(max_length=10, null=True, blank=True, choices=USER_ROLES_CHOICES)
 
     permissions = ArrayField(
         models.CharField(choices=PERMISSIONS_CHOICES, max_length=30),
