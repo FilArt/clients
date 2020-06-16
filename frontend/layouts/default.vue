@@ -84,16 +84,20 @@ export default {
   },
   async mounted() {
     await this.refreshToken()
-    if (this.refreshTokenIntervalId) {
-      clearInterval(this.refreshTokenIntervalId)
-    }
-    this.refreshTokenIntervalId = setInterval(this.refreshToken, 1000 * 60) // refresh minute
+    this.$store.state.refreshTokenIds.forEach((token) => {
+      clearInterval(token)
+    })
+    const refreshTokenIntervalId = setInterval(this.refreshToken, 1000 * 60)
+    this.$store.commit('addRefreshTokenId', refreshTokenIntervalId)
   },
   methods: {
     async refreshToken() {
       if (!this.$auth.loggedIn) return
       const refreshToken = this.$auth.getRefreshToken('local')
-      if (!refreshToken) return
+      if (!refreshToken) {
+        await this.$auth.logout()
+        return
+      }
       try {
         const responseData = await this.$axios.$post('users/refresh', {
           refresh: refreshToken,
