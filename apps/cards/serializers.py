@@ -10,7 +10,7 @@ class AttachmentSerializer(serializers.ModelSerializer):
 
 
 class CardSerializer(serializers.ModelSerializer):
-    attachments = AttachmentSerializer(many=True, source='cardattachment_set')
+    attachments = AttachmentSerializer(many=True, source='cardattachment_set', read_only=True)
 
     class Meta:
         model = Card
