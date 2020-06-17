@@ -1,12 +1,13 @@
 from django.db import transaction
+from django.utils.translation import gettext_lazy as _
 from django_fsm import TransitionNotAllowed
 from rest_framework import viewsets
 from rest_framework.decorators import action
-from rest_framework.exceptions import ValidationError
+from rest_framework.exceptions import ValidationError, PermissionDenied
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.request import Request
 from rest_framework.response import Response
-from django.utils.translation import gettext_lazy as _
+
 from .models import Bid
 from .permissions import BidsPermission
 from .serializers import (
@@ -50,6 +51,12 @@ class BidViewSet(viewsets.ModelViewSet):
             return Bid.objects.exclude(status="new")
         return Bid.objects.filter(user=self.request.user)
 
+    def get_object(self):
+        bid = super().get_object()
+        if bid.user != self.request.user:
+            raise PermissionDenied
+        return bid
+
     def perform_create(self, serializer):
         with transaction.atomic():
             bid: Bid = serializer.save(user=self.request.user)
@@ -78,6 +85,7 @@ class BidViewSet(viewsets.ModelViewSet):
     def headers(self, _):
         return Response(SUPPORT_TABLE_HEADERS)
 
+    # noinspection PyUnusedLocal
     @action(methods=["POST"], detail=True)
     def validate(self, request: Request, pk: int = None):
         bid = self.get_object()

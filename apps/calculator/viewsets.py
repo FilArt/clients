@@ -17,9 +17,7 @@ class TarifViewSet(viewsets.GenericViewSet, mixins.ListModelMixin):
         return Response(Tarif.all())
 
 
-class OfferViewSet(
-    viewsets.GenericViewSet, mixins.ListModelMixin, mixins.RetrieveModelMixin
-):
+class OfferViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = Offer.objects.all()
     filterset_fields = ["tarif", "client_type", "company", "name", "id"]
     permission_classes = (OffersAccessPermission, IsAuthenticated)

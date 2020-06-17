@@ -1,5 +1,6 @@
 from django.db import transaction
 from rest_framework import viewsets
+from rest_framework.exceptions import PermissionDenied
 
 from apps.cards.models import Card, CardAttachment
 from apps.cards.serializers import CardSerializer, AttachmentSerializer
@@ -25,8 +26,8 @@ class CardViewSet(viewsets.ModelViewSet):
         bid = card.bid
         old_status = bid.status
         serializer.save()
-        if old_status == 'error' and self.request.user == bid.user:
-            message = self.request.data.get('message')
+        if old_status == "error" and self.request.user == bid.user:
+            message = self.request.data.get("message")
             bid.purchase_updated(message or None)
             bid.save()
 
@@ -37,3 +38,9 @@ class CardAttachmentViewSet(viewsets.ModelViewSet):
 
     def get_queryset(self):
         return self.queryset.filter(card__bid__user=self.request.user)
+
+    def get_object(self):
+        card = super().get_object()
+        if card.bid.user != self.request.user:
+            raise PermissionDenied
+        return card
