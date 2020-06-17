@@ -13,6 +13,8 @@ https://docs.djangoproject.com/en/3.0/ref/settings/
 import os
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
+from datetime import timedelta
+
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 # Quick-start development settings - unsuitable for production
@@ -58,8 +60,8 @@ MIDDLEWARE = [
 ]
 
 LOCALE_PATHS = (
-    os.path.join(BASE_DIR, 'locale'),
-    os.path.join(BASE_DIR, 'apps', 'locale'),
+    os.path.join(BASE_DIR, "locale"),
+    os.path.join(BASE_DIR, "apps", "locale"),
 )
 
 ROOT_URLCONF = "clients.urls"
@@ -142,6 +144,10 @@ REST_FRAMEWORK = {
     # "PAGE_SIZE": 12,
 }
 AUTH_USER_MODEL = "users.CustomUser"
+SIMPLE_JWT = {
+    "ACCESS_TOKEN_LIFETIME": timedelta(minutes=5),
+    "REFRESH_TOKEN_LIFETIME": timedelta(days=1),
+}
 
 CORS_ORIGIN_ALLOW_ALL = True
 

@@ -47,7 +47,7 @@ export default {
   modules: [
     // Doc: https://axios.nuxtjs.org/usage
     '@nuxtjs/axios',
-    '@nuxtjs/auth',
+    '@nuxtjs/auth-next',
   ],
   /*
    ** Axios module configuration
@@ -76,17 +76,25 @@ export default {
     fetchUserOnLogin: true,
     strategies: {
       local: {
+        scheme: 'refresh',
+        token: {
+          property: 'access',
+          maxAge: 60 * 5, // 5 minutes
+        },
+        refreshToken: {
+          property: 'refresh',
+          data: 'refresh',
+          maxAge: 60 * 60 * 24, // 1 day
+        },
+        user: {
+          property: false,
+        },
         endpoints: {
-          login: {
-            url: 'users/login',
-            method: 'post',
-            propertyName: 'access',
-          },
-          user: { url: 'users/me', propertyName: false },
+          login: { url: 'users/login' },
+          refresh: { url: 'users/refresh' },
+          user: { url: 'users/me' },
           logout: false,
         },
-        tokenType: 'Bearer',
-        tokenName: 'Authorization',
       },
     },
   },
@@ -109,7 +117,7 @@ export default {
           info: colors.teal.lighten1,
           warning: colors.amber.base,
           error: colors.deepOrange.accent4,
-          success: colors.green.accent3,
+          success: colors.green.accent4,
         },
       },
     },

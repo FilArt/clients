@@ -46,7 +46,6 @@ export default {
   components: { ThemeSwitcher: () => import('~/components/ThemeSwitcher') },
   data() {
     return {
-      refreshTokenIntervalId: null,
       drawer: true,
       title: 'Gestion Group',
     }
@@ -88,32 +87,6 @@ export default {
         })
       }
       return items
-    },
-  },
-  async mounted() {
-    await this.refreshToken()
-    this.$store.state.refreshTokenIds.forEach((token) => {
-      clearInterval(token)
-    })
-    const refreshTokenIntervalId = setInterval(this.refreshToken, 1000 * 60)
-    this.$store.commit('addRefreshTokenId', refreshTokenIntervalId)
-  },
-  methods: {
-    async refreshToken() {
-      if (!this.$auth.loggedIn) return
-      const refreshToken = this.$auth.getRefreshToken('local')
-      if (!refreshToken) {
-        await this.$auth.logout()
-        return
-      }
-      try {
-        const responseData = await this.$axios.$post('users/refresh', {
-          refresh: refreshToken,
-        })
-        await this.$auth.setToken('local', 'Bearer ' + responseData.access)
-      } catch (e) {
-        await this.$auth.logout()
-      }
     },
   },
 }

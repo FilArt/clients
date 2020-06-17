@@ -151,14 +151,14 @@ export default {
       this.loading = true
       this.error = null
       try {
-        const response = await this.$auth.login({ data: this.form })
-        this.$auth.setRefreshToken('local', response.data.refresh)
+        await this.$auth.loginWith('local', { data: this.form })
         this.$auth.user.role === 'support'
           ? await this.$router.push('/support')
           : this.$auth.user.permissions.includes('offers')
           ? await this.$router.push('/offers')
           : await this.$router.push('/bids')
       } catch (e) {
+        console.log(e)
         const errorMsg = e.response.data.detail
         if (errorMsg === 'No active account found with the given credentials') {
           this.error = 'La cuenta no existe'

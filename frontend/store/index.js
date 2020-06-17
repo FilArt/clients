@@ -1,13 +1,9 @@
 export const state = () => ({
   calculatedOffers: [],
   calculatorForm: {},
-  refreshTokenIds: [],
 })
 
 export const mutations = {
-  addRefreshTokenId(state, id) {
-    state.refreshTokenIds.push(id)
-  },
   setCalculatedOffers(state, offers) {
     state.calculatedOffers = offers
   },

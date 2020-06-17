@@ -3,6 +3,7 @@ from django.contrib.auth.base_user import BaseUserManager
 from django.core.mail import send_mail
 from rest_framework import viewsets, mixins
 from rest_framework.decorators import action
+from rest_framework.exceptions import PermissionDenied
 from rest_framework.generics import get_object_or_404
 from rest_framework.request import Request
 from rest_framework.response import Response
@@ -40,3 +41,9 @@ class AccountViewSet(
 
     def get_queryset(self):
         return CustomUser.objects.filter(id=self.request.user.id)
+
+    def get_object(self):
+        account: CustomUser = super().get_object()
+        if account != self.request.user:
+            raise PermissionDenied
+        return account
