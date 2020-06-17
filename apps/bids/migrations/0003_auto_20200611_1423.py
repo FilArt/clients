@@ -24,14 +24,10 @@ class Migration(migrations.Migration):
             ),
         ),
         migrations.AddField(
-            model_name="bid",
-            name="c2",
-            field=apps.bids.models.PositiveNullableFloatField(blank=True, null=True),
+            model_name="bid", name="c2", field=apps.bids.models.PositiveNullableFloatField(blank=True, null=True),
         ),
         migrations.AddField(
-            model_name="bid",
-            name="c3",
-            field=apps.bids.models.PositiveNullableFloatField(blank=True, null=True),
+            model_name="bid", name="c3", field=apps.bids.models.PositiveNullableFloatField(blank=True, null=True),
         ),
         migrations.AddField(
             model_name="bid",
@@ -41,13 +37,9 @@ class Migration(migrations.Migration):
             ),
         ),
         migrations.AddField(
-            model_name="bid",
-            name="p2",
-            field=apps.bids.models.PositiveNullableFloatField(blank=True, null=True),
+            model_name="bid", name="p2", field=apps.bids.models.PositiveNullableFloatField(blank=True, null=True),
         ),
         migrations.AddField(
-            model_name="bid",
-            name="p3",
-            field=apps.bids.models.PositiveNullableFloatField(blank=True, null=True),
+            model_name="bid", name="p3", field=apps.bids.models.PositiveNullableFloatField(blank=True, null=True),
         ),
     ]

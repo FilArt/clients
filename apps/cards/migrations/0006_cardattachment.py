@@ -7,16 +7,28 @@ import django.db.models.deletion
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('cards', '0005_remove_card_user'),
+        ("cards", "0005_remove_card_user"),
     ]
 
     operations = [
         migrations.CreateModel(
-            name='CardAttachment',
+            name="CardAttachment",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('attchament_type', models.CharField(choices=[('factura', 'Factura'), ('dni1', 'DNI'), ('dni2', 'DNI reverse side'), ('cif1', 'CIF'), ('cif2', 'CIF reverse side')], max_length=10)),
-                ('card', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='cards.Card')),
+                ("id", models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name="ID")),
+                (
+                    "attchament_type",
+                    models.CharField(
+                        choices=[
+                            ("factura", "Factura"),
+                            ("dni1", "DNI"),
+                            ("dni2", "DNI reverse side"),
+                            ("cif1", "CIF"),
+                            ("cif2", "CIF reverse side"),
+                        ],
+                        max_length=10,
+                    ),
+                ),
+                ("card", models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to="cards.Card")),
             ],
         ),
     ]

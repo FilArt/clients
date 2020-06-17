@@ -25,9 +25,7 @@ class Bid(models.Model):
         ("success", _("Success")),
         ("error", _("Error")),
     )
-    VALIDATION_STATUS_CHOICES = [
-        item for item in BID_STATUS_CHOICES if item[0] in ("success", "error",)
-    ]
+    VALIDATION_STATUS_CHOICES = [item for item in BID_STATUS_CHOICES if item[0] in ("success", "error",)]
     user = models.ForeignKey("users.CustomUser", on_delete=models.CASCADE)
     offer = models.ForeignKey("calculator.Offer", on_delete=models.CASCADE)
     status = FSMField(default="new", protected=True, choices=BID_STATUS_CHOICES)
@@ -49,10 +47,7 @@ class Bid(models.Model):
         ...
 
     @transition(
-        field=status,
-        source=["purchase", "purchase_updated"],
-        target="success",
-        on_error="error",
+        field=status, source=["purchase", "purchase_updated"], target="success", on_error="error",
     )
     def success(self, user, message):
         self.bidstory_set.create(
@@ -61,10 +56,7 @@ class Bid(models.Model):
         ...
 
     @transition(
-        field=status,
-        source=["purchase", "purchase_updated"],
-        target="error",
-        on_error="error",
+        field=status, source=["purchase", "purchase_updated"], target="error", on_error="error",
     )
     def error(self, user, message):
         self.bidstory_set.create(
@@ -73,17 +65,11 @@ class Bid(models.Model):
         ...
 
     @transition(
-        field=status,
-        source=["error", "success"],
-        target="purchase_updated",
-        on_error="error",
+        field=status, source=["error", "success"], target="purchase_updated", on_error="error",
     )
     def purchase_updated(self, message=None):
         self.bidstory_set.create(
-            user=self.user,
-            old_status=self.status,
-            new_status="purchase_updated",
-            message=message,
+            user=self.user, old_status=self.status, new_status="purchase_updated", message=message,
         )
         ...
 

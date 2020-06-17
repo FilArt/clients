@@ -6,13 +6,9 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('bids', '0011_auto_20200616_1045'),
+        ("bids", "0011_auto_20200616_1045"),
     ]
 
     operations = [
-        migrations.AlterField(
-            model_name='bidstory',
-            name='dt',
-            field=models.DateTimeField(auto_now_add=True),
-        ),
+        migrations.AlterField(model_name="bidstory", name="dt", field=models.DateTimeField(auto_now_add=True),),
     ]

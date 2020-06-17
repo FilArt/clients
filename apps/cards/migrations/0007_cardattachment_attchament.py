@@ -6,14 +6,14 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('cards', '0006_cardattachment'),
+        ("cards", "0006_cardattachment"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='cardattachment',
-            name='attchament',
-            field=models.FileField(default=None, upload_to=''),
+            model_name="cardattachment",
+            name="attchament",
+            field=models.FileField(default=None, upload_to=""),
             preserve_default=False,
         ),
     ]

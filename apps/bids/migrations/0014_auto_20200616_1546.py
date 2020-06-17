@@ -7,23 +7,52 @@ import django_fsm
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('bids', '0013_auto_20200616_1055'),
+        ("bids", "0013_auto_20200616_1055"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='bid',
-            name='status',
-            field=django_fsm.FSMField(choices=[('new', 'New'), ('purchase', 'Purchase'), ('purchase_updated', 'Purchase updated'), ('success', 'Success'), ('error', 'Error')], default='new', max_length=50, protected=True),
+            model_name="bid",
+            name="status",
+            field=django_fsm.FSMField(
+                choices=[
+                    ("new", "New"),
+                    ("purchase", "Purchase"),
+                    ("purchase_updated", "Purchase updated"),
+                    ("success", "Success"),
+                    ("error", "Error"),
+                ],
+                default="new",
+                max_length=50,
+                protected=True,
+            ),
         ),
         migrations.AlterField(
-            model_name='bidstory',
-            name='new_status',
-            field=models.CharField(choices=[('new', 'New'), ('purchase', 'Purchase'), ('purchase_updated', 'Purchase updated'), ('success', 'Success'), ('error', 'Error')], max_length=20),
+            model_name="bidstory",
+            name="new_status",
+            field=models.CharField(
+                choices=[
+                    ("new", "New"),
+                    ("purchase", "Purchase"),
+                    ("purchase_updated", "Purchase updated"),
+                    ("success", "Success"),
+                    ("error", "Error"),
+                ],
+                max_length=20,
+            ),
         ),
         migrations.AlterField(
-            model_name='bidstory',
-            name='old_status',
-            field=models.CharField(choices=[('new', 'New'), ('purchase', 'Purchase'), ('purchase_updated', 'Purchase updated'), ('success', 'Success'), ('error', 'Error')], max_length=20),
+            model_name="bidstory",
+            name="old_status",
+            field=models.CharField(
+                choices=[
+                    ("new", "New"),
+                    ("purchase", "Purchase"),
+                    ("purchase_updated", "Purchase updated"),
+                    ("success", "Success"),
+                    ("error", "Error"),
+                ],
+                max_length=20,
+            ),
         ),
     ]

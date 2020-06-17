@@ -6,18 +6,17 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('bids', '0010_bidstory'),
+        ("bids", "0010_bidstory"),
     ]
 
     operations = [
-        migrations.AddField(
-            model_name='bidstory',
-            name='dt',
-            field=models.DateTimeField(auto_now=True),
-        ),
+        migrations.AddField(model_name="bidstory", name="dt", field=models.DateTimeField(auto_now=True),),
         migrations.AlterField(
-            model_name='bidstory',
-            name='story_type',
-            field=models.CharField(choices=[('created', 'Created'), ('action', 'Action'), ('status', 'Status'), ('error', 'Error')], max_length=20),
+            model_name="bidstory",
+            name="story_type",
+            field=models.CharField(
+                choices=[("created", "Created"), ("action", "Action"), ("status", "Status"), ("error", "Error")],
+                max_length=20,
+            ),
         ),
     ]

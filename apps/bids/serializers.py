@@ -18,9 +18,7 @@ class BidListSerializer(serializers.ModelSerializer):
 
     # noinspection PyMethodMayBeStatic
     def get_created_at(self, instance: Bid):
-        return arrow.get(instance.created_at).humanize(
-            locale=self.context["request"].LANGUAGE_CODE
-        )
+        return arrow.get(instance.created_at).humanize(locale=self.context["request"].LANGUAGE_CODE)
 
 
 class BidSerializer(serializers.ModelSerializer):
@@ -57,9 +55,7 @@ class BidStorySerializer(serializers.ModelSerializer):
 
     # noinspection PyMethodMayBeStatic
     def get_dt(self, instance: BidStory):
-        return arrow.get(instance.dt).humanize(
-            locale=self.context["request"].LANGUAGE_CODE
-        )
+        return arrow.get(instance.dt).humanize(locale=self.context["request"].LANGUAGE_CODE)
 
     # noinspection PyMethodMayBeStatic
     def get_user(self, instance: BidStory):

@@ -66,12 +66,7 @@ class BidViewSet(viewsets.ModelViewSet):
 
     @action(methods=["GET"], detail=False)
     def statuses(self, _):
-        return Response(
-            [
-                {"text": text, "value": value}
-                for value, text in Bid.VALIDATION_STATUS_CHOICES
-            ]
-        )
+        return Response([{"text": text, "value": value} for value, text in Bid.VALIDATION_STATUS_CHOICES])
 
     # noinspection PyUnusedLocal
     @action(methods=["GET"], detail=True)

@@ -14,10 +14,6 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name="bid",
             name="status",
-            field=models.CharField(
-                choices=apps.bids.models.Bid.BID_STATUS_CHOICES,
-                default="initial",
-                max_length=50,
-            ),
+            field=models.CharField(choices=apps.bids.models.Bid.BID_STATUS_CHOICES, default="initial", max_length=50,),
         ),
     ]

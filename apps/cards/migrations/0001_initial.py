@@ -18,15 +18,7 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name="Source",
             fields=[
-                (
-                    "id",
-                    models.AutoField(
-                        auto_created=True,
-                        primary_key=True,
-                        serialize=False,
-                        verbose_name="ID",
-                    ),
-                ),
+                ("id", models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name="ID",),),
                 ("name", models.CharField(max_length=255)),
             ],
             options={"db_table": "sources"},
@@ -34,24 +26,11 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name="Card",
             fields=[
-                (
-                    "id",
-                    models.AutoField(
-                        auto_created=True,
-                        primary_key=True,
-                        serialize=False,
-                        verbose_name="ID",
-                    ),
-                ),
+                ("id", models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name="ID",),),
                 ("data", django.contrib.postgres.fields.jsonb.JSONField()),
                 ("created_at", models.DateTimeField(auto_now_add=True)),
                 ("last_modified", models.DateTimeField(auto_now=True)),
-                (
-                    "source",
-                    models.ForeignKey(
-                        on_delete=django.db.models.deletion.PROTECT, to="cards.Source"
-                    ),
-                ),
+                ("source", models.ForeignKey(on_delete=django.db.models.deletion.PROTECT, to="cards.Source"),),
                 (
                     "user",
                     models.ForeignKey(

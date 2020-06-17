@@ -7,14 +7,16 @@ import django.db.models.deletion
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('cards', '0002_auto_20200611_1538'),
-        ('bids', '0006_bid_status'),
+        ("cards", "0002_auto_20200611_1538"),
+        ("bids", "0006_bid_status"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='bid',
-            name='card',
-            field=models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.CASCADE, to='cards.Card'),
+            model_name="bid",
+            name="card",
+            field=models.ForeignKey(
+                blank=True, null=True, on_delete=django.db.models.deletion.CASCADE, to="cards.Card"
+            ),
         ),
     ]

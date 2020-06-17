@@ -8,17 +8,20 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('users', '0003_customuser_can_see_calculator_and_offers'),
+        ("users", "0003_customuser_can_see_calculator_and_offers"),
     ]
 
     operations = [
-        migrations.RemoveField(
-            model_name='customuser',
-            name='can_see_calculator_and_offers',
-        ),
+        migrations.RemoveField(model_name="customuser", name="can_see_calculator_and_offers",),
         migrations.AddField(
-            model_name='customuser',
-            name='permissions',
-            field=django.contrib.postgres.fields.ArrayField(base_field=models.CharField(choices=[('offers', 'Offers'), ('calculator', 'calculator')], max_length=30), default=apps.users.models.get_default_user_permissions, size=None),
+            model_name="customuser",
+            name="permissions",
+            field=django.contrib.postgres.fields.ArrayField(
+                base_field=models.CharField(
+                    choices=[("offers", "Offers"), ("calculator", "calculator")], max_length=30
+                ),
+                default=apps.users.models.get_default_user_permissions,
+                size=None,
+            ),
         ),
     ]

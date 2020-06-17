@@ -31,10 +31,7 @@ class RegisterViewSet(viewsets.GenericViewSet, mixins.CreateModelMixin):
 
 
 class AccountViewSet(
-    viewsets.GenericViewSet,
-    mixins.RetrieveModelMixin,
-    mixins.UpdateModelMixin,
-    mixins.DestroyModelMixin,
+    viewsets.GenericViewSet, mixins.RetrieveModelMixin, mixins.UpdateModelMixin, mixins.DestroyModelMixin,
 ):
     queryset = CustomUser.objects.all()
     serializer_class = AccountSerializer

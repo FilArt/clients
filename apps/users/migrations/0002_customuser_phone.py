@@ -7,13 +7,13 @@ from django.db import migrations
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('users', '0001_initial'),
+        ("users", "0001_initial"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='customuser',
-            name='phone',
-            field=apps.users.models.PhoneNumberField(blank=True, max_length=9, null=True, verbose_name='phone number'),
+            model_name="customuser",
+            name="phone",
+            field=apps.users.models.PhoneNumberField(blank=True, max_length=9, null=True, verbose_name="phone number"),
         ),
     ]

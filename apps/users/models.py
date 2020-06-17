@@ -62,7 +62,7 @@ class CustomUser(AbstractUser):
         db_table = "users"
 
     def settings(self):
-        if hasattr(self, 'usersettings'):
+        if hasattr(self, "usersettings"):
             return self.usersettings.to_dict()
         return {}
 
@@ -76,5 +76,5 @@ class UserSettings(models.Model):
 
     def to_dict(self):
         return {
-            'dark_theme': self.dark_theme,
+            "dark_theme": self.dark_theme,
         }

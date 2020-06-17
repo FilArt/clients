@@ -4,6 +4,6 @@ from .routers import router
 from .views import calculate
 
 urlpatterns = [
-    path('', include(router.urls)),
-    path('calculate', calculate),
+    path("", include(router.urls)),
+    path("calculate", calculate),
 ]

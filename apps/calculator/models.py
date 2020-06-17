@@ -96,9 +96,7 @@ class Company(models.Model):
 
     def save(self, *args, **kwargs):
         if not self.priority:
-            max_p = (
-                Company.objects.aggregate(max_p=models.Max("priority"))["max_p"] or 0
-            )
+            max_p = Company.objects.aggregate(max_p=models.Max("priority"))["max_p"] or 0
             self.priority = max_p + 1
         super().save(*args, **kwargs)
 
@@ -142,9 +140,7 @@ class Offer(models.Model):
                 Offer.objects.update_or_create(
                     uuid=item["UUID"],
                     defaults=dict(
-                        company=Company.objects.get_or_create(
-                            name=item["COMERCIALIZADORA"].strip().upper(),
-                        )[0],
+                        company=Company.objects.get_or_create(name=item["COMERCIALIZADORA"].strip().upper(),)[0],
                         name=item["NOMBRE"],
                         tarif=item["TARIFA"],
                         description=item["DESCRIPCION"],
@@ -179,9 +175,7 @@ class Offer(models.Model):
         if not isinstance(period, int) or period <= 0:
             raise ValueError("invalid period: %s" % period)
         if tarif not in Tarif.all():
-            raise ValueError(
-                "invalid tarif: %s. available: [%s]" % (tarif, Tarif.all())
-            )
+            raise ValueError("invalid tarif: %s. available: [%s]" % (tarif, Tarif.all()))
         assert p1 > 0 and c1 > 0
 
         calculator_settings = CalculatorSettings.objects.first()
@@ -198,10 +192,8 @@ class Offer(models.Model):
                 Q(
                     Q(power_max__isnull=True) | Q(power_max__gte=power_min),
                     Q(power_min__isnull=True) | Q(power_min__lte=power_max),
-                    Q(consumption_max__isnull=True)
-                    | Q(consumption_max__gte=annual_consumption),
-                    Q(consumption_min__isnull=True)
-                    | Q(consumption_min__lte=annual_consumption),
+                    Q(consumption_max__isnull=True) | Q(consumption_max__gte=annual_consumption),
+                    Q(consumption_min__isnull=True) | Q(consumption_min__lte=annual_consumption),
                     client_type=client_type,
                     tarif=tarif,
                 ),
@@ -214,18 +206,10 @@ class Offer(models.Model):
                 st_p2=F("p2") * Value(p2) * Value(period),
                 st_p3=F("p3") * Value(p3) * Value(period),
             )
-            .annotate(
-                subtotal=F("st_c1")
-                + F("st_c2")
-                + F("st_c3")
-                + F("st_p1")
-                + F("st_p2")
-                + F("st_p3"),
-            )
+            .annotate(subtotal=F("st_c1") + F("st_c2") + F("st_c3") + F("st_p1") + F("st_p2") + F("st_p3"),)
             .annotate(after_rental=F("subtotal") + Value(rental),)
             .annotate(
-                tax=F("subtotal") * Value(calculator_settings.tax),
-                iva=F("after_rental") * calculator_settings.iva,
+                tax=F("subtotal") * Value(calculator_settings.tax), iva=F("after_rental") * calculator_settings.iva,
             )
             .annotate(total=F("after_rental") + F("iva") + F("tax"),)
         )

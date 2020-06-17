@@ -7,18 +7,14 @@ import uuid
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('calculator', '0001_initial'),
+        ("calculator", "0001_initial"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='offer',
-            name='uuid',
-            field=models.UUIDField(default=uuid.UUID('10660e06-7bd8-4829-8fb3-c0f9116d46d8'), unique=True),
+            model_name="offer",
+            name="uuid",
+            field=models.UUIDField(default=uuid.UUID("10660e06-7bd8-4829-8fb3-c0f9116d46d8"), unique=True),
         ),
-        migrations.AlterField(
-            model_name='offer',
-            name='picture',
-            field=models.URLField(blank=True, null=True),
-        ),
+        migrations.AlterField(model_name="offer", name="picture", field=models.URLField(blank=True, null=True),),
     ]

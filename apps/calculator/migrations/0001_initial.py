@@ -14,15 +14,7 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name="CalculatorSettings",
             fields=[
-                (
-                    "id",
-                    models.AutoField(
-                        auto_created=True,
-                        primary_key=True,
-                        serialize=False,
-                        verbose_name="ID",
-                    ),
-                ),
+                ("id", models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name="ID",),),
                 ("iva", models.FloatField()),
                 ("tax", models.FloatField()),
                 ("equip_rent_t20", models.FloatField()),
@@ -36,15 +28,7 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name="Company",
             fields=[
-                (
-                    "id",
-                    models.AutoField(
-                        auto_created=True,
-                        primary_key=True,
-                        serialize=False,
-                        verbose_name="ID",
-                    ),
-                ),
+                ("id", models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name="ID",),),
                 ("name", models.CharField(max_length=50, unique=True)),
                 ("logo", models.ImageField(blank=True, null=True, upload_to="")),
                 ("priority", models.IntegerField(blank=True, null=True, unique=True)),
@@ -53,15 +37,7 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name="Offer",
             fields=[
-                (
-                    "id",
-                    models.AutoField(
-                        auto_created=True,
-                        primary_key=True,
-                        serialize=False,
-                        verbose_name="ID",
-                    ),
-                ),
+                ("id", models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name="ID",),),
                 ("name", models.CharField(max_length=255)),
                 ("picture", models.ImageField(upload_to="")),
                 ("description", models.TextField()),
@@ -85,23 +61,14 @@ class Migration(migrations.Migration):
                 ("power_max", models.FloatField(blank=True, null=True)),
                 ("consumption_min", models.FloatField(blank=True, null=True)),
                 ("consumption_max", models.FloatField(blank=True, null=True)),
-                (
-                    "client_type",
-                    models.IntegerField(choices=[(0, "Individual"), (1, "Business")]),
-                ),
+                ("client_type", models.IntegerField(choices=[(0, "Individual"), (1, "Business")]),),
                 ("p1", models.FloatField()),
                 ("p2", models.FloatField()),
                 ("p3", models.FloatField()),
                 ("c1", models.FloatField()),
                 ("c2", models.FloatField()),
                 ("c3", models.FloatField()),
-                (
-                    "company",
-                    models.ForeignKey(
-                        on_delete=django.db.models.deletion.CASCADE,
-                        to="calculator.Company",
-                    ),
-                ),
+                ("company", models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to="calculator.Company",),),
             ],
         ),
     ]

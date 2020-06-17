@@ -8,13 +8,26 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('users', '0008_customuser_username'),
+        ("users", "0008_customuser_username"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='customuser',
-            name='permissions',
-            field=django.contrib.postgres.fields.ArrayField(base_field=models.CharField(choices=[('profile', 'Profile'), ('bids', 'Bids'), ('offers', 'Offers'), ('calculator', 'Calculator')], max_length=30), default=apps.users.models.get_default_user_permissions, help_text='Possible values: profile, bids, offers, calculator', size=None),
+            model_name="customuser",
+            name="permissions",
+            field=django.contrib.postgres.fields.ArrayField(
+                base_field=models.CharField(
+                    choices=[
+                        ("profile", "Profile"),
+                        ("bids", "Bids"),
+                        ("offers", "Offers"),
+                        ("calculator", "Calculator"),
+                    ],
+                    max_length=30,
+                ),
+                default=apps.users.models.get_default_user_permissions,
+                help_text="Possible values: profile, bids, offers, calculator",
+                size=None,
+            ),
         ),
     ]

@@ -6,13 +6,9 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('calculator', '0002_auto_20200610_1332'),
+        ("calculator", "0002_auto_20200610_1332"),
     ]
 
     operations = [
-        migrations.AlterField(
-            model_name='offer',
-            name='uuid',
-            field=models.UUIDField(unique=True),
-        ),
+        migrations.AlterField(model_name="offer", name="uuid", field=models.UUIDField(unique=True),),
     ]

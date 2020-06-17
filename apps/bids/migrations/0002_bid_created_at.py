@@ -7,13 +7,13 @@ import django.utils.timezone
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('bids', '0001_initial'),
+        ("bids", "0001_initial"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='bid',
-            name='created_at',
+            model_name="bid",
+            name="created_at",
             field=models.DateTimeField(auto_now_add=True, default=django.utils.timezone.now),
             preserve_default=False,
         ),

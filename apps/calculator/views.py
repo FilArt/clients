@@ -10,9 +10,7 @@ from ..bids.models import Bid
 
 
 class CalculatorSerializer(serializers.ModelSerializer):
-    company = serializers.PrimaryKeyRelatedField(
-        source="offer.company", queryset=Company.objects.all()
-    )
+    company = serializers.PrimaryKeyRelatedField(source="offer.company", queryset=Company.objects.all())
     period = serializers.IntegerField(min_value=1)
     tarif = serializers.ChoiceField(choices=Tarif.choices())
     client_type = serializers.ChoiceField(choices=Offer.CLIENT_TYPE_CHOICES)

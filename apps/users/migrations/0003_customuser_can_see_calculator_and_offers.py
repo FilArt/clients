@@ -6,13 +6,11 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('users', '0002_customuser_phone'),
+        ("users", "0002_customuser_phone"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='customuser',
-            name='can_see_calculator_and_offers',
-            field=models.BooleanField(default=True),
+            model_name="customuser", name="can_see_calculator_and_offers", field=models.BooleanField(default=True),
         ),
     ]

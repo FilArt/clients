@@ -6,18 +6,10 @@ from django.db import migrations
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('cards', '0007_cardattachment_attchament'),
+        ("cards", "0007_cardattachment_attchament"),
     ]
 
     operations = [
-        migrations.RenameField(
-            model_name='cardattachment',
-            old_name='attchament',
-            new_name='attachment',
-        ),
-        migrations.RenameField(
-            model_name='cardattachment',
-            old_name='attchament_type',
-            new_name='attachment_type',
-        ),
+        migrations.RenameField(model_name="cardattachment", old_name="attchament", new_name="attachment",),
+        migrations.RenameField(model_name="cardattachment", old_name="attchament_type", new_name="attachment_type",),
     ]

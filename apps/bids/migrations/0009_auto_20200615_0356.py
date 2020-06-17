@@ -7,13 +7,11 @@ import django_fsm
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('bids', '0008_remove_bid_card'),
+        ("bids", "0008_remove_bid_card"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='bid',
-            name='status',
-            field=django_fsm.FSMField(default='new', max_length=50, protected=True),
+            model_name="bid", name="status", field=django_fsm.FSMField(default="new", max_length=50, protected=True),
         ),
     ]

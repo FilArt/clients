@@ -7,18 +7,12 @@ from django.db import migrations
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('calculator', '0003_auto_20200610_1332'),
+        ("calculator", "0003_auto_20200610_1332"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='company',
-            name='name',
-            field=apps.calculator.fields.NameField(max_length=50, unique=True),
+            model_name="company", name="name", field=apps.calculator.fields.NameField(max_length=50, unique=True),
         ),
-        migrations.AlterField(
-            model_name='offer',
-            name='name',
-            field=apps.calculator.fields.NameField(max_length=255),
-        ),
+        migrations.AlterField(model_name="offer", name="name", field=apps.calculator.fields.NameField(max_length=255),),
     ]

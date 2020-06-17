@@ -14,9 +14,7 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name="card",
             name="source",
-            field=models.CharField(
-                choices=[("default", "Default")], default="default", max_length=30
-            ),
+            field=models.CharField(choices=[("default", "Default")], default="default", max_length=30),
         ),
         migrations.DeleteModel(name="Source",),
     ]
