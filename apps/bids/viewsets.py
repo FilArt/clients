@@ -51,12 +51,6 @@ class BidViewSet(viewsets.ModelViewSet):
             return Bid.objects.exclude(status="new")
         return Bid.objects.filter(user=self.request.user)
 
-    def get_object(self):
-        bid = super().get_object()
-        if bid.user != self.request.user:
-            raise PermissionDenied
-        return bid
-
     def perform_create(self, serializer):
         with transaction.atomic():
             bid: Bid = serializer.save(user=self.request.user)
