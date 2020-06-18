@@ -28,7 +28,7 @@
             v-for="bid in (status ? bids.filter(b => b.status === status) : bids)"
             :key="bid.id"
             :to="`/bids/${bid.id}`"
-            link
+            nuxt
           >
             <v-col>
               <small> {{ bid.id }} </small>
