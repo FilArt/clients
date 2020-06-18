@@ -19,17 +19,9 @@
               </small>
             </v-col>
 
-            <v-list-item-title>
-              Offer
-            </v-list-item-title>
-
-            <v-list-item-title>
-              Created at
-            </v-list-item-title>
-
-            <v-list-item-title>
-              Status
-            </v-list-item-title>
+            <v-list-item v-for="header in headers" :key="header.value">
+              {{ header.text }}
+            </v-list-item>
           </v-list-item>
 
           <v-list-item
@@ -74,8 +66,9 @@ export default {
     }
   },
   async asyncData({ $axios }) {
-    const data = await $axios.$get('bids/')
-    return { bids: data }
+    const bids = await $axios.$get('bids/')
+    const headers = await $axios.$get('bids/headers/')
+    return { bids, headers }
   },
 }
 </script>

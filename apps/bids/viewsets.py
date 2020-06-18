@@ -27,6 +27,12 @@ SUPPORT_TABLE_HEADERS = [
     {"text": _("Created at"), "value": "created_at"},
 ]
 
+CLIENT_TABLE_HEADERS = [
+    {"text": _("Offer"), "value": "user"},
+    {"text": _("Created at"), "value": "created_at"},
+    {"text": _("Status"), "value": "status"},
+]
+
 
 class BidViewSet(viewsets.ModelViewSet):
     permission_classes = (BidsPermission, IsAuthenticated)
@@ -72,7 +78,9 @@ class BidViewSet(viewsets.ModelViewSet):
 
     @action(methods=["GET"], detail=False)
     def headers(self, _):
-        return Response(SUPPORT_TABLE_HEADERS)
+        if self.request.user.role == "support":
+            return Response(SUPPORT_TABLE_HEADERS)
+        return Response(CLIENT_TABLE_HEADERS)
 
     # noinspection PyUnusedLocal
     @action(methods=["POST"], detail=True)
