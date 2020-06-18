@@ -1,20 +1,14 @@
-from django.core import validators
 from django.core.exceptions import ValidationError
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 from django_fsm import FSMField, transition
 
+from utils import PositiveNullableFloatField
+
 
 def more_than_zero(value):
     if value <= 0:
         raise ValidationError(_("Ensure this value is greater than 0."))
-
-
-class PositiveNullableFloatField(models.FloatField):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.blank = self.null = True
-        self.validators.append(validators.MinValueValidator(0))
 
 
 class Bid(models.Model):

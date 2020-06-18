@@ -4,9 +4,11 @@ import gspread
 from django.conf import settings
 from django.db import models
 from django.db.models import F, Value, Q
+from django.db.models.functions import Round
 from django.utils.translation import gettext_lazy as _
 
 from apps.calculator.fields import NameField
+from utils import PositiveNullableFloatField
 
 
 def str_to_float(some):
@@ -124,12 +126,12 @@ class Offer(models.Model):
     consumption_min = models.FloatField(blank=True, null=True)
     consumption_max = models.FloatField(blank=True, null=True)
     client_type = models.IntegerField(choices=CLIENT_TYPE_CHOICES)
-    p1 = models.FloatField()
-    p2 = models.FloatField()
-    p3 = models.FloatField()
-    c1 = models.FloatField()
-    c2 = models.FloatField()
-    c3 = models.FloatField()
+    p1 = PositiveNullableFloatField()
+    p2 = PositiveNullableFloatField()
+    p3 = PositiveNullableFloatField()
+    c1 = PositiveNullableFloatField()
+    c2 = PositiveNullableFloatField()
+    c3 = PositiveNullableFloatField()
 
     @staticmethod
     def sync():
@@ -215,5 +217,7 @@ class Offer(models.Model):
             .annotate(
                 tax=F("subtotal") * Value(calculator_settings.tax), iva=F("after_rental") * calculator_settings.iva,
             )
-            .annotate(total=F("after_rental") + F("iva") + F("tax"),)
+            .annotate(total=Round(F("after_rental") + F("iva") + F("tax")))
+            .annotate(annual_total=Round(F("total") / Value(period) * Value(12)))
+            .order_by("total")
         )

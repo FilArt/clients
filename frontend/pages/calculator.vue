@@ -6,31 +6,66 @@
       </p>
       <v-progress-circular indeterminate />
     </v-snackbar>
-    <v-list v-if="showResults">
+
+    <v-simple-table v-if="showResults">
       <v-alert type="warning" :value="!offers.length">
         Offers not found
       </v-alert>
 
-      <v-list-item
-        v-for="offer in offers"
-        :key="offer.id"
-        nuxt
-        :to="`offers/${offer.id}?id=${offer.id}&back=${$route.fullPath}&fromCalculator=true`"
-      >
-        <v-list-item-avatar>
-          <v-img :src="offer.company_logo || '/no-image.svg'" />
-        </v-list-item-avatar>
-        <v-list-item-title v-text="offer.name" />
-        <v-list-item-subtitle v-text="offer.company" />
-      </v-list-item>
+      <template v-slot:default>
+        <thead>
+          <tr>
+            <th></th>
+            <th>
+              Offer
+            </th>
+            <th>
+              Company
+            </th>
+            <th>
+              Total
+            </th>
+            <th>
+              Annual total
+            </th>
+            <th></th>
+          </tr>
+        </thead>
 
-      <v-list-item>
-        <v-btn block @click="showResults = false">
-          Вернуться к расчетам
-          <v-icon>mdi-keyboard-return</v-icon>
-        </v-btn>
-      </v-list-item>
-    </v-list>
+        <tbody>
+          <tr v-for="offer in offers" :key="offer.id">
+            <td>
+              <v-list-item-avatar>
+                <v-img :src="offer.company_logo || '/no-image.svg'" />
+              </v-list-item-avatar>
+            </td>
+            <td>
+              {{ offer.name }}
+            </td>
+            <td>
+              {{ offer.company_name }}
+            </td>
+            <td>{{ offer.total }} €</td>
+            <td>{{ offer.annual_total }} €</td>
+            <td>
+              <v-btn
+                icon
+                nuxt
+                :to="`/offers/${offer.id}?id=${offer.id}&back=${$route.fullPath}&fromCalculator=true`"
+              >
+                <v-icon>mdi-eye</v-icon>
+              </v-btn>
+            </td>
+          </tr>
+        </tbody>
+      </template>
+    </v-simple-table>
+
+    <v-btn v-if="showResults" block color="info" @click="showResults = false">
+      Вернуться к расчетам
+      <v-icon>mdi-keyboard-return</v-icon>
+    </v-btn>
+
     <v-form v-else @submit.prevent="submit" novalidate>
       <v-card-title>
         Comparador
