@@ -43,14 +43,16 @@ assert [t for t in Tarif]
 
 
 class CalculatorSettings(models.Model):
-    iva = models.FloatField()
-    tax = models.FloatField()
-    equip_rent_t20 = models.FloatField()
-    equip_rent_t20dha = models.FloatField()
-    equip_rent_t21 = models.FloatField()
-    equip_rent_t21dha = models.FloatField()
-    equip_rent_t30 = models.FloatField()
-    equip_rent_t31 = models.FloatField()
+    iva = models.FloatField(default=1)
+    tax = models.FloatField(default=1)
+    equip_rent_t20 = models.FloatField(default=1)
+    equip_rent_t20dha = models.FloatField(default=1)
+    equip_rent_t20dhs = models.FloatField(default=1)
+    equip_rent_t21 = models.FloatField(default=1)
+    equip_rent_t21dha = models.FloatField(default=1)
+    equip_rent_t21dhs = models.FloatField(default=1)
+    equip_rent_t30 = models.FloatField(default=1)
+    equip_rent_t31 = models.FloatField(default=1)
 
     def get_iva(self):
         return self.iva + 1
@@ -61,8 +63,10 @@ class CalculatorSettings(models.Model):
             for k, v in {
                 Tarif.T20A: self.equip_rent_t20,
                 Tarif.T20DHA: self.equip_rent_t20dha,
+                Tarif.T20DHS: self.equip_rent_t20dhs,
                 Tarif.T21A: self.equip_rent_t21,
                 Tarif.T21DHA: self.equip_rent_t21dha,
+                Tarif.T21DHS: self.equip_rent_t21dhs,
                 Tarif.T30A: self.equip_rent_t30,
                 Tarif.T31A: self.equip_rent_t31,
             }.items()

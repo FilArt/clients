@@ -36,66 +36,64 @@
         Comparador
       </v-card-title>
       <v-card-text>
-        <company-select
-          :value="form.company"
-          :error-messages="errorMessages.company"
-          @input="updateForm('company', $event)"
-        />
-        <tarif-select
-          :value="form.tarif"
-          :error-messages="errorMessages.tarif"
-          @input="updateForm('tarif', $event)"
-        />
+        <v-row>
+          <v-col>
+            <company-select
+              :value="form.company"
+              :error-messages="errorMessages.company"
+              @input="updateForm('company', $event)"
+            />
+          </v-col>
+
+          <v-col>
+            <tarif-select
+              :value="tarif"
+              :error-messages="errorMessages.tarif"
+              @input="$store.commit('setTarif', $event)"
+            />
+          </v-col>
+
+          <v-col>
+            <client-type-select
+              :value="form.client_type"
+              :error-messages="errorMessages.client_type"
+              @input="updateForm('client_type', $event)"
+            />
+          </v-col>
+        </v-row>
+
         <v-text-field
           label="Periodo"
           :value="form.period"
           :error-messages="errorMessages.period"
           @input="updateForm('period', $event)"
         />
-        <client-type-select
-          :value="form.client_type"
-          :error-messages="errorMessages.client_type"
-          @input="updateForm('client_type', $event)"
-        />
-        <v-text-field
-          label="C1"
-          :value="form.c1"
-          :error-messages="errorMessages.c1"
-          @input="updateForm('c1', $event)"
-        />
-        <v-text-field
-          label="C2"
-          :value="form.c2"
-          :error-messages="errorMessages.c2"
-          @input="updateForm('c2', $event)"
-        />
-        <v-text-field
-          label="C3"
-          :value="form.c3"
-          :error-messages="errorMessages.c3"
-          @input="updateForm('c3', $event)"
-        />
-        <v-text-field
-          label="P1"
-          :value="form.p1"
-          :error-messages="errorMessages.p1"
-          @input="updateForm('p1', $event)"
-        />
-        <v-text-field
-          label="P2"
-          :value="form.p2"
-          :error-messages="errorMessages.p2"
-          @input="updateForm('p2', $event)"
-        />
-        <v-text-field
-          label="P3"
-          :value="form.p3"
-          :error-messages="errorMessages.p3"
-          @input="updateForm('p3', $event)"
-        />
+
+        <h1>{{ tarif }}</h1>
+
+        <v-row>
+          <v-col v-for="letter in ['p', 'c']" :key="letter">
+            <v-row v-for="number in [1, 2, 3]" :key="number">
+              <v-col>
+                <v-text-field
+                  v-show="
+                    number === 1 ||
+                    ['3.0A', '3.1A'].includes(tarif) ||
+                    (letter + number === 'c3' &&
+                      ['2.1DHA', '2.0DHA'].includes(tarif))
+                  "
+                  :value="form[letter + number]"
+                  :label="letter.toUpperCase() + number"
+                  :error-messages="errorMessages[letter + number]"
+                  @input="updateForm(letter + number, $event)"
+                />
+              </v-col>
+            </v-row>
+          </v-col>
+        </v-row>
       </v-card-text>
       <v-card-actions>
-        <submit-button block label="Calculate" @click="submit" />
+        <submit-button block label="Calculate" />
       </v-card-actions>
     </v-form>
   </v-card>
@@ -122,6 +120,9 @@ export default {
     form() {
       return this.$store.state.calculatorForm
     },
+    tarif() {
+      return this.$store.state.tarif
+    },
   },
   methods: {
     updateForm(key, value) {
@@ -134,7 +135,7 @@ export default {
       this.errorMessages = {}
       this.loading = true
       this.$axios
-        .$post('calculator/calculate', this.form)
+        .$post('calculator/calculate', { tarif: this.tarif, ...this.form })
         .then((data) => {
           this.$store.commit('setCalculatedOffers', data)
           this.showResults = true

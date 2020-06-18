@@ -14,7 +14,7 @@ class CompanyViewSet(viewsets.GenericViewSet, mixins.ListModelMixin):
 
 class TarifViewSet(viewsets.GenericViewSet, mixins.ListModelMixin):
     def list(self, request, *args, **kwargs):
-        return Response(Tarif.all())
+        return Response(Offer.objects.values_list("tarif", flat=True).order_by("tarif"))
 
 
 class OfferViewSet(viewsets.ReadOnlyModelViewSet):

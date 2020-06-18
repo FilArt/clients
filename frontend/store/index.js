@@ -1,15 +1,17 @@
 export const state = () => ({
   calculatedOffers: [],
   calculatorForm: {},
+  tarif: null,
 })
 
 export const mutations = {
+  setTarif(state, tarif) {
+    state.tarif = tarif
+  },
   setCalculatedOffers(state, offers) {
     state.calculatedOffers = offers
   },
   updateCalculatorForm(state, { key, value }) {
-    const form = state.calculatorForm
-    form[key] = value
-    state.calculatorForm = form
+    state.calculatorForm[key] = value
   },
 }
