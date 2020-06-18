@@ -69,8 +69,6 @@
           @input="updateForm('period', $event)"
         />
 
-        <h1>{{ tarif }}</h1>
-
         <v-row>
           <v-col v-for="letter in ['p', 'c']" :key="letter">
             <v-row v-for="number in [1, 2, 3]" :key="number">
