@@ -6,7 +6,6 @@
     label="Typo de cliente"
     style="min-width: 150px;"
     chips
-    dense
     deletable-chips
     @input="$emit('input', item)"
   />
