@@ -218,6 +218,6 @@ class Offer(models.Model):
                 tax=F("subtotal") * Value(calculator_settings.tax), iva=F("after_rental") * calculator_settings.iva,
             )
             .annotate(total=Round(F("after_rental") + F("iva") + F("tax")))
-            .annotate(annual_total=Round(F("total") / Value(period) * Value(12)))
+            .annotate(annual_total=Round(F("total") / Value(period) * Value(365)))
             .order_by("total")
         )
