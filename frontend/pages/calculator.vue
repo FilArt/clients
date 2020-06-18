@@ -99,6 +99,8 @@
 
         <v-text-field
           label="Periodo"
+          type="number"
+          name="period"
           :value="form.period"
           :error-messages="errorMessages.period"
           @input="updateForm('period', $event)"
@@ -115,8 +117,10 @@
                     (letter + number === 'c3' &&
                       ['2.1DHA', '2.0DHA'].includes(tarif))
                   "
+                  type="number"
                   :value="form[letter + number]"
                   :label="letter.toUpperCase() + number"
+                  :name="letter + number"
                   :error-messages="errorMessages[letter + number]"
                   @input="updateForm(letter + number, $event)"
                 />
