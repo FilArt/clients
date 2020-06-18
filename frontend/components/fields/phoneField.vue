@@ -1,9 +1,13 @@
 <template>
   <v-text-field
     v-model="phone"
-    v-mask="'#########'"
-    :label="label"
+    v-mask="'###-###-###'"
+    :error-messages="errorMessages"
+    label="Telefono"
+    name="phone"
+    prepend-icon="mdi-phone"
     type="tel"
+    @input="$emit('input', $event.split('-').join('') || null)"
   />
 </template>
 
@@ -15,14 +19,14 @@ export default {
       type: String,
       default: null,
     },
-    label: {
-      type: String,
-      default: 'Telefono',
+    errorMessages: {
+      type: Array,
+      default: () => [],
     },
   },
   data() {
     return {
-      phone: null,
+      phone: this.value,
     }
   },
   watch: {

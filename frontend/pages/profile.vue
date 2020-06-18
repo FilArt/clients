@@ -4,38 +4,24 @@
     <v-card-text>
       <v-form @submit.prevent="submit" novalidate>
         <v-card-text>
+          <email-field v-model="form.email" :error-messages="error.email" />
           <v-text-field
-            prepend-icon="mdi-account"
-            name="email"
-            label="Email"
-            type="text"
-            v-model="form.email"
-            :error-messages="error.email"
-          ></v-text-field>
-          <v-text-field
-            prepend-icon="mdi-people"
-            name="first_name"
-            label="First name"
-            type="text"
             v-model="form.first_name"
-            :error-messages="error.first_name"
-          ></v-text-field>
-          <v-text-field
-            prepend-icon="mdi-account"
-            name="last_name"
-            label="Last name"
+            label="First name"
+            name="first_name"
+            prepend-icon="mdi-account-box"
             type="text"
-            v-model="form.last_name"
-            :error-messages="error.last_name"
-          ></v-text-field>
+            :error-messages="error.first_name"
+          />
           <v-text-field
-            prepend-icon="mdi-phone"
-            name="phone"
-            label="Phone"
-            type="tel"
-            v-model="form.phone"
-            :error-messages="error.phone"
-          ></v-text-field>
+            v-model="form.last_name"
+            label="Last name"
+            name="last_name"
+            prepend-icon="mdi-account-box"
+            type="text"
+            :error-messages="error.last_name"
+          />
+          <phone-field v-model="form.phone" :error-messages="error.phone" />
         </v-card-text>
         <v-card-actions>
           <submit-button block label="Save" />
@@ -47,8 +33,10 @@
 
 <script>
 import SubmitButton from '~/components/buttons/submitButton'
+import PhoneField from '~/components/fields/phoneField'
+import EmailField from '~/components/fields/emailField'
 export default {
-  components: { SubmitButton },
+  components: { EmailField, PhoneField, SubmitButton },
   data() {
     return {
       error: {},

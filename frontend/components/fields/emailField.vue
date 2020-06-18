@@ -1,5 +1,12 @@
 <template>
-  <v-text-field v-model="email" :label="label" type="email" />
+  <v-text-field
+    v-model="email"
+    :error-messages="errorMessages"
+    label="Email"
+    name="email"
+    prepend-icon="mdi-at"
+    type="email"
+  />
 </template>
 
 <script>
@@ -10,14 +17,14 @@ export default {
       type: String,
       default: null,
     },
-    label: {
-      type: String,
-      default: 'Email',
+    errorMessages: {
+      type: Array,
+      default: () => [],
     },
   },
   data() {
     return {
-      email: null,
+      email: this.value,
     }
   },
   watch: {
