@@ -9,7 +9,7 @@ from .models import Offer, Tarif
 
 class CalculatorSerializer(serializers.ModelSerializer):
     company_name = serializers.CharField(source="company.name", read_only=True)
-    company_logo = serializers.FileField(source="company.logo", read_only=True)
+    company_logo = serializers.ImageField(source="company.logo", read_only=True)
     period = serializers.IntegerField(min_value=1, write_only=True)
     tarif = serializers.ChoiceField(choices=Tarif.choices(), write_only=True)
     client_type = serializers.ChoiceField(choices=Offer.CLIENT_TYPE_CHOICES, write_only=True)
