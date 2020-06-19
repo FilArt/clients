@@ -33,18 +33,6 @@
               <v-card-title>{{ offer.name }} </v-card-title>
             </v-card>
           </v-col>
-
-          <v-card
-            class="mx-auto"
-            max-width="336"
-            v-intersect="{
-              handler: onIntersect,
-              options: {
-                threshold: [0, 0.5, 1.0],
-              },
-            }"
-            >loaded: {{ offers.length }}</v-card
-          >
         </v-row>
       </v-responsive>
     </v-card-text>
@@ -106,9 +94,6 @@ export default {
       } finally {
         this.loading = false
       }
-    },
-    async onIntersect() {
-      await this.fetch()
     },
   },
 }
