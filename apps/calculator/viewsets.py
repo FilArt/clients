@@ -2,7 +2,7 @@ from rest_framework import viewsets, mixins
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
-from .models import Company, Offer, Tarif
+from .models import Company, Offer
 from .permissions import OffersAccessPermission
 from .serializers import CompanySerializer, OfferSerializer, OfferListSerializer
 

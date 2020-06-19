@@ -7,29 +7,30 @@ import django_fsm
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('bids', '0012_auto_20200616_1045'),
+        ("bids", "0012_auto_20200616_1045"),
     ]
 
     operations = [
-        migrations.RemoveField(
-            model_name='bidstory',
-            name='story_type',
-        ),
+        migrations.RemoveField(model_name="bidstory", name="story_type",),
         migrations.AddField(
-            model_name='bidstory',
-            name='new_status',
-            field=models.CharField(choices=[('new', 'New'), ('purchased', 'Purchased')], default='purchased', max_length=20),
+            model_name="bidstory",
+            name="new_status",
+            field=models.CharField(
+                choices=[("new", "New"), ("purchased", "Purchased")], default="purchased", max_length=20
+            ),
             preserve_default=False,
         ),
         migrations.AddField(
-            model_name='bidstory',
-            name='old_status',
-            field=models.CharField(choices=[('new', 'New'), ('purchased', 'Purchased')], default='new', max_length=20),
+            model_name="bidstory",
+            name="old_status",
+            field=models.CharField(choices=[("new", "New"), ("purchased", "Purchased")], default="new", max_length=20),
             preserve_default=False,
         ),
         migrations.AlterField(
-            model_name='bid',
-            name='status',
-            field=django_fsm.FSMField(choices=[('new', 'New'), ('purchased', 'Purchased')], default='new', max_length=50, protected=True),
+            model_name="bid",
+            name="status",
+            field=django_fsm.FSMField(
+                choices=[("new", "New"), ("purchased", "Purchased")], default="new", max_length=50, protected=True
+            ),
         ),
     ]

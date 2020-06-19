@@ -11,12 +11,12 @@ class CustomUserAdmin(UserAdmin):
         (_("Personal info"), {"fields": ("first_name", "last_name", "phone")}),
         (
             _("Permissions"),
-            {"fields": ("is_active", "is_staff", "is_superuser", "groups", "user_permissions", "role"),},
+            {"fields": ("is_active", "is_staff", "is_superuser", "groups", "user_permissions", "role")},
         ),
         (_("Important dates"), {"fields": ("last_login", "date_joined")}),
     )
     add_fieldsets = (
-        (None, {"classes": ("wide",), "fields": ("email", "password1", "password2", "role", "permissions"),}),
+        (None, {"classes": ("wide",), "fields": ("email", "password1", "password2", "role", "permissions")}),
     )
     list_display = ("email", "first_name", "last_name", "phone", "role", "is_staff", "is_active")
     list_filter = ("is_staff", "is_superuser", "is_active", "groups", "role")
