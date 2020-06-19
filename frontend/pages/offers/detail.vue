@@ -63,6 +63,9 @@ export default {
       },
     }
   },
+  async mounted() {
+    await this.fetch()
+  },
   watch: {
     filters: {
       handler: function (v) {
