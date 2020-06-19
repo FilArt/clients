@@ -1,12 +1,5 @@
 <template>
   <v-card :loading="loading">
-    <v-snackbar v-model="loading">
-      <p>
-        Считаем...
-      </p>
-      <v-progress-circular indeterminate />
-    </v-snackbar>
-
     <v-simple-table v-if="showResults">
       <v-alert type="warning" :value="!offers.length">
         Offers not found
@@ -62,7 +55,7 @@
     </v-simple-table>
 
     <v-btn v-if="showResults" block color="info" @click="showResults = false">
-      Вернуться к расчетам
+      Back
       <v-icon>mdi-keyboard-return</v-icon>
     </v-btn>
 
