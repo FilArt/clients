@@ -19,92 +19,91 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 #: apps/bids/models.py:10
 msgid "Ensure this value is greater than 0."
-msgstr ""
+msgstr "Asegúrese de que este valor sea mayor que 0."
 
 #: apps/bids/models.py:22
 msgid "New"
-msgstr ""
+msgstr "Nuevo"
 
 #: apps/bids/models.py:23
 msgid "Purchase"
-msgstr ""
+msgstr "Proceso de contratación"
 
 #: apps/bids/models.py:24
 msgid "Purchase updated"
-msgstr ""
+msgstr "Proceso de contratación actualizado"
 
 #: apps/bids/models.py:25
 msgid "Success"
-msgstr ""
+msgstr "Éxito"
 
 #: apps/bids/models.py:26
 msgid "Error"
-msgstr ""
+msgstr "Error"
 
 #: apps/bids/viewsets.py:23
 msgid "ID"
-msgstr ""
+msgstr "ID"
 
 #: apps/bids/viewsets.py:24
 msgid "User"
-msgstr ""
+msgstr "Usario"
 
 #: apps/bids/viewsets.py:25
 msgid "Status"
-msgstr ""
+msgstr "Estado"
 
 #: apps/bids/viewsets.py:26
 msgid "Created at"
-msgstr ""
+msgstr "Fecha de creación"
 
 #: apps/calculator/fields.py:10
-#, python-format
 msgid "%(value)s is not in upper case"
 msgstr ""
 
 #: apps/calculator/models.py:88
 msgid "This field can not be negative."
-msgstr ""
+msgstr "Este campo no puede ser negativo."
 
 #: apps/calculator/models.py:111
 msgid "Individual"
-msgstr ""
+msgstr "Individual"
 
 #: apps/calculator/models.py:112
 msgid "Business"
-msgstr ""
+msgstr "Negocio"
 
 #: apps/cards/models.py:7
 msgid "Default"
-msgstr ""
+msgstr "Predeterminado"
 
 #: apps/cards/models.py:22
 msgid "Factura"
-msgstr ""
+msgstr "Factura"
 
 #: apps/cards/models.py:23
 msgid "DNI"
-msgstr ""
+msgstr "DNI"
 
 #: apps/cards/models.py:24
 msgid "DNI reverse side"
-msgstr ""
+msgstr "DNI (reverso)"
 
 #: apps/cards/models.py:25
 msgid "CIF"
-msgstr ""
+msgstr "CIF"
 
 #: apps/cards/models.py:26
 msgid "CIF reverse side"
-msgstr ""
+msgstr "CIF (reverso)"
 
 #: apps/users/admin.py:11
 msgid "Personal info"
-msgstr ""
+msgstr "Información personal"
 
 #: apps/users/admin.py:12
 msgid "Permissions"
-msgstr ""
+msgstr "Derechos de acceso"
 
 #: apps/users/admin.py:15
 msgid "Important dates"
@@ -112,7 +111,7 @@ msgstr ""
 
 #: apps/users/managers.py:16
 msgid "The Email must be set"
-msgstr ""
+msgstr "Se debe ingresar la dirección de correo electrónico"
 
 #: apps/users/managers.py:32
 msgid "Superuser must have is_staff=True."
@@ -124,44 +123,44 @@ msgstr ""
 
 #: apps/users/models.py:14
 msgid "Numbers only"
-msgstr ""
+msgstr "Solo números"
 
 #: apps/users/models.py:16
 msgid "Should contain 9 digits"
-msgstr ""
+msgstr "Debe contener 9 dígitos"
 
 #: apps/users/models.py:27
 msgid "Profile"
-msgstr ""
+msgstr "Perfil"
 
 #: apps/users/models.py:28
 msgid "Bids"
-msgstr ""
+msgstr "Solicitud de conexión"
 
 #: apps/users/models.py:29
 msgid "Offers"
-msgstr ""
+msgstr "Ofertas"
 
 #: apps/users/models.py:30
-msgid "calculator"
-msgstr ""
+msgid "Calculator"
+msgstr "Comparador"
 
 #: apps/users/models.py:40
 msgid "Client"
-msgstr ""
+msgstr "Cliente"
 
 #: apps/users/models.py:41
 msgid "Support"
-msgstr ""
+msgstr "Soporte"
 
 #: apps/users/models.py:44
-msgid "email address"
-msgstr ""
+msgid "Email address"
+msgstr "Dirección de correo electrónico"
 
 #: apps/users/models.py:45
-msgid "phone number"
-msgstr ""
+msgid "Phone number"
+msgstr "Número de teléfono"
 
 #: apps/users/models.py:51
 msgid "Possible values:"
-msgstr ""
+msgstr "Valores posibles:"

@@ -41,8 +41,8 @@ class CustomUser(AbstractUser):
         ("support", _("Support")),
     )
     username = models.CharField(blank=True, null=True, max_length=30)
-    email = models.EmailField(_("email address"), unique=True)
-    phone = PhoneNumberField(_("phone number"), null=True, blank=True)
+    email = models.EmailField(_("Email address"), unique=True)
+    phone = PhoneNumberField(_("Phone number"), null=True, blank=True)
     role = models.CharField(max_length=10, null=True, blank=True, choices=USER_ROLES_CHOICES)
 
     permissions = ArrayField(
