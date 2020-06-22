@@ -5,7 +5,7 @@
     :error-messages="errors"
     label="Estado"
     style="min-width: 150px;"
-    return-object
+    :return-object="returnObject"
     chips
     dense
     deletable-chips
@@ -24,6 +24,10 @@ export default {
     value: {
       type: String,
       default: '',
+    },
+    returnObject: {
+      type: Boolean,
+      default: false,
     },
   },
   data() {

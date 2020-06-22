@@ -7,7 +7,7 @@
     <div v-else>
       <v-card-title>
         <p class="flex-grow-1">Bids</p>
-        <status-select v-model="status" />
+        <status-select v-model="status" return-object />
       </v-card-title>
 
       <v-card-text>
