@@ -39,7 +39,7 @@ class RegisterSerializer(serializers.ModelSerializer):
         if not settings.DEBUG:
             subject = _("Recuperación de contraseña")
             kwargs = {"email": user.email, "password": password}
-            html_message = render_to_string("user/register_email.html", kwargs)
+            html_message = render_to_string("user/reset_password.html", kwargs)
             plain_message = strip_tags(html_message)
             user.email_user(
                 subject=subject, message=plain_message, from_email=settings.EMAIL_HOST_USER, html_message=html_message
