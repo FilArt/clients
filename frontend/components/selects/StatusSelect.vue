@@ -2,10 +2,10 @@
   <v-autocomplete
     v-model="item"
     :items="statuses"
-    :multiple="multiple"
-    :label="multiple ? 'Estados' : 'Estado'"
     :error-messages="errors"
+    label="Estado"
     style="min-width: 150px;"
+    return-object
     chips
     dense
     deletable-chips
@@ -24,10 +24,6 @@ export default {
     value: {
       type: String,
       default: '',
-    },
-    multiple: {
-      type: Boolean,
-      default: false,
     },
   },
   data() {

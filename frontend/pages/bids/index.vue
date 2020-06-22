@@ -1,13 +1,13 @@
 <template>
   <v-card>
     <v-alert v-if="bids.length === 0">
-      No bids so far.
+      Nohay solicitud.
     </v-alert>
 
     <div v-else>
       <v-card-title>
         <p class="flex-grow-1">Bids</p>
-        <status-select v-model="status" multiple />
+        <status-select v-model="status" />
       </v-card-title>
 
       <v-card-text>
@@ -25,13 +25,13 @@
           </v-list-item>
 
           <v-list-item
-            v-for="bid in (status ? bids.filter(b => b.status === status) : bids)"
+            v-for="bid in (status ? bids.filter(b => status ? b.status === status.text : true) : bids)"
             :key="bid.id"
             :to="`/bids/${bid.id}`"
             nuxt
           >
             <v-col>
-              <small> {{ bid.id }} </small>
+              <small>{{ bid.id }}</small>
             </v-col>
 
             <v-list-item-title>
@@ -55,11 +55,12 @@
 </template>
 
 <script>
-import ClientTypeSelect from '~/components/selects/ClientTypeSelect'
-import StatusSelect from '~/components/selects/StatusSelect'
-import GoUpButton from '~/components/buttons/goUpButton'
 export default {
-  components: { GoUpButton, StatusSelect, ClientTypeSelect },
+  components: {
+    GoUpButton: () => import('~/components/buttons/goUpButton'),
+    StatusSelect: () => import('~/components/selects/StatusSelect'),
+    ClientTypeSelect: () => import('~/components/selects/ClientTypeSelect'),
+  },
   data() {
     return {
       status: null,
