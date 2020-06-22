@@ -32,9 +32,3 @@
     </v-row>
   </v-card>
 </template>
-
-<script>
-export default {
-  name: 'index',
-}
-</script>
