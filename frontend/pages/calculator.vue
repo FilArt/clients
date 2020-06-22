@@ -123,7 +123,7 @@
         </v-row>
       </v-card-text>
       <v-card-actions>
-        <submit-button block label="Calculate" />
+        <submit-button block label="Comparar" />
       </v-card-actions>
     </v-form>
   </v-card>
