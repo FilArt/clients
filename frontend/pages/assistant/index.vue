@@ -3,12 +3,12 @@
     <v-row align="center">
       <v-col class="text-center">
         <v-avatar height="300" width="300">
-          <v-img src="isai.jpg" />
+          <v-img src="/isai.jpg" />
         </v-avatar>
       </v-col>
 
       <v-col>
-        <v-card-title>Tu jistor energetica personal</v-card-title>
+        <v-card-title>Tu gistor energetica personal</v-card-title>
         <v-card-title>Isai Secaduras</v-card-title>
         <v-row>
           <v-col>
