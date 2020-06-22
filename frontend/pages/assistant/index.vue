@@ -3,29 +3,27 @@
     <v-row align="center">
       <v-col class="text-center">
         <v-avatar height="300" width="300">
-          <v-img src="market.svg" />
+          <v-img src="isai.jpg" />
         </v-avatar>
       </v-col>
 
       <v-col>
-        <v-card-title>My personal histor energetica</v-card-title>
+        <v-card-title>Tu jistor energetica personal</v-card-title>
         <v-card-title>Isai Secaduras</v-card-title>
         <v-row>
           <v-col>
-            <v-btn>
-              <v-icon left>
-                mdi-phone
-              </v-icon>
-              611-111-33
-            </v-btn>
+            <v-icon left>
+              mdi-phone
+            </v-icon>
+            <a href="tel:664185817">
+              664-185-817
+            </a>
           </v-col>
           <v-col>
-            <v-btn>
-              <v-icon left>
-                mdi-email
-              </v-icon>
-              isai@mail.com
-            </v-btn>
+            <v-icon left>mdi-email</v-icon>
+            <a href="mailto:groupgestiones@gmail.com">
+              groupgestiones@gmail.com
+            </a>
           </v-col>
         </v-row>
       </v-col>
