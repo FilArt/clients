@@ -40,7 +40,7 @@ class CalculatorSerializer(serializers.ModelSerializer):
         ]
         extra_kwargs = {
             "name": {"read_only": True},
-            "company": {"write_only": True},
+            "company": {"write_only": True, "allow_null": True},
             "c2": {"write_only": True},
             "p2": {"write_only": True},
             "c3": {"write_only": True},

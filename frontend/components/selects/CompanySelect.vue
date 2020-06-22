@@ -22,11 +22,18 @@
       </v-chip>
     </template>
     <template v-slot:item="{ item }">
-      <v-avatar>
-        <v-img v-if="item['logo']" :src="item['logo']" />
-        <v-icon v-else>mdi-cancel</v-icon>
-      </v-avatar>
-      {{ item.name }}
+      <v-row align="center">
+        <v-col class="flex-grow-0">
+          <v-avatar>
+            <v-img v-if="item['logo']" :src="item['logo']" />
+            <v-icon v-else>mdi-cancel</v-icon>
+          </v-avatar>
+        </v-col>
+
+        <v-col>
+          {{ item.name }}
+        </v-col>
+      </v-row>
     </template>
   </v-autocomplete>
 </template>
@@ -73,7 +80,10 @@ export default {
       this.$axios
         .$get('/calculator/companies/')
         .then((companies) => {
-          this.companies = companies
+          this.companies = companies.concat({
+            id: null,
+            name: 'OTRA',
+          })
         })
         .finally(() => (this.loading = false))
     },
