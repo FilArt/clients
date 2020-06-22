@@ -4,7 +4,7 @@
     :items="tarifs"
     :loading="loading"
     :error-messages="errorMessages"
-    label="Tarif"
+    label="Tarifa"
     style="min-width: 50px;"
     chips
     deletable-chips

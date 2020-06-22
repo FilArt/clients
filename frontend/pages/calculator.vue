@@ -8,18 +8,23 @@
       <template v-slot:default>
         <thead>
           <tr>
+            <v-card-text>
+              Blah-blah-blah (2)
+            </v-card-text>
+          </tr>
+          <tr>
             <th></th>
             <th>
-              Offer
+              Oferta
             </th>
             <th>
-              Company
+              Comercializadora
             </th>
             <th>
-              Total
+              Totales
             </th>
             <th>
-              Annual total
+              Anual totales
             </th>
             <th></th>
           </tr>
@@ -63,8 +68,13 @@
       <v-card-title>
         Comparador
       </v-card-title>
+
       <v-card-text>
-        <v-row>
+        Blah-blah-blah
+      </v-card-text>
+
+      <v-card-text style="max-width: 750px;" class="mx-auto">
+        <v-row align="center">
           <v-col>
             <company-select
               :value="form.company"
@@ -88,16 +98,18 @@
               @input="updateForm('client_type', $event)"
             />
           </v-col>
-        </v-row>
 
-        <v-text-field
-          label="Periodo"
-          type="number"
-          name="period"
-          :value="form.period"
-          :error-messages="errorMessages.period"
-          @input="updateForm('period', $event)"
-        />
+          <v-col>
+            <v-text-field
+              label="Periodo"
+              type="number"
+              name="period"
+              :value="form.period"
+              :error-messages="errorMessages.period"
+              @input="updateForm('period', $event)"
+            />
+          </v-col>
+        </v-row>
 
         <v-row>
           <v-col v-for="letter in ['p', 'c']" :key="letter">
