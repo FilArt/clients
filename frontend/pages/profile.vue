@@ -58,7 +58,7 @@ export default {
           `users/account/${this.$auth.user.id}/`,
           this.form
         )
-        this.$swal({ title: 'Saved!', icon: 'success' })
+        this.$swal({ title: 'Salvado', icon: 'success' })
       } catch (e) {
         this.error = e.response.data
       } finally {

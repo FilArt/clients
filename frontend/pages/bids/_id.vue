@@ -1,6 +1,6 @@
 <template>
   <v-card>
-    <v-card-title>Bid <v-chip v-text="bid.status" /></v-card-title>
+    <v-card-title>Solicitud <v-chip v-text="bid.status" /></v-card-title>
     <v-card-text>
       <detail-offer :offer="bid.offer" />
     </v-card-text>
@@ -43,8 +43,7 @@
           </span>
           <v-card class="elevation-2">
             <v-card-title class="headline">
-              <span v-if="!story.old_status">Fecha de creación</span>
-              <span v-else>{{ story.new_status }}</span>
+              <span>{{ story.new_status }}</span>
             </v-card-title>
             <v-card-text>
               {{ story.message }}
@@ -71,8 +70,8 @@ export default {
     deleteBid() {
       const bidId = this.bid.id
       this.$swal({
-        title: `Delete bid ${bidId}?`,
-        text: 'Once deleted, you will not be able to recover this bid!',
+        title: `Eliminar solicitud ${bidId}?`,
+        text: 'Una vez borrado, no podrás recuperar esta oferta!',
         icon: 'warning',
         buttons: true,
         dangerMode: true,

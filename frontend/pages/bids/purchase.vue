@@ -228,8 +228,8 @@ export default {
     },
     deleteAttachment(attachmentId) {
       this.$swal({
-        title: `Delete attachment ${attachmentId}?`,
-        text: 'Once deleted, you will not be able to recover this!',
+        title: `Borrar el archivo adjunto ${attachmentId}?`,
+        text: '¡Una vez borrado, no podrás recuperar esto!',
         icon: 'warning',
         buttons: true,
         dangerMode: true,

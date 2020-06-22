@@ -5,12 +5,12 @@
         <v-icon>mdi-trash-can-outline</v-icon>
       </v-btn>
     </template>
-    <span>Delete</span>
+    <span>Eliminar</span>
   </v-tooltip>
 </template>
 
 <script>
 export default {
-  name: 'deleteButton'
+  name: 'deleteButton',
 }
 </script>

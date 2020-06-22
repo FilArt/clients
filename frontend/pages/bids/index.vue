@@ -6,7 +6,7 @@
 
     <div v-else>
       <v-card-title>
-        <p class="flex-grow-1">Bids</p>
+        <p class="flex-grow-1">Cartera</p>
         <status-select v-model="status" />
       </v-card-title>
 

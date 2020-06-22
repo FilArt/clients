@@ -48,6 +48,8 @@ class CreateBidSerializer(serializers.ModelSerializer):
 class BidStorySerializer(serializers.ModelSerializer):
     dt = serializers.SerializerMethodField()
     user = serializers.SerializerMethodField()
+    new_status = serializers.CharField(source="get_new_status_display")
+    old_status = serializers.CharField(source="get_old_status_display")
 
     class Meta:
         model = BidStory
