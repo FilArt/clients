@@ -203,7 +203,7 @@ export default {
         if (Object.keys(this.fileErrors).length !== 0) return
 
         this.$swal({
-          title: this.cardId ? 'Updated!' : 'Created!',
+          title: this.cardId ? 'Actualizado' : 'Creado',
           icon: 'success',
         })
         await this.$router.push(`/bids/${this.bid.id}`)

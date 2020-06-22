@@ -1,6 +1,6 @@
 <template>
   <v-card>
-    <v-card-title>Offer</v-card-title>
+    <v-card-title>Oferta</v-card-title>
     <v-card-text>
       <detail-offer :offer="bid.offer" />
     </v-card-text>

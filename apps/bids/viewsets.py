@@ -1,5 +1,4 @@
 from django.db import transaction
-from django.utils.translation import gettext_lazy as _
 from django_fsm import TransitionNotAllowed
 from rest_framework import viewsets
 from rest_framework.decorators import action
@@ -19,19 +18,6 @@ from .serializers import (
     SupportBidSerializer,
     ValidateBidSerializer,
 )
-
-SUPPORT_TABLE_HEADERS = [
-    {"text": _("ID"), "value": "id"},
-    {"text": _("User"), "value": "user"},
-    {"text": _("Status"), "value": "status"},
-    {"text": _("Created at"), "value": "created_at"},
-]
-
-CLIENT_TABLE_HEADERS = [
-    {"text": _("Offer"), "value": "user"},
-    {"text": _("Created at"), "value": "created_at"},
-    {"text": _("Status"), "value": "status"},
-]
 
 
 class BidViewSet(viewsets.ModelViewSet):
@@ -75,12 +61,6 @@ class BidViewSet(viewsets.ModelViewSet):
         qs = bid.bidstory_set.order_by("-dt")
         serializer = BidStorySerializer(qs, many=True, context={"request": request})
         return Response(serializer.data)
-
-    @action(methods=["GET"], detail=False)
-    def headers(self, _):
-        if self.request.user.role == "support":
-            return Response(SUPPORT_TABLE_HEADERS)
-        return Response(CLIENT_TABLE_HEADERS)
 
     # noinspection PyUnusedLocal
     @action(methods=["POST"], detail=True)

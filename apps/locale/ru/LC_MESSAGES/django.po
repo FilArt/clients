@@ -7,8 +7,10 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-06-16 17:19+0200\n"
+"POT-Creation-Date: 2020-06-22 14:44+0000\n"
 "PO-Revision-Date: 2020-06-16 17:27+0200\n"
+"Last-Translator: \n"
+"Language-Team: \n"
 "Language: ru\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -16,64 +18,46 @@ msgstr ""
 "Plural-Forms: nplurals=4; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n"
 "%10<=4 && (n%100<12 || n%100>14) ? 1 : n%10==0 || (n%10>=5 && n%10<=9) || (n"
 "%100>=11 && n%100<=14)? 2 : 3);\n"
-"Last-Translator: \n"
-"Language-Team: \n"
 "X-Generator: Poedit 2.3\n"
 
-#: apps/bids/models.py:10
+#: apps/bids/models.py:11
 msgid "Ensure this value is greater than 0."
 msgstr "Убедитесь, что это значение больше 0."
 
-#: apps/bids/models.py:22
+#: apps/bids/models.py:16
 msgid "New"
 msgstr "Новое"
 
-#: apps/bids/models.py:23
+#: apps/bids/models.py:17
 msgid "Purchase"
 msgstr "Куплено"
 
-#: apps/bids/models.py:24
+#: apps/bids/models.py:18
 msgid "Purchase updated"
 msgstr "Обновлено"
 
-#: apps/bids/models.py:25
+#: apps/bids/models.py:19
 msgid "Success"
 msgstr "Успех"
 
-#: apps/bids/models.py:26
+#: apps/bids/models.py:20
 msgid "Error"
 msgstr "Ошибка"
-
-#: apps/bids/viewsets.py:23
-msgid "ID"
-msgstr ""
-
-#: apps/bids/viewsets.py:24
-msgid "User"
-msgstr "Пользователь"
-
-#: apps/bids/viewsets.py:25
-msgid "Status"
-msgstr "Статус"
-
-#: apps/bids/viewsets.py:26
-msgid "Created at"
-msgstr "Создано"
 
 #: apps/calculator/fields.py:10
 #, python-format
 msgid "%(value)s is not in upper case"
 msgstr ""
 
-#: apps/calculator/models.py:88
+#: apps/calculator/models.py:94
 msgid "This field can not be negative."
 msgstr "Это значение должно быть больше нуля."
 
-#: apps/calculator/models.py:111
+#: apps/calculator/models.py:115
 msgid "Individual"
 msgstr "Частный"
 
-#: apps/calculator/models.py:112
+#: apps/calculator/models.py:116
 msgid "Business"
 msgstr "Юридический"
 
@@ -105,11 +89,11 @@ msgstr "CIF обратная сторона"
 msgid "Personal info"
 msgstr "Личная информация"
 
-#: apps/users/admin.py:12
+#: apps/users/admin.py:13
 msgid "Permissions"
 msgstr "Разрешения"
 
-#: apps/users/admin.py:15
+#: apps/users/admin.py:16
 msgid "Important dates"
 msgstr "Важные даты"
 
@@ -146,7 +130,9 @@ msgid "Offers"
 msgstr "Предложения"
 
 #: apps/users/models.py:30
-msgid "calculator"
+#, fuzzy
+#| msgid "calculator"
+msgid "Calculator"
 msgstr "калькулятор"
 
 #: apps/users/models.py:40
@@ -158,13 +144,42 @@ msgid "Support"
 msgstr "Поддержка"
 
 #: apps/users/models.py:44
-msgid "email address"
+#, fuzzy
+#| msgid "email address"
+msgid "Email address"
 msgstr "электронная почта"
 
 #: apps/users/models.py:45
-msgid "phone number"
+#, fuzzy
+#| msgid "phone number"
+msgid "Phone number"
 msgstr "номер телефона"
 
 #: apps/users/models.py:51
+#, fuzzy
+#| msgid "Possible values:"
+msgctxt "help text for user permissions field"
 msgid "Possible values:"
 msgstr "Возможные значения:"
+
+#: apps/users/serializers.py:25
+msgid "¡Bienvenido a Gestion Group! "
+msgstr ""
+
+#: apps/users/serializers.py:40
+msgid "Recuperación de contraseña"
+msgstr ""
+
+#~ msgid "User"
+#~ msgstr "Пользователь"
+
+#~ msgid "Status"
+#~ msgstr "Статус"
+
+#~ msgid "Created at"
+#~ msgstr "Создано"
+
+#, fuzzy
+#~| msgid "Offers"
+#~ msgid "Offer"
+#~ msgstr "Предложение"

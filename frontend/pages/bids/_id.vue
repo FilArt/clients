@@ -43,7 +43,7 @@
           </span>
           <v-card class="elevation-2">
             <v-card-title class="headline">
-              <span v-if="!story.old_status">Created</span>
+              <span v-if="!story.old_status">Fecha de creación</span>
               <span v-else>{{ story.new_status }}</span>
             </v-card-title>
             <v-card-text>

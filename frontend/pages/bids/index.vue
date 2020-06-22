@@ -7,7 +7,7 @@
     <div v-else>
       <v-card-title>
         <p class="flex-grow-1">Bids</p>
-        <status-select v-model="status" return-object />
+        <status-select v-model="status" />
       </v-card-title>
 
       <v-card-text>
@@ -19,9 +19,11 @@
               </small>
             </v-col>
 
-            <v-list-item v-for="header in headers" :key="header.value">
-              {{ header.text }}
+            <v-list-item>
+              Oferta
             </v-list-item>
+            <v-list-item>Fecha de creacion</v-list-item>
+            <v-list-item>Estado</v-list-item>
           </v-list-item>
 
           <v-list-item
@@ -68,8 +70,7 @@ export default {
   },
   async asyncData({ $axios }) {
     const bids = await $axios.$get('bids/')
-    const headers = await $axios.$get('bids/headers/')
-    return { bids, headers }
+    return { bids }
   },
 }
 </script>

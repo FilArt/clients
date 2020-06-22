@@ -2,7 +2,7 @@
   <v-card :loading="loading">
     <v-simple-table v-if="showResults">
       <v-alert type="warning" :value="!offers.length">
-        Offers not found
+        Nohay ofertas
       </v-alert>
 
       <template v-slot:default>

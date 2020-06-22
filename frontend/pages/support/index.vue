@@ -18,7 +18,12 @@
 export default {
   async asyncData({ $axios }) {
     const items = await $axios.$get('bids/')
-    const headers = (await $axios.$get('bids/headers/')).concat({
+    const headers = [
+      { text: 'ID', value: 'id' },
+      { text: 'Usuario', value: 'user' },
+      { text: 'Estado', value: 'status' },
+      { text: 'Fecha de creacion', value: 'created_at' },
+    ].concat({
       text: null,
       value: 'actions',
     })
