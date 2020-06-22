@@ -8,22 +8,35 @@
       </v-col>
 
       <v-col>
-        <v-card-title>Tu gistor energetica personal</v-card-title>
-        <v-card-title>Isai Secaduras</v-card-title>
         <v-row>
           <v-col>
-            <v-icon left>
-              mdi-phone
-            </v-icon>
-            <a href="tel:664185817">
-              664-185-817
-            </a>
+            <v-card-title>Tu gistor energetica personal</v-card-title>
+          </v-col>
+        </v-row>
+        <v-row>
+          <v-col>
+            <v-card-title>Isai Secaduras</v-card-title>
+          </v-col>
+        </v-row>
+
+        <v-row>
+          <v-col>
+            <div class="d-flex flex-inline">
+              <v-icon left>
+                mdi-phone
+              </v-icon>
+              <a href="tel:664185817">
+                664-185-817
+              </a>
+            </div>
           </v-col>
           <v-col>
-            <v-icon left>mdi-email</v-icon>
-            <a href="mailto:groupgestiones@gmail.com">
-              groupgestiones@gmail.com
-            </a>
+            <div class="d-flex flex-inline">
+              <v-icon left>mdi-email</v-icon>
+              <a href="mailto:groupgestiones@gmail.com">
+                groupgestiones@gmail.com
+              </a>
+            </div>
           </v-col>
         </v-row>
       </v-col>
