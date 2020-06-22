@@ -1,7 +1,7 @@
 <template>
   <v-card>
     <v-card-title>
-      <p class="flex-grow-1">Buy offer {{ bid.id }}</p>
+      <p class="flex-grow-1">Contratar oferta {{ bid.id }}</p>
     </v-card-title>
 
     <v-card-text>
@@ -99,7 +99,7 @@
           </v-col>
         </v-row>
 
-        <submit-button block label="Buy" />
+        <submit-button block label="Contratar" />
       </v-form>
     </v-card-text>
   </v-card>

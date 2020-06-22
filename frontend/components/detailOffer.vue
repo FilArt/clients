@@ -40,7 +40,7 @@
               <td>Consumo anual:</td>
               <td>
                 desde {{ offer.consumption_min }} kW/h hasta
-                {{ offer.consumption_max }}
+                {{ offer.consumption_max.toString().substr(0, 5) }}
                 kW/h
               </td>
             </tr>

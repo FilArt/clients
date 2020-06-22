@@ -21,7 +21,7 @@ class BidListSerializer(serializers.ModelSerializer):
         return arrow.get(instance.created_at).humanize(locale=self.context["request"].LANGUAGE_CODE)
 
 
-class BidSerializer(serializers.ModelSerializer):
+class BidSerializer(BidListSerializer):
     offer = OfferSerializer()
 
     class Meta:

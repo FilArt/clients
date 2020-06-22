@@ -15,7 +15,7 @@
             }&card=${bid.card}`"
             color="success"
           >
-            {{ bid.card ? 'Change' : 'Buy' }}
+            {{ bid.card ? 'Editar' : 'Contratar' }}
             <v-icon right>{{ bid.card ? 'mdi-pencil' : 'mdi-plus' }}</v-icon>
           </v-btn>
         </v-col>
