@@ -52,25 +52,7 @@ export default {
   },
   computed: {
     items() {
-      const items = [
-        {
-          icon: 'mdi-account',
-          title: 'Perfil',
-          to: '/profile',
-        },
-        {
-          icon: 'mdi-briefcase',
-          title: 'Cartera',
-          to: '/bids',
-        },
-      ]
-      if (this.$auth.user.permissions.includes('calculator')) {
-        items.push({
-          icon: 'mdi-calculator',
-          title: 'Comparador',
-          to: '/calculator',
-        })
-      }
+      const items = []
       if (this.$auth.user.permissions.includes('offers')) {
         items.push({
           icon: 'mdi-offer',
@@ -78,12 +60,35 @@ export default {
           to: '/offers',
         })
       }
-      const role = this.$auth.user.role
-      if (role) {
+      if (this.$auth.user.permissions.includes('calculator')) {
         items.push({
-          icon: role === 'support' ? 'mdi-lifebuoy' : '',
-          title: role === 'support' ? 'Support' : '',
-          to: '/' + role,
+          icon: 'mdi-calculator',
+          title: 'Comparador',
+          to: '/calculator',
+        })
+      }
+      items.push({
+        icon: 'mdi-briefcase',
+        title: 'Cartera',
+        to: '/bids',
+      })
+      items.push({
+        icon: 'mdi-account-tie',
+        title: 'Asistente personal',
+        to: '/assistant',
+      })
+      items.push({
+        icon: 'mdi-account',
+        title: 'Perfil',
+        to: '/profile',
+      })
+
+      const role = this.$auth.user.role
+      if (role === 'support') {
+        items.push({
+          icon: 'mdi-lifebuoy',
+          title: 'Support',
+          to: '/support',
         })
       }
       return items
