@@ -1,5 +1,8 @@
 from django.conf import settings
 from django.contrib.auth.base_user import BaseUserManager
+from django.template.loader import render_to_string
+from django.utils.html import strip_tags
+from django.utils.translation import gettext_lazy as _
 from rest_framework import serializers
 
 from apps.users.models import CustomUser, UserSettings
@@ -18,8 +21,29 @@ class RegisterSerializer(serializers.ModelSerializer):
             user.set_password(1)
             user.save(update_fields=["password"])
             return user
-        user.email_user("New users", "email: %s\npassword: %s" % (email, password))
+
+        subject = _("¡Bienvenido a Gestion Group! ")
+        kwargs = {"email": user.email, "password": password}
+        html_message = render_to_string("user/register_email.html", kwargs)
+        plain_message = strip_tags(html_message)
+        user.email_user(
+            subject=subject, message=plain_message, from_email=settings.EMAIL_HOST_USER, html_message=html_message
+        )
         return user
+
+    def reset_password(self):
+        user = self.instance
+        password = 1 if settings.DEBUG else BaseUserManager().make_random_password()
+        user.set_password(password)
+        user.save(update_fields=["password"])
+        if not settings.DEBUG:
+            subject = _("Recuperación de contraseña")
+            kwargs = {"email": user.email, "password": password}
+            html_message = render_to_string("user/register_email.html", kwargs)
+            plain_message = strip_tags(html_message)
+            user.email_user(
+                subject=subject, message=plain_message, from_email=settings.EMAIL_HOST_USER, html_message=html_message
+            )
 
 
 class UserSettingsSerializer(serializers.ModelSerializer):
