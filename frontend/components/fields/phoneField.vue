@@ -3,7 +3,7 @@
     v-model="phone"
     v-mask="'###-###-###'"
     :error-messages="errorMessages"
-    label="Telefono"
+    :label="label"
     name="phone"
     prepend-icon="mdi-phone"
     type="tel"
@@ -15,6 +15,10 @@
 export default {
   name: 'phoneField',
   props: {
+    label: {
+      type: String,
+      default: 'Telefono',
+    },
     value: {
       type: String,
       default: null,

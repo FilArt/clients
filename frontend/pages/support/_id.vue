@@ -7,7 +7,7 @@
 
     <v-card-title>Card</v-card-title>
     <v-card-text>
-      <card-detail :card="bid.card" />
+      <card-detail :card="bid.card.data" />
     </v-card-text>
 
     <v-card-title>Attachments</v-card-title>

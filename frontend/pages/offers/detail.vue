@@ -21,7 +21,9 @@
         <v-row class="d-flex align-center justify-space-around flex-wrap">
           <v-col v-for="offer in offers" :key="offer.id">
             <v-card
-              :to="`/offers/${offer.id}?name=${myEscape(offer.name)}`"
+              :to="`/offers/${offer.id}?name=${myEscape(
+                offer.name
+              )}&client_type=${filters.client_type}`"
               nuxt
               class="mx-auto"
               max-width="300"
@@ -57,7 +59,7 @@ export default {
       filters: {
         company: this.$route.query.company
           ? parseInt(this.$route.query.company || '1')
-          : null,
+          : '',
         tarif: this.$route.query.tarif,
         client_type: this.$route.query.client_type,
       },
