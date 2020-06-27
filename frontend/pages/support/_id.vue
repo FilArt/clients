@@ -10,7 +10,7 @@
       <card-detail :card="bid.card.data" />
     </v-card-text>
 
-    <v-card-title>Attachments</v-card-title>
+    <v-card-title>Archivos adjuntos</v-card-title>
     <v-card-text>
       <v-chip
         v-for="attachment in bid.card.attachments"
@@ -19,30 +19,25 @@
         exact
         target="_blank"
         :href="attachment.attachment"
-      >
-        Attachment {{ attachment.id }}
-      </v-chip>
+      >Attachment {{ attachment.id }}</v-chip>
     </v-card-text>
 
     <v-card-actions>
       <v-dialog v-model="submitDialog">
         <template v-slot:activator="{ on }">
-          <v-btn color="primary" v-on="on" block
-            >Submit
+          <v-btn color="primary" v-on="on" block>
+            Enviar
             <v-icon right>mdi-check</v-icon>
           </v-btn>
         </template>
         <v-card>
-          <v-card-title
-            ><p class="flex-grow-1">Submit</p>
+          <v-card-title>
+            <p class="flex-grow-1">Enviar</p>
             <close-button @click="submitDialog = false" />
           </v-card-title>
           <v-card-text>
             <v-form @submit.prevent="submit" novalidate>
-              <status-select
-                v-model="data.status"
-                :errors="errorMessages.status"
-              />
+              <status-select v-model="data.status" :errors="errorMessages.status" />
               <v-textarea
                 v-model="data.message"
                 label="Message"
@@ -59,7 +54,8 @@
                   type="submit"
                   color="success"
                   :disabled="!data.status || !data.message"
-                  >Listo
+                >
+                  Listo
                   <v-icon right>mdi-check</v-icon>
                 </v-btn>
               </v-card-actions>
@@ -108,7 +104,7 @@ export default {
         .then((data) => {
           this.bid = data
           this.$swal({
-            title: 'Submitted',
+            title: 'Listo',
             icon: 'success',
           }).then(() => {
             this.submitDialog = false

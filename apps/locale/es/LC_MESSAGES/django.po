@@ -36,7 +36,7 @@ msgstr "Proceso de contratación actualizado"
 
 #: apps/bids/models.py:19
 msgid "Success"
-msgstr "Éxito"
+msgstr "Contratado"
 
 #: apps/bids/models.py:20
 msgid "Error"

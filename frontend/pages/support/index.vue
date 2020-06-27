@@ -22,7 +22,7 @@ export default {
       { text: 'ID', value: 'id' },
       { text: 'Usuario', value: 'user' },
       { text: 'Estado', value: 'status' },
-      { text: 'Fecha de creacion', value: 'created_at' },
+      { text: 'Fecha de creación', value: 'created_at' },
     ].concat({
       text: null,
       value: 'actions',

@@ -1,20 +1,8 @@
 <template>
   <v-app>
-    <v-navigation-drawer
-      v-if="$auth.loggedIn"
-      v-model="drawer"
-      fixed
-      app
-      clipped
-    >
+    <v-navigation-drawer v-if="$auth.loggedIn" v-model="drawer" fixed app clipped>
       <v-list>
-        <v-list-item
-          v-for="(item, i) in items"
-          :key="i"
-          :to="item.to"
-          router
-          exact
-        >
+        <v-list-item v-for="(item, i) in items" :key="i" :to="item.to" router exact>
           <v-list-item-action>
             <v-icon>{{ item.icon }}</v-icon>
           </v-list-item-action>
@@ -87,7 +75,7 @@ export default {
       if (role === 'support') {
         items.push({
           icon: 'mdi-lifebuoy',
-          title: 'Support',
+          title: 'Soporte',
           to: '/support',
         })
       }

@@ -21,14 +21,10 @@
         <v-text-field
           v-model="card.name"
           :label="isIndividual ? 'Nombre/razon social' : 'Nombre y apellido'"
-          hint=""
+          hint
         />
 
-        <v-text-field
-          v-if="!isIndividual"
-          v-model="card.cif_dni"
-          label="CIF/DNI"
-        />
+        <v-text-field v-if="!isIndividual" v-model="card.cif_dni" label="CIF/DNI" />
 
         <v-text-field
           v-if="!isIndividual"
@@ -40,7 +36,7 @@
 
         <phone-field v-model="card.phoneMobile" label="Telefono mobil" />
 
-        <phone-field v-model="card.phoneCity" label="Telefono pijo" />
+        <phone-field v-model="card.phoneCity" label="Telefono fijo" />
 
         <email-field v-model="card.email" />
 
@@ -48,19 +44,11 @@
 
         <v-text-field v-model="card.cups" label="CUPS LUZ" />
 
-        <v-text-field
-          v-model="card.power"
-          label="Potencia contractada"
-          type="number"
-        />
+        <v-text-field v-model="card.power" label="Potencia contractada" type="number" />
 
         <v-text-field v-model="card.province" label="Provincia" />
         <v-text-field v-model="card.region" label="Poblacion" />
-        <v-text-field
-          v-model="card.postalcode"
-          label="Codigo postal"
-          type="number"
-        />
+        <v-text-field v-model="card.postalcode" label="Codigo postal" type="number" />
         <v-text-field v-model="card.address" label="Direccion" />
       </v-card>
     </v-card-text>

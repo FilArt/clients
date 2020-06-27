@@ -25,14 +25,10 @@
         <v-text-field
           v-model="form.name"
           :label="isIndividual ? 'Nombre/razon social' : 'Nombre y apellido'"
-          hint=""
+          hint
         />
 
-        <v-text-field
-          v-if="!isIndividual"
-          v-model="form.cif_dni"
-          label="CIF/DNI"
-        />
+        <v-text-field v-if="!isIndividual" v-model="form.cif_dni" label="CIF/DNI" />
 
         <v-text-field
           v-if="!isIndividual"
@@ -44,7 +40,7 @@
 
         <phone-field v-model="form.phoneMobile" label="Telefono mobil" />
 
-        <phone-field v-model="form.phoneCity" label="Telefono pijo" />
+        <phone-field v-model="form.phoneCity" label="Telefono fijo" />
 
         <email-field v-model="form.email" />
 
@@ -52,19 +48,11 @@
 
         <v-text-field v-model="form.cups" label="CUPS LUZ" />
 
-        <v-text-field
-          v-model="form.power"
-          label="Potencia contractada"
-          type="number"
-        />
+        <v-text-field v-model="form.power" label="Potencia contractada" type="number" />
 
         <v-text-field v-model="form.province" label="Provincia" />
         <v-text-field v-model="form.region" label="Poblacion" />
-        <v-text-field
-          v-model="form.postalcode"
-          label="Codigo postal"
-          type="number"
-        />
+        <v-text-field v-model="form.postalcode" label="Codigo postal" type="number" />
         <v-text-field v-model="form.address" label="Direccion" />
 
         <v-row
@@ -93,9 +81,7 @@
               target="_blank"
               :href="attachment.attachment"
               @click:close="deleteAttachment(attachment.id)"
-            >
-              Attachment {{ attachment.id }}
-            </v-chip>
+            >Archivo adjunto {{ attachment.id }}</v-chip>
           </v-col>
         </v-row>
 

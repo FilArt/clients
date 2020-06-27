@@ -1,8 +1,6 @@
 <template>
   <v-card>
-    <v-alert v-if="bids.length === 0">
-      Nohay solicitud.
-    </v-alert>
+    <v-alert v-if="bids.length === 0">Nohay solicitud.</v-alert>
 
     <div v-else>
       <v-card-title>
@@ -14,15 +12,11 @@
         <v-list nav shaped subheader>
           <v-list-item>
             <v-col>
-              <small>
-                №
-              </small>
+              <small>№</small>
             </v-col>
 
-            <v-list-item>
-              Oferta
-            </v-list-item>
-            <v-list-item>Fecha de creacion</v-list-item>
+            <v-list-item>Oferta</v-list-item>
+            <v-list-item>Fecha de creación</v-list-item>
             <v-list-item>Estado</v-list-item>
           </v-list-item>
 
@@ -36,17 +30,11 @@
               <small>{{ bid.id }}</small>
             </v-col>
 
-            <v-list-item-title>
-              {{ bid.offer_name }}
-            </v-list-item-title>
+            <v-list-item-title>{{ bid.offer_name }}</v-list-item-title>
 
-            <v-list-item-title>
-              {{ bid.created_at }}
-            </v-list-item-title>
+            <v-list-item-title>{{ bid.created_at }}</v-list-item-title>
 
-            <v-list-item-title>
-              {{ bid.status }}
-            </v-list-item-title>
+            <v-list-item-title>{{ bid.status }}</v-list-item-title>
           </v-list-item>
         </v-list>
       </v-card-text>

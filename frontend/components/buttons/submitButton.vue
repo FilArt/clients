@@ -14,7 +14,7 @@
         <v-icon :right="!!label">mdi-check</v-icon>
       </v-btn>
     </template>
-    <span>{{ label ? label : 'Submit' }}</span>
+    <span>{{ label ? label : 'Enviar' }}</span>
   </v-tooltip>
 </template>
 

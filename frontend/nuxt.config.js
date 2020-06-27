@@ -1,4 +1,5 @@
 import colors from 'vuetify/es5/util/colors'
+import es from 'vuetify/es5/locale/es'
 
 const DEV = process.env.NODE_ENV !== 'production'
 
@@ -106,6 +107,10 @@ export default {
    ** https://github.com/nuxt-community/vuetify-module
    */
   vuetify: {
+    lang: {
+      locales: { es },
+      current: 'es',
+    },
     customVariables: ['~/assets/variables.scss'],
     theme: {
       dark: true,
@@ -129,6 +134,6 @@ export default {
     /*
      ** You can extend webpack config here
      */
-    extend(config, ctx) {},
+    extend(config, ctx) { },
   },
 }
