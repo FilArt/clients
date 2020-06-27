@@ -38,7 +38,6 @@ class Bid(models.Model):
         self.bidstory_set.create(
             user=self.user, old_status=self.status, new_status="purchase",
         )
-        ...
 
     @transition(
         field=status, source=["purchase", "purchase_updated"], target="success", on_error="error",
@@ -47,7 +46,6 @@ class Bid(models.Model):
         self.bidstory_set.create(
             user=user, old_status=self.status, new_status="success", message=message,
         )
-        ...
 
     @transition(
         field=status, source=["purchase", "purchase_updated"], target="error", on_error="error",
@@ -56,7 +54,6 @@ class Bid(models.Model):
         self.bidstory_set.create(
             user=user, old_status=self.status, new_status="error", message=message,
         )
-        ...
 
     @transition(
         field=status, source=["error", "success"], target="purchase_updated", on_error="error",
@@ -65,7 +62,6 @@ class Bid(models.Model):
         self.bidstory_set.create(
             user=self.user, old_status=self.status, new_status="purchase_updated", message=message,
         )
-        ...
 
 
 class BidStory(models.Model):

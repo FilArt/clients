@@ -10,10 +10,10 @@ from rest_framework.response import Response
 from .models import Bid
 from .permissions import BidsPermission
 from .serializers import (
-    BidSerializer,
     BidListSerializer,
-    CreateBidSerializer,
+    BidSerializer,
     BidStorySerializer,
+    CreateBidSerializer,
     SupportBidListSerializer,
     SupportBidSerializer,
     ValidateBidSerializer,
@@ -21,7 +21,7 @@ from .serializers import (
 
 
 class BidViewSet(viewsets.ModelViewSet):
-    permission_classes = (BidsPermission, IsAuthenticated)
+    permission_classes = (IsAuthenticated, BidsPermission)
     ordering = ("-created_at",)
 
     def get_serializer_class(self):
@@ -54,17 +54,15 @@ class BidViewSet(viewsets.ModelViewSet):
     def statuses(self, _):
         return Response([{"text": text, "value": value} for value, text in Bid.VALIDATION_STATUS_CHOICES])
 
-    # noinspection PyUnusedLocal
     @action(methods=["GET"], detail=True)
-    def history(self, request: Request, pk: int = None):
+    def history(self, request: Request, _):
         bid = self.get_object()
         qs = bid.bidstory_set.order_by("-dt")
         serializer = BidStorySerializer(qs, many=True, context={"request": request})
         return Response(serializer.data)
 
-    # noinspection PyUnusedLocal
     @action(methods=["POST"], detail=True)
-    def validate(self, request: Request, pk: int = None):
+    def validate(self, request: Request, _):
         bid = self.get_object()
         serializer = ValidateBidSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
@@ -75,7 +73,7 @@ class BidViewSet(viewsets.ModelViewSet):
         )
         try:
             fsm_action(user, message)
-        except TransitionNotAllowed as e:
-            raise ValidationError({"status": [str(e)]})
+        except TransitionNotAllowed as exc:
+            raise ValidationError({"status": [str(exc)]})
         bid.save()
-        return Response(SupportBidSerializer(bid).data)
+        return Response(SupportBidSerializer(bid, context={"request": request}).data)

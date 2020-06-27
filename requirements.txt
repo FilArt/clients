@@ -13,3 +13,4 @@ arrow
 pytz
 django-fsm
 django-cleanup
+pylint-django
