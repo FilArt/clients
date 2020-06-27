@@ -55,14 +55,16 @@ class BidViewSet(viewsets.ModelViewSet):
         return Response([{"text": text, "value": value} for value, text in Bid.VALIDATION_STATUS_CHOICES])
 
     @action(methods=["GET"], detail=True)
-    def history(self, request: Request, _):
+    def history(self, request: Request, pk: int):
+        # pylint: disable=unused-argument, invalid-name
         bid = self.get_object()
         qs = bid.bidstory_set.order_by("-dt")
         serializer = BidStorySerializer(qs, many=True, context={"request": request})
         return Response(serializer.data)
 
     @action(methods=["POST"], detail=True)
-    def validate(self, request: Request, _):
+    def validate(self, request: Request, pk: int):
+        # pylint: disable=unused-argument, invalid-name
         bid = self.get_object()
         serializer = ValidateBidSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)

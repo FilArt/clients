@@ -106,9 +106,7 @@ export default {
           this.$swal({
             title: 'Listo',
             icon: 'success',
-          }).then(() => {
-            this.submitDialog = false
-          })
+          }).then(() => (this.$router.push('/support')))
         })
         .catch((e) => (this.errorMessages = e.response.data))
     },
