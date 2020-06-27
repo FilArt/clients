@@ -11,6 +11,10 @@
           </v-list-item-content>
         </v-list-item>
       </v-list>
+
+      <template v-slot:append>
+        <small>Last update: 28/06/2020 3:00</small>
+      </template>
     </v-navigation-drawer>
 
     <v-app-bar fixed app v-if="$auth.loggedIn" clipped-left>
@@ -23,6 +27,11 @@
       </v-btn>
     </v-app-bar>
     <v-main>
+      <v-breadcrumbs :items="breadcrumbs" large>
+        <template v-slot:item="{ item }">
+          <v-breadcrumbs-item :to="item.to" replace exact>{{ item.text }}</v-breadcrumbs-item>
+        </template>
+      </v-breadcrumbs>
       <nuxt />
     </v-main>
   </v-app>
@@ -39,6 +48,17 @@ export default {
     }
   },
   computed: {
+    breadcrumbs() {
+      const crumbs = this.$route.path.split('/')
+      return crumbs.map((crumb, idx) => {
+        const crumbPath = crumbs.filter((c1, idx1) => idx1 <= idx).join('/')
+        const match = this.$router.match(crumbPath)
+        return {
+          text: crumb,
+          to: { params: match.params, name: match.name, query: match.query },
+        }
+      })
+    },
     items() {
       const items = []
       if (this.$auth.user.permissions.includes('offers')) {
