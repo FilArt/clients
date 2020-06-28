@@ -155,23 +155,22 @@ export default {
       fileErrors: {},
     }
   },
-  async asyncData({ route, $axios }) {
+  async asyncData({ $axios, params }) {
+    const bid = await $axios.$get(`bids/${params.id}/`)
     let attachments = []
     let form = defaultForm
-    let cardId = route.query.card
-    if (cardId && /^\d+$/.test(cardId)) {
+    let cardId = bid.card
+    if (cardId) {
       const data = await $axios.$get(`cards/cards/${cardId}/`)
       form = data.data
       attachments = data.attachments
-    } else {
-      cardId = null
     }
     return {
       attachments: attachments,
       cardId: cardId,
       form: form,
-      bid: { id: route.query.bid },
-      isIndividual: route.query.isIndividual === 'true',
+      bid: bid,
+      isIndividual: bid.offer.client_type === 0,
     }
   },
   methods: {

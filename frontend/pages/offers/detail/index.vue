@@ -21,7 +21,7 @@
         <v-row class="d-flex align-center justify-space-around flex-wrap">
           <v-col v-for="offer in offers" :key="offer.id">
             <v-card
-              :to="`/offers/${offer.id}?name=${myEscape(
+              :to="`/offers/detail/${offer.id}?name=${myEscape(
                 offer.name
               )}&client_type=${filters.client_type}`"
               nuxt
@@ -29,10 +29,8 @@
               max-width="300"
             >
               <v-img :src="offer.company_logo || '/no-image.svg'" />
-              <v-card-subtitle
-                v-text="offer.company + ' (id:' + offer.id + ')'"
-              />
-              <v-card-title>{{ offer.name }} </v-card-title>
+              <v-card-subtitle v-text="offer.company + ' (id:' + offer.id + ')'" />
+              <v-card-title>{{ offer.name }}</v-card-title>
             </v-card>
           </v-col>
         </v-row>

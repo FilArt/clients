@@ -1,6 +1,9 @@
 <template>
   <v-card>
-    <v-card-title>Solicitud <v-chip v-text="bid.status" /></v-card-title>
+    <v-card-title>
+      Solicitud
+      <v-chip v-text="bid.status" />
+    </v-card-title>
     <v-card-text>
       <detail-offer :offer="bid.offer" />
     </v-card-text>
@@ -8,13 +11,7 @@
     <v-card-actions>
       <v-row class="text-center">
         <v-col>
-          <v-btn
-            nuxt
-            :to="`/bids/purchase?bid=${bid.id}&isIndividual=${
-              bid.client_type === 0
-            }&card=${bid.card}`"
-            color="success"
-          >
+          <v-btn nuxt :to="`/bids/${bid.id}/purchase`" color="success">
             {{ bid.card ? 'Editar' : 'Contratar' }}
             <v-icon right>{{ bid.card ? 'mdi-pencil' : 'mdi-plus' }}</v-icon>
           </v-btn>
@@ -45,9 +42,7 @@
             <v-card-title class="headline">
               <span>{{ story.new_status }}</span>
             </v-card-title>
-            <v-card-text>
-              {{ story.message }}
-            </v-card-text>
+            <v-card-text>{{ story.message }}</v-card-text>
           </v-card>
         </v-timeline-item>
       </v-timeline>
