@@ -13,8 +13,8 @@ class RegisterSerializer(serializers.ModelSerializer):
         model = CustomUser
         fields = ["email"]
 
-    def save(self):
-        email = self.validated_data["email"]
+    def save(self, **kwargs):
+        email = kwargs.get("email") or self.validated_data.get("email")
         password = BaseUserManager().make_random_password()
         user = CustomUser.objects.create_user(email, password)
         if settings.DEBUG:
@@ -73,7 +73,8 @@ class AccountSerializer(serializers.ModelSerializer):
             "permissions": {"read_only": True},
         }
 
-    def update(self, user: CustomUser, validated_data):
+    def update(self, instance, validated_data):
+        user: CustomUser = instance
         user_settings_data = validated_data.get("settings")
         if user_settings_data:
             if not hasattr(user, "usersettings"):
