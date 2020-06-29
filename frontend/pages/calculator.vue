@@ -1,31 +1,19 @@
 <template>
   <v-card :loading="loading">
     <v-simple-table v-if="showResults">
-      <v-alert type="warning" :value="!offers.length">
-        Nohay ofertas
-      </v-alert>
+      <v-alert type="warning" :value="!offers.length">Nohay ofertas</v-alert>
 
       <template v-slot:default>
         <thead>
           <tr>
-            <v-card-text>
-              Blah-blah-blah (2)
-            </v-card-text>
+            <v-card-text>Blah-blah-blah (2)</v-card-text>
           </tr>
           <tr>
             <th></th>
-            <th>
-              Oferta
-            </th>
-            <th>
-              Comercializadora
-            </th>
-            <th>
-              Totales
-            </th>
-            <th>
-              Anual totales
-            </th>
+            <th>Oferta</th>
+            <th>Comercializadora</th>
+            <th>Totales</th>
+            <th>Anual totales</th>
             <th></th>
           </tr>
         </thead>
@@ -37,19 +25,15 @@
                 <v-img :src="offer.company_logo || '/no-image.svg'" />
               </v-list-item-avatar>
             </td>
-            <td>
-              {{ offer.name }}
-            </td>
-            <td>
-              {{ offer.company_name }}
-            </td>
+            <td>{{ offer.name }}</td>
+            <td>{{ offer.company_name }}</td>
             <td>{{ offer.total }} €</td>
             <td>{{ offer.annual_total }} €</td>
             <td>
               <v-btn
                 icon
                 nuxt
-                :to="`/offers/${offer.id}?id=${offer.id}&back=${$route.fullPath}&fromCalculator=true`"
+                :to="`/offers/detail/${offer.id}?id=${offer.id}&back=${$route.fullPath}&fromCalculator=true`"
               >
                 <v-icon>mdi-eye</v-icon>
               </v-btn>
@@ -65,13 +49,9 @@
     </v-btn>
 
     <v-form v-else @submit.prevent="submit" novalidate>
-      <v-card-title>
-        Comparador
-      </v-card-title>
+      <v-card-title>Comparador</v-card-title>
 
-      <v-card-text>
-        Blah-blah-blah
-      </v-card-text>
+      <v-card-text>Blah-blah-blah</v-card-text>
 
       <v-card-text style="max-width: 750px;" class="mx-auto">
         <v-row align="center">
