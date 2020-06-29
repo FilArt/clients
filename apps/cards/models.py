@@ -20,6 +20,7 @@ class Card(models.Model):
 class CardAttachment(models.Model):
     ATTACHMENT_TYPE_CHOICES = (
         ("factura", _("Factura")),
+        ("factura_1", _("Factura reverso")),
         ("dni1", _("DNI")),
         ("dni2", _("DNI reverse side")),
         ("cif1", _("CIF")),
