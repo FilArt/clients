@@ -4,6 +4,11 @@ from django.db import models
 from django.utils.translation import gettext_lazy as _
 
 
+def is_positive(value):
+    if value < 0:
+        raise ValidationError(_("This value must be positive."))
+
+
 def validate_uppercase(value: str):
     if value != value.upper():
         raise ValidationError(

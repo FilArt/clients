@@ -1,51 +1,160 @@
+from django.db import models
+from django.db.models import F, Q, Value
+from django.db.models.functions import Round
 from rest_framework import serializers
 from rest_framework.decorators import api_view
 from rest_framework.exceptions import PermissionDenied
 from rest_framework.request import Request
 from rest_framework.response import Response
 
-from .models import Offer, Tarif
+from .models import CalculatorSettings, Offer, Tarif
+
+
+class TaxField(serializers.CharField):
+    def __init__(self, **kwargs):
+        kwargs["source"] = "*"
+        super().__init__(**kwargs)
+
+    def to_representation(self, value):
+        return {
+            "percent": round(self.context["tax_percent"] * 100, 2),
+            "value": "{:.2f}".format(value.tax),
+        }
+
+
+class IvaField(TaxField):
+    def to_representation(self, value):
+        return {
+            "percent": round(self.context["iva_percent"] * 100, 2),
+            "value": "{:.2f}".format(value.iva),
+        }
+
+
+class ConsumoCalculationField(serializers.CharField):
+    def __init__(self, **kwargs):
+        kwargs["read_only"] = True
+        kwargs["source"] = "*"
+        super().__init__(**kwargs)
+
+    def to_representation(self, value):
+        _, _, field_name = self.field_name.split("_")
+        subtotal = getattr(value, "st_%s" % field_name)
+        price = getattr(value, field_name)
+        initial_data = self.context["initial_data"]
+        user_value = initial_data.get(field_name, "-")
+        return f"{user_value} kW/h x {initial_data['period']} dias x {price} € = {subtotal} €"
+
+
+class ConsumoField(serializers.FloatField):
+    def __init__(self, **kwargs):
+        kwargs["default"] = 0
+        kwargs["min_value"] = 0
+        kwargs["write_only"] = True
+        kwargs["required"] = False
+        super().__init__(**kwargs)
+
+
+class PotenciaField(ConsumoField):
+    ...
 
 
 class CalculatorSerializer(serializers.ModelSerializer):
+    id = serializers.IntegerField(required=False)
     company_name = serializers.CharField(source="company.name", read_only=True)
     company_logo = serializers.ImageField(source="company.logo", read_only=True)
     period = serializers.IntegerField(min_value=1, write_only=True)
-    tarif = serializers.ChoiceField(choices=Tarif.choices(), write_only=True)
+    tarif = serializers.ChoiceField(choices=Tarif.choices())
     client_type = serializers.ChoiceField(choices=Offer.CLIENT_TYPE_CHOICES, write_only=True)
-    c1 = serializers.FloatField(min_value=0, write_only=True)
-    p1 = serializers.FloatField(min_value=0, write_only=True)
+    c1 = ConsumoField(required=True)
+    c2 = ConsumoField()
+    c3 = ConsumoField()
+    p1 = PotenciaField(required=True)
+    p2 = PotenciaField()
+    p3 = PotenciaField()
     total = serializers.FloatField(read_only=True)
     annual_total = serializers.FloatField(read_only=True)
+    current_price = serializers.FloatField(min_value=0, write_only=True)
+
+    c_st_c1 = ConsumoCalculationField()
+    c_st_c2 = ConsumoCalculationField()
+    c_st_c3 = ConsumoCalculationField()
+    c_st_p1 = ConsumoCalculationField()
+    c_st_p2 = ConsumoCalculationField()
+    c_st_p3 = ConsumoCalculationField()
+
+    after_rental = serializers.FloatField(read_only=True)
+    iva = IvaField(read_only=True)
+    tax = TaxField(read_only=True)
+    paga = serializers.FloatField(read_only=True)
+    paga_percent = serializers.FloatField(read_only=True)
+    paga_actualmente = serializers.FloatField(read_only=True)
+
+    with_calculations = serializers.BooleanField(default=False, write_only=True)
 
     class Meta:
         model = Offer
-        fields = [
-            "id",
-            "company_name",
-            "company_logo",
-            "name",
-            "company",
-            "period",
-            "tarif",
-            "client_type",
-            "c1",
-            "c2",
-            "c3",
-            "p1",
-            "p2",
-            "p3",
-            "annual_total",
-            "total",
-        ]
+        exclude = ["description", "uuid"]
         extra_kwargs = {
             "name": {"read_only": True},
             "company": {"write_only": True, "allow_null": True},
-            "c2": {"write_only": True},
-            "p2": {"write_only": True},
-            "c3": {"write_only": True},
-            "p3": {"write_only": True},
         }
+
+    def get_calculated(self) -> list:
+        data = self.validated_data
+        calculator_settings = CalculatorSettings.objects.first()
+        epd = calculator_settings.get_equip(data["tarif"])
+        rental = epd * data["period"]
+
+        power_min = min(filter((lambda n: n != 0), (data["p1"], data["p2"], data["p3"])))
+        power_max = max(filter((lambda n: n != 0), (data["p1"], data["p2"], data["p3"])))
+        annual_consumption = ((data["c1"] + data["c2"] + data["c3"]) / data["period"]) * 365
+        current_price = Value(data["current_price"], output_field=models.FloatField())
+
+        offers = Offer.objects.all()
+        if data.get("id"):
+            offers = offers.filter(id=data.get("id"))
+
+        qs = (
+            offers.exclude(company=data["company"])
+            .filter(
+                Q(
+                    Q(power_max__isnull=True) | Q(power_max__gte=power_min),
+                    Q(power_min__isnull=True) | Q(power_min__lte=power_max),
+                    Q(consumption_max__isnull=True) | Q(consumption_max__gte=annual_consumption),
+                    Q(consumption_min__isnull=True) | Q(consumption_min__lte=annual_consumption),
+                    client_type=data["client_type"],
+                    tarif=data["tarif"],
+                ),
+            )
+            .annotate(
+                st_c1=F("c1") * Value(data["c1"]),
+                st_c2=F("c2") * Value(data["c2"]),
+                st_c3=F("c3") * Value(data["c3"]),
+                st_p1=F("p1") * Value(data["p1"]) * Value(data["period"]),
+                st_p2=F("p2") * Value(data["p2"]) * Value(data["period"]),
+                st_p3=F("p3") * Value(data["p3"]) * Value(data["period"]),
+            )
+            .annotate(subtotal=F("st_c1") + F("st_c2") + F("st_c3") + F("st_p1") + F("st_p2") + F("st_p3"),)
+            .annotate(after_rental=F("subtotal") + Value(rental))
+            .annotate(
+                tax=F("subtotal") * Value(calculator_settings.tax), iva=F("after_rental") * calculator_settings.iva,
+            )
+            .annotate(total=Round(F("after_rental") + F("iva") + F("tax")))
+            .annotate(annual_total=Round(F("total") / Value(data["period"]) * Value(365)))
+            .annotate(paga=-F("total") + current_price)
+            .annotate(paga_percent=F("paga") / F("total") * Value(100), paga_actualmente=current_price,)
+        )
+
+        many = qs.count() > 1
+        return CalculatorSerializer(
+            qs if many else qs.first(),
+            many=many,
+            context={
+                "initial_data": self.initial_data,
+                "tax_percent": calculator_settings.tax,
+                "iva_percent": calculator_settings.iva,
+            },
+        ).data
 
 
 @api_view(http_method_names=["POST"])
@@ -54,5 +163,4 @@ def calculate(request: Request):
         raise PermissionDenied
     serializer = CalculatorSerializer(data=request.data)
     serializer.is_valid(raise_exception=True)
-    results = Offer.calc_all(**serializer.validated_data)
-    return Response(CalculatorSerializer(results, many=True).data)
+    return Response(serializer.get_calculated())

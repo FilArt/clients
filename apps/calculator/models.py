@@ -3,10 +3,8 @@ from enum import Enum, unique
 import gspread
 from django.conf import settings
 from django.db import models
-from django.db.models import F, Value, Q
-from django.db.models.functions import Round
 from django.utils.translation import gettext_lazy as _
-
+from .fields import is_positive
 from apps.calculator.fields import NameField
 from utils import PositiveNullableFloatField
 
@@ -47,14 +45,14 @@ assert [t for t in Tarif]
 class CalculatorSettings(models.Model):
     iva = models.FloatField(default=1)
     tax = models.FloatField(default=1)
-    equip_rent_t20 = models.FloatField(default=1)
-    equip_rent_t20dha = models.FloatField(default=1)
-    equip_rent_t20dhs = models.FloatField(default=1)
-    equip_rent_t21 = models.FloatField(default=1)
-    equip_rent_t21dha = models.FloatField(default=1)
-    equip_rent_t21dhs = models.FloatField(default=1)
-    equip_rent_t30 = models.FloatField(default=1)
-    equip_rent_t31 = models.FloatField(default=1)
+    equip_rent_t20 = models.FloatField(default=1, validators=[is_positive])
+    equip_rent_t20dha = models.FloatField(default=1, validators=[is_positive])
+    equip_rent_t20dhs = models.FloatField(default=1, validators=[is_positive])
+    equip_rent_t21 = models.FloatField(default=1, validators=[is_positive])
+    equip_rent_t21dha = models.FloatField(default=1, validators=[is_positive])
+    equip_rent_t21dhs = models.FloatField(default=1, validators=[is_positive])
+    equip_rent_t30 = models.FloatField(default=1, validators=[is_positive])
+    equip_rent_t31 = models.FloatField(default=1, validators=[is_positive])
 
     def get_iva(self):
         return self.iva + 1
@@ -74,37 +72,19 @@ class CalculatorSettings(models.Model):
             }.items()
         }[tarif]
 
-    def save(self, *args, **kwargs):
-        is_positive = lambda num: num > 0
-        if not all(
-            map(
-                is_positive,
-                (
-                    self.iva,
-                    self.tax,
-                    self.equip_rent_t20,
-                    self.equip_rent_t20dha,
-                    self.equip_rent_t21,
-                    self.equip_rent_t21dha,
-                    self.equip_rent_t30,
-                    self.equip_rent_t31,
-                ),
-            )
-        ):
-            raise ValueError(_("This field can not be negative."))
-        return super().save(*args, **kwargs)
-
 
 class Company(models.Model):
     name = NameField(max_length=50, unique=True)
     logo = models.ImageField(blank=True, null=True)
     priority = models.IntegerField(blank=True, null=True, unique=True)
 
-    def save(self, *args, **kwargs):
+    def save(self, force_insert=False, force_update=False, using=None, update_fields=None):
         if not self.priority:
             max_p = Company.objects.aggregate(max_p=models.Max("priority"))["max_p"] or 0
             self.priority = max_p + 1
-        super().save(*args, **kwargs)
+        return super().save(
+            force_insert=force_insert, force_update=force_update, using=using, update_fields=update_fields
+        )
 
     def __str__(self):
         return self.name
@@ -135,8 +115,8 @@ class Offer(models.Model):
 
     @staticmethod
     def sync():
-        gc = gspread.service_account(settings.GOOGLE_SERVICE_ACCOUNT_CREDS)
-        spread_sheet = gc.open_by_url(settings.OFFERS_SHEET_URL)
+        client = gspread.service_account(settings.GOOGLE_SERVICE_ACCOUNT_CREDS)
+        spread_sheet = client.open_by_url(settings.OFFERS_SHEET_URL)
         work_sheet = spread_sheet.get_worksheet(0)
         records = [row for row in work_sheet.get_all_records() if row["TYPO"]]
         offers = []
@@ -164,60 +144,3 @@ class Offer(models.Model):
                     ),
                 )
             )
-
-    @staticmethod
-    def calc_all(
-        company: Company = None,
-        tarif: str = "",
-        period: int = 0,
-        client_type: str = "",
-        c1: float = 0,
-        c2: float = 0,
-        c3: float = 0,
-        p1: float = 0,
-        p2: float = 0,
-        p3: float = 0,
-    ):
-        if not isinstance(period, int) or period <= 0:
-            raise ValueError("invalid period: %s" % period)
-        if tarif not in Tarif.all():
-            raise ValueError("invalid tarif: %s. available: [%s]" % (tarif, Tarif.all()))
-        assert p1 > 0 and c1 > 0
-
-        calculator_settings = CalculatorSettings.objects.first()
-        epd = calculator_settings.get_equip(tarif)
-        rental = epd * period
-
-        power_min = min(filter((lambda n: n != 0), (p1, p2, p3)))
-        power_max = max(filter((lambda n: n != 0), (p1, p2, p3)))
-        annual_consumption = ((c1 + c2 + c3) / period) * 365
-
-        return (
-            Offer.objects.exclude(company=company,)
-            .filter(
-                Q(
-                    Q(power_max__isnull=True) | Q(power_max__gte=power_min),
-                    Q(power_min__isnull=True) | Q(power_min__lte=power_max),
-                    Q(consumption_max__isnull=True) | Q(consumption_max__gte=annual_consumption),
-                    Q(consumption_min__isnull=True) | Q(consumption_min__lte=annual_consumption),
-                    client_type=client_type,
-                    tarif=tarif,
-                ),
-            )
-            .annotate(
-                st_c1=F("c1") * Value(c1),
-                st_c2=F("c2") * Value(c2),
-                st_c3=F("c3") * Value(c3),
-                st_p1=F("p1") * Value(p1) * Value(period),
-                st_p2=F("p2") * Value(p2) * Value(period),
-                st_p3=F("p3") * Value(p3) * Value(period),
-            )
-            .annotate(subtotal=F("st_c1") + F("st_c2") + F("st_c3") + F("st_p1") + F("st_p2") + F("st_p3"),)
-            .annotate(after_rental=F("subtotal") + Value(rental),)
-            .annotate(
-                tax=F("subtotal") * Value(calculator_settings.tax), iva=F("after_rental") * calculator_settings.iva,
-            )
-            .annotate(total=Round(F("after_rental") + F("iva") + F("tax")))
-            .annotate(annual_total=Round(F("total") / Value(period) * Value(365)))
-            .order_by("total")
-        )

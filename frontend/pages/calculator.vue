@@ -54,7 +54,7 @@
       <v-card-title>Comparador</v-card-title>
 
       <v-card-text style="max-width: 750px;" class="mx-auto">
-        <v-row align="center">
+        <v-row align="center" class="flex-wrap">
           <v-col>
             <company-select
               :value="form.company"
@@ -79,7 +79,9 @@
               @input="updateForm('client_type', $event)"
             />
           </v-col>
+        </v-row>
 
+        <v-row>
           <v-col>
             <v-text-field
               label="Periodo"
@@ -88,6 +90,18 @@
               :value="form.period"
               :error-messages="errorMessages.period"
               @input="updateForm('period', $event)"
+            />
+          </v-col>
+
+          <v-col>
+            <v-text-field
+              label="Cadidad de pago en la factura actual"
+              type="number"
+              name="current_price"
+              prefix="€"
+              :value="form.current_price"
+              :error-messages="errorMessages.current_price"
+              @input="updateForm('current_price', $event)"
             />
           </v-col>
         </v-row>
