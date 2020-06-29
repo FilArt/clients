@@ -23,7 +23,7 @@
             <v-card
               :to="`/offers/detail/${offer.id}?name=${myEscape(
                 offer.name
-              )}&client_type=${filters.client_type}`"
+              )}&client_type=${offer.client_type}`"
               nuxt
               class="mx-auto"
               max-width="300"
@@ -42,7 +42,7 @@
 </template>
 
 <script>
-const filterFields = ['id', 'company', 'company_logo', 'name', 'slug'].join(',')
+const filterFields = ['id', 'company', 'company_logo', 'name', 'client_type'].join(',')
 export default {
   components: {
     GoUpButton: () => import('~/components/buttons/goUpButton'),
