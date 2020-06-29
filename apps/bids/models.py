@@ -48,7 +48,7 @@ class Bid(models.Model):
         )
 
     @transition(
-        field=status, source=["purchase", "purchase_updated"], target="error", on_error="error",
+        field=status, source=["success", "purchase", "purchase_updated"], target="error", on_error="error",
     )
     def error(self, user, message):
         self.bidstory_set.create(
