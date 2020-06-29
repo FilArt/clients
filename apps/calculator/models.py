@@ -4,9 +4,11 @@ import gspread
 from django.conf import settings
 from django.db import models
 from django.utils.translation import gettext_lazy as _
-from .fields import is_positive
+
 from apps.calculator.fields import NameField
 from utils import PositiveNullableFloatField
+
+from .fields import is_positive
 
 
 def str_to_float(some):
