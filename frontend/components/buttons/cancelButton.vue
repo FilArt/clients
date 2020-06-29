@@ -5,12 +5,12 @@
         <v-icon>mdi-cancel</v-icon>
       </v-btn>
     </template>
-    <span>Cancel</span>
+    <span>Cancelar</span>
   </v-tooltip>
 </template>
 
 <script>
 export default {
-  name: 'cancelButton'
+  name: 'cancelButton',
 }
 </script>

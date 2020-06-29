@@ -49,6 +49,17 @@ export default {
     // Doc: https://axios.nuxtjs.org/usage
     '@nuxtjs/axios',
     '@nuxtjs/auth-next',
+    [
+      '@nuxtjs/yandex-metrika',
+      {
+        id: '52936624',
+        webvisor: true,
+        clickmap: true,
+        // useCDN:false,
+        trackLinks: true,
+        accurateTrackBounce: true,
+      },
+    ],
   ],
   /*
    ** Axios module configuration
@@ -113,10 +124,10 @@ export default {
     },
     customVariables: ['~/assets/variables.scss'],
     theme: {
-      dark: true,
+      dark: false,
       themes: {
         dark: {
-          primary: colors.blue.darken2,
+          primary: '#004680',
           accent: colors.grey.darken3,
           secondary: colors.amber.darken3,
           info: colors.teal.lighten1,
@@ -134,6 +145,6 @@ export default {
     /*
      ** You can extend webpack config here
      */
-    extend(config, ctx) { },
+    extend(config, ctx) {},
   },
 }

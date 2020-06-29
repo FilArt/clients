@@ -9,23 +9,31 @@
     </v-col>
 
     <v-col>
-      <v-card-title>
-        {{ offer.name }}
-      </v-card-title>
+      <v-card-title>{{ offer.name }}</v-card-title>
       <v-divider />
       <v-card-text>
-        <v-simple-table class="pa-0" style="max-width: 100%;">
+        <v-simple-table>
           <template v-slot:default>
             <tr>
-              <td>Comercializadora</td>
+              <td>ID:</td>
+              <td>{{ offer.id }}</td>
+            </tr>
+
+            <tr>
+              <td>Comercializadora:</td>
               <td>{{ offer.company }}</td>
             </tr>
+
+            <br />
+
             <tr>
               <td colspan="2">{{ offer.description }}</td>
             </tr>
 
+            <br />
+
             <tr>
-              <td>Tarif:</td>
+              <td>Tarifa:</td>
               <td>{{ offer.tarif }}</td>
             </tr>
 
@@ -46,10 +54,8 @@
             </tr>
 
             <tr>
-              <td>Typo de oferta:</td>
-              <td>
-                {{ offer.client_type === 0 ? 'Particular' : 'Negocio' }}
-              </td>
+              <td>Tipo de oferta:</td>
+              <td>{{ offer.client_type === 0 ? 'Particular' : 'Negocio' }}</td>
             </tr>
 
             <tr>
@@ -81,8 +87,9 @@
         </v-simple-table>
       </v-card-text>
       <v-card-actions v-if="showActions">
-        <v-btn rounded block outlined color="success" @click="addBid(offer.id)">
-          Add to portfel<v-icon right>mdi-briefcase</v-icon>
+        <v-btn rounded block outlined color="primary" @click="addBid(offer.id)">
+          Añadir a cartera
+          <v-icon right>mdi-briefcase</v-icon>
         </v-btn>
       </v-card-actions>
     </v-col>
@@ -115,11 +122,11 @@ export default {
           buttons: {
             cancel: true,
             goToPortfel: {
-              text: 'Go to portfel',
+              text: 'Ir a Cartera',
               value: 'bids',
             },
             goToBid: {
-              text: 'Go to bid',
+              text: 'Contratar',
               value: 'bid',
             },
           },

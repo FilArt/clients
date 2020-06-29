@@ -29,8 +29,8 @@
               max-width="300"
             >
               <v-img :src="offer.company_logo || '/no-image.svg'" />
-              <v-card-subtitle v-text="offer.company + ' (id:' + offer.id + ')'" />
-              <v-card-title>{{ offer.name }}</v-card-title>
+              <v-card-subtitle v-text="'Comercializadora: ' + offer.company" />
+              <v-card-text>{{ offer.name }}</v-card-text>
             </v-card>
           </v-col>
         </v-row>
@@ -42,7 +42,13 @@
 </template>
 
 <script>
-const filterFields = ['id', 'company', 'company_logo', 'name', 'client_type'].join(',')
+const filterFields = [
+  'id',
+  'company',
+  'company_logo',
+  'name',
+  'client_type',
+].join(',')
 export default {
   components: {
     GoUpButton: () => import('~/components/buttons/goUpButton'),

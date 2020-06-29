@@ -1,8 +1,8 @@
 <template>
-  <v-container class="theme--dark">
+  <v-container>
     <v-row class="text-center">
       <v-col>
-        <v-card dark>
+        <v-card color="#004680">
           <g-g-logo />
         </v-card>
       </v-col>
@@ -39,22 +39,30 @@
               ></v-text-field>
             </v-card-text>
             <v-card-actions>
-              <v-btn block type="submit" color="primary" :loading="loading"
-                >Acceder
-                <v-icon right>mdi-logout</v-icon>
-              </v-btn>
-            </v-card-actions>
-            <v-card-actions>
-              <v-btn
-                block
-                :loading="loading"
-                @click="passwordForgotten"
-                outlined
-                rounded
-              >
-                ¿Olvidasde la contraseña?
-                <v-icon right>mdi-lock-reset</v-icon>
-              </v-btn>
+              <v-row>
+                <v-col>
+                  <v-btn
+                    block
+                    type="submit"
+                    dark
+                    color="#004680"
+                    :loading="loading"
+                    >Acceder
+                    <v-icon color="#004680" right>mdi-logout</v-icon>
+                  </v-btn>
+                </v-col>
+                <v-col class="flex-grow-0">
+                  <v-btn
+                    :loading="loading"
+                    @click="passwordForgotten"
+                    outlined
+                    rounded
+                  >
+                    ¿Olvidasde la contraseña?
+                    <v-icon right>mdi-lock-reset</v-icon>
+                  </v-btn>
+                </v-col>
+              </v-row>
             </v-card-actions>
           </v-form>
         </v-card>
@@ -82,7 +90,7 @@
             <v-card-actions>
               <v-btn
                 type="submit"
-                color="primary"
+                color="#004680"
                 block
                 :loading="loading"
                 :disabled="!privacyAccepted"
@@ -194,19 +202,27 @@ export default {
         this.error = 'Ingrese su Email'
         return
       }
-      this.loading = true
+
+      const willDelete = await this.$swal({
+        title: '¿Estás seguro de que deseas restablecer tu contraseña?',
+        icon: 'warning',
+        buttons: true,
+        dangerMode: true,
+      })
+
+      if (!willDelete) return
+
       try {
         await this.$axios.post('users/register_user/reset_password/', this.form)
-        await this.$swal({
-          title:
-            'Сorreo electrónico con una nueva contraseña ha sido enviado a su correo.',
-          icon: 'success',
-        })
       } catch (e) {
         this.error = e.response.data
-      } finally {
-        this.loading = false
       }
+
+      await this.$swal({
+        title:
+          'Сorreo electrónico con una nueva contraseña ha sido enviado a su correo.',
+        icon: 'success',
+      })
     },
   },
 }

@@ -28,7 +28,11 @@
           hint
         />
 
-        <v-text-field v-if="!isIndividual" v-model="form.cif_dni" label="CIF/DNI" />
+        <v-text-field
+          v-if="!isIndividual"
+          v-model="form.cif_dni"
+          label="CIF/DNI"
+        />
 
         <v-text-field
           v-if="!isIndividual"
@@ -36,11 +40,11 @@
           label="Representante legal"
         />
 
-        <v-text-field v-model="form.dni" label="DNI" />
+        <v-text-field v-model="form.dni" label="DNI Representante legal" />
 
-        <phone-field v-model="form.phoneMobile" label="Telefono mobil" />
+        <phone-field v-model="form.phoneMobile" label="Teléfono mobil" />
 
-        <phone-field v-model="form.phoneCity" label="Telefono fijo" />
+        <phone-field v-model="form.phoneCity" label="Teléfono fijo" />
 
         <email-field v-model="form.email" />
 
@@ -48,12 +52,16 @@
 
         <v-text-field v-model="form.cups" label="CUPS LUZ" />
 
-        <v-text-field v-model="form.power" label="Potencia contractada" type="number" />
+        <v-text-field
+          v-model="form.power"
+          label="Potencia contratada"
+          type="number"
+        />
 
         <v-text-field v-model="form.province" label="Provincia" />
-        <v-text-field v-model="form.region" label="Poblacion" />
-        <v-text-field v-model="form.postalcode" label="Codigo postal" type="number" />
-        <v-text-field v-model="form.address" label="Direccion" />
+        <v-text-field v-model="form.region" label="Población" />
+        <v-text-field v-model="form.postalcode" label="Código postal" />
+        <v-text-field v-model="form.address" label="Dirección" />
 
         <v-row
           v-for="fileField in fileFields"
@@ -81,7 +89,8 @@
               target="_blank"
               :href="attachment.attachment"
               @click:close="deleteAttachment(attachment.id)"
-            >Archivo adjunto {{ attachment.id }}</v-chip>
+              >Archivo adjunto {{ attachment.id }}</v-chip
+            >
           </v-col>
         </v-row>
 
@@ -123,34 +132,33 @@ export default {
       fileFields: [
         {
           name: 'factura',
-          label: 'Foto factura',
+          label: 'Foto factura actual (anverso)',
+        },
+        {
+          name: 'factura_1',
+          label: 'Foto factura actual (reverso)',
         },
         {
           name: 'dni1',
-          label: 'Foto DNI anverso',
+          label: 'Foto DNI (anverso)',
         },
         {
           name: 'dni2',
-          label: 'Foto DNI reverso',
+          label: 'Foto DNI (reverso)',
         },
         {
           name: 'cif1',
-          label: 'Foto CIF anverso',
-          onlyBusiness: true,
-        },
-        {
-          name: 'cif2',
-          label: 'Foto CIF reverso',
+          label: 'Foto CIF',
           onlyBusiness: true,
         },
       ],
 
       files: {
         photo_factura: null,
+        photo_factura_1: null,
         photo_dni1: null,
         photo_dni2: null,
         photo_cif1: null,
-        photo_cif2: null,
       },
       fileErrors: {},
     }

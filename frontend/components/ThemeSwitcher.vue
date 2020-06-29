@@ -1,5 +1,5 @@
 <template>
-  <v-btn icon @click="switchTheme">
+  <v-btn color="primary" icon @click="switchTheme">
     <v-icon>
       mdi-theme-light-dark
     </v-icon>

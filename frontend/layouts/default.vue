@@ -1,10 +1,22 @@
 <template>
   <v-app>
-    <v-navigation-drawer v-if="$auth.loggedIn" v-model="drawer" fixed app clipped>
+    <v-navigation-drawer
+      v-if="$auth.loggedIn"
+      v-model="drawer"
+      fixed
+      app
+      clipped
+    >
       <v-list>
-        <v-list-item v-for="(item, i) in items" :key="i" :to="item.to" router exact>
+        <v-list-item
+          v-for="(item, i) in items"
+          :key="i"
+          :to="item.to"
+          router
+          exact
+        >
           <v-list-item-action>
-            <v-icon>{{ item.icon }}</v-icon>
+            <v-icon color="primary">{{ item.icon }}</v-icon>
           </v-list-item-action>
           <v-list-item-content>
             <v-list-item-title v-text="item.title" />
@@ -18,18 +30,24 @@
     </v-navigation-drawer>
 
     <v-app-bar fixed app v-if="$auth.loggedIn" clipped-left>
-      <v-app-bar-nav-icon @click.stop="drawer = !drawer" />
+      <v-app-bar-nav-icon @click.stop="drawer = !drawer" color="primary" />
       <v-toolbar-title v-text="title" />
       <v-spacer />
       <theme-switcher />
       <v-btn v-if="$auth" icon @click.stop="$auth.logout">
-        <v-icon>mdi-logout</v-icon>
+        <v-icon color="primary">mdi-logout</v-icon>
       </v-btn>
     </v-app-bar>
     <v-main>
-      <v-breadcrumbs :items="breadcrumbs" large>
+      <v-breadcrumbs
+        v-if="!['index', 'login'].includes($route.name)"
+        :items="breadcrumbs"
+        large
+      >
         <template v-slot:item="{ item }">
-          <v-breadcrumbs-item :to="item.to" replace exact>{{ item.text }}</v-breadcrumbs-item>
+          <v-breadcrumbs-item :to="item.to" replace exact>{{
+            item.text
+          }}</v-breadcrumbs-item>
         </template>
       </v-breadcrumbs>
       <nuxt />

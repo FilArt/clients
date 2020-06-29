@@ -7,7 +7,8 @@
         :icon="!label"
         :disabled="disabled"
         :block="block"
-        color="success"
+        color="#004680"
+        dark
         @click="$emit('click')"
       >
         {{ label }}

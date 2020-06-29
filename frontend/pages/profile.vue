@@ -7,7 +7,7 @@
           <email-field v-model="form.email" :error-messages="error.email" />
           <v-text-field
             v-model="form.first_name"
-            label="First name"
+            label="Nombre"
             name="first_name"
             prepend-icon="mdi-account-box"
             type="text"
@@ -15,7 +15,7 @@
           />
           <v-text-field
             v-model="form.last_name"
-            label="Last name"
+            label="Apellidos"
             name="last_name"
             prepend-icon="mdi-account-box"
             type="text"
@@ -24,7 +24,7 @@
           <phone-field v-model="form.phone" :error-messages="error.phone" />
         </v-card-text>
         <v-card-actions>
-          <submit-button block label="Save" />
+          <submit-button block label="Guardar" />
         </v-card-actions>
       </v-form>
     </v-card-text>

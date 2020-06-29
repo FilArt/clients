@@ -6,14 +6,11 @@
       <template v-slot:default>
         <thead>
           <tr>
-            <v-card-text>Blah-blah-blah (2)</v-card-text>
-          </tr>
-          <tr>
             <th></th>
             <th>Oferta</th>
             <th>Comercializadora</th>
-            <th>Totales</th>
-            <th>Anual totales</th>
+            <th>Ahorro en factura</th>
+            <th>Ahorro anual</th>
             <th></th>
           </tr>
         </thead>
@@ -33,7 +30,7 @@
               <v-btn
                 icon
                 nuxt
-                :to="`/offers/detail/${offer.id}?id=${offer.id}&back=${$route.fullPath}&fromCalculator=true`"
+                :to="`/offers/detail/${offer.id}?id=${offer.id}&showCalculatorDetails=true`"
               >
                 <v-icon>mdi-eye</v-icon>
               </v-btn>
@@ -43,15 +40,18 @@
       </template>
     </v-simple-table>
 
-    <v-btn v-if="showResults" block color="info" @click="showResults = false">
-      Back
+    <v-btn
+      v-if="showResults"
+      block
+      color="primary"
+      @click="showResults = false"
+    >
+      Atrás
       <v-icon>mdi-keyboard-return</v-icon>
     </v-btn>
 
     <v-form v-else @submit.prevent="submit" novalidate>
       <v-card-title>Comparador</v-card-title>
-
-      <v-card-text>Blah-blah-blah</v-card-text>
 
       <v-card-text style="max-width: 750px;" class="mx-auto">
         <v-row align="center">
@@ -59,6 +59,7 @@
             <company-select
               :value="form.company"
               :error-messages="errorMessages.company"
+              label="Comercializadora actual"
               @input="updateForm('company', $event)"
             />
           </v-col>
@@ -104,8 +105,10 @@
                   "
                   type="number"
                   :value="form[letter + number]"
-                  :label="letter.toUpperCase() + number"
-                  :name="letter + number"
+                  :label="
+                    (letter === 'p' ? 'Potencia' : 'Consumo') + ' P' + number
+                  "
+                  :name="'P' + number"
                   :error-messages="errorMessages[letter + number]"
                   @input="updateForm(letter + number, $event)"
                 />

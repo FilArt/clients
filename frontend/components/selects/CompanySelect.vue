@@ -4,7 +4,7 @@
     :items="companies"
     :loading="loading"
     :error-messages="errorMessages"
-    label="Comercializadora"
+    :label="label"
     item-text="name"
     item-value="id"
     chips
@@ -30,9 +30,7 @@
           </v-avatar>
         </v-col>
 
-        <v-col>
-          {{ item.name }}
-        </v-col>
+        <v-col>{{ item.name }}</v-col>
       </v-row>
     </template>
   </v-autocomplete>
@@ -42,6 +40,10 @@
 export default {
   name: 'CompanySelect',
   props: {
+    label: {
+      type: String,
+      default: 'Comercializadora'
+    },
     value: {
       type: Number,
       default: 0,

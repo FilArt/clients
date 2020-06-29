@@ -15,7 +15,8 @@
     "@nuxtjs/axios": "latest",
     "nuxt": "latest",
     "v-mask": "latest",
-    "vue-swal": "latest"
+    "vue-swal": "latest",
+    "@nuxtjs/yandex-metrika": "latest"
   },
   "devDependencies": {
     "@nuxtjs/date-fns": "latest",

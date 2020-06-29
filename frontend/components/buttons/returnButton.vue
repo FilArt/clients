@@ -2,11 +2,11 @@
   <v-tooltip bottom>
     <template v-slot:activator="{ on }">
       <v-btn nuxt :to="to" rounded block color="primary">
-        Back
+        Atrás
         <v-icon>mdi-keyboard-return</v-icon>
       </v-btn>
     </template>
-    <span>Cancel</span>
+    <span>Cancelar</span>
   </v-tooltip>
 </template>
 

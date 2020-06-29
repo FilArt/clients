@@ -14,7 +14,7 @@
               :raised="hover"
             >
               <v-card-text>
-                <v-img src="/working-at-home.svg" />
+                <img src="/hogar.svg" />
               </v-card-text>
               <v-divider />
 
@@ -35,7 +35,7 @@
               :raised="hover"
             >
               <v-card-text>
-                <v-img src="/market.svg" />
+                <img src="/pyme.svg" />
               </v-card-text>
               <v-divider />
 
