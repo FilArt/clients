@@ -20,7 +20,7 @@ class Bid(models.Model):
         ("error", _("Error")),
     )
     VALIDATION_STATUS_CHOICES = [item for item in BID_STATUS_CHOICES if item[0] in ("success", "error",)]
-    user = models.ForeignKey("users.CustomUser", on_delete=models.CASCADE)
+    user = models.ForeignKey("users.CustomUser", on_delete=models.CASCADE, related_name="bids")
     offer = models.ForeignKey("calculator.Offer", on_delete=models.CASCADE)
     status = FSMField(default="new", protected=True, choices=BID_STATUS_CHOICES)
     created_at = models.DateTimeField(auto_now_add=True)
@@ -34,9 +34,9 @@ class Bid(models.Model):
     p3 = PositiveNullableFloatField()
 
     @transition(field=status, source="new", target="purchase", on_error="error")
-    def purchase(self):
+    def purchase(self, user):
         self.bidstory_set.create(
-            user=self.user, old_status=self.status, new_status="purchase",
+            user=user, old_status=self.status, new_status="purchase",
         )
 
     @transition(
@@ -58,9 +58,9 @@ class Bid(models.Model):
     @transition(
         field=status, source=["error", "success"], target="purchase_updated", on_error="error",
     )
-    def purchase_updated(self, message=None):
+    def purchase_updated(self, user, message):
         self.bidstory_set.create(
-            user=self.user, old_status=self.status, new_status="purchase_updated", message=message,
+            user=user, old_status=self.status, new_status="purchase_updated", message=message,
         )
 
 

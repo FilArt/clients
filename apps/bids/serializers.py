@@ -4,7 +4,6 @@ from rest_framework import serializers
 from apps.calculator.serializers import OfferSerializer
 from .models import Bid, BidStory
 from ..cards.serializers import CardSerializer
-from ..users.serializers import AccountSerializer
 
 
 class BidListSerializer(serializers.ModelSerializer):
@@ -63,7 +62,7 @@ class BidStorySerializer(serializers.ModelSerializer):
     def get_user(self, instance: BidStory):
         if instance.user == self.context["request"].user:
             return "me"
-        return AccountSerializer(instance=instance.user).data
+        return {"email": instance.user.email}
 
 
 class SupportBidListSerializer(BidListSerializer):

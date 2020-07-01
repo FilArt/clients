@@ -39,9 +39,14 @@ class BidViewSet(viewsets.ModelViewSet):
 
     def get_queryset(self):
         user = self.request.user
-        if user.role == "support":
-            return Bid.objects.exclude(status="new")
-        return Bid.objects.filter(user=self.request.user)
+        qs = Bid.objects.all()
+
+        if user.role == "admin":
+            return qs
+        elif user.role == "support":
+            return qs.exclude(status="new")
+
+        return qs.filter(user=user)
 
     def perform_create(self, serializer):
         with transaction.atomic():
