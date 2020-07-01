@@ -117,6 +117,13 @@ export default {
           to: '/support',
         })
       }
+      if (role === 'admin') {
+        items.push({
+          icon: 'mdi-account-group',
+          title: 'Admin',
+          to: '/admin',
+        })
+      }
       return items
     },
   },

@@ -39,6 +39,7 @@ class CustomUser(AbstractUser):
     USER_ROLES_CHOICES = (
         (None, _("Client")),
         ("support", _("Support")),
+        ("admin", _("Admin")),
     )
     username = models.CharField(blank=True, null=True, max_length=30)
     email = models.EmailField(_("Email address"), unique=True)
@@ -65,6 +66,14 @@ class CustomUser(AbstractUser):
         if hasattr(self, "usersettings"):
             return self.usersettings.to_dict()
         return {}
+
+    @property
+    def bids_count(self) -> int:
+        return self.bids.count()
+
+    @property
+    def cards_count(self) -> int:
+        return self.bids.filter(card__isnull=False).count()
 
     def __str__(self):
         return self.email

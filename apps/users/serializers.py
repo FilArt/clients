@@ -1,3 +1,4 @@
+import arrow
 from django.conf import settings
 from django.contrib.auth.base_user import BaseUserManager
 from django.template.loader import render_to_string
@@ -5,7 +6,9 @@ from django.utils.html import strip_tags
 from django.utils.translation import gettext_lazy as _
 from rest_framework import serializers
 
-from apps.users.models import CustomUser, UserSettings
+from apps.bids.serializers import BidListSerializer
+
+from .models import CustomUser, UserSettings
 
 
 class RegisterSerializer(serializers.ModelSerializer):
@@ -87,3 +90,31 @@ class AccountSerializer(serializers.ModelSerializer):
             user_settings_serializer.save(user=user)
 
         return super().update(user, validated_data)
+
+
+class UserListSerializer(serializers.ModelSerializer):
+    date_joined = serializers.SerializerMethodField()
+
+    class Meta:
+        model = CustomUser
+        fields = (
+            "id",
+            "first_name",
+            "last_name",
+            "email",
+            "phone",
+            "date_joined",
+            "bids_count",
+            "cards_count",
+        )
+
+    def get_date_joined(self, instance: CustomUser):
+        return arrow.get(instance.date_joined).humanize(locale=self.context["request"].LANGUAGE_CODE)
+
+
+class UserSerializer(UserListSerializer):
+    bids = BidListSerializer(many=True)
+
+    class Meta:
+        model = CustomUser
+        exclude = ["password"]
