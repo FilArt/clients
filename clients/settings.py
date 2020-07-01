@@ -129,6 +129,7 @@ MEDIA_URL = "/media/"
 # noinspection PyUnresolvedReferences
 MEDIA_ROOT = "/var/django/clients/media"
 REST_FRAMEWORK = {
+    # "DATETIME_FORMAT": "%d/%m/%Y %H:%M",
     "DEFAULT_FILTER_BACKENDS": (
         "django_filters.rest_framework.DjangoFilterBackend",
         "rest_framework.filters.OrderingFilter",
