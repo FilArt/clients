@@ -20,7 +20,7 @@ class TarifViewSet(viewsets.GenericViewSet, mixins.ListModelMixin):
 class OfferViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = Offer.objects.all()
     filterset_fields = ["tarif", "client_type", "company", "name", "id"]
-    permission_classes = (OffersAccessPermission, IsAuthenticated)
+    permission_classes = (IsAuthenticated, OffersAccessPermission)
     ordering = ("name",)
 
     def get_queryset(self):
