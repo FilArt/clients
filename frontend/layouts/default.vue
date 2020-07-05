@@ -83,7 +83,10 @@ export default {
     },
     showChat() {
       return (
-        this.$auth.user.role === null && this.participant && this.participant.id
+        this.$auth.user &&
+        this.$auth.user.role === null &&
+        this.participant &&
+        this.participant.id
       )
     },
     breadcrumbs() {
