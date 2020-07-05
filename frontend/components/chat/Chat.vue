@@ -99,7 +99,7 @@ export default {
     await this.getMessages()
 
     const chatSocket = new ReconnectingWebSocket(
-      this.getWssUrl(`/api/chat/${this.participant.id}`)
+      this.getWssUrl(`chat/${this.participant.id}`)
     )
     chatSocket.onmessage = (m) => {
       const newMessage = JSON.parse(m.data)
@@ -145,7 +145,7 @@ export default {
         ? 'ws://'
         : 'wss://' +
             window.location.host.replace('3000', '8000') +
-            `/ws/${aep}/?token=${token}`
+            `/api/ws/${aep}/?token=${token}`
     },
     onMessageWasSent(message) {
       const text = message.data.text
