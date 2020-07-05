@@ -99,7 +99,7 @@ export default {
     await this.getMessages()
 
     const chatSocket = new ReconnectingWebSocket(
-      this.getWssUrl(`chat/${this.participant.id}`)
+      this.getWssUrl(`/api/chat/${this.participant.id}`)
     )
     chatSocket.onmessage = (m) => {
       const newMessage = JSON.parse(m.data)
