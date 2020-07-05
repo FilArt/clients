@@ -1,7 +1,7 @@
 import arrow
 from rest_framework import serializers
 
-from .models import ChatMessage
+from .models import ChatMessage, ChatMessageStatus
 
 
 class ChatMessageSerializer(serializers.ModelSerializer):
@@ -17,4 +17,7 @@ class ChatMessageSerializer(serializers.ModelSerializer):
         return arrow.get(instance.created).humanize(locale=self.context["request"].LANGUAGE_CODE)
 
     def get_is_read(self, instance: ChatMessage):
-        return instance.statuses.get(user=self.context["request"].user).is_read
+        user = self.context["request"].user
+        if user == instance.author:
+            return None
+        return instance.statuses.get(user=user).is_read
