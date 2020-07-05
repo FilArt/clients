@@ -2,4 +2,4 @@
 
 set -e
 
-ssh cv "cd /srv/http/clients; git pull; venv/bin/python -m pip install -r requirements.txt; ./manage.py migrate; ./manage.py compilemessages &> /dev/null; ./manage.py collectstatic --noinput; touch touch"
+ssh cv "cd /srv/http/clients; git pull; venv/bin/python -m pip install -r requirements.txt; ./manage.py migrate; ./manage.py compilemessages &> /dev/null; ./manage.py collectstatic --noinput; supervisorctl restart clients"
