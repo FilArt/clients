@@ -141,11 +141,11 @@ export default {
     },
     getWssUrl(aep) {
       const token = this.$auth.strategies.local.token.get().substring(7)
-      return (
-        'ws://' +
-        window.location.host.replace('3000', '8000') +
-        `/ws/${aep}/?token=${token}`
-      )
+      return window.location.host.includes('3000')
+        ? 'ws://'
+        : 'wss://' +
+            window.location.host.replace('3000', '8000') +
+            `/ws/${aep}/?token=${token}`
     },
     onMessageWasSent(message) {
       const text = message.data.text
