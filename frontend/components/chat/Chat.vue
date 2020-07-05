@@ -61,10 +61,8 @@ export default {
         },
       },
       participants: [this.participant],
-      titleImageUrl:
-        'https://a.slack-edge.com/66f9/img/avatars-teams/ava_0001-34.png',
+      titleImageUrl: this.participant.imageUrl,
       messageList: [],
-      newMessagesCount: 0,
       isChatOpen: false, // to determine whether the chat window should be open or closed
       showTypingIndicator: '', // when set to a value matching the participant.id it shows the typing indicator for the specific user
       colors: {
@@ -95,6 +93,13 @@ export default {
       messageStyling: true, // enables *bold* /emph/ _underline_ and such (more info at github.com/mattezza/msgdown)
     }
   },
+  computed: {
+    newMessagesCount() {
+      return this.messageList.filter(
+        (_m) => _m.author !== 'me' && _m.isRead === false
+      ).length
+    },
+  },
   async created() {
     await this.getMessages()
 
@@ -106,14 +111,8 @@ export default {
       if (newMessage.author.toString() === this.$auth.user.id.toString()) {
         newMessage.author = 'me'
       }
-      this.newMessagesCount += 1
       this.messageList = [...this.messageList, newMessage]
     }
-    chatSocket.send(
-      JSON.stringify({
-        type: 'get_messages',
-      })
-    )
     this.chatSocket = chatSocket
   },
   methods: {
@@ -135,9 +134,6 @@ export default {
           data: { text: m.text, meta: m.created },
         }
       })
-      this.newMessagesCount += this.messageList.filter(
-        (_m) => _m.author !== 'me' && _m.isRead === false
-      ).length
     },
     getWssUrl(aep) {
       const token = this.$auth.strategies.local.token.get().substring(7)
@@ -152,9 +148,6 @@ export default {
     onMessageWasSent(message) {
       const text = message.data.text
       if (text.length > 0) {
-        this.newMessagesCount = this.isChatOpen
-          ? this.newMessagesCount
-          : this.newMessagesCount + 1
         this.chatSocket.send(
           JSON.stringify({
             message: text,
@@ -164,7 +157,6 @@ export default {
     },
     openChat() {
       this.isChatOpen = true
-      this.newMessagesCount = 0
       this.messageList
         .filter((m) => m.isRead === false && m.author !== 'me')
         .map((msg) => {
