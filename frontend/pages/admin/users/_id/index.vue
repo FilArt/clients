@@ -30,15 +30,25 @@
         </v-col>
       </v-row>
     </v-card-text>
+    <chat v-if="participant" :participant="participant" />
   </v-card>
 </template>
 
 <script>
 export default {
+  components: {
+    Chat: () => import('~/components/chat/Chat'),
+  },
   async asyncData({ params, $axios }) {
     const user = await $axios.$get(`/users/users/${params.id}/`)
+    const participant = {
+      id: user.id,
+      name: user.email,
+      // imageUrl: 'https://avatars3.githubusercontent.com/u/1915989?s=230&v=4',
+    }
     return {
       user,
+      participant,
     }
   },
   computed: {

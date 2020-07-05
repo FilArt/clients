@@ -9,6 +9,7 @@ urlpatterns = [
     path("api/users/", include("apps.users.urls")),
     path("api/calculator/", include("apps.calculator.urls")),
     path("api/bids/", include("apps.bids.urls")),
+    path("api/chat/", include("apps.chat.urls")),
 ]
 
 if settings.DEBUG:

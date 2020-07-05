@@ -63,6 +63,9 @@ class UserViewSet(viewsets.ReadOnlyModelViewSet):
             return UserSerializer
         return UserListSerializer
 
+    def filter_queryset(self, queryset):
+        return super().filter_queryset(queryset).exclude(id=self.request.user.id)
+
 
 class LeedsViewSet(UserViewSet):
     def get_queryset(self):

@@ -51,6 +51,7 @@
         </template>
       </v-breadcrumbs>
       <nuxt />
+      <chat v-if="showChat" :participant="participant" />
     </v-main>
   </v-app>
 </template>
@@ -58,14 +59,33 @@
 <script>
 export default {
   name: 'Default',
-  components: { ThemeSwitcher: () => import('~/components/ThemeSwitcher') },
+  components: {
+    ThemeSwitcher: () => import('~/components/ThemeSwitcher'),
+    Chat: () => import('~/components/chat/Chat'),
+  },
   data() {
     return {
       drawer: true,
       title: 'Gestion Group',
     }
   },
+  async created() {
+    if (!this.$auth.user) return
+    const role = this.$auth.user.role
+    if (role === null) {
+      const p = await this.$axios.$get('chat/messages/get_participant/')
+      this.$store.commit('setParticipant', p)
+    }
+  },
   computed: {
+    participant() {
+      return this.$store.state.participant
+    },
+    showChat() {
+      return (
+        this.$auth.user.role === null && this.participant && this.participant.id
+      )
+    },
     breadcrumbs() {
       const crumbs = this.$route.path.split('/')
       return crumbs.map((crumb, idx) => {

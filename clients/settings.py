@@ -10,6 +10,8 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/3.0/ref/settings/
 """
 
+# pylint: disable=unused-wildcard-import,wildcard-import
+
 import os
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
@@ -41,10 +43,12 @@ INSTALLED_APPS = [
     "rest_framework",
     "django_filters",
     "django_cleanup",
+    "channels",
     "apps.cards",
     "apps.users",
     "apps.calculator",
     "apps.bids",
+    "apps.chat",
 ]
 
 MIDDLEWARE = [
@@ -152,6 +156,12 @@ CORS_ORIGIN_ALLOW_ALL = True
 
 OFFERS_SHEET_URL = ""
 GOOGLE_SERVICE_ACCOUNT_CREDS = "~/.config/gspread/service_account.json"
+
+# channels
+ASGI_APPLICATION = "apps.chat.routing.application"
+CHANNEL_LAYERS = {
+    "default": {"BACKEND": "channels_redis.core.RedisChannelLayer", "CONFIG": {"hosts": [("127.0.0.1", 6379)],},},
+}
 
 try:
     from .local_settings import *

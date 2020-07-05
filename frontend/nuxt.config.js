@@ -37,6 +37,7 @@ export default {
   plugins: [
     { src: '~/plugins/vue-swal', mode: 'client' },
     { src: '~/plugins/vue-mask', mode: 'client' },
+    { src: '~/plugins/vue-beautiful-chat', mode: 'client' },
   ],
   /*
    ** Nuxt.js dev-modules

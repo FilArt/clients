@@ -13,10 +13,12 @@
   "dependencies": {
     "@nuxtjs/auth-next": "latest",
     "@nuxtjs/axios": "latest",
+    "@nuxtjs/yandex-metrika": "latest",
     "nuxt": "latest",
+    "reconnecting-websocket": "^4.4.0",
     "v-mask": "latest",
-    "vue-swal": "latest",
-    "@nuxtjs/yandex-metrika": "latest"
+    "vue-beautiful-chat": "^2.4.1",
+    "vue-swal": "latest"
   },
   "devDependencies": {
     "@nuxtjs/date-fns": "latest",

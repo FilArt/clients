@@ -160,7 +160,13 @@ export default {
       this.error = null
       try {
         await this.$auth.loginWith('local', { data: this.form })
-        this.$auth.user.role === 'support'
+
+        const role = this.$auth.user.role
+        if (role === null) {
+          const p = await this.$axios.$get('chat/messages/get_participant/')
+          this.$store.commit('setParticipant', p)
+        }
+        role === 'support'
           ? await this.$router.push('/support')
           : this.$auth.user.permissions.includes('offers')
           ? await this.$router.push('/offers')
