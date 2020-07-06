@@ -2,10 +2,13 @@ from django.db import transaction
 from rest_framework import viewsets
 from rest_framework.exceptions import PermissionDenied
 from rest_framework.permissions import IsAuthenticated
+from rest_framework.request import Request
+from rest_framework.response import Response
+from rest_framework.decorators import action
 
-from .models import Card, CardAttachment
+from .models import Card, CardAttachment, Punto
 from .permissions import CardsPermission
-from .serializers import AttachmentSerializer, CardSerializer
+from .serializers import AttachmentSerializer, CardSerializer, PuntoSerializer
 
 
 class CardViewSet(viewsets.ModelViewSet):
@@ -49,3 +52,28 @@ class CardAttachmentViewSet(viewsets.ModelViewSet):
         if card.bid.user != self.request.user:
             raise PermissionDenied
         return card
+
+
+class PuntoViewSet(viewsets.ModelViewSet):
+    queryset = Punto.objects.all()
+    serializer_class = PuntoSerializer
+    filterset_fields = {"card": ["exact"]}
+
+    def filter_queryset(self, queryset):
+        return super().filter_queryset(queryset).filter(card__bid__user=self.request.user)
+
+    def get_object(self):
+        punto = super().get_object()
+        if punto.card.bid.user != self.request.user:
+            raise PermissionDenied
+        return punto
+
+    @action(methods=["GET"], detail=False)
+    def get_headers(self, request: Request):
+        return Response(
+            [
+                dict(name=field.verbose_name, value=field.attname)
+                for field in Punto._meta.local_fields
+                if field.attname not in ("id", "card_id")
+            ]
+        )
