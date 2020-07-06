@@ -1,7 +1,7 @@
 <template>
   <v-btn
     fab
-    x-large
+    outlined
     icon
     large
     fixed

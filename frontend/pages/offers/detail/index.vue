@@ -37,7 +37,7 @@
       </v-responsive>
     </v-card-text>
 
-    <go-up-button />
+    <go-up-button style="margin-bottom: 5rem; margin-right: 5px;" />
   </v-card>
 </template>
 

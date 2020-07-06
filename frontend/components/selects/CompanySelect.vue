@@ -42,10 +42,10 @@ export default {
   props: {
     label: {
       type: String,
-      default: 'Comercializadora'
+      default: 'Comercializadora',
     },
     value: {
-      type: Number,
+      type: [Number, String],
       default: 0,
     },
     errorMessages: {
