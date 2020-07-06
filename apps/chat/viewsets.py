@@ -23,7 +23,7 @@ class ChatMessageViewSet(viewsets.ModelViewSet):
     @action(methods=["GET"], detail=False)
     def get_participant(self, request: Request):
         admin = CustomUser.objects.get(role="admin")
-        return Response({"id": admin.id, "name": admin.email, "imageUrl": admin.avatar.url})
+        return Response({"id": admin.id, "name": admin.email, "imageUrl": admin.avatar.url if admin.avatar else None})
 
     @action(methods=["PATCH"], detail=True)
     def message_read(self, request: Request, pk: int):
