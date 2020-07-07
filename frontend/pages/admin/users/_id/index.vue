@@ -44,7 +44,7 @@ export default {
     const participant = {
       id: user.id,
       name: user.email,
-      imageUrl: user.avatar,
+      imageUrl: user.avatar || '',
     }
     return {
       user,
