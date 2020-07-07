@@ -50,18 +50,27 @@
 
         <v-text-field v-model="form.iban" label="IBAN" />
 
-        <v-text-field v-model="form.cups" label="CUPS LUZ" />
+        <v-text-field v-show="admin" v-model="form.cups" label="CUPS LUZ" />
 
         <v-text-field
+          v-show="admin"
           v-model="form.power"
           label="Potencia contratada"
           type="number"
         />
 
-        <v-text-field v-model="form.province" label="Provincia" />
-        <v-text-field v-model="form.region" label="Población" />
-        <v-text-field v-model="form.postalcode" label="Código postal" />
-        <v-text-field v-model="form.address" label="Dirección" />
+        <v-text-field
+          v-show="admin"
+          v-model="form.province"
+          label="Provincia"
+        />
+        <v-text-field v-show="admin" v-model="form.region" label="Población" />
+        <v-text-field
+          v-show="admin"
+          v-model="form.postalcode"
+          label="Código postal"
+        />
+        <v-text-field v-show="admin" v-model="form.address" label="Dirección" />
 
         <v-row
           v-for="fileField in fileFields"
@@ -94,7 +103,40 @@
           </v-col>
         </v-row>
 
-        <submit-button block label="Contratar" />
+        <v-divider />
+
+        <v-row align="center" class="text-center">
+          Puntos suministros
+          <v-col v-for="(punto, idx) in puntos" :key="idx">
+            <add-punto
+              color="green"
+              :punto="punto"
+              :label="`Punto #${idx + 1}`"
+              @punto-edited="fetchPuntos"
+              @punto-deleted="fetchPuntos"
+            />
+          </v-col>
+        </v-row>
+
+        <v-divider />
+
+        <v-row align="center" class="text-center">
+          <v-col>
+            <add-punto @punto-created="createPunto" />
+          </v-col>
+        </v-row>
+
+        <v-divider />
+
+        <v-row>
+          <v-col>
+            <submit-button
+              :disabled="!puntos || !puntos.length"
+              block
+              label="Contratar"
+            />
+          </v-col>
+        </v-row>
       </v-form>
     </v-card-text>
   </v-card>
@@ -120,6 +162,7 @@ const defaultForm = {
 }
 export default {
   components: {
+    AddPunto: () => import('~/components/puntos/AddPunto'),
     EmailField: () => import('~/components/fields/emailField'),
     PhoneField: () => import('~/components/fields/phoneField'),
     CloseButton: () => import('~/components/buttons/closeButton'),
@@ -161,27 +204,63 @@ export default {
         photo_cif1: null,
       },
       fileErrors: {},
+      puntoErrors: {},
     }
+  },
+  computed: {
+    admin() {
+      return this.$auth.user.role === 'admin'
+    },
   },
   async asyncData({ $axios, params }) {
     const bid = await $axios.$get(`bids/${params.id}/`)
     let attachments = []
+    let puntos = []
     let form = defaultForm
     let cardId = bid.card
     if (cardId) {
       const data = await $axios.$get(`cards/cards/${cardId}/`)
       form = data.data
       attachments = data.attachments
+      puntos = data.puntos.sort((a, b) => a.id >= b.id)
     }
     return {
-      attachments: attachments,
-      cardId: cardId,
-      form: form,
-      bid: bid,
+      attachments,
+      puntos,
+      cardId,
+      form,
+      bid,
       isIndividual: bid.offer.client_type === 0,
     }
   },
   methods: {
+    async fetchPuntos() {
+      const bid = await this.$axios.$get(`bids/${this.bid.id}/`)
+      let cardId = bid.card
+      if (cardId) {
+        this.cardId = cardId
+        const data = await this.$axios.$get(`cards/cards/${cardId}/`)
+        this.puntos = data.puntos.sort((a, b) => a.id >= b.id)
+      }
+    },
+    async createPunto({ punto }) {
+      if (!this.cardId) {
+        const card = await this.$axios.$post('/cards/cards/', {
+          bid: this.bid.id,
+          ...{ data: this.form },
+        })
+        this.cardId = card.id
+      }
+      try {
+        await this.$axios.$post('/cards/puntos/', {
+          ...punto,
+          card: this.cardId,
+        })
+      } catch (e) {
+        this.puntoErrors[punto.id] = e.response.data
+      }
+      await this.fetchPuntos()
+    },
     async submit() {
       const axiosFunc = this.cardId ? this.$axios.$patch : this.$axios.$post
       const aep = this.cardId ? `cards/cards/${this.cardId}/` : 'cards/cards/'
