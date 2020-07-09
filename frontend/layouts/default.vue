@@ -23,10 +23,6 @@
           </v-list-item-content>
         </v-list-item>
       </v-list>
-
-      <template v-slot:append>
-        <small>Last update: 28/06/2020 3:00</small>
-      </template>
     </v-navigation-drawer>
 
     <v-app-bar fixed app v-if="$auth.loggedIn" clipped-left>
