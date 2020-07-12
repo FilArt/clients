@@ -4,6 +4,10 @@ from django.utils.translation import gettext_lazy as _
 from django_fsm import FSMField, transition
 
 from utils import PositiveNullableFloatField
+from django.contrib.auth import get_user_model
+import logging
+
+logger = logging.getLogger(__name__)
 
 
 def more_than_zero(value):
@@ -20,21 +24,25 @@ class Bid(models.Model):
         ("error", _("Error")),
     )
     VALIDATION_STATUS_CHOICES = [item for item in BID_STATUS_CHOICES if item[0] in ("success", "error",)]
-    user = models.ForeignKey("users.CustomUser", on_delete=models.CASCADE, related_name="bids")
+    user = models.ForeignKey(get_user_model(), on_delete=models.CASCADE, related_name="bids")
     offer = models.ForeignKey("calculator.Offer", on_delete=models.CASCADE)
     status = FSMField(default="new", protected=True, choices=BID_STATUS_CHOICES)
     created_at = models.DateTimeField(auto_now_add=True)
 
-    # показатели объекта (дом, кафе и тд)
-    c1 = PositiveNullableFloatField(validators=[more_than_zero])
-    c2 = PositiveNullableFloatField()
-    c3 = PositiveNullableFloatField()
-    p1 = PositiveNullableFloatField(validators=[more_than_zero])
-    p2 = PositiveNullableFloatField()
-    p3 = PositiveNullableFloatField()
+    @property
+    def puntos_count(self) -> int:
+        return self.puntos.count()
+
+    @transition(field=status, source="*", target="new", on_error="error")
+    def new(self, user):
+        logger.info("user %s reset bid %s", user, self)
+        self.bidstory_set.create(
+            user=user, old_status=self.status, new_status="new",
+        )
 
     @transition(field=status, source="new", target="purchase", on_error="error")
     def purchase(self, user):
+        logger.info("user %s purchased bid %s", user, self)
         self.bidstory_set.create(
             user=user, old_status=self.status, new_status="purchase",
         )
@@ -65,7 +73,7 @@ class Bid(models.Model):
 
 
 class BidStory(models.Model):
-    user = models.ForeignKey("users.CustomUser", on_delete=models.CASCADE)
+    user = models.ForeignKey(get_user_model(), on_delete=models.CASCADE)
     bid = models.ForeignKey(Bid, on_delete=models.CASCADE)
     old_status = models.CharField(max_length=20, choices=Bid.BID_STATUS_CHOICES)
     new_status = models.CharField(max_length=20, choices=Bid.BID_STATUS_CHOICES)

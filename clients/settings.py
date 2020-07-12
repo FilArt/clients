@@ -44,7 +44,6 @@ INSTALLED_APPS = [
     "django_filters",
     "django_cleanup",
     "channels",
-    "apps.cards",
     "apps.users",
     "apps.calculator",
     "apps.bids",
@@ -161,6 +160,13 @@ GOOGLE_SERVICE_ACCOUNT_CREDS = "~/.config/gspread/service_account.json"
 ASGI_APPLICATION = "apps.chat.routing.application"
 CHANNEL_LAYERS = {
     "default": {"BACKEND": "channels_redis.core.RedisChannelLayer", "CONFIG": {"hosts": [("127.0.0.1", 6379)],},},
+}
+
+LOGGING = {
+    "version": 1,
+    "disable_existing_loggers": False,
+    "handlers": {"console": {"level": "INFO", "class": "logging.StreamHandler"},},
+    "root": {"handlers": ["console"], "level": "INFO",},
 }
 
 try:

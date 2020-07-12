@@ -1,4 +1,4 @@
-from django.db.models import Count
+from django.db import transaction
 from rest_framework import mixins, viewsets
 from rest_framework.decorators import action
 from rest_framework.exceptions import PermissionDenied
@@ -7,11 +7,12 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.request import Request
 from rest_framework.response import Response
 
-from apps.cards.models import Card
+from apps.bids.models import Bid
+from clients.serializers import AccountSerializer, AttachmentSerializer, PuntoSerializer
 
-from .models import CustomUser
+from .models import Attachment, CustomUser, Phone, Punto
 from .permissions import AdminPermission
-from .serializers import AccountSerializer, RegisterSerializer, UserListSerializer, UserSerializer
+from .serializers import PhoneSerializer, RegisterSerializer, UserListSerializer, UserSerializer
 
 
 class RegisterViewSet(viewsets.GenericViewSet, mixins.CreateModelMixin):
@@ -54,7 +55,7 @@ class AccountViewSet(
 
 
 class UserViewSet(viewsets.ReadOnlyModelViewSet):
-    queryset = CustomUser.objects.filter(id__in=Card.objects.values("bid__user").distinct())
+    queryset = CustomUser.objects.filter(bids__isnull=False).distinct("id")
     permission_classes = (IsAuthenticated, AdminPermission)
     ordering = ("-id",)
 
@@ -68,5 +69,53 @@ class UserViewSet(viewsets.ReadOnlyModelViewSet):
 
 
 class LeedsViewSet(UserViewSet):
-    def get_queryset(self):
-        return CustomUser.objects.exclude(id__in=super().get_queryset())
+    queryset = CustomUser.objects.filter(bids__isnull=True).distinct("id")
+
+
+class PuntoViewSet(viewsets.ModelViewSet):
+    queryset = Punto.objects.all()
+    serializer_class = PuntoSerializer
+    filterset_fields = ["bid"]
+
+    def perform_create(self, serializer):
+        bid_id = self.request.data.get("bid")
+        bid = get_object_or_404(Bid, id=bid_id or 0)
+        with transaction.atomic():
+            if not bid.puntos.exists():
+                bid.purchase(self.request.user)
+                bid.save()
+            serializer.save(user=bid.user)
+
+    def perform_destroy(self, instance):
+        bid = instance.bid
+        if bid.puntos.count() == 1:
+            bid.new(self.request.user)
+            bid.save()
+        return super().perform_destroy(instance)
+
+    @action(methods=["GET"], detail=False)
+    def get_headers(self, request: Request):
+        return Response(
+            [{"name": f.verbose_name, "value": f.name, "hint": f.help_text} for f in Punto._meta.fields[3:]]
+        )
+
+
+class PhoneViewSet(viewsets.ModelViewSet):
+    queryset = Phone.objects.all()
+    serializer_class = PhoneSerializer
+
+    def filter_queryset(self, queryset):
+        return super().filter_queryset(queryset.filter(user=self.request.user))
+
+    def perform_create(self, serializer):
+        bid_id = self.request.data.pop("bid", None)
+        bid = get_object_or_404(Bid, id=bid_id or 0)
+        serializer.save(user=bid.user)
+
+
+class AttachmentsViewSet(viewsets.ModelViewSet):
+    queryset = Attachment.objects.all()
+    serializer_class = AttachmentSerializer
+
+    def filter_queryset(self, queryset):
+        return super().filter_queryset(queryset.filter(punto__user=self.request.user))

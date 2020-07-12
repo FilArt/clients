@@ -1,11 +1,10 @@
+from django.contrib.auth import get_user_model
 from django.db.models import Q
 from rest_framework import viewsets
 from rest_framework.decorators import action
 from rest_framework.generics import get_object_or_404
 from rest_framework.request import Request
 from rest_framework.response import Response
-
-from apps.users.models import CustomUser
 
 from .models import ChatMessage, ChatMessageStatus
 from .serializers import ChatMessageSerializer
@@ -22,7 +21,7 @@ class ChatMessageViewSet(viewsets.ModelViewSet):
 
     @action(methods=["GET"], detail=False)
     def get_participant(self, request: Request):
-        admin = CustomUser.objects.get(role="admin")
+        admin = get_user_model().objects.filter(role="admin").first()
         return Response({"id": admin.id, "name": admin.email, "imageUrl": admin.avatar.url if admin.avatar else None})
 
     @action(methods=["PATCH"], detail=True)

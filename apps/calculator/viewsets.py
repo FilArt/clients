@@ -1,10 +1,12 @@
-from rest_framework import viewsets, mixins
+from rest_framework import mixins, viewsets
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
+from clients.serializers import OfferListSerializer, OfferSerializer
+
 from .models import Company, Offer
 from .permissions import OffersAccessPermission
-from .serializers import CompanySerializer, OfferSerializer, OfferListSerializer
+from .serializers import CompanySerializer
 
 
 class CompanyViewSet(viewsets.GenericViewSet, mixins.ListModelMixin):

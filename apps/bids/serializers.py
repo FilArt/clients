@@ -1,23 +1,9 @@
 import arrow
 from rest_framework import serializers
 
-from apps.calculator.serializers import OfferSerializer
+from clients.serializers import BidListSerializer, OfferSerializer
+
 from .models import Bid, BidStory
-from ..cards.serializers import CardSerializer
-
-
-class BidListSerializer(serializers.ModelSerializer):
-    status = serializers.CharField(source="get_status_display")
-    offer_name = serializers.CharField(read_only=True, source="offer.name")
-    created_at = serializers.SerializerMethodField()
-
-    class Meta:
-        model = Bid
-        fields = ["id", "created_at", "offer_name", "status"]
-
-    # noinspection PyMethodMayBeStatic
-    def get_created_at(self, instance: Bid):
-        return arrow.get(instance.created_at).humanize(locale=self.context["request"].LANGUAGE_CODE)
 
 
 class BidSerializer(BidListSerializer):
@@ -25,8 +11,7 @@ class BidSerializer(BidListSerializer):
 
     class Meta:
         model = Bid
-        fields = ["card", "status", "id", "offer"]
-        extra_kwargs = {"card": {"read_only": True}}
+        fields = ["status", "id", "offer", "puntos_count"]
 
 
 class CreateBidSerializer(serializers.ModelSerializer):
@@ -35,12 +20,6 @@ class CreateBidSerializer(serializers.ModelSerializer):
         fields = [
             "id",
             "offer",
-            "c1",
-            "c2",
-            "c3",
-            "p1",
-            "p2",
-            "p3",
         ]
 
 
@@ -69,14 +48,6 @@ class SupportBidListSerializer(BidListSerializer):
     class Meta:
         model = Bid
         fields = ["id", "status", "user", "created_at"]
-
-
-class SupportBidSerializer(BidSerializer):
-    card = CardSerializer()
-
-    class Meta:
-        model = Bid
-        fields = "__all__"
 
 
 class ValidateBidSerializer(serializers.ModelSerializer):

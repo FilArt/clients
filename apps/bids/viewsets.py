@@ -7,15 +7,15 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.request import Request
 from rest_framework.response import Response
 
+from clients.serializers import BidListSerializer, SupportBidSerializer
+
 from .models import Bid
 from .permissions import BidsPermission
 from .serializers import (
-    BidListSerializer,
     BidSerializer,
     BidStorySerializer,
     CreateBidSerializer,
     SupportBidListSerializer,
-    SupportBidSerializer,
     ValidateBidSerializer,
 )
 
@@ -47,6 +47,13 @@ class BidViewSet(viewsets.ModelViewSet):
             return qs.exclude(status="new")
 
         return qs.filter(user=user)
+
+    def filter_queryset(self, queryset):
+        qs = super().filter_queryset(queryset)
+        user_id = self.request.query_params.get("user")
+        if user_id:
+            qs = qs.filter(user_id=user_id)
+        return qs
 
     def perform_create(self, serializer):
         with transaction.atomic():

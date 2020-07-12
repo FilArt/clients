@@ -6,9 +6,8 @@ from django.utils.html import strip_tags
 from django.utils.translation import gettext_lazy as _
 from rest_framework import serializers
 
-from apps.bids.serializers import BidListSerializer
-
-from .models import CustomUser, UserSettings
+from clients.serializers import BidListSerializer
+from .models import CustomUser, Phone
 
 
 class RegisterSerializer(serializers.ModelSerializer):
@@ -49,49 +48,6 @@ class RegisterSerializer(serializers.ModelSerializer):
             )
 
 
-class UserSettingsSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = UserSettings
-        exclude = ["user"]
-
-
-class AccountSerializer(serializers.ModelSerializer):
-    settings = UserSettingsSerializer()
-
-    class Meta:
-        model = CustomUser
-        fields = [
-            "id",
-            "email",
-            "first_name",
-            "last_name",
-            "phone",
-            "password",
-            "settings",
-            "permissions",
-            "role",
-        ]
-        extra_kwargs = {
-            "password": {"write_only": True},
-            "permissions": {"read_only": True},
-        }
-
-    def update(self, instance, validated_data):
-        user: CustomUser = instance
-        user_settings_data = validated_data.get("settings")
-        if user_settings_data:
-            if not hasattr(user, "usersettings"):
-                user_settings_instance = UserSettings.objects.create(user=user)
-            else:
-                user_settings_instance = user.usersettings
-
-            user_settings_serializer = UserSettingsSerializer(user_settings_instance, data=user_settings_data)
-            user_settings_serializer.is_valid(raise_exception=True)
-            user_settings_serializer.save(user=user)
-
-        return super().update(user, validated_data)
-
-
 class UserListSerializer(serializers.ModelSerializer):
     date_joined = serializers.SerializerMethodField()
 
@@ -105,7 +61,6 @@ class UserListSerializer(serializers.ModelSerializer):
             "phone",
             "date_joined",
             "bids_count",
-            "cards_count",
         )
 
     def get_date_joined(self, instance: CustomUser):
@@ -118,3 +73,9 @@ class UserSerializer(UserListSerializer):
     class Meta:
         model = CustomUser
         exclude = ["password"]
+
+
+class PhoneSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Phone
+        exclude = ["user"]
