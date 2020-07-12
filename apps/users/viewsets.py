@@ -1,7 +1,7 @@
 from django.db import transaction
 from rest_framework import mixins, viewsets
 from rest_framework.decorators import action
-from rest_framework.exceptions import PermissionDenied
+from rest_framework.exceptions import PermissionDenied, ValidationError
 from rest_framework.generics import get_object_or_404
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.request import Request
@@ -81,9 +81,12 @@ class PuntoViewSet(viewsets.ModelViewSet):
         bid_id = self.request.data.get("bid")
         bid = get_object_or_404(Bid, id=bid_id or 0)
         with transaction.atomic():
-            if not bid.puntos.exists():
-                bid.purchase(self.request.user)
-                bid.save()
+            if bid.status != "purchase" and not bid.puntos.exists():
+                try:
+                    bid.purchase(self.request.user)
+                    bid.save()
+                except Exception as exc:
+                    raise ValidationError({"status": [str(exc)]})
             serializer.save(user=bid.user)
 
     def perform_destroy(self, instance):
