@@ -61,7 +61,7 @@ export default {
         },
       },
       participants: [this.participant],
-      titleImageUrl: this.participant.imageUrl,
+      titleImageUrl: this.participant.imageUrl || 'null',
       messageList: [],
       isChatOpen: false, // to determine whether the chat window should be open or closed
       showTypingIndicator: '', // when set to a value matching the participant.id it shows the typing indicator for the specific user
