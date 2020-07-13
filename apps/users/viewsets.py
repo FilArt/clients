@@ -77,6 +77,16 @@ class PuntoViewSet(viewsets.ModelViewSet):
     serializer_class = PuntoSerializer
     filterset_fields = ["bid"]
 
+    def filter_queryset(self, queryset):
+        user = self.request.user
+        filter_kwargs = dict(user=user)
+        if user.role == "admin":
+            if "user" in self.request.query_params:
+                filter_kwargs["user"] = self.request.query_params["user"]
+            else:
+                del filter_kwargs["user"]
+        return super().filter_queryset(queryset.filter(**filter_kwargs))
+
     def perform_create(self, serializer):
         bid_id = self.request.data.get("bid")
         bid = get_object_or_404(Bid, id=bid_id or 0)
@@ -121,4 +131,11 @@ class AttachmentsViewSet(viewsets.ModelViewSet):
     serializer_class = AttachmentSerializer
 
     def filter_queryset(self, queryset):
-        return super().filter_queryset(queryset.filter(punto__user=self.request.user))
+        user = self.request.user
+        filter_kwargs = dict(punto__user=user)
+        if user.role == "admin":
+            user_id = self.request.query_params.get("user")
+            if user_id:
+                del filter_kwargs["punto__user"]
+                filter_kwargs["punto__user_id"] = user_id
+        return super().filter_queryset(queryset.filter(**filter_kwargs))

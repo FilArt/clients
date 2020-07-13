@@ -3,9 +3,13 @@ export const state = () => ({
   calculatorForm: {},
   tarif: null,
   participant: null,
+  puntoHeaders: [],
 })
 
 export const mutations = {
+  setPuntoHeaders(state, h) {
+    state.puntoHeaders = h
+  },
   setParticipant(state, p) {
     state.participant = p
   },

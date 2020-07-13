@@ -60,10 +60,6 @@ export default {
           text: 'Bids',
           value: 'bids_count',
         },
-        {
-          text: 'Cards',
-          value: 'cards_count',
-        },
       ],
     },
     users: {

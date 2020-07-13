@@ -9,7 +9,7 @@ from rest_framework.response import Response
 
 from clients.serializers import BidListSerializer, SupportBidSerializer
 
-from .models import Bid
+from .models import Bid, BidStory
 from .permissions import BidsPermission
 from .serializers import (
     BidSerializer,
@@ -91,3 +91,15 @@ class BidViewSet(viewsets.ModelViewSet):
             raise ValidationError({"status": [str(exc)]})
         bid.save()
         return Response(SupportBidSerializer(bid, context={"request": request}).data)
+
+
+class BidStoryViewSet(viewsets.ModelViewSet):
+    queryset = BidStory.objects.all()
+    serializer_class = BidStorySerializer
+
+    def filter_queryset(self, queryset):
+        user = self.request.user
+        user_id = user.id
+        if user.role == "admin":
+            user_id = self.request.query_params.get("user")
+        return super().filter_queryset(queryset.filter(bid__user_id=user_id))

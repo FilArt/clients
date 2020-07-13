@@ -7,6 +7,7 @@ from django.utils.translation import gettext_lazy as _
 from rest_framework import serializers
 
 from clients.serializers import BidListSerializer
+
 from .models import CustomUser, Phone
 
 
@@ -67,15 +68,16 @@ class UserListSerializer(serializers.ModelSerializer):
         return arrow.get(instance.date_joined).humanize(locale=self.context["request"].LANGUAGE_CODE)
 
 
-class UserSerializer(UserListSerializer):
-    bids = BidListSerializer(many=True)
-
-    class Meta:
-        model = CustomUser
-        exclude = ["password"]
-
-
 class PhoneSerializer(serializers.ModelSerializer):
     class Meta:
         model = Phone
         exclude = ["user"]
+
+
+class UserSerializer(UserListSerializer):
+    bids = BidListSerializer(many=True)
+    phones = serializers.ListSerializer(child=PhoneSerializer())
+
+    class Meta:
+        model = CustomUser
+        exclude = ["password"]

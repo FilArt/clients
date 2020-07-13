@@ -1,7 +1,7 @@
 from django.urls import path, include
 
-from .routers import router
+from .routers import bids_router
 
 urlpatterns = [
-    path("", include(router.urls)),
+    path("", include(bids_router.urls)),
 ]

@@ -2,7 +2,7 @@
   <v-dialog v-model="dialog">
     <template v-slot:activator="{ on }">
       <v-btn v-on="on" :color="color"
-        >{{ label ? label : 'Add nuevo suministro' }}
+        >{{ label ? label : 'Anadir nuevo suministro' }}
         <v-icon color="error" v-if="punto" right @click.stop="puntoDeleted">
           mdi-trash-can-outline
         </v-icon>
@@ -15,42 +15,79 @@
         </p>
         <close-button @click="dialog = false" />
       </v-card-title>
-      <div class="d-flex flex-wrap">
-        <div v-for="field in fields" :key="field.value">
-          <company-select
-            v-show="admin"
-            v-if="['company_gas_id', 'company_luz_id'].includes(field.value)"
-            v-model="newPunto[field.value.replace('_id', '')]"
-            :label="field.name"
-          />
-          <v-text-field
-            v-else
-            v-model="newPunto[field.value]"
-            class="pa-3"
-            clearable
-            :label="field.name"
-            :error-messages="errors[field.value]"
-            v-show="
-              [
-                'last_time_company_luz_changed',
-                'last_time_company_gas_changed',
-                'cups_gas',
-                'tarif_gas',
-                'consumo_annual_luz',
-                'consumo_annual_gas',
-              ].includes(field.value)
-                ? admin
-                : true
-            "
-          />
-        </div>
-      </div>
+      <v-card-text>
+        <div class="d-flex flex-wrap">
+          <div v-for="field in fields" :key="field.value">
+            <company-select
+              v-if="field.value === 'company_luz'"
+              v-model="newPunto.company_luz"
+            >
+            </company-select>
 
-      <submit-button
-        :label="punto ? 'Guardar' : 'Anadir suministro'"
-        block
-        @click="addPunto"
-      />
+            <v-text-field
+              v-model="newPunto[field.value]"
+              class="pa-3"
+              clearable
+              :label="field.name"
+              :hint="field.hint"
+              :error-messages="errors[field.value]"
+              v-show="
+                [
+                  'company_luz',
+                  'company_gas',
+                  'last_time_company_luz_changed',
+                  'last_time_company_gas_changed',
+                  'cups_gas',
+                  'tarif_luz',
+                  'tarif_gas',
+                  'consumo_annual_luz',
+                  'consumo_annual_gas',
+                ].includes(field.value)
+                  ? admin
+                  : true
+              "
+            />
+          </div>
+        </div>
+
+        <v-row
+          v-for="fileField in fileFields"
+          :key="fileField.name"
+          align="center"
+        >
+          <template v-if="!(isIndividual && fileField.onlyBusiness)">
+            <v-col>
+              <v-file-input
+                v-model="files[fileField.name]"
+                :label="fileField.label"
+                :error-messages="fileErrors[fileField.name]"
+              />
+            </v-col>
+            <v-col
+              v-for="attachment in attachments.filter(
+                (a) => a.attachment_type === fileField.name
+              )"
+              :key="attachment.id"
+            >
+              <v-chip
+                close
+                link
+                exact
+                target="_blank"
+                :href="attachment.attachment"
+                @click:close="deleteAttachment(attachment.id)"
+                >Archivo adjunto {{ attachment.id }}</v-chip
+              >
+            </v-col>
+          </template>
+        </v-row>
+
+        <submit-button
+          :label="punto ? 'Guardar' : 'Anadir suministro'"
+          block
+          @click="addPunto"
+        />
+      </v-card-text>
     </v-card>
   </v-dialog>
 </template>
@@ -63,8 +100,12 @@ export default {
     CompanySelect: () => import('~/components/selects/CompanySelect'),
   },
   props: {
+    bidId: {
+      type: Number,
+      default: 0,
+    },
     color: {
-      type: [String],
+      type: String,
       default: null,
     },
     label: {
@@ -75,17 +116,57 @@ export default {
       type: Object,
       default: () => null,
     },
+    isIndividual: {
+      type: Boolean,
+      default: false,
+    },
   },
   data() {
     return {
       dialog: false,
-      fields: [],
       newPunto: this.punto || {},
       errors: {},
+      attachments: (this.punto || {}).attachments || [],
+      fileFields: [
+        {
+          name: 'factura',
+          label: 'Foto factura actual (anverso)',
+        },
+        {
+          name: 'factura_1',
+          label: 'Foto factura actual (reverso)',
+        },
+        {
+          name: 'dni1',
+          label: 'Foto DNI (anverso)',
+        },
+        {
+          name: 'dni2',
+          label: 'Foto DNI (reverso)',
+        },
+        {
+          name: 'cif1',
+          label: 'Foto CIF',
+          onlyBusiness: true,
+        },
+      ],
+      files: {
+        factura: null,
+        factura_1: null,
+        dni1: null,
+        dni2: null,
+        cif1: null,
+      },
+      fileErrors: {},
     }
   },
-  async created() {
-    await this.refresh()
+  async mounted() {
+    if (!this.fields || !this.fields.length) {
+      this.$store.commit(
+        'setPuntoHeaders',
+        await this.$axios.$get('/users/puntos/get_headers/')
+      )
+    }
     if (this.punto) {
       this.newPunto = this.punto
     }
@@ -101,23 +182,76 @@ export default {
     admin() {
       return this.$auth.user.role === 'admin'
     },
+    fields() {
+      return this.$store.state.puntoHeaders
+    },
   },
   methods: {
-    async refresh() {
-      this.fields = await this.$axios.$get('/cards/puntos/get_headers/')
+    deleteAttachment(attachmentId) {
+      this.$swal({
+        title: `Borrar el archivo adjunto ${attachmentId}?`,
+        text: '¡Una vez borrado, no podrás recuperar esto!',
+        icon: 'warning',
+        buttons: true,
+        dangerMode: true,
+      }).then((willDelete) => {
+        if (willDelete) {
+          this.$axios.$delete(`users/attachments/${attachmentId}/`).then(() => {
+            this.$swal({ title: 'Solicitud eliminada!', icon: 'success' })
+            this.attachments = this.attachments.filter(
+              (a) => a.id !== attachmentId
+            )
+          })
+        }
+      })
+    },
+    async loadFiles(puntoId) {
+      for await (let fileKey of Object.keys(this.files)) {
+        const file = this.files[fileKey]
+        if (!file) continue
+        const form = new FormData()
+        form.append('attachment_type', fileKey)
+        form.append('attachment', file)
+        form.append('punto', puntoId)
+        try {
+          await this.$axios.$post('/users/attachments/', form)
+        } catch (e) {
+          this.fileErrors[fileKey] = e.response.data
+        }
+      }
     },
     async addPunto() {
       if (this.punto) {
         try {
-          await this.puntoEdited()
+          await this.$axios.$patch(
+            `/users/puntos/${this.punto.id}/`,
+            this.punto
+          )
         } catch (e) {
           this.errors = e.response.data
           return
         }
+        await this.loadFiles(this.punto.id)
+        if (Object.keys(this.fileErrors).length) return
 
-        this.$emit('punto-edited', { punto: this.newPunto, id: this.punto.id })
+        await this.$swal({
+          title: 'punto ' + this.punto.id + ' изменено',
+          icon: 'success',
+        })
+        this.$emit('punto-edited')
       } else {
-        this.$emit('punto-created', { punto: this.newPunto })
+        try {
+          const punto = await this.$axios.$post('/users/puntos/', {
+            ...this.newPunto,
+            bid: this.bidId,
+          })
+          await this.loadFiles(punto.id)
+          if (Object.keys(this.fileErrors).length) return
+          this.$emit('punto-created')
+        } catch (e) {
+          this.errors = e.response.data
+          return
+        }
       }
       this.newPunto = {}
       this.dialog = false
@@ -132,25 +266,12 @@ export default {
         dangerMode: true,
       }).then((willDelete) => {
         if (willDelete) {
-          this.$axios.$delete(`cards/puntos/${id}/`).then(() => {
+          this.$axios.$delete(`users/puntos/${id}/`).then(() => {
             this.$swal({ title: 'Punto eliminada!', icon: 'success' })
             this.$emit('punto-deleted')
           })
         }
       })
-    },
-    async puntoEdited() {
-      const id = this.punto.id
-      const punto = this.newPunto
-      const updatedCard = await this.$axios.$patch(
-        `/cards/puntos/${id}/`,
-        punto
-      )
-      await this.$swal({
-        title: 'punto ' + id + ' изменено',
-        icon: 'success',
-      })
-      this.$emit('punto-edited')
     },
   },
 }
