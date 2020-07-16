@@ -162,6 +162,13 @@
         </v-col>
       </v-row>
     </v-card-text>
+
+    <v-card-actions>
+      <v-btn rounded block outlined color="primary" @click="addBid">
+        Añadir a cartera
+        <v-icon right>mdi-briefcase</v-icon>
+      </v-btn>
+    </v-card-actions>
   </v-card>
 </template>
 
@@ -195,6 +202,35 @@ export default {
         id: this.offer.id,
         tarif: this.tarif,
         with_calculations: true,
+      })
+    },
+    addBid() {
+      let data = { offer: this.offer.id }
+      if (this.$route.query.fromCalculator === 'true') {
+        data = { ...data, ...this.$store.state.calculatorForm }
+      }
+      this.$axios.$post('bids/bids/', data).then((createdBidData) => {
+        this.$swal({
+          title: 'Se ha agregado una solicitud de contrato a la cartera.',
+          icon: 'success',
+          buttons: {
+            cancel: true,
+            goToPortfel: {
+              text: 'Ir a Cartera',
+              value: 'bids',
+            },
+            goToBid: {
+              text: 'Contratar',
+              value: 'bid',
+            },
+          },
+        }).then((value) => {
+          if (value === 'bids') {
+            this.$router.push('/bids')
+          } else if (value === 'bid') {
+            this.$router.push(`/bids/${createdBidData.id}`)
+          }
+        })
       })
     },
   },

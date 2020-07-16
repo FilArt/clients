@@ -1,5 +1,15 @@
 <template>
   <v-card :loading="loading">
+    <v-card-title>
+      Utiliza nuestra herramienta de selección de ofertas.
+    </v-card-title>
+
+    <v-card-text class="subheader">
+      Para utilizar el comparador, necesitará su factura de luz actual. Nuestro
+      comparador realizará un cálculo para todas las ofertas disponibles en
+      nuestra base de datos y lo ayudará a elegir la mejor oferta para usted.
+    </v-card-text>
+
     <v-simple-table v-if="showResults">
       <v-alert type="warning" :value="!offers.length">Nohay ofertas</v-alert>
 
@@ -40,101 +50,99 @@
       </template>
     </v-simple-table>
 
-    <v-btn
-      v-if="showResults"
-      block
-      color="primary"
-      @click="showResults = false"
-    >
-      Atrás
-      <v-icon>mdi-keyboard-return</v-icon>
-    </v-btn>
+    <div v-else>
+      <v-form @submit.prevent="submit" novalidate>
+        <v-card-text class="mx-auto" style="max-width: 1000px;">
+          <v-row align="center" class="flex-wrap">
+            <v-col>
+              <company-select
+                :value="form.company"
+                :error-messages="errorMessages.company"
+                label="Comercializadora actual"
+                @input="updateForm('company', $event)"
+              />
+            </v-col>
 
-    <v-form v-else @submit.prevent="submit" novalidate>
-      <v-card-title>Comparador</v-card-title>
+            <v-col>
+              <tarif-select
+                :value="tarif"
+                :error-messages="errorMessages.tarif"
+                @input="$store.commit('setTarif', $event)"
+              />
+            </v-col>
 
-      <v-card-text style="max-width: 750px;" class="mx-auto">
-        <v-row align="center" class="flex-wrap">
-          <v-col>
-            <company-select
-              :value="form.company"
-              :error-messages="errorMessages.company"
-              label="Comercializadora actual"
-              @input="updateForm('company', $event)"
-            />
-          </v-col>
+            <v-col>
+              <client-type-select
+                :value="form.client_type"
+                :error-messages="errorMessages.client_type"
+                @input="updateForm('client_type', $event)"
+              />
+            </v-col>
+          </v-row>
 
-          <v-col>
-            <tarif-select
-              :value="tarif"
-              :error-messages="errorMessages.tarif"
-              @input="$store.commit('setTarif', $event)"
-            />
-          </v-col>
+          <v-row>
+            <v-col>
+              <v-text-field
+                label="Periodo"
+                type="number"
+                name="period"
+                hint="En este campo, ingrese el período (en días) por el cual se le factura. Está información puede obtenerse en su factura."
+                persistent-hint
+                :value="form.period"
+                :error-messages="errorMessages.period"
+                @input="updateForm('period', $event)"
+              />
+            </v-col>
 
-          <v-col>
-            <client-type-select
-              :value="form.client_type"
-              :error-messages="errorMessages.client_type"
-              @input="updateForm('client_type', $event)"
-            />
-          </v-col>
-        </v-row>
+            <v-col>
+              <v-text-field
+                label="Cadidad de pago en la factura actual"
+                type="number"
+                name="current_price"
+                prefix="€"
+                :value="form.current_price"
+                :error-messages="errorMessages.current_price"
+                @input="updateForm('current_price', $event)"
+              />
+            </v-col>
+          </v-row>
 
-        <v-row>
-          <v-col>
-            <v-text-field
-              label="Periodo"
-              type="number"
-              name="period"
-              :value="form.period"
-              :error-messages="errorMessages.period"
-              @input="updateForm('period', $event)"
-            />
-          </v-col>
-
-          <v-col>
-            <v-text-field
-              label="Cadidad de pago en la factura actual"
-              type="number"
-              name="current_price"
-              prefix="€"
-              :value="form.current_price"
-              :error-messages="errorMessages.current_price"
-              @input="updateForm('current_price', $event)"
-            />
-          </v-col>
-        </v-row>
-
-        <v-row>
-          <v-col v-for="letter in ['p', 'c']" :key="letter">
-            <v-row v-for="number in [1, 2, 3]" :key="number">
-              <v-col>
-                <v-text-field
-                  v-show="
-                    number === 1 ||
-                    ['3.0A', '3.1A'].includes(tarif) ||
-                    (letter + number === 'c3' &&
-                      ['2.1DHA', '2.0DHA'].includes(tarif))
-                  "
-                  type="number"
-                  :value="form[letter + number]"
-                  :label="
-                    (letter === 'p' ? 'Potencia' : 'Consumo') + ' P' + number
-                  "
-                  :name="'P' + number"
-                  :error-messages="errorMessages[letter + number]"
-                  @input="updateForm(letter + number, $event)"
-                />
-              </v-col>
-            </v-row>
-          </v-col>
-        </v-row>
-      </v-card-text>
-      <v-card-actions>
-        <submit-button block label="Comparar" />
-      </v-card-actions>
-    </v-form>
+          <v-row>
+            <v-col v-for="letter in ['p', 'c']" :key="letter">
+              <v-row v-for="number in [1, 2, 3]" :key="number">
+                <v-col>
+                  <v-text-field
+                    v-show="
+                      number === 1 ||
+                      ['3.0A', '3.1A'].includes(tarif) ||
+                      (letter + number === 'c3' &&
+                        ['2.1DHA', '2.0DHA'].includes(tarif))
+                    "
+                    type="number"
+                    :hint="
+                      letter === 'p'
+                        ? 'Ingrese aquí la potencia contratada en kw. Está información puede obtenerse en su factura'
+                        : 'Ingrese aquí la energía consumida en kw para cada período.Está información puede obtenerse en su factura.'
+                    "
+                    persistent-hint
+                    :value="form[letter + number]"
+                    :label="
+                      (letter === 'p' ? 'Potencia' : 'Consumo') + ' P' + number
+                    "
+                    :name="'P' + number"
+                    :error-messages="errorMessages[letter + number]"
+                    @input="updateForm(letter + number, $event)"
+                  />
+                </v-col>
+              </v-row>
+            </v-col>
+          </v-row>
+        </v-card-text>
+        <v-card-actions>
+          <submit-button block label="Comparar" />
+        </v-card-actions>
+      </v-form>
+    </div>
   </v-card>
 </template>
 <script>

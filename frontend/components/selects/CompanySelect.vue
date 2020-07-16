@@ -7,6 +7,8 @@
     :label="label"
     item-text="name"
     item-value="id"
+    hint="Elija la empresa comercializadora con la que está actualmente."
+    persistent-hint
     chips
     deletable-chips
     style="min-width: 150px;"

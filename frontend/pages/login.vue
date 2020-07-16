@@ -161,10 +161,22 @@ export default {
       try {
         await this.$auth.loginWith('local', { data: this.form })
 
-        const role = this.$auth.user.role
+        const user = this.$auth.user
+        const role = user.role
+
         if (role === null) {
           const p = await this.$axios.$get('chat/messages/get_participant/')
           this.$store.commit('setParticipant', p)
+
+          if (!user.phone) {
+            await this.$swal({
+              title: 'Por favor, complete su perfil por completo.',
+              text:
+                'Su perfil completo nos ayudará a conocernos mejor, y nos permitirá proporcionarle un soporte más completo y ampliado.',
+              icon: 'warning',
+            })
+            await this.$router.push('/profile')
+          }
         }
         role === 'support'
           ? await this.$router.push('/support')

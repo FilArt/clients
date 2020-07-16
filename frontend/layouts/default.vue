@@ -29,6 +29,13 @@
       <v-app-bar-nav-icon @click.stop="drawer = !drawer" color="primary" />
       <v-toolbar-title v-text="title" />
       <v-spacer />
+
+      <v-btn icon nuxt to="/profile">
+        <v-icon color="primary">
+          mdi-account
+        </v-icon>
+      </v-btn>
+
       <theme-switcher />
       <v-btn v-if="$auth" icon @click.stop="$auth.logout">
         <v-icon color="primary">mdi-logout</v-icon>
@@ -122,11 +129,11 @@ export default {
         title: 'Asistente personal',
         to: '/assistant',
       })
-      items.push({
-        icon: 'mdi-account',
-        title: 'Perfil',
-        to: '/profile',
-      })
+      // items.push({
+      //   icon: 'mdi-account',
+      //   title: 'Perfil',
+      //   to: '/profile',
+      // })
 
       const role = this.$auth.user.role
       if (role === 'support') {

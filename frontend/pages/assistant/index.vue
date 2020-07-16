@@ -1,5 +1,15 @@
 <template>
   <v-card>
+    <v-card-title>
+      Para nosotros es importante que nuestros clientes reciban atención
+      personalizada
+    </v-card-title>
+
+    <v-card-text class="subheader">
+      En esta página encontrará los datos de contacto y el chat de su asistente
+      personal, no dude en ponerse en contacto con él para cualquier pregunta
+    </v-card-text>
+
     <v-row align="center">
       <v-col class="text-center">
         <v-avatar height="300" width="300">

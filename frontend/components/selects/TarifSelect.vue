@@ -6,6 +6,8 @@
     :error-messages="errorMessages"
     label="Tarifa"
     style="min-width: 50px;"
+    hint="Elija su tarifa o peaje de acceso. Está información puede obtenerse en su factura."
+    persistent-hint
     chips
     deletable-chips
     @input="$emit('input', tarif)"

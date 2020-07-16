@@ -87,7 +87,7 @@
         </v-simple-table>
       </v-card-text>
       <v-card-actions v-if="showActions">
-        <v-btn rounded block outlined color="primary" @click="addBid(offer.id)">
+        <v-btn rounded block outlined color="primary" @click="addBid">
           Añadir a cartera
           <v-icon right>mdi-briefcase</v-icon>
         </v-btn>
@@ -110,12 +110,13 @@ export default {
     },
   },
   methods: {
-    addBid(bidId) {
-      let data = { offer: bidId }
+    addBid() {
+      if (!this.offer) return
+      let data = { offer: this.offer.id }
       if (this.$route.query.fromCalculator === 'true') {
         data = { ...data, ...this.$store.state.calculatorForm }
       }
-      this.$axios.$post('bids/', data).then((createdBidData) => {
+      this.$axios.$post('bids/bids/', data).then((createdBidData) => {
         this.$swal({
           title: 'Se ha agregado una solicitud de contrato a la cartera.',
           icon: 'success',

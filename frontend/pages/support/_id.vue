@@ -5,21 +5,22 @@
       <detail-offer :offer="bid.offer" />
     </v-card-text>
 
-    <v-card-title>Card</v-card-title>
+  <v-divider />
+
+    <v-card-title>Client data</v-card-title>
     <v-card-text>
-      <card-detail :card="bid.card.data" />
+      <p>DNI: {{ bid.user.dni }}</p>
+      <p>CIF/DNI: {{ bid.user.cif_dni }}</p>
+      <p>Legal representative: {{ bid.user.legal_representative }}</p>
+      <p>IBAN: {{ bid.user.iban }}</p>
+      <p>EMAIL: {{ bid.user.email }}</p>
     </v-card-text>
 
-    <v-card-title>Archivos adjuntos</v-card-title>
+    <v-divider />
+
+    <v-card-title>Puntos</v-card-title>
     <v-card-text>
-      <v-chip
-        v-for="attachment in bid.card.attachments"
-        :key="attachment.id"
-        link
-        exact
-        target="_blank"
-        :href="attachment.attachment"
-      >Attachment {{ attachment.id }}</v-chip>
+      <puntos-list :puntos="bid.puntos" />
     </v-card-text>
 
     <v-card-actions>
@@ -37,7 +38,10 @@
           </v-card-title>
           <v-card-text>
             <v-form @submit.prevent="submit" novalidate>
-              <status-select v-model="data.status" :errors="errorMessages.status" />
+              <status-select
+                v-model="data.status"
+                :errors="errorMessages.status"
+              />
               <v-textarea
                 v-model="data.message"
                 label="Message"
@@ -69,7 +73,6 @@
 
 <script>
 import DetailOffer from '~/components/detailOffer'
-import CardDetail from '~/components/CardDetail'
 import StatusSelect from '~/components/selects/StatusSelect'
 import CloseButton from '~/components/buttons/closeButton'
 import SubmitButton from '~/components/buttons/submitButton'
@@ -78,13 +81,19 @@ export default {
     SubmitButton,
     CloseButton,
     StatusSelect,
-    CardDetail,
     DetailOffer,
+    PuntosList: () => import('~/components/puntos/PuntosList'),
   },
-  async asyncData({ $axios, params }) {
-    const bid = await $axios.$get(`bids/${params.id}`)
+  async asyncData({ $axios, params, store }) {
+    const bid = await $axios.$get(`bids/bids/${params.id}`)
+    let puntoHeaders = store.state.puntoHeaders
+    if (!puntoHeaders || !puntoHeaders.length) {
+      puntoHeaders = await $axios.$get('/users/puntos/get_headers/')
+      store.commit('setPuntoHeaders', puntoHeaders)
+    }
     return {
       bid,
+      puntoHeaders,
     }
   },
   data() {
@@ -100,13 +109,13 @@ export default {
   methods: {
     submit() {
       this.$axios
-        .$post(`bids/${this.bid.id}/validate/`, this.data)
+        .$post(`bids/bids/${this.bid.id}/validate/`, this.data)
         .then((data) => {
           this.bid = data
           this.$swal({
             title: 'Listo',
             icon: 'success',
-          }).then(() => (this.$router.push('/support')))
+          }).then(() => this.$router.push('/support'))
         })
         .catch((e) => (this.errorMessages = e.response.data))
     },

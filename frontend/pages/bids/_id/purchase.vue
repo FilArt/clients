@@ -6,28 +6,6 @@
 
     <v-card-text>
       <v-form @submit.prevent="submit" novalidate>
-        <v-checkbox
-          v-model="form.change_of_name"
-          label="Cambio de nombre"
-          hint="Hint"
-          persistent-hint
-          :items="[
-            {
-              text: 'Si',
-              value: true,
-            },
-            {
-              text: 'No',
-              value: false,
-            },
-          ]"
-        />
-        <v-text-field
-          v-model="form.name"
-          :label="isIndividual ? 'Nombre/razon social' : 'Nombre y apellido'"
-          hint
-        />
-
         <v-text-field
           v-if="!isIndividual"
           v-model="form.cif_dni"
@@ -42,68 +20,19 @@
 
         <v-text-field v-model="form.dni" label="DNI Representante legal" />
 
-        <phone-field v-model="form.phoneMobile" label="Teléfono mobil" />
+        <phone-field
+          v-model="phoneMobile"
+          label="Teléfono mobil"
+          :error-messages="phoneErrors['mobile']"
+        />
 
-        <phone-field v-model="form.phoneCity" label="Teléfono fijo" />
-
-        <email-field v-model="form.email" />
+        <phone-field
+          v-model="phoneCity"
+          label="Teléfono fijo"
+          :error-messages="phoneErrors['city']"
+        />
 
         <v-text-field v-model="form.iban" label="IBAN" />
-
-        <v-text-field v-show="admin" v-model="form.cups" label="CUPS LUZ" />
-
-        <v-text-field
-          v-show="admin"
-          v-model="form.power"
-          label="Potencia contratada"
-          type="number"
-        />
-
-        <v-text-field
-          v-show="admin"
-          v-model="form.province"
-          label="Provincia"
-        />
-        <v-text-field v-show="admin" v-model="form.region" label="Población" />
-        <v-text-field
-          v-show="admin"
-          v-model="form.postalcode"
-          label="Código postal"
-        />
-        <v-text-field v-show="admin" v-model="form.address" label="Dirección" />
-
-        <v-row
-          v-for="fileField in fileFields"
-          :key="fileField.name"
-          v-if="!(isIndividual && fileField.onlyBusiness)"
-          align="center"
-        >
-          <v-col>
-            <v-file-input
-              v-model="files[fileField.name]"
-              :label="fileField.label"
-              :error-messages="fileErrors[fileField.name]"
-            />
-          </v-col>
-          <v-col
-            v-for="attachment in attachments.filter(
-              (a) => a.attachment_type === fileField.name
-            )"
-            :key="attachment.id"
-          >
-            <v-chip
-              close
-              link
-              exact
-              target="_blank"
-              :href="attachment.attachment"
-              @click:close="deleteAttachment(attachment.id)"
-              >Archivo adjunto {{ attachment.id }}</v-chip
-            >
-          </v-col>
-        </v-row>
-
-        <v-divider />
 
         <v-row align="center" class="text-center">
           Puntos suministros
@@ -112,6 +41,7 @@
               color="green"
               :punto="punto"
               :label="`Punto #${idx + 1}`"
+              :is-individual="isIndividual"
               @punto-edited="fetchPuntos"
               @punto-deleted="fetchPuntos"
             />
@@ -122,7 +52,7 @@
 
         <v-row align="center" class="text-center">
           <v-col>
-            <add-punto @punto-created="createPunto" />
+            <add-punto @punto-created="fetchPuntos" :bidId="bid.id" />
           </v-col>
         </v-row>
 
@@ -130,11 +60,7 @@
 
         <v-row>
           <v-col>
-            <submit-button
-              :disabled="!puntos || !puntos.length"
-              block
-              label="Contratar"
-            />
+            <submit-button block label="Contratar" />
           </v-col>
         </v-row>
       </v-form>
@@ -143,178 +69,104 @@
 </template>
 
 <script>
-const defaultForm = {
-  power: null,
-  email: null,
-  phoneMobile: null,
-  phoneCity: null,
-  name: null,
-  cups: null,
-  change_of_name: false,
-  cif_dni: null,
-  legal_representative: null,
-  dni: null,
-  iban: null,
-  province: null,
-  region: null,
-  postalcode: null,
-  address: null,
-}
+const phoneErrors = { city: [], mobile: [] }
 export default {
   components: {
     AddPunto: () => import('~/components/puntos/AddPunto'),
-    EmailField: () => import('~/components/fields/emailField'),
     PhoneField: () => import('~/components/fields/phoneField'),
     CloseButton: () => import('~/components/buttons/closeButton'),
     SubmitButton: () => import('~/components/buttons/submitButton'),
   },
   data() {
     return {
+      form: JSON.parse(JSON.stringify(this.$auth.user)),
       error: {},
-
-      fileFields: [
-        {
-          name: 'factura',
-          label: 'Foto factura actual (anverso)',
-        },
-        {
-          name: 'factura_1',
-          label: 'Foto factura actual (reverso)',
-        },
-        {
-          name: 'dni1',
-          label: 'Foto DNI (anverso)',
-        },
-        {
-          name: 'dni2',
-          label: 'Foto DNI (reverso)',
-        },
-        {
-          name: 'cif1',
-          label: 'Foto CIF',
-          onlyBusiness: true,
-        },
-      ],
-
-      files: {
-        photo_factura: null,
-        photo_factura_1: null,
-        photo_dni1: null,
-        photo_dni2: null,
-        photo_cif1: null,
-      },
-      fileErrors: {},
-      puntoErrors: {},
+      phoneErrors: phoneErrors,
     }
-  },
-  computed: {
-    admin() {
-      return this.$auth.user.role === 'admin'
-    },
   },
   async asyncData({ $axios, params }) {
-    const bid = await $axios.$get(`bids/${params.id}/`)
-    let attachments = []
-    let puntos = []
-    let form = defaultForm
-    let cardId = bid.card
-    if (cardId) {
-      const data = await $axios.$get(`cards/cards/${cardId}/`)
-      form = data.data
-      attachments = data.attachments
-      puntos = data.puntos.sort((a, b) => a.id >= b.id)
-    }
+    const bid = await $axios.$get(`bids/bids/${params.id}/`)
+    const puntos = await $axios.$get(`/users/puntos/?bid=${bid.id}`)
+    const phones = await $axios.$get('/users/phones/')
     return {
-      attachments,
+      phones,
+      phoneMobile: (
+        phones.find((phoneObject) => phoneObject.phone_type == 'mobile') || {}
+      ).number,
+      phoneCity: (
+        phones.find((phoneObject) => phoneObject.phone_type == 'city') || {}
+      ).number,
       puntos,
-      cardId,
-      form,
       bid,
       isIndividual: bid.offer.client_type === 0,
     }
   },
   methods: {
     async fetchPuntos() {
-      const bid = await this.$axios.$get(`bids/${this.bid.id}/`)
-      let cardId = bid.card
-      if (cardId) {
-        this.cardId = cardId
-        const data = await this.$axios.$get(`cards/cards/${cardId}/`)
-        this.puntos = data.puntos.sort((a, b) => a.id >= b.id)
-      }
+      this.puntos = await this.$axios.$get(`/users/puntos/?bid=${this.bid.id}`)
     },
-    async createPunto({ punto }) {
-      if (!this.cardId) {
-        const card = await this.$axios.$post('/cards/cards/', {
-          bid: this.bid.id,
-          ...{ data: this.form },
-        })
-        this.cardId = card.id
-      }
+    loadPhones() {
+      this.phoneErrors = phoneErrors
+      const types = ['city', 'mobile']
+      types.forEach((type) => {
+        this.loadPhone(type)
+      })
+    },
+    async loadPhone(type) {
+      const value = type === 'city' ? this.phoneCity : this.phoneMobile
+      const existedPhone = this.phones.find(
+        (phoneObject) => phoneObject.phone_type === type
+      )
+      const axiosFunc = existedPhone ? this.$axios.$patch : this.$axios.$post
+      const aep = existedPhone
+        ? `/users/phones/${existedPhone.id}/`
+        : '/users/phones/'
+      const data = existedPhone
+        ? {
+            id: existedPhone.id,
+            number: value,
+            phone_type: type,
+            bid: this.bid.id,
+          }
+        : { number: value, phone_type: type, bid: this.bid.id }
       try {
-        await this.$axios.$post('/cards/puntos/', {
-          ...punto,
-          card: this.cardId,
-        })
+        await axiosFunc(aep, data)
       } catch (e) {
-        this.puntoErrors[punto.id] = e.response.data
+        this.phoneErrors[type] = e.response.data.number
       }
-      await this.fetchPuntos()
     },
     async submit() {
-      const axiosFunc = this.cardId ? this.$axios.$patch : this.$axios.$post
-      const aep = this.cardId ? `cards/cards/${this.cardId}/` : 'cards/cards/'
-
-      try {
-        const card = await axiosFunc(aep, {
-          bid: this.bid.id,
-          ...{ data: this.form },
+      if (!this.$auth.user.phone && (!this.phoneMobile || !this.phoneCity)) {
+        await this.$swal({
+          title: 'Por favor, complete su perfil por completo.',
+          text:
+            'Para comenzar el proceso de contratación, debe completar su perfil.',
+          icon: 'warning',
         })
-
-        await this.loadFiles(card.id)
-        if (Object.keys(this.fileErrors).length !== 0) return
-
-        this.$swal({
-          title: this.cardId ? 'Actualizado' : 'Creado',
+        await this.$router.push('/profile')
+        return
+      }
+      if (!this.puntos || !this.puntos.length) {
+        await this.$swal({
+          title: 'No puntos!',
+          icon: 'error',
+        })
+        return
+      }
+      this.loadPhones()
+      try {
+        await this.$axios.$patch(
+          `users/account/${this.$auth.user.id}/`,
+          this.form
+        )
+        await this.$router.push(`/bids/${this.bid.id}`)
+        await this.$swal({
+          title: 'Contratado!',
           icon: 'success',
         })
-        await this.$router.push(`/bids/${this.bid.id}`)
       } catch (e) {
         this.error = e.response.data
       }
-    },
-    async loadFiles(cardId) {
-      for await (let fileKey of Object.keys(this.files)) {
-        const file = this.files[fileKey]
-        if (!file) continue
-        const form = new FormData()
-        form.append('attachment_type', fileKey)
-        form.append('attachment', file)
-        form.append('card', cardId)
-        try {
-          await this.$axios.$post('/cards/attachments/', form)
-        } catch (e) {
-          this.fileErrors = e.response.data
-        }
-      }
-    },
-    deleteAttachment(attachmentId) {
-      this.$swal({
-        title: `Borrar el archivo adjunto ${attachmentId}?`,
-        text: '¡Una vez borrado, no podrás recuperar esto!',
-        icon: 'warning',
-        buttons: true,
-        dangerMode: true,
-      }).then((willDelete) => {
-        if (willDelete) {
-          this.$axios.$delete(`cards/attachments/${attachmentId}/`).then(() => {
-            this.$swal({ title: 'Solicitud eliminada!', icon: 'success' })
-            this.attachments = this.attachments.filter(
-              (a) => a.id !== attachmentId
-            )
-          })
-        }
-      })
     },
   },
 }

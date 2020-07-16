@@ -1,27 +1,28 @@
 <template>
   <v-card>
+    <v-card-title>
+      La sección de cartera en nuestro sitio web es un análogo de la cesta
+    </v-card-title>
+
+    <v-card-text class="subheader">
+      En esta sección puede guardar las ofertas que le interesan, así como
+      controlar el estado de su perfil
+    </v-card-text>
+
     <v-alert v-if="bids.length === 0">Nohay solicitud.</v-alert>
 
     <div v-else>
-      <v-card-title>
-        <p class="flex-grow-1">Cartera</p>
-        <status-select v-model="status" />
-      </v-card-title>
-
       <v-card-text>
         <v-list nav shaped subheader>
           <v-list-item>
-            <v-col>
-              <small>№</small>
-            </v-col>
-
+            <v-col>№</v-col>
             <v-list-item>Oferta</v-list-item>
             <v-list-item>Fecha de creación</v-list-item>
             <v-list-item>Estado</v-list-item>
           </v-list-item>
 
           <v-list-item
-            v-for="bid in (status ? bids.filter(b => status ? b.status === status.text : true) : bids)"
+            v-for="bid in bids"
             :key="bid.id"
             :to="`/bids/${bid.id}`"
             nuxt
@@ -38,26 +39,14 @@
           </v-list-item>
         </v-list>
       </v-card-text>
-
-      <go-up-button />
     </div>
   </v-card>
 </template>
 
 <script>
 export default {
-  components: {
-    GoUpButton: () => import('~/components/buttons/goUpButton'),
-    StatusSelect: () => import('~/components/selects/StatusSelect'),
-    ClientTypeSelect: () => import('~/components/selects/ClientTypeSelect'),
-  },
-  data() {
-    return {
-      status: null,
-    }
-  },
   async asyncData({ $axios }) {
-    const bids = await $axios.$get('bids/')
+    const bids = await $axios.$get('bids/bids/')
     return { bids }
   },
 }

@@ -1,6 +1,15 @@
 <template>
   <v-card>
-    <v-card-title>Elegir categoria</v-card-title>
+    <v-card-title>
+      Bienvenido a nuestro catálogo de ofertas
+    </v-card-title>
+
+    <v-card-text class="subheader">
+      Hemos recopilado las ofertas más relevantes del mercado energético, que
+      los proveedores de luz más respetados de España tienen actualmente
+      disponibles
+    </v-card-text>
+
     <v-card-text>
       <v-row align="center">
         <v-col>

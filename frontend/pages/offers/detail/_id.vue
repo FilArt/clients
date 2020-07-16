@@ -1,16 +1,15 @@
 <template>
   <v-col>
     <v-card v-for="offer in offers" :key="offer.id" style="margin-bottom: 1em;">
-      <detail-offer :offer="offer" show-actions />
+      <detail-offer
+        :offer="offer"
+        :show-actions="!$route.query.showCalculatorDetails"
+      />
       <calculator-details
         v-if="$route.query.showCalculatorDetails"
         :offer="offer"
       />
     </v-card>
-
-    <return-button
-      :to="`/offers/detail/?client_type=${offers[0].client_type}`"
-    />
   </v-col>
 </template>
 

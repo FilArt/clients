@@ -12,8 +12,10 @@
       <v-row class="text-center">
         <v-col>
           <v-btn nuxt :to="`/bids/${bid.id}/purchase`" color="success">
-            {{ bid.card ? 'Editar' : 'Contratar' }}
-            <v-icon right>{{ bid.card ? 'mdi-pencil' : 'mdi-plus' }}</v-icon>
+            {{ bid.puntos_count ? 'Editar' : 'Contratar' }}
+            <v-icon right>{{
+              bid.puntos_count ? 'mdi-pencil' : 'mdi-plus'
+            }}</v-icon>
           </v-btn>
         </v-col>
         <v-col>
@@ -22,30 +24,7 @@
       </v-row>
     </v-card-actions>
     <v-card-text>
-      <v-timeline>
-        <v-timeline-item
-          v-for="story in history"
-          :key="story.id"
-          class="text-left"
-          :left="story.user === 'me'"
-          :right="story.user !== 'me'"
-        >
-          <span slot="icon">
-            <v-icon>{{ !story.old_status ? 'mdi-plus' : '' }}</v-icon>
-          </span>
-          <span slot="opposite">
-            {{ story.dt }}
-            <br />
-            {{ story.user.email || story.user }}
-          </span>
-          <v-card class="elevation-2">
-            <v-card-title class="headline">
-              <span>{{ story.new_status }}</span>
-            </v-card-title>
-            <v-card-text>{{ story.message }}</v-card-text>
-          </v-card>
-        </v-timeline-item>
-      </v-timeline>
+      <history-list :history="history" />
     </v-card-text>
   </v-card>
 </template>
@@ -55,10 +34,11 @@ export default {
   components: {
     DetailOffer: () => import('~/components/detailOffer'),
     DeleteButton: () => import('~/components/buttons/deleteButton'),
+    HistoryList: () => import('~/components/history/HistoryList'),
   },
   async asyncData({ $axios, params }) {
-    const bid = await $axios.$get(`bids/${params.id}/`)
-    const history = await $axios.$get(`bids/${params.id}/history/`)
+    const bid = await $axios.$get(`bids/bids/${params.id}/`)
+    const history = await $axios.$get(`bids/bids/${params.id}/history/`)
     return { bid, history }
   },
   methods: {
@@ -72,7 +52,7 @@ export default {
         dangerMode: true,
       }).then((willDelete) => {
         if (willDelete) {
-          this.$axios.$delete(`bids/${bidId}/`).then(() => {
+          this.$axios.$delete(`bids/bids/${bidId}/`).then(() => {
             this.$swal({ title: 'Solicitud eliminada!', icon: 'success' })
             this.$router.push('/bids')
           })

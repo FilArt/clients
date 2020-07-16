@@ -7,29 +7,88 @@
     <v-card-text>
       <v-row>
         <v-col>
-          <v-list three-line subheader nav shaped>
-            <v-subheader inset>Bids</v-subheader>
+          <p>Telefonos</p>
+          <p v-for="phone in user.phones" :key="phone.id">
+            {{ phone.number }}
+          </p>
+        </v-col>
 
-            <v-list-item
-              v-for="bid in user.bids"
-              :key="bid.id"
-              nuxt
-              :to="`/bids/${bid.id}`"
-            >
-              <v-list-item-content>
-                <v-list-item-title v-text="bid.offer_name" />
-                <v-list-item-subtitle v-text="'id: ' + bid.id" />
-                <v-list-item-subtitle v-text="bid.created_at" />
-              </v-list-item-content>
+        <v-col>
+          <p>Email: {{ user.email }}</p>
+          <p>DNI: {{ user.dni }}</p>
+          <p>DNI/CIF: {{ user.dni_cif }}</p>
+          <p>IBAN: {{ user.iban }}</p>
+        </v-col>
 
-              <v-list-item-content>
-                {{ bid.status }}
-              </v-list-item-content>
-            </v-list-item>
-          </v-list>
+        <v-col>
+          <p>Fecha de creación: {{ user.date_joined }}</p>
         </v-col>
       </v-row>
     </v-card-text>
+
+    <v-card-text>
+      <v-tabs v-model="tabs" centered>
+        <v-tab>Bids ({{ user.bids.length }})</v-tab>
+        <v-tab>Llamadas</v-tab>
+        <v-tab>Historia</v-tab>
+        <v-tab>Puntos suministros</v-tab>
+        <v-tab>Documentos</v-tab>
+        <v-tab>Comentarios</v-tab>
+
+        <v-tabs-items v-model="tabs">
+          <v-tab-item>
+            <v-list three-line subheader nav shaped>
+              <v-subheader inset>Bids</v-subheader>
+
+              <v-list-item
+                v-for="bid in user.bids"
+                :key="bid.id"
+                nuxt
+                :to="`/bids/${bid.id}`"
+              >
+                <v-list-item-content>
+                  <v-list-item-title v-text="bid.offer_name" />
+                  <v-list-item-subtitle v-text="'id: ' + bid.id" />
+                  <v-list-item-subtitle v-text="bid.created_at" />
+                </v-list-item-content>
+
+                <v-list-item-content>
+                  {{ bid.status }}
+                </v-list-item-content>
+              </v-list-item>
+            </v-list>
+          </v-tab-item>
+
+          <v-tab-item>
+            Llamadas
+          </v-tab-item>
+
+          <v-tab-item>
+            <history-list :history="history" />
+          </v-tab-item>
+
+          <v-tab-item>
+            <puntos-list :puntos="puntos" />
+          </v-tab-item>
+
+          <v-tab-item>
+            <v-row v-for="attachment in attachments" :key="attachment.id">
+              <v-col>
+                <v-chip target="_blank" :href="attachment.attachment">
+                  Attachment (punto: {{ attachment.punto }}) (id:
+                  {{ attachment.id }})
+                </v-chip>
+              </v-col>
+            </v-row>
+          </v-tab-item>
+
+          <v-tab-item>
+            Comentarios
+          </v-tab-item>
+        </v-tabs-items>
+      </v-tabs>
+    </v-card-text>
+
     <chat v-if="participant" :participant="participant" />
   </v-card>
 </template>
@@ -38,6 +97,13 @@
 export default {
   components: {
     Chat: () => import('~/components/chat/Chat'),
+    PuntosList: () => import('~/components/puntos/PuntosList'),
+    HistoryList: () => import('~/components/history/HistoryList'),
+  },
+  data() {
+    return {
+      tabs: 0,
+    }
   },
   async asyncData({ params, $axios }) {
     const user = await $axios.$get(`/users/users/${params.id}/`)
@@ -49,6 +115,9 @@ export default {
     return {
       user,
       participant,
+      puntos: await $axios.$get(`/users/puntos/?user=${params.id}`),
+      history: await $axios.$get(`/bids/history/?user=${params.id}`),
+      attachments: await $axios.$get(`/users/attachments/?user=${params.id}`),
     }
   },
   computed: {
