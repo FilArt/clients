@@ -1,0 +1,7 @@
+{
+  "python.linting.pylintEnabled": true,
+  "python.linting.prospectorEnabled": false,
+  "python.linting.enabled": true,
+  "prettier.configPath": "frontend/.prettierrc",
+  "python.linting.mypyEnabled": true
+}

@@ -1,0 +1,44 @@
+{
+  // See https://go.microsoft.com/fwlink/?LinkId=733558
+  // for the documentation about the tasks.json format
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "deploy",
+      "type": "shell",
+      "command": "./deploy.sh",
+      "problemMatcher": ["$jshint"]
+    },
+    {
+      "label": "backend deploy",
+      "type": "shell",
+      "command": "./backend_deploy.sh",
+      "problemMatcher": []
+    },
+    {
+      "type": "shell",
+      "command": "cd frontend; yarn run dev",
+      "problemMatcher": ["$jshint"],
+      "label": "yarn: dev - frontend",
+      "detail": "nuxt"
+    },
+    {
+      "label": "runserver",
+      "type": "shell",
+      "command": "./manage.py runserver",
+      "problemMatcher": []
+    },
+    {
+      "label": "makemigrations",
+      "type": "shell",
+      "command": "./manage.py makemigrations",
+      "problemMatcher": []
+    },
+    {
+      "label": "migrate",
+      "type": "shell",
+      "command": "./manage.py migrate",
+      "problemMatcher": []
+    }
+  ]
+}
