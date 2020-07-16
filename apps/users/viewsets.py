@@ -17,7 +17,7 @@ from .serializers import PhoneSerializer, RegisterSerializer, UserListSerializer
 
 class RegisterViewSet(viewsets.GenericViewSet, mixins.CreateModelMixin):
     queryset = CustomUser.objects.all()
-    permission_classes = tuple()
+    permission_classes: tuple = tuple()
     serializer_class = RegisterSerializer
 
     def create(self, request, *args, **kwargs):
