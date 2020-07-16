@@ -13,6 +13,7 @@ arrow
 pytz
 django-fsm
 django-cleanup
-pylint-django
 channels
 channels_redis
+pylint-django
+mypy
