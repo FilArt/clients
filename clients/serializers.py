@@ -43,6 +43,9 @@ class UserSettingsSerializer(serializers.ModelSerializer):
 
 class AccountSerializer(serializers.ModelSerializer):
     settings = UserSettingsSerializer()
+    first_name = serializers.CharField(min_length=1, allow_null=False, required=True)
+    last_name = serializers.CharField(min_length=1, allow_null=False, required=True)
+    phone = serializers.CharField(min_length=9, allow_null=False, required=True)
 
     class Meta:
         model = CustomUser
