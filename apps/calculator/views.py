@@ -1,6 +1,8 @@
+import decimal
+
 from django.db import models
 from django.db.models import F, Q, Value
-from django.db.models.functions import Round
+from django.utils.translation import gettext_lazy as _
 from rest_framework import serializers
 from rest_framework.decorators import api_view
 from rest_framework.exceptions import PermissionDenied
@@ -8,6 +10,8 @@ from rest_framework.request import Request
 from rest_framework.response import Response
 
 from .models import CalculatorSettings, Offer, Tarif
+
+QUANT = decimal.Decimal(".01")
 
 
 class TaxField(serializers.CharField):
@@ -38,11 +42,14 @@ class ConsumoCalculationField(serializers.CharField):
 
     def to_representation(self, value):
         _, _, field_name = self.field_name.split("_")
-        subtotal = getattr(value, "st_%s" % field_name)
-        price = getattr(value, field_name)
         initial_data = self.context["initial_data"]
-        user_value = initial_data.get(field_name, "-")
-        return f"{user_value} kW/h x {initial_data['period']} dias x {price} € = {subtotal} €"
+        user_value = initial_data.get(field_name)
+        if not user_value:
+            return None
+
+        subtotal = round(getattr(value, "st_%s" % field_name), 2)
+        price = getattr(value, field_name)
+        return f"{user_value} kW/h × {initial_data['period']} dias × {price} € = {subtotal} €"
 
 
 class ConsumoField(serializers.FloatField):
@@ -58,6 +65,22 @@ class PotenciaField(ConsumoField):
     ...
 
 
+class BeautyFloatField(serializers.FloatField):
+    def __init__(self, **kwargs):
+        kwargs["read_only"] = True
+        super().__init__(**kwargs)
+
+    def to_representation(self, value: float):
+        if not isinstance(value, float):
+            raise ValueError("Value %s not float" % value)
+        return decimal.Decimal.from_float(value).quantize(QUANT, decimal.ROUND_HALF_UP).normalize()
+
+
+def positive_number(value):
+    if value <= 0:
+        raise serializers.ValidationError(_("This field must be a positive number."))
+
+
 class CalculatorSerializer(serializers.ModelSerializer):
     id = serializers.IntegerField(required=False)
     company_name = serializers.CharField(source="company.name", read_only=True)
@@ -71,9 +94,7 @@ class CalculatorSerializer(serializers.ModelSerializer):
     p1 = PotenciaField(required=True)
     p2 = PotenciaField()
     p3 = PotenciaField()
-    total = serializers.FloatField(read_only=True)
-    annual_total = serializers.FloatField(read_only=True)
-    current_price = serializers.FloatField(min_value=0, write_only=True)
+    current_price = serializers.FloatField(min_value=0, write_only=True, validators=[positive_number])
 
     c_st_c1 = ConsumoCalculationField()
     c_st_c2 = ConsumoCalculationField()
@@ -82,14 +103,17 @@ class CalculatorSerializer(serializers.ModelSerializer):
     c_st_p2 = ConsumoCalculationField()
     c_st_p3 = ConsumoCalculationField()
 
-    after_rental = serializers.FloatField(read_only=True)
     iva = IvaField(read_only=True)
     tax = TaxField(read_only=True)
-    paga = serializers.FloatField(read_only=True)
-    paga_percent = serializers.FloatField(read_only=True)
-    paga_actualmente = serializers.FloatField(read_only=True)
 
     with_calculations = serializers.BooleanField(default=False, write_only=True)
+
+    after_rental = BeautyFloatField()
+    paga = BeautyFloatField()
+    paga_percent = serializers.IntegerField(read_only=True)
+    paga_actualmente = BeautyFloatField()
+    total = BeautyFloatField()
+    annual_total = BeautyFloatField()
 
     class Meta:
         model = Offer
@@ -139,11 +163,11 @@ class CalculatorSerializer(serializers.ModelSerializer):
             .annotate(
                 tax=F("subtotal") * Value(calculator_settings.tax), iva=F("after_rental") * calculator_settings.iva,
             )
-            .annotate(total=Round(F("after_rental") + F("iva") + F("tax")))
-            .annotate(annual_total=Round(F("total") / Value(data["period"]) * Value(365)))
+            .annotate(total=F("after_rental") + F("iva") + F("tax"))
+            .annotate(annual_total=F("total") / Value(data["period"]) * Value(365))
             .annotate(paga=-F("total") + current_price)
-            .annotate(paga_percent=F("paga") / F("total") * Value(100), paga_actualmente=current_price,)
-        )
+            .annotate(paga_percent=F("paga") / F("total") * Value(100), paga_actualmente=current_price)
+        ).order_by("total")
 
         many = qs.count() > 1
         return CalculatorSerializer(
