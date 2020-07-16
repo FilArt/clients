@@ -1,13 +1,16 @@
 <template>
   <v-card>
-    <v-card-title>
-      Para nosotros es importante que nuestros clientes reciban atención
-      personalizada
-    </v-card-title>
+    <v-card-text class="text-center">
+      <div class="text-h4">
+        Para nosotros es importante que nuestros clientes reciban atención
+        personalizada
+      </div>
 
-    <v-card-text class="subheader">
-      En esta página encontrará los datos de contacto y el chat de su asistente
-      personal, no dude en ponerse en contacto con él para cualquier pregunta
+      <div class="text-h6">
+        En esta página encontrará los datos de contacto y el chat de su
+        asistente personal, no dude en ponerse en contacto con él para cualquier
+        pregunta
+      </div>
     </v-card-text>
 
     <v-row align="center">
@@ -19,13 +22,13 @@
 
       <v-col>
         <v-row>
-          <v-col>
-            <v-card-title>Tu gestor energético personal</v-card-title>
+          <v-col class="subtitle-1">
+            Tu gestor energético personal
           </v-col>
         </v-row>
         <v-row>
-          <v-col>
-            <v-card-title>Isai Secaduras</v-card-title>
+          <v-col class="subtitle-1">
+            Isai Secaduras
           </v-col>
         </v-row>
 

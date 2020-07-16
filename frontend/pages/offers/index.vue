@@ -1,13 +1,15 @@
 <template>
   <v-card>
-    <v-card-title>
-      Bienvenido a nuestro catálogo de ofertas
-    </v-card-title>
+    <v-card-text class="text-center">
+      <div class="text-h4">
+        Bienvenido a nuestro catálogo de ofertas
+      </div>
 
-    <v-card-text class="subheader">
-      Hemos recopilado las ofertas más relevantes del mercado energético, que
-      los proveedores de luz más respetados de España tienen actualmente
-      disponibles
+      <div class="text-h6">
+        Hemos recopilado las ofertas más relevantes del mercado energético, que
+        los proveedores de luz más respetados de España tienen actualmente
+        disponibles
+      </div>
     </v-card-text>
 
     <v-card-text>

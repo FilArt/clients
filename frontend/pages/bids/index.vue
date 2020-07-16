@@ -1,12 +1,14 @@
 <template>
   <v-card>
-    <v-card-title>
-      La sección de cartera en nuestro sitio web es un análogo de la cesta
-    </v-card-title>
+    <v-card-text class="text-center">
+      <div class="text-h4">
+        La sección de cartera en nuestro sitio web es un análogo de la cesta
+      </div>
 
-    <v-card-text class="subheader">
-      En esta sección puede guardar las ofertas que le interesan, así como
-      controlar el estado de su perfil
+      <div class="text-h6">
+        En esta sección puede guardar las ofertas que le interesan, así como
+        controlar el estado de su perfil
+      </div>
     </v-card-text>
 
     <v-alert v-if="bids.length === 0">Nohay solicitud.</v-alert>

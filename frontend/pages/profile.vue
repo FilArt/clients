@@ -1,6 +1,10 @@
 <template>
   <v-card :loading="loading">
-    <v-card-title>Perfil</v-card-title>
+    <v-card-text class="text-center">
+      <div class="text-h4">
+        Perfil
+      </div>
+    </v-card-text>
     <v-card-text>
       <v-form @submit.prevent="submit" novalidate>
         <v-card-text>

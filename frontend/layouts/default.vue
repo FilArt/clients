@@ -43,7 +43,7 @@
     </v-app-bar>
     <v-main>
       <v-breadcrumbs
-        v-if="!['index', 'login'].includes($route.name)"
+        v-if="!['index', 'login', 'calculator'].includes($route.name)"
         :items="breadcrumbs"
         large
       >
@@ -129,11 +129,6 @@ export default {
         title: 'Asistente personal',
         to: '/assistant',
       })
-      // items.push({
-      //   icon: 'mdi-account',
-      //   title: 'Perfil',
-      //   to: '/profile',
-      // })
 
       const role = this.$auth.user.role
       if (role === 'support') {
