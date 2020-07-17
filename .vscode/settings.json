@@ -3,5 +3,6 @@
   "python.linting.prospectorEnabled": false,
   "python.linting.enabled": true,
   "prettier.configPath": "frontend/.prettierrc",
-  "python.linting.mypyEnabled": true
+  "python.linting.mypyEnabled": true,
+  "python.formatting.blackArgs": ["--line-length=119"]
 }
