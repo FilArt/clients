@@ -62,6 +62,7 @@
                 :value="form.company"
                 :error-messages="errorMessages.company"
                 label="Comercializadora actual"
+                hint
                 @input="updateForm('company', $event)"
               />
             </v-col>
@@ -70,6 +71,7 @@
               <tarif-select
                 :value="tarif"
                 :error-messages="errorMessages.tarif"
+                hint
                 @input="$store.commit('setTarif', $event)"
               />
             </v-col>
@@ -78,6 +80,7 @@
               <client-type-select
                 :value="form.client_type"
                 :error-messages="errorMessages.client_type"
+                hint
                 @input="updateForm('client_type', $event)"
               />
             </v-col>

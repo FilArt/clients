@@ -5,8 +5,8 @@
     :error-messages="errorMessages"
     label="Typo de cliente"
     style="min-width: 150px;"
-    hint="Elija el perfil de cliente más adecuado para usted."
-    persistent-hint
+    :hint="hint ? 'Elija el perfil de cliente más adecuado para usted.' : null"
+    :persistent-hint="hint"
     chips
     deletable-chips
     @input="$emit('input', item)"
@@ -27,6 +27,10 @@ const clientTypes = [
 export default {
   name: 'ClientTypeSelect',
   props: {
+    hint: {
+      type: Boolean,
+      default: false,
+    },
     value: {
       type: String,
       default: '',

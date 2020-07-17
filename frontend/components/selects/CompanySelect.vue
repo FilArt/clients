@@ -7,8 +7,12 @@
     :label="label"
     item-text="name"
     item-value="id"
-    hint="Elija la empresa comercializadora con la que está actualmente."
-    persistent-hint
+    :hint="
+      hint
+        ? 'Elija la empresa comercializadora con la que está actualmente.'
+        : null
+    "
+    :persistent-hint="hint"
     chips
     deletable-chips
     style="min-width: 150px;"
@@ -42,6 +46,10 @@
 export default {
   name: 'CompanySelect',
   props: {
+    hint: {
+      type: Boolean,
+      default: false,
+    },
     label: {
       type: String,
       default: 'Comercializadora',
