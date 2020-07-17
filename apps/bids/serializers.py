@@ -45,9 +45,14 @@ class BidStorySerializer(serializers.ModelSerializer):
 
 
 class SupportBidListSerializer(BidListSerializer):
+    user = serializers.SerializerMethodField()
+
     class Meta:
         model = Bid
         fields = ["id", "status", "user", "created_at"]
+    
+    def get_user(self, bid: Bid) -> str:
+        return str(bid.user)
 
 
 class ValidateBidSerializer(serializers.ModelSerializer):

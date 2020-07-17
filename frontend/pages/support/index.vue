@@ -17,7 +17,7 @@
 <script>
 export default {
   async asyncData({ $axios }) {
-    const items = await $axios.$get('bids/bids/')
+    const items = await $axios.$get('bids/bids/?support=true')
     const headers = [
       { text: 'ID', value: 'id' },
       { text: 'Usuario', value: 'user' },

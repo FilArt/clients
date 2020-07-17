@@ -5,7 +5,7 @@
       <detail-offer :offer="bid.offer" />
     </v-card-text>
 
-  <v-divider />
+    <v-divider />
 
     <v-card-title>Client data</v-card-title>
     <v-card-text>
@@ -38,10 +38,7 @@
           </v-card-title>
           <v-card-text>
             <v-form @submit.prevent="submit" novalidate>
-              <status-select
-                v-model="data.status"
-                :errors="errorMessages.status"
-              />
+              <status-select v-model="data.status" :errors="errorMessages.status" />
               <v-textarea
                 v-model="data.message"
                 label="Message"
@@ -85,7 +82,7 @@ export default {
     PuntosList: () => import('~/components/puntos/PuntosList'),
   },
   async asyncData({ $axios, params, store }) {
-    const bid = await $axios.$get(`bids/bids/${params.id}`)
+    const bid = await $axios.$get(`bids/bids/${params.id}?support=true`)
     let puntoHeaders = store.state.puntoHeaders
     if (!puntoHeaders || !puntoHeaders.length) {
       puntoHeaders = await $axios.$get('/users/puntos/get_headers/')

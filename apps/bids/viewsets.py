@@ -27,8 +27,8 @@ class BidViewSet(viewsets.ModelViewSet):
     def get_serializer_class(self):
         if self.action == "create":
             return CreateBidSerializer
-
-        if self.request.user.role == "support":
+        
+        if self.request.user.role == "support" or self.request.query_params.get('support'):
             if self.detail:
                 return SupportBidSerializer
             return SupportBidListSerializer
