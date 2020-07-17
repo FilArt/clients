@@ -1,13 +1,15 @@
 <template>
-  <v-tooltip bottom>
-    <template v-slot:activator="{ on }">
-      <v-btn nuxt :to="to" rounded block color="primary">
-        Atrás
-        <v-icon>mdi-keyboard-return</v-icon>
-      </v-btn>
-    </template>
-    <span>Cancelar</span>
-  </v-tooltip>
+  <v-btn
+    :nuxt="!!to"
+    :to="to"
+    rounded
+    block
+    color="primary"
+    @click="$emit('click')"
+  >
+    Atrás
+    <v-icon>mdi-keyboard-return</v-icon>
+  </v-btn>
 </template>
 
 <script>

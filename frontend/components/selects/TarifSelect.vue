@@ -6,16 +6,26 @@
     :error-messages="errorMessages"
     label="Tarifa"
     style="min-width: 50px;"
-    :hint="
-      hint
-        ? 'Elija su tarifa o peaje de acceso. Está información puede obtenerse en su factura.'
-        : null
-    "
-    :persistent-hint="hint"
     chips
     deletable-chips
     @input="$emit('input', tarif)"
-  />
+  >
+    <template v-if="hint" v-slot:append-outer>
+      <v-tooltip bottom>
+        <template v-slot:activator="{ on, attrs }">
+          <v-btn v-on="on" icon color="info" v-bind="attrs">
+            <v-icon>
+              mdi-information
+            </v-icon>
+          </v-btn>
+        </template>
+        <span
+          >Elija su tarifa o peaje de acceso. Está información puede obtenerse
+          en su factura.
+        </span>
+      </v-tooltip>
+    </template>
+  </v-autocomplete>
 </template>
 
 <script>

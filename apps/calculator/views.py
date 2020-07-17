@@ -169,7 +169,10 @@ class CalculatorSerializer(serializers.ModelSerializer):
             .annotate(paga_percent=F("paga") / F("total") * Value(100), paga_actualmente=current_price)
         ).order_by("total")
 
-        many = qs.count() > 1
+        offers_count = qs.count()
+        if offers_count == 0:
+            return []
+        many = offers_count > 1
         return CalculatorSerializer(
             qs if many else qs.first(),
             many=many,

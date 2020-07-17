@@ -7,17 +7,25 @@
     :label="label"
     item-text="name"
     item-value="id"
-    :hint="
-      hint
-        ? 'Elija la empresa comercializadora con la que está actualmente.'
-        : null
-    "
-    :persistent-hint="hint"
     chips
     deletable-chips
     style="min-width: 150px;"
     @input="$emit('input', company)"
   >
+    <template v-if="hint" v-slot:append-outer>
+      <v-tooltip bottom>
+        <template v-slot:activator="{ on, attrs }">
+          <v-btn v-on="on" icon color="info" v-bind="attrs">
+            <v-icon>
+              mdi-information
+            </v-icon>
+          </v-btn>
+        </template>
+        <span>
+          Elija la empresa comercializadora con la que está actualmente.
+        </span>
+      </v-tooltip>
+    </template>
     <template v-slot:selection="{ item }">
       <v-chip close @click:close="closeItem">
         <v-avatar>

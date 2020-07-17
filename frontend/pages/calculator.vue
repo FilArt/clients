@@ -13,9 +13,11 @@
       </div>
     </v-card-text>
 
-    <v-simple-table v-if="showResults">
-      <v-alert type="warning" :value="!offers.length">Nohay ofertas</v-alert>
+    <v-alert v-show="showResults && !offers.length" type="warning"
+      >Nohay ofertas</v-alert
+    >
 
+    <v-simple-table v-show="showResults && offers.length">
       <template v-slot:default>
         <thead>
           <tr>
@@ -53,7 +55,7 @@
       </template>
     </v-simple-table>
 
-    <div v-else>
+    <div v-show="!showResults">
       <v-form @submit.prevent="submit" novalidate>
         <v-card-text class="mx-auto" style="max-width: 1000px;">
           <v-row align="center" class="flex-wrap">
@@ -90,20 +92,34 @@
             <v-col>
               <v-text-field
                 label="Periodo"
-                type="number"
                 name="period"
-                hint="En este campo, ingrese el período (en días) por el cual se le factura. Está información puede obtenerse en su factura."
-                persistent-hint
+                suffix="dias"
                 :value="form.period"
                 :error-messages="errorMessages.period"
                 @input="updateForm('period', $event)"
-              />
+              >
+                <template v-slot:append-outer>
+                  <v-tooltip bottom>
+                    <template v-slot:activator="{ on, attrs }">
+                      <v-btn v-on="on" icon color="info" v-bind="attrs">
+                        <v-icon>
+                          mdi-information
+                        </v-icon>
+                      </v-btn>
+                    </template>
+                    <span>
+                      En este campo, ingrese el período (en días) por el cual se
+                      le factura. Está información puede obtenerse en su
+                      factura.
+                    </span>
+                  </v-tooltip>
+                </template>
+              </v-text-field>
             </v-col>
 
             <v-col>
               <v-text-field
                 label="Cadidad de pago en la factura actual"
-                type="number"
                 name="current_price"
                 prefix="€"
                 :value="form.current_price"
@@ -124,13 +140,7 @@
                       (letter + number === 'c3' &&
                         ['2.1DHA', '2.0DHA'].includes(tarif))
                     "
-                    type="number"
-                    :hint="
-                      letter === 'p'
-                        ? 'Ingrese aquí la potencia contratada en kw. Está información puede obtenerse en su factura'
-                        : 'Ingrese aquí la energía consumida en kw para cada período.Está información puede obtenerse en su factura.'
-                    "
-                    persistent-hint
+                    :suffix="letter === 'p' ? 'kw' : 'kW/h'"
                     :value="form[letter + number]"
                     :label="
                       (letter === 'p' ? 'Potencia' : 'Consumo') + ' P' + number
@@ -138,7 +148,26 @@
                     :name="'P' + number"
                     :error-messages="errorMessages[letter + number]"
                     @input="updateForm(letter + number, $event)"
-                  />
+                  >
+                    <template v-slot:append-outer>
+                      <v-tooltip bottom>
+                        <template v-slot:activator="{ on, attrs }">
+                          <v-btn v-on="on" icon color="info" v-bind="attrs">
+                            <v-icon>
+                              mdi-information
+                            </v-icon>
+                          </v-btn>
+                        </template>
+                        <span>
+                          {{
+                            letter === 'p'
+                              ? 'Ingrese aquí la potencia contratada en kw. Está información puede obtenerse en su factura'
+                              : 'Ingrese aquí la energía consumida en kw para cada período. Está información puede obtenerse en su factura.'
+                          }}
+                        </span>
+                      </v-tooltip>
+                    </template>
+                  </v-text-field>
                 </v-col>
               </v-row>
             </v-col>
@@ -149,6 +178,14 @@
         </v-card-actions>
       </v-form>
     </div>
+
+    <v-card-actions>
+      <return-button
+        v-show="showResults"
+        @click="showResults = false"
+        :to="null"
+      />
+    </v-card-actions>
   </v-card>
 </template>
 <script>
@@ -158,6 +195,7 @@ export default {
     TarifSelect: () => import('~/components/selects/TarifSelect'),
     CompanySelect: () => import('~/components/selects/CompanySelect'),
     SubmitButton: () => import('~/components/buttons/submitButton'),
+    ReturnButton: () => import('~/components/buttons/returnButton'),
   },
   data() {
     return {
