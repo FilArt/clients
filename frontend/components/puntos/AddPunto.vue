@@ -15,78 +15,88 @@
         </p>
         <close-button @click="dialog = false" />
       </v-card-title>
+
       <v-card-text>
-        <div class="d-flex flex-wrap">
-          <div v-for="field in fields" :key="field.value">
-            <company-select
-              v-if="field.value === 'company_luz'"
-              v-model="newPunto.company_luz"
-            >
-            </company-select>
-
-            <v-text-field
-              v-model="newPunto[field.value]"
-              class="pa-3"
-              clearable
-              :label="field.name"
-              :hint="field.hint"
-              :error-messages="errors[field.value]"
-              v-show="
-                [
-                  'company_luz',
-                  'company_gas',
-                  'last_time_company_luz_changed',
-                  'last_time_company_gas_changed',
-                  'cups_gas',
-                  'tarif_luz',
-                  'tarif_gas',
-                  'consumo_annual_luz',
-                  'consumo_annual_gas',
-                ].includes(field.value)
-                  ? admin
-                  : true
-              "
-            />
-          </div>
-        </div>
-
-        <v-row
-          v-for="fileField in fileFields"
-          :key="fileField.name"
-          align="center"
-        >
-          <template v-if="!(isIndividual && fileField.onlyBusiness)">
-            <v-col>
-              <v-file-input
-                v-model="files[fileField.name]"
-                :label="fileField.label"
-                :error-messages="fileErrors[fileField.name]"
-              />
-            </v-col>
-            <v-col
-              v-for="attachment in attachments.filter(
-                (a) => a.attachment_type === fileField.name
-              )"
-              :key="attachment.id"
-            >
-              <v-chip
-                close
-                link
-                exact
-                target="_blank"
-                :href="attachment.attachment"
-                @click:close="deleteAttachment(attachment.id)"
-                >Archivo adjunto {{ attachment.id }}</v-chip
+        <v-form @submit.prevent="addPunto">
+          <div class="d-flex flex-wrap">
+            <div v-for="field in fields" :key="field.value">
+              <company-select
+                v-if="field.value === 'company_luz' && admin"
+                v-model="newPunto.company_luz"
               >
-            </v-col>
-          </template>
-        </v-row>
+              </company-select>
 
-        <submit-button
-          :label="punto ? 'Guardar' : 'Anadir suministro'"
-          block
-          @click="addPunto"
-        />
+              <v-text-field
+                v-model="newPunto[field.value]"
+                class="pa-3"
+                clearable
+                :label="field.name"
+                :hint="field.hint"
+                :error-messages="errors[field.value]"
+                v-show="
+                  [
+                    'name',
+                    'cups_luz',
+                    'c1',
+                    'c2',
+                    'c3',
+                    'p1',
+                    'p2',
+                    'p3',
+                    'company_luz',
+                    'company_gas',
+                    'last_time_company_luz_changed',
+                    'last_time_company_gas_changed',
+                    'cups_gas',
+                    'tarif_luz',
+                    'tarif_gas',
+                    'consumo_annual_luz',
+                    'consumo_annual_gas',
+                  ].includes(field.value)
+                    ? admin
+                    : true
+                "
+              />
+            </div>
+          </div>
+
+          <v-row
+            v-for="fileField in fileFields"
+            :key="fileField.name"
+            align="center"
+          >
+            <template v-if="!(isIndividual && fileField.onlyBusiness)">
+              <v-col>
+                <v-file-input
+                  v-model="files[fileField.name]"
+                  :label="fileField.label"
+                  :error-messages="fileErrors[fileField.name]"
+                />
+              </v-col>
+              <v-col
+                v-for="attachment in attachments.filter(
+                  (a) => a.attachment_type === fileField.name
+                )"
+                :key="attachment.id"
+              >
+                <v-chip
+                  close
+                  link
+                  exact
+                  target="_blank"
+                  :href="attachment.attachment"
+                  @click:close="deleteAttachment(attachment.id)"
+                  >Archivo adjunto {{ attachment.id }}</v-chip
+                >
+              </v-col>
+            </template>
+          </v-row>
+
+          <submit-button
+            :label="punto ? 'Guardar' : 'Anadir suministro'"
+            block
+          />
+        </v-form>
       </v-card-text>
     </v-card>
   </v-dialog>
@@ -250,6 +260,15 @@ export default {
           this.$emit('punto-created')
         } catch (e) {
           this.errors = e.response.data
+          if (this.errors.profileNotFilled) {
+            await this.$swal({
+              title: 'Por favor, complete su perfil por completo.',
+              text:
+                'Para comenzar el proceso de contratación, debe completar su perfil.',
+              icon: 'warning',
+            })
+            await this.$router.push('/profile')
+          }
           return
         }
       }

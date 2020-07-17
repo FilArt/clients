@@ -136,16 +136,6 @@ export default {
       }
     },
     async submit() {
-      if (!this.$auth.user.phone && (!this.phoneMobile || !this.phoneCity)) {
-        await this.$swal({
-          title: 'Por favor, complete su perfil por completo.',
-          text:
-            'Para comenzar el proceso de contratación, debe completar su perfil.',
-          icon: 'warning',
-        })
-        await this.$router.push('/profile')
-        return
-      }
       if (!this.puntos || !this.puntos.length) {
         await this.$swal({
           title: 'No puntos!',

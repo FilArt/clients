@@ -93,6 +93,10 @@ class CustomUser(AbstractUser):
         return {}
 
     @property
+    def profile_filled(self) -> bool:
+        return self.first_name and self.last_name and self.phone
+
+    @property
     def bids_count(self) -> int:
         return self.bids.count()
 

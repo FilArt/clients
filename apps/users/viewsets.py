@@ -88,6 +88,8 @@ class PuntoViewSet(viewsets.ModelViewSet):
         return super().filter_queryset(queryset.filter(**filter_kwargs))
 
     def perform_create(self, serializer):
+        if not self.request.user.profile_filled:
+            raise ValidationError({"profileNotFilled": True})
         bid_id = self.request.data.get("bid")
         bid = get_object_or_404(Bid, id=bid_id or 0)
         with transaction.atomic():
