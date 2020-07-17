@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-06-22 14:44+0000\n"
+"POT-Creation-Date: 2020-07-17 21:59+0000\n"
 "PO-Revision-Date: 2020-06-16 17:27+0200\n"
 "Last-Translator: \n"
 "Language-Team: \n"
@@ -20,70 +20,54 @@ msgstr ""
 "%100>=11 && n%100<=14)? 2 : 3);\n"
 "X-Generator: Poedit 2.3\n"
 
-#: apps/bids/models.py:11
+#: apps/bids/models.py:15
 msgid "Ensure this value is greater than 0."
 msgstr "Убедитесь, что это значение больше 0."
 
-#: apps/bids/models.py:16
+#: apps/bids/models.py:20
 msgid "New"
 msgstr "Новое"
 
-#: apps/bids/models.py:17
+#: apps/bids/models.py:21
 msgid "Purchase"
 msgstr "Куплено"
 
-#: apps/bids/models.py:18
+#: apps/bids/models.py:22
 msgid "Purchase updated"
 msgstr "Обновлено"
 
-#: apps/bids/models.py:19
+#: apps/bids/models.py:23
 msgid "Success"
 msgstr "Успех"
 
-#: apps/bids/models.py:20
+#: apps/bids/models.py:24
 msgid "Error"
 msgstr "Ошибка"
 
-#: apps/calculator/fields.py:10
+#: apps/calculator/fields.py:9
+#, fuzzy
+#| msgid "The Email must be set"
+msgid "This value must be positive."
+msgstr "Нужно указать почтовый ящик"
+
+#: apps/calculator/fields.py:15
 #, python-format
 msgid "%(value)s is not in upper case"
 msgstr ""
 
-#: apps/calculator/models.py:94
-msgid "This field can not be negative."
-msgstr "Это значение должно быть больше нуля."
-
-#: apps/calculator/models.py:115
+#: apps/calculator/models.py:97
 msgid "Individual"
 msgstr "Частный"
 
-#: apps/calculator/models.py:116
+#: apps/calculator/models.py:98
 msgid "Business"
 msgstr "Юридический"
 
-#: apps/cards/models.py:7
-msgid "Default"
-msgstr "Стандартный"
-
-#: apps/cards/models.py:22
-msgid "Factura"
-msgstr "Фактура"
-
-#: apps/cards/models.py:23
-msgid "DNI"
-msgstr ""
-
-#: apps/cards/models.py:24
-msgid "DNI reverse side"
-msgstr "DNI обратная сторона"
-
-#: apps/cards/models.py:25
-msgid "CIF"
-msgstr ""
-
-#: apps/cards/models.py:26
-msgid "CIF reverse side"
-msgstr "CIF обратная сторона"
+#: apps/calculator/views.py:81
+#, fuzzy
+#| msgid "This field can not be negative."
+msgid "This field must be a positive number."
+msgstr "Это значение должно быть больше нуля."
 
 #: apps/users/admin.py:11
 msgid "Personal info"
@@ -109,66 +93,182 @@ msgstr ""
 msgid "Superuser must have is_superuser=True."
 msgstr ""
 
-#: apps/users/models.py:14
+#: apps/users/models.py:25
 msgid "Numbers only"
 msgstr "Только численные значения"
 
-#: apps/users/models.py:16
+#: apps/users/models.py:27
 msgid "Should contain 9 digits"
 msgstr "Должен состоять из 9 цифр"
 
-#: apps/users/models.py:27
+#: apps/users/models.py:38
 msgid "Profile"
 msgstr "Профиль"
 
-#: apps/users/models.py:28
+#: apps/users/models.py:39
 msgid "Bids"
 msgstr "Заявки"
 
-#: apps/users/models.py:29
+#: apps/users/models.py:40
 msgid "Offers"
 msgstr "Предложения"
 
-#: apps/users/models.py:30
+#: apps/users/models.py:41
 #, fuzzy
 #| msgid "calculator"
 msgid "Calculator"
 msgstr "калькулятор"
 
-#: apps/users/models.py:40
+#: apps/users/models.py:53
 msgid "Client"
 msgstr "Клиент"
 
-#: apps/users/models.py:41
+#: apps/users/models.py:54
 msgid "Support"
 msgstr "Поддержка"
 
-#: apps/users/models.py:44
+#: apps/users/models.py:55
+msgid "Admin"
+msgstr ""
+
+#: apps/users/models.py:57
+msgid "Default"
+msgstr "Стандартный"
+
+#: apps/users/models.py:63
 #, fuzzy
 #| msgid "email address"
 msgid "Email address"
 msgstr "электронная почта"
 
-#: apps/users/models.py:45
+#: apps/users/models.py:64
 #, fuzzy
 #| msgid "phone number"
 msgid "Phone number"
 msgstr "номер телефона"
 
-#: apps/users/models.py:51
+#: apps/users/models.py:66
+msgid "Company changed at"
+msgstr ""
+
+#: apps/users/models.py:68 apps/users/models.py:181
+msgid "DNI"
+msgstr ""
+
+#: apps/users/models.py:69
+msgid "IBAN"
+msgstr ""
+
+#: apps/users/models.py:70
+msgid "CIF/DNI"
+msgstr ""
+
+#: apps/users/models.py:72
+msgid "Legal representative"
+msgstr ""
+
+#: apps/users/models.py:81
 #, fuzzy
 #| msgid "Possible values:"
 msgctxt "help text for user permissions field"
 msgid "Possible values:"
 msgstr "Возможные значения:"
 
-#: apps/users/serializers.py:25
-msgid "¡Bienvenido a Gestion Group! "
+#: apps/users/models.py:122
+msgid "Mobile"
 msgstr ""
 
-#: apps/users/serializers.py:40
-msgid "Recuperación de contraseña"
+#: apps/users/models.py:123
+msgid "City"
 msgstr ""
+
+#: apps/users/models.py:137
+msgid "Name"
+msgstr ""
+
+#: apps/users/models.py:139
+msgid "Company light"
+msgstr ""
+
+#: apps/users/models.py:147
+msgid "Company gas"
+msgstr ""
+
+#: apps/users/models.py:154
+msgid "Province"
+msgstr ""
+
+#: apps/users/models.py:155
+msgid "Locality"
+msgstr ""
+
+#: apps/users/models.py:156
+#, fuzzy
+#| msgid "email address"
+msgid "Address"
+msgstr "электронная почта"
+
+#: apps/users/models.py:157
+msgid "Postalcode"
+msgstr "Почтовый индекс"
+
+#: apps/users/models.py:160
+msgid "CUPS"
+msgstr "КУПС"
+
+#: apps/users/models.py:161
+msgid "CUPS gas"
+msgstr "КУПС газ"
+
+#: apps/users/models.py:162
+msgid "Tarif"
+msgstr "Тариф"
+
+#: apps/users/models.py:163
+msgid "Tarif gas"
+msgstr "Тариф газ"
+
+#: apps/users/models.py:164
+msgid "Power 1"
+msgstr "Мощность 1"
+
+#: apps/users/models.py:170
+msgid "Annual consumption"
+msgstr "Годовое потребление"
+
+#: apps/users/models.py:171
+msgid "Annual consumption (gas)"
+msgstr "Годовое потребление (газ)"
+
+#: apps/users/models.py:179
+msgid "Factura"
+msgstr "Фактура"
+
+#: apps/users/models.py:180
+#, fuzzy
+#| msgid "Factura"
+msgid "Factura reverso"
+msgstr "Фактура"
+
+#: apps/users/models.py:182
+msgid "DNI reverse side"
+msgstr "DNI обратная сторона"
+
+#: apps/users/models.py:183
+msgid "CIF"
+msgstr "CIF"
+
+#: apps/users/models.py:184
+msgid "CIF reverse side"
+msgstr "CIF обратная сторона"
+
+#: apps/users/serializers.py:28
+msgid "¡Bienvenido a Gestion Group! "
+msgstr "Добро пожаловать в Гестион Груп!"
+
+#: apps/users/serializers.py:43
+msgid "Recuperación de contraseña"
+msgstr "Сброс пароля"
 
 #~ msgid "User"
 #~ msgstr "Пользователь"

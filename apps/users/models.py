@@ -136,10 +136,20 @@ class Punto(models.Model):
     user = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name="puntos")
     name = MyCharField(verbose_name=_("Name"))
     company_luz = models.ForeignKey(
-        "calculator.Company", on_delete=models.SET_NULL, related_name="company_luz", null=True, blank=True
+        verbose_name=_("Company light"),
+        to="calculator.Company",
+        on_delete=models.SET_NULL,
+        related_name="company_luz",
+        null=True,
+        blank=True,
     )
     company_gas = models.ForeignKey(
-        "calculator.Company", on_delete=models.SET_NULL, related_name="company_gas", null=True, blank=True
+        verbose_name=_("Company gas"),
+        to="calculator.Company",
+        on_delete=models.SET_NULL,
+        related_name="company_gas",
+        null=True,
+        blank=True,
     )
     province = MyCharField(verbose_name=_("Province"))
     locality = MyCharField(verbose_name=_("Locality"))

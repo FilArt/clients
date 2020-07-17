@@ -25,11 +25,14 @@
     <v-card-text>
       <v-tabs v-model="tabs" centered>
         <v-tab>Bids ({{ user.bids.length }})</v-tab>
-        <v-tab>Llamadas</v-tab>
+        <v-tab :disabled="!calls.length">Llamadas ({{ calls.length }})</v-tab>
         <v-tab>Historia</v-tab>
-        <v-tab>Puntos suministros</v-tab>
-        <v-tab>Documentos</v-tab>
-        <v-tab>Comentarios</v-tab>
+        <v-tab :disabled="!puntos.length"
+          >Puntos suministros ({{ puntos.length }})</v-tab
+        >
+        <v-tab :disabled="!attachments.length"
+          >Documentos ({{ attachments.length }})</v-tab
+        >
 
         <v-tabs-items v-model="tabs">
           <v-tab-item>
@@ -82,8 +85,6 @@
               </v-col>
             </v-row>
           </v-tab-item>
-
-          <v-tab-item>Comentarios</v-tab-item>
         </v-tabs-items>
       </v-tabs>
     </v-card-text>
