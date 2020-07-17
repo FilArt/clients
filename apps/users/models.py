@@ -47,7 +47,7 @@ def get_default_user_permissions():
 
 class CustomUser(AbstractUser):
     USERNAME_FIELD = "email"
-    REQUIRED_FIELDS = []
+    REQUIRED_FIELDS: list = []
     USER_ROLES_CHOICES = (
         (None, _("Client")),
         ("support", _("Support")),

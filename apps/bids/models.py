@@ -7,8 +7,6 @@ from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 from django_fsm import FSMField, transition
 
-from utils import PositiveNullableFloatField
-
 logger = logging.getLogger(__name__)
 
 

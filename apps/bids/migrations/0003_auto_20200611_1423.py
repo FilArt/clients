@@ -3,7 +3,7 @@
 from django.db import migrations
 
 import apps.bids.models
-import utils
+from clients.utils import PositiveNullableFloatField
 
 
 class Migration(migrations.Migration):
@@ -14,28 +14,28 @@ class Migration(migrations.Migration):
 
     operations = [
         migrations.AddField(
-            model_name="bid", name="annual_consumption", field=utils.PositiveNullableFloatField(blank=True, null=True),
+            model_name="bid", name="annual_consumption", field=PositiveNullableFloatField(blank=True, null=True),
         ),
         migrations.AddField(
             model_name="bid",
             name="c1",
-            field=utils.PositiveNullableFloatField(blank=True, null=True, validators=[apps.bids.models.more_than_zero]),
+            field=PositiveNullableFloatField(blank=True, null=True, validators=[apps.bids.models.more_than_zero]),
         ),
         migrations.AddField(
-            model_name="bid", name="c2", field=utils.PositiveNullableFloatField(blank=True, null=True),
+            model_name="bid", name="c2", field=PositiveNullableFloatField(blank=True, null=True),
         ),
         migrations.AddField(
-            model_name="bid", name="c3", field=utils.PositiveNullableFloatField(blank=True, null=True),
+            model_name="bid", name="c3", field=PositiveNullableFloatField(blank=True, null=True),
         ),
         migrations.AddField(
             model_name="bid",
             name="p1",
-            field=utils.PositiveNullableFloatField(blank=True, null=True, validators=[apps.bids.models.more_than_zero]),
+            field=PositiveNullableFloatField(blank=True, null=True, validators=[apps.bids.models.more_than_zero]),
         ),
         migrations.AddField(
-            model_name="bid", name="p2", field=utils.PositiveNullableFloatField(blank=True, null=True),
+            model_name="bid", name="p2", field=PositiveNullableFloatField(blank=True, null=True),
         ),
         migrations.AddField(
-            model_name="bid", name="p3", field=utils.PositiveNullableFloatField(blank=True, null=True),
+            model_name="bid", name="p3", field=PositiveNullableFloatField(blank=True, null=True),
         ),
     ]
