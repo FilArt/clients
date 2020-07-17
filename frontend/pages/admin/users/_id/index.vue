@@ -69,7 +69,7 @@
           </v-tab-item>
 
           <v-tab-item>
-            <puntos-list :puntos="puntos" />
+            <puntos-list :puntos="puntos" editable />
           </v-tab-item>
 
           <v-tab-item>

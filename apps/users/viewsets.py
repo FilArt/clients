@@ -76,6 +76,7 @@ class PuntoViewSet(viewsets.ModelViewSet):
     queryset = Punto.objects.all()
     serializer_class = PuntoSerializer
     filterset_fields = ["bid"]
+    ordering = ["id"]
 
     def filter_queryset(self, queryset):
         user = self.request.user
