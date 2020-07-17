@@ -95,6 +95,12 @@ DATABASES = {
         "NAME": "clients",
         "USER": "clients",
         "PASSWORD": "clients",
+    },
+    "call_visit": {
+        "ENGINE": "django.db.backends.postgresql_psycopg2",
+        "NAME": "crm",
+        "USER": "crm",
+        "PASSWORD": "crm",
     }
 }
 

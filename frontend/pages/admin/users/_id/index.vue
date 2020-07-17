@@ -1,16 +1,12 @@
 <template>
   <v-card>
-    <v-card-title>
-      {{ fullname }}
-    </v-card-title>
+    <v-card-title>{{ fullname }}</v-card-title>
 
     <v-card-text>
       <v-row>
         <v-col>
           <p>Telefonos</p>
-          <p v-for="phone in user.phones" :key="phone.id">
-            {{ phone.number }}
-          </p>
+          <p v-for="phone in user.phones" :key="phone.id">{{ phone.number }}</p>
         </v-col>
 
         <v-col>
@@ -52,15 +48,20 @@
                   <v-list-item-subtitle v-text="bid.created_at" />
                 </v-list-item-content>
 
-                <v-list-item-content>
-                  {{ bid.status }}
-                </v-list-item-content>
+                <v-list-item-content>{{ bid.status }}</v-list-item-content>
               </v-list-item>
             </v-list>
           </v-tab-item>
 
           <v-tab-item>
-            Llamadas
+            <v-list>
+              <v-list-item v-for="call in calls" :key="call.id">
+                <v-list-item-content>
+                  {{ call.called_at }}
+                  <audio :src="call.file" type="audio/mp3" controls />
+                </v-list-item-content>
+              </v-list-item>
+            </v-list>
           </v-tab-item>
 
           <v-tab-item>
@@ -82,9 +83,7 @@
             </v-row>
           </v-tab-item>
 
-          <v-tab-item>
-            Comentarios
-          </v-tab-item>
+          <v-tab-item>Comentarios</v-tab-item>
         </v-tabs-items>
       </v-tabs>
     </v-card-text>
@@ -107,6 +106,16 @@ export default {
   },
   async asyncData({ params, $axios }) {
     const user = await $axios.$get(`/users/users/${params.id}/`)
+
+    const phoneNumbers = [
+      user.phone,
+      ...user.phones.map((phone) => phone.number),
+    ].filter((p) => p)
+    let calls = []
+    if (phoneNumbers.length) {
+      calls = await $axios.$get(`users/calls/?phone_numbers=${phoneNumbers}`)
+    }
+
     const participant = {
       id: user.id,
       name: user.email,
@@ -118,6 +127,7 @@ export default {
       puntos: await $axios.$get(`/users/puntos/?user=${params.id}`),
       history: await $axios.$get(`/bids/history/?user=${params.id}`),
       attachments: await $axios.$get(`/users/attachments/?user=${params.id}`),
+      calls,
     }
   },
   computed: {

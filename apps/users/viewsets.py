@@ -10,9 +10,9 @@ from rest_framework.response import Response
 from apps.bids.models import Bid
 from clients.serializers import AccountSerializer, AttachmentSerializer, PuntoSerializer
 
-from .models import Attachment, CustomUser, Phone, Punto
+from .models import Attachment, Call, CustomUser, Phone, Punto
 from .permissions import AdminPermission
-from .serializers import PhoneSerializer, RegisterSerializer, UserListSerializer, UserSerializer
+from .serializers import CallSerializer, PhoneSerializer, RegisterSerializer, UserListSerializer, UserSerializer
 
 
 class RegisterViewSet(viewsets.GenericViewSet, mixins.CreateModelMixin):
@@ -141,3 +141,16 @@ class AttachmentsViewSet(viewsets.ModelViewSet):
                 del filter_kwargs["punto__user"]
                 filter_kwargs["punto__user_id"] = user_id
         return super().filter_queryset(queryset.filter(**filter_kwargs))
+
+
+class CallViewSet(viewsets.ModelViewSet):
+    queryset = Call.objects.all()
+    serializer_class = CallSerializer
+
+    def filter_queryset(self, queryset):
+        qs = super().filter_queryset(queryset)
+        phone_numbers = self.request.query_params.get("phone_numbers")
+        phone_numbers = set(phone_numbers.split(","))
+        if phone_numbers:
+            qs = qs.filter(phone__value__in=phone_numbers)
+        return qs

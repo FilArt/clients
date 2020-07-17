@@ -8,7 +8,7 @@ from rest_framework import serializers
 
 from clients.serializers import BidListSerializer
 
-from .models import CustomUser, Phone
+from .models import Call, CustomUser, Phone
 
 
 class RegisterSerializer(serializers.ModelSerializer):
@@ -81,3 +81,14 @@ class UserSerializer(UserListSerializer):
     class Meta:
         model = CustomUser
         exclude = ["password"]
+
+
+class CallSerializer(serializers.ModelSerializer):
+    called_at = serializers.SerializerMethodField()
+
+    class Meta:
+        model = Call
+        fields = ["called_at", "file"]
+
+    def get_called_at(self, call_file: Call):
+        return arrow.get(call_file.called_at).humanize(locale=self.context["request"].LANGUAGE_CODE)
