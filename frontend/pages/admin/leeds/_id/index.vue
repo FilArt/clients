@@ -1,5 +1,9 @@
 <template>
   <v-card>
+    <v-card-text>
+      <admin-header />
+    </v-card-text>
+
     <v-card-title>
       {{ fullname }}
     </v-card-title>
@@ -15,6 +19,7 @@
 <script>
 export default {
   components: {
+    AdminHeader: () => import('~/components/admin/AdminHeader'),
     Chat: () => import('~/components/chat/Chat'),
   },
   async asyncData({ params, $axios }) {

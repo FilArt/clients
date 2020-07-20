@@ -1,5 +1,9 @@
 <template>
   <v-card>
+    <v-card-text v-if="$auth.user.role === 'admin'">
+      <admin-header />
+    </v-card-text>
+
     <v-card-title>
       Solicitud
       <v-chip v-text="bid.status" />
@@ -32,6 +36,7 @@
 <script>
 export default {
   components: {
+    AdminHeader: () => import('~/components/admin/AdminHeader'),
     DetailOffer: () => import('~/components/detailOffer'),
     DeleteButton: () => import('~/components/buttons/deleteButton'),
     HistoryList: () => import('~/components/history/HistoryList'),

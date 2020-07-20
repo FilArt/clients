@@ -1,8 +1,8 @@
 <template>
   <v-card>
-    <v-card-title>
-      Leeds
-    </v-card-title>
+    <v-card-text>
+      <admin-header />
+    </v-card-text>
     <v-card-text>
       <users-table :users="leeds" />
     </v-card-text>
@@ -13,6 +13,7 @@
 export default {
   components: {
     UsersTable: () => import('~/components/tables/UsersTable'),
+    AdminHeader: () => import('~/components/admin/AdminHeader'),
   },
   async asyncData({ $axios }) {
     const leeds = await $axios.$get('/users/leeds/')

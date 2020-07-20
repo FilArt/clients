@@ -107,13 +107,13 @@ export default {
   },
   methods: {
     async save({ id, field, value }) {
-      console.log(value)
       const data = {}
+      value = value === undefined ? null : value
       data[field] = value || this.values[field]
       try {
         await this.$axios.$patch(`users/puntos/${id}/`, data)
         await this.$swal({
-          title: 'Saved!',
+          title: 'Salvado',
           text: `${field.toUpperCase()} esta cambiado ${
             value || this.values[field]
           }`,

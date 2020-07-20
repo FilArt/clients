@@ -4,10 +4,12 @@
     v-mask="'###-###-###'"
     :error-messages="errorMessages"
     :label="label"
+    :append-icon="appendIcon"
     name="phone"
     prepend-icon="mdi-phone"
     type="tel"
     @input="$emit('input', $event.split('-').join('') || null)"
+    @click:append="$emit('click:append')"
   />
 </template>
 
@@ -15,6 +17,10 @@
 export default {
   name: 'phoneField',
   props: {
+    appendIcon: {
+      type: String,
+      default: undefined,
+    },
     label: {
       type: String,
       default: 'Teléfono',

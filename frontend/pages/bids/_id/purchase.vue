@@ -1,5 +1,9 @@
 <template>
   <v-card>
+    <v-card-text v-if="$auth.user.role === 'admin'">
+      <admin-header />
+    </v-card-text>
+
     <v-card-title>
       <p class="flex-grow-1">Contratar oferta {{ bid.id }}</p>
     </v-card-title>
@@ -72,6 +76,7 @@
 const phoneErrors = { city: [], mobile: [] }
 export default {
   components: {
+    AdminHeader: () => import('~/components/admin/AdminHeader'),
     AddPunto: () => import('~/components/puntos/AddPunto'),
     PhoneField: () => import('~/components/fields/phoneField'),
     CloseButton: () => import('~/components/buttons/closeButton'),

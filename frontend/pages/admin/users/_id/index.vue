@@ -1,5 +1,9 @@
 <template>
   <v-card>
+    <v-card-text>
+      <admin-header />
+    </v-card-text>
+
     <v-card-title>{{ fullname }}</v-card-title>
 
     <v-card-text>
@@ -96,6 +100,7 @@
 <script>
 export default {
   components: {
+    AdminHeader: () => import('~/components/admin/AdminHeader'),
     Chat: () => import('~/components/chat/Chat'),
     PuntosList: () => import('~/components/puntos/PuntosList'),
     HistoryList: () => import('~/components/history/HistoryList'),

@@ -1,5 +1,9 @@
 <template>
   <v-card>
+    <v-card-text v-if="$auth.user.role === 'admin'">
+      <admin-header />
+    </v-card-text>
+
     <v-card-title>Oferta</v-card-title>
     <v-card-text>
       <detail-offer :offer="bid.offer" />
@@ -9,14 +13,56 @@
 
     <v-card-title>Datos de clientes</v-card-title>
     <v-card-text>
-      <p>NOMBRE: {{ bid.user.first_name }}</p>
-      <p>APELLIDO: {{ bid.user.last_name }}</p>
-      <p>TELEFONO: {{ bid.user.phone }}</p>
-      <p>EMAIL: {{ bid.user.email }}</p>
-      <p>DNI: {{ bid.user.dni }}</p>
-      <p>CIF/DNI: {{ bid.user.cif_dni }}</p>
-      <p>LEGAL REPRESENTATIVE: {{ bid.user.legal_representative }}</p>
-      <p>IBAN: {{ bid.user.iban }}</p>
+      <v-text-field
+        v-model="values.first_name"
+        label="Nombre"
+        append-icon="mdi-content-save"
+        @click:append="update({ field: 'first_name' })"
+        @keyup.enter="update({ field: 'first_name' })"
+      />
+      <v-text-field
+        v-model="values.last_name"
+        label="Apellido"
+        append-icon="mdi-content-save"
+        @click:append="update({ field: 'last_name' })"
+        @keyup.enter="update({ field: 'last_name' })"
+      />
+      <phone-field
+        v-model="values.phone"
+        label="Telefono"
+        append-icon="mdi-content-save"
+        @click:append="update({ field: 'phone' })"
+        @keyup.enter="update({ field: 'phone' })"
+      />
+      <email-field v-model="values.email" label="Email" readonly />
+      <v-text-field
+        v-model="values.dni"
+        label="DNI"
+        append-icon="mdi-content-save"
+        @click:append="update({ field: 'dni' })"
+        @keyup.enter="update({ field: 'dni' })"
+      />
+      <v-text-field
+        v-model="values.cif_dni"
+        label="CIF/DNI"
+        append-icon="mdi-content-save"
+        @click:append="update({ field: 'cif_dni' })"
+        @keyup.enter="update({ field: 'cif_dni' })"
+      />
+      <v-text-field
+        v-model="values.legal_representative"
+        label="Legal representative"
+        append-icon="mdi-content-save"
+        @click:append="update({ field: 'legal_representative' })"
+        @keyup.enter="update({ field: 'legal_representative' })"
+      />
+      <v-text-field
+        v-model="values.iban"
+        label="IBAN"
+        append-icon="mdi-content-save"
+        @click:append="update({ field: 'iban' })"
+        @keyup.enter="update({ field: 'iban' })"
+      />
     </v-card-text>
 
     <v-divider />
@@ -77,14 +123,18 @@
 <script>
 export default {
   components: {
+    AdminHeader: () => import('~/components/admin/AdminHeader'),
     SubmitButton: () => import('~/components/buttons/submitButton'),
     CloseButton: () => import('~/components/buttons/closeButton'),
     StatusSelect: () => import('~/components/selects/StatusSelect'),
     DetailOffer: () => import('~/components/detailOffer'),
     PuntosList: () => import('~/components/puntos/PuntosList'),
+    PhoneField: () => import('~/components/fields/phoneField'),
+    EmailField: () => import('~/components/fields/emailField'),
   },
   async asyncData({ $axios, params, store }) {
     const bid = await $axios.$get(`bids/bids/${params.id}?support=true`)
+    const user = bid.user
     let puntoHeaders = store.state.puntoHeaders
     if (!puntoHeaders || !puntoHeaders.length) {
       puntoHeaders = await $axios.$get('/users/puntos/get_headers/')
@@ -93,6 +143,15 @@ export default {
     return {
       bid,
       puntoHeaders,
+      values: {
+        first_name: user.first_name,
+        last_name: user.last_name,
+        phone: user.phone,
+        email: user.email,
+        dni: user.dni,
+        iban: user.iban,
+        cif_dni: user.cif_dni,
+      },
     }
   },
   data() {
@@ -117,6 +176,31 @@ export default {
           }).then(() => this.$router.push('/support'))
         })
         .catch((e) => (this.errorMessages = e.response.data))
+    },
+    async update({ field }) {
+      const data = {}
+      let value = this.values[field]
+      value = value === undefined ? null : value
+      data[field] = value
+      try {
+        await this.$axios.$patch(`users/users/${this.bid.user.id}/`, data)
+        this.bid = await this.$axios.$get(
+          `bids/bids/${this.bid.id}?support=true`
+        )
+        await this.$swal({
+          title: 'Salvado',
+          text: `${field.toUpperCase()} esta cambiado ${data[field]}`,
+          icon: 'success',
+        })
+      } catch (e) {
+        await this.$swal({
+          title: 'Error!',
+          text: e.response.data[field]
+            ? e.response.data[field].join(', ')
+            : JSON.parse(e.response.data),
+          icon: 'error',
+        })
+      }
     },
   },
 }
