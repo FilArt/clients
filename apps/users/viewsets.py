@@ -54,10 +54,15 @@ class AccountViewSet(
         return account
 
 
-class UserViewSet(viewsets.ReadOnlyModelViewSet):
+class UserViewSet(mixins.UpdateModelMixin, mixins.ListModelMixin, mixins.RetrieveModelMixin, viewsets.GenericViewSet):
     queryset = CustomUser.objects.filter(bids__isnull=False).distinct("id")
     permission_classes = (IsAuthenticated, AdminPermission)
     ordering = ("-id",)
+
+    def get_object(self):
+        if self.action in ("update", "partial_update") and self.request.user.role != "admin":
+            raise PermissionDenied
+        return super().get_object()
 
     def get_serializer_class(self):
         if self.detail:
