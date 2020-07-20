@@ -114,7 +114,9 @@ export default {
         await this.$axios.$patch(`users/puntos/${id}/`, data)
         await this.$swal({
           title: 'Saved!',
-          text: `New value of ${field} = ${value || this.values[field]}`,
+          text: `${field.toUpperCase()} esta cambiado ${
+            value || this.values[field]
+          }`,
           icon: 'success',
         })
       } catch (e) {

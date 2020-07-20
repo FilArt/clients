@@ -7,20 +7,23 @@
 
     <v-divider />
 
-    <v-card-title>Client data</v-card-title>
+    <v-card-title>Datos de clientes</v-card-title>
     <v-card-text>
+      <p>NOMBRE: {{ bid.user.first_name }}</p>
+      <p>APELLIDO: {{ bid.user.last_name }}</p>
+      <p>TELEFONO: {{ bid.user.phone }}</p>
+      <p>EMAIL: {{ bid.user.email }}</p>
       <p>DNI: {{ bid.user.dni }}</p>
       <p>CIF/DNI: {{ bid.user.cif_dni }}</p>
-      <p>Legal representative: {{ bid.user.legal_representative }}</p>
+      <p>LEGAL REPRESENTATIVE: {{ bid.user.legal_representative }}</p>
       <p>IBAN: {{ bid.user.iban }}</p>
-      <p>EMAIL: {{ bid.user.email }}</p>
     </v-card-text>
 
     <v-divider />
 
     <v-card-title>Puntos</v-card-title>
     <v-card-text>
-      <puntos-list :puntos="bid.puntos" />
+      <puntos-list :puntos="bid.puntos" editable />
     </v-card-text>
 
     <v-card-actions>
@@ -38,10 +41,13 @@
           </v-card-title>
           <v-card-text>
             <v-form @submit.prevent="submit" novalidate>
-              <status-select v-model="data.status" :errors="errorMessages.status" />
+              <status-select
+                v-model="data.status"
+                :errors="errorMessages.status"
+              />
               <v-textarea
                 v-model="data.message"
-                label="Message"
+                label="Mensaje"
                 :placeholder="
                   data.status === 'success'
                     ? 'Contrato celebrado!'
@@ -69,16 +75,12 @@
 </template>
 
 <script>
-import DetailOffer from '~/components/detailOffer'
-import StatusSelect from '~/components/selects/StatusSelect'
-import CloseButton from '~/components/buttons/closeButton'
-import SubmitButton from '~/components/buttons/submitButton'
 export default {
   components: {
-    SubmitButton,
-    CloseButton,
-    StatusSelect,
-    DetailOffer,
+    SubmitButton: () => import('~/components/buttons/submitButton'),
+    CloseButton: () => import('~/components/buttons/closeButton'),
+    StatusSelect: () => import('~/components/selects/StatusSelect'),
+    DetailOffer: () => import('~/components/detailOffer'),
     PuntosList: () => import('~/components/puntos/PuntosList'),
   },
   async asyncData({ $axios, params, store }) {
