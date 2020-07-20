@@ -121,28 +121,25 @@ class Offer(models.Model):
         spread_sheet = client.open_by_url(settings.OFFERS_SHEET_URL)
         work_sheet = spread_sheet.get_worksheet(0)
         records = [row for row in work_sheet.get_all_records() if row["TYPO"]]
-        offers = []
         for item in records:
             client_type = 0 if item["TYPO"] == "F" else 1 if item["TYPO"] == "J" else 2
-            offers.append(
-                Offer.objects.update_or_create(
-                    uuid=item["UUID"],
-                    defaults=dict(
-                        company=Company.objects.get_or_create(name=item["COMERCIALIZADORA"].strip().upper(),)[0],
-                        name=item["NOMBRE"],
-                        tarif=item["TARIFA"],
-                        description=item["DESCRIPCION"],
-                        power_min=str_to_float(item["POTENCIA MIN"]),
-                        power_max=str_to_float(item["POTENCIA MAX"]),
-                        consumption_min=str_to_float(item["CONSUMO MIN"]),
-                        consumption_max=str_to_float(item["CONSUMO MAX"]),
-                        client_type=client_type,
-                        p1=str_to_float(item["P1"]),
-                        p2=str_to_float(item["P2"]),
-                        p3=str_to_float(item["P3"]),
-                        c1=str_to_float(item["C1"]),
-                        c2=str_to_float(item["C2"]),
-                        c3=str_to_float(item["C3"]),
-                    ),
-                )
+            Offer.objects.update_or_create(
+                uuid=item["UUID"],
+                defaults=dict(
+                    company=Company.objects.get_or_create(name=item["COMERCIALIZADORA"].strip().upper(),)[0],
+                    name=item["NOMBRE"],
+                    tarif=item["TARIFA"],
+                    description=item["DESCRIPCION"],
+                    power_min=str_to_float(item["POTENCIA MIN"]),
+                    power_max=str_to_float(item["POTENCIA MAX"]),
+                    consumption_min=str_to_float(item["CONSUMO MIN"]),
+                    consumption_max=str_to_float(item["CONSUMO MAX"]),
+                    client_type=client_type,
+                    p1=str_to_float(item["P1"]),
+                    p2=str_to_float(item["P2"]),
+                    p3=str_to_float(item["P3"]),
+                    c1=str_to_float(item["C1"]),
+                    c2=str_to_float(item["C2"]),
+                    c3=str_to_float(item["C3"]),
+                ),
             )
