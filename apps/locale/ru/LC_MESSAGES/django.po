@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-07-17 21:59+0000\n"
+"POT-Creation-Date: 2020-07-20 23:41+0000\n"
 "PO-Revision-Date: 2020-06-16 17:27+0200\n"
 "Last-Translator: \n"
 "Language-Team: \n"
@@ -151,7 +151,7 @@ msgstr "номер телефона"
 msgid "Company changed at"
 msgstr ""
 
-#: apps/users/models.py:68 apps/users/models.py:181
+#: apps/users/models.py:68 apps/users/models.py:185
 msgid "DNI"
 msgstr ""
 
@@ -212,53 +212,61 @@ msgstr "электронная почта"
 msgid "Postalcode"
 msgstr "Почтовый индекс"
 
-#: apps/users/models.py:160
+#: apps/users/models.py:159
+msgid "Last time company light changed"
+msgstr ""
+
+#: apps/users/models.py:162
+msgid "Last time company gas changed"
+msgstr ""
+
+#: apps/users/models.py:164
 msgid "CUPS"
 msgstr "КУПС"
 
-#: apps/users/models.py:161
+#: apps/users/models.py:165
 msgid "CUPS gas"
 msgstr "КУПС газ"
 
-#: apps/users/models.py:162
+#: apps/users/models.py:166
 msgid "Tarif"
 msgstr "Тариф"
 
-#: apps/users/models.py:163
+#: apps/users/models.py:167
 msgid "Tarif gas"
 msgstr "Тариф газ"
 
-#: apps/users/models.py:164
+#: apps/users/models.py:168
 msgid "Power 1"
 msgstr "Мощность 1"
 
-#: apps/users/models.py:170
+#: apps/users/models.py:174
 msgid "Annual consumption"
 msgstr "Годовое потребление"
 
-#: apps/users/models.py:171
+#: apps/users/models.py:175
 msgid "Annual consumption (gas)"
 msgstr "Годовое потребление (газ)"
 
-#: apps/users/models.py:179
+#: apps/users/models.py:183
 msgid "Factura"
 msgstr "Фактура"
 
-#: apps/users/models.py:180
+#: apps/users/models.py:184
 #, fuzzy
 #| msgid "Factura"
 msgid "Factura reverso"
 msgstr "Фактура"
 
-#: apps/users/models.py:182
+#: apps/users/models.py:186
 msgid "DNI reverse side"
 msgstr "DNI обратная сторона"
 
-#: apps/users/models.py:183
+#: apps/users/models.py:187
 msgid "CIF"
 msgstr "CIF"
 
-#: apps/users/models.py:184
+#: apps/users/models.py:188
 msgid "CIF reverse side"
 msgstr "CIF обратная сторона"
 
