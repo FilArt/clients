@@ -23,6 +23,7 @@ class Bid(models.Model):
         ("success", _("Success")),
         ("error", _("Error")),
     )
+    ALL_STATUSES = [item for item in BID_STATUS_CHOICES]
     VALIDATION_STATUS_CHOICES = [item for item in BID_STATUS_CHOICES if item[0] in ("success", "error",)]
     user = models.ForeignKey(get_user_model(), on_delete=models.CASCADE, related_name="bids")
     offer = models.ForeignKey("calculator.Offer", on_delete=models.CASCADE)

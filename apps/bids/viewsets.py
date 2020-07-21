@@ -23,12 +23,13 @@ from .serializers import (
 class BidViewSet(viewsets.ModelViewSet):
     permission_classes = (IsAuthenticated, BidsPermission)
     ordering = ("-created_at",)
+    filterset_fields = ("status",)
 
     def get_serializer_class(self):
         if self.action == "create":
             return CreateBidSerializer
-        
-        if self.request.user.role == "support" or self.request.query_params.get('support'):
+
+        if self.request.user.role == "support" or self.request.query_params.get("support"):
             if self.detail:
                 return SupportBidSerializer
             return SupportBidListSerializer
@@ -64,7 +65,13 @@ class BidViewSet(viewsets.ModelViewSet):
 
     @action(methods=["GET"], detail=False)
     def statuses(self, _):
-        return Response([{"text": text, "value": value} for value, text in Bid.VALIDATION_STATUS_CHOICES])
+        is_all = self.request.query_params.get("all")
+        return Response(
+            [
+                {"text": text, "value": value}
+                for value, text in (Bid.ALL_STATUSES if is_all else Bid.VALIDATION_STATUS_CHOICES)
+            ]
+        )
 
     @action(methods=["GET"], detail=True)
     def history(self, request: Request, pk: int):
