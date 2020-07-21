@@ -24,6 +24,7 @@ class BidViewSet(viewsets.ModelViewSet):
     permission_classes = (IsAuthenticated, BidsPermission)
     ordering = ("-created_at",)
     filterset_fields = ("status",)
+    search_fields = ("id", "puntos__cups_luz", "user__first_name", "user__last_name")
 
     def get_serializer_class(self):
         if self.action == "create":

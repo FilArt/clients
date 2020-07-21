@@ -5,14 +5,14 @@
     </v-card-text>
 
     <v-card-text>
-      <v-data-table :headers="headers" :items="items" :search.sync="search">
+      <v-data-table :headers="headers" :items="items" :loading="loading">
         <template v-slot:top>
           <v-row align="center">
             <v-col>
               <v-text-field
                 v-model="search"
                 append-icon="mdi-magnify"
-                label="Buscar"
+                label="Buscar (id, CUPS, cliente nombre)"
                 single-line
                 hide-details
               ></v-text-field>
@@ -56,14 +56,25 @@ export default {
   },
   data() {
     return {
+      loading: false,
       search: '',
       status: null,
     }
   },
   watch: {
+    async search(val) {
+      if (this.loading) return
+      this.loading = true
+      const aep = 'bids/bids/?support=true'
+      this.items = await this.$axios.$get(val ? aep + '&search=' + val : aep)
+      this.loading = false
+    },
     async status(val) {
+      if (this.loading) return
+      this.loading = true
       const aep = 'bids/bids/?support=true'
       this.items = await this.$axios.$get(val ? aep + '&status=' + val : aep)
+      this.loading = false
     },
   },
 }
