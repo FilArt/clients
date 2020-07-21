@@ -28,14 +28,14 @@ class PuntoSerializer(serializers.ModelSerializer):
 class BidListSerializer(serializers.ModelSerializer):
     status = serializers.CharField(source="get_status_display")
     offer_name = serializers.CharField(read_only=True, source="offer.name")
-    created_at = serializers.SerializerMethodField()
+    pretty_created_at = serializers.SerializerMethodField()
 
     class Meta:
         model = Bid
-        fields = ["id", "created_at", "offer_name", "status"]
+        fields = ["id", "pretty_created_at", "created_at", "offer_name", "status"]
 
     # noinspection PyMethodMayBeStatic
-    def get_created_at(self, instance: Bid):
+    def get_pretty_created_at(self, instance: Bid):
         return arrow.get(instance.created_at).humanize(locale=self.context["request"].LANGUAGE_CODE)
 
 
