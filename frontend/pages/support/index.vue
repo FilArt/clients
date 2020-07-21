@@ -5,7 +5,25 @@
     </v-card-text>
 
     <v-card-text>
-      <v-data-table :headers="headers" :items="items">
+      <v-data-table :headers="headers" :items="items" :search.sync="search">
+        <template v-slot:top>
+          <v-row align="center">
+            <v-col>
+              <v-text-field
+                v-model="search"
+                append-icon="mdi-magnify"
+                label="Buscar"
+                single-line
+                hide-details
+              ></v-text-field>
+            </v-col>
+
+            <v-col>
+              <status-select v-model="status" all />
+            </v-col>
+          </v-row>
+        </template>
+
         <template v-slot:item.user="{ item }">
           <td colspan="1">
             <nuxt-link :to="`/support/${item.id}`">
@@ -22,6 +40,7 @@
 export default {
   components: {
     AdminHeader: () => import('~/components/admin/AdminHeader'),
+    StatusSelect: () => import('~/components/selects/StatusSelect'),
   },
   async asyncData({ $axios }) {
     const items = await $axios.$get('bids/bids/?support=true')
@@ -34,6 +53,18 @@ export default {
         { text: 'Fecha de creación', value: 'created_at' },
       ],
     }
+  },
+  data() {
+    return {
+      search: '',
+      status: null,
+    }
+  },
+  watch: {
+    async status(val) {
+      const aep = 'bids/bids/?support=true'
+      this.items = await this.$axios.$get(val ? aep + '&status=' + val : aep)
+    },
   },
 }
 </script>

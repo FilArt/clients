@@ -134,7 +134,7 @@ export default {
       if (role === 'support') {
         items.push({
           icon: 'mdi-lifebuoy',
-          title: 'Soporte',
+          title: 'Tramitacion',
           to: '/support',
         })
       }

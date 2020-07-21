@@ -17,6 +17,10 @@
 export default {
   name: 'StatusSelect',
   props: {
+    all: {
+      type: Boolean,
+      default: false,
+    },
     errors: {
       type: Array,
       default: () => [],
@@ -37,7 +41,8 @@ export default {
     }
   },
   async mounted() {
-    this.statuses = await this.$axios.$get('bids/bids/statuses/')
+    const aep = 'bids/bids/statuses/'
+    this.statuses = await this.$axios.$get(this.all ? aep + '?all=true' : aep)
   },
   watch: {
     value: {
