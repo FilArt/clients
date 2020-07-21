@@ -76,7 +76,11 @@
           </v-tab-item>
 
           <v-tab-item>
-            <puntos-list :puntos="puntos" editable />
+            <puntos-list
+              :puntos="puntos"
+              editable
+              @punto-updated="fetchPuntos"
+            />
           </v-tab-item>
 
           <v-tab-item>
@@ -144,6 +148,13 @@ export default {
         .join(' ')
         .trim()
       return fullname && fullname.length ? fullname : u.email
+    },
+  },
+  methods: {
+    async fetchPuntos() {
+      this.puntos = await this.$axios.$get(
+        `/users/puntos/?user=${this.user.id}`
+      )
     },
   },
 }

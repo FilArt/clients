@@ -1,70 +1,60 @@
 <template>
   <div>
     <div v-for="punto in puntos" :key="punto.id">
-      <v-row>
-        <v-col>
-          <v-row>
-            <v-col>
-              <v-card-title> Punto: {{ punto.id }} </v-card-title>
-              <v-card-text>
-                <div
-                  class="d-flex"
-                  v-for="field in puntoHeaders"
-                  :key="field.value"
-                >
-                  <v-row>
-                    <v-col>
-                      <span> {{ field.name }}: </span>
-                    </v-col>
-                    <v-spacer />
+      <v-card-title>
+        Punto {{ punto.name || `(id: ${punto.id})` }}
+      </v-card-title>
+      <v-card-text>
+        <v-row>
+          <v-col
+            style="min-width: 30%;"
+            v-for="field in puntoHeaders"
+            :key="field.value"
+          >
+            <div v-if="field.value !== 'company_luz' && !editable">
+              <span> {{ field.name }}: </span>
+            </div>
+            <v-spacer />
+            <div>
+              <company-select
+                v-if="editable && field.value === 'company_luz'"
+                :value="punto.company_luz"
+                @input="
+                  save({
+                    id: punto.id,
+                    field: 'company_luz',
+                    value: $event,
+                  })
+                "
+              />
+              <v-text-field
+                v-else-if="editable"
+                :label="field.name"
+                :value="punto[field.value]"
+                append-icon="mdi-content-save"
+                @input="values[field.value] = $event"
+                @click:append="save({ id: punto.id, field: field.value })"
+              />
+              <code v-else>
+                {{ punto[field.value] || '-' }}
+              </code>
+            </div>
+          </v-col>
+        </v-row>
+      </v-card-text>
 
-                    <v-col>
-                      <company-select
-                        v-if="editable && field.value === 'company_luz'"
-                        :value="punto.company_luz"
-                        @input="
-                          save({
-                            id: punto.id,
-                            field: 'company_luz',
-                            value: $event,
-                          })
-                        "
-                      />
-                      <v-text-field
-                        v-if="editable"
-                        :value="punto[field.value]"
-                        append-icon="mdi-content-save"
-                        @input="values[field.value] = $event"
-                        @click:append="
-                          save({ id: punto.id, field: field.value })
-                        "
-                      />
-                      <code v-else>
-                        {{ punto[field.value] || '-' }}
-                      </code>
-                    </v-col>
-                  </v-row>
-                </div>
-              </v-card-text>
-            </v-col>
-
-            <v-col>
-              <v-card-title>Archivos adjuntos</v-card-title>
-              <v-card-text>
-                <v-chip
-                  v-for="attachment in punto.attachments"
-                  :key="attachment.id"
-                  link
-                  exact
-                  target="_blank"
-                  :href="attachment.attachment"
-                  >Attachment {{ attachment.id }}</v-chip
-                >
-              </v-card-text>
-            </v-col>
-          </v-row>
-        </v-col>
-      </v-row>
+      <v-card-title>Archivos adjuntos</v-card-title>
+      <v-card-text>
+        <v-chip
+          v-for="attachment in punto.attachments"
+          :key="attachment.id"
+          link
+          exact
+          target="_blank"
+          :href="attachment.attachment"
+          >Attachment {{ attachment.id }}</v-chip
+        >
+      </v-card-text>
 
       <v-divider :key="punto.id" />
     </div>
@@ -94,7 +84,10 @@ export default {
   },
   computed: {
     puntoHeaders() {
-      return this.$store.state.puntoHeaders
+      const isAdmin = this.$auth.user.role === 'admin'
+      return this.$store.state.puntoHeaders.filter((h) => {
+        return !(!isAdmin && ['c1', 'c2', 'c3'].includes(h.value))
+      })
     },
   },
   async created() {
@@ -115,10 +108,11 @@ export default {
         await this.$swal({
           title: 'Salvado',
           text: `${field.toUpperCase()} esta cambiado ${
-            value || this.values[field]
+            value || this.values[field] || 'null'
           }`,
           icon: 'success',
         })
+        this.$emit('punto-updated')
       } catch (e) {
         const errorMsg = e.response.data
         await this.$swal({
@@ -130,7 +124,6 @@ export default {
           icon: 'error',
         })
       }
-      this.$emit('puntoUpdated')
     },
   },
 }

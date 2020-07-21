@@ -13,63 +13,88 @@
 
     <v-card-title>Datos de clientes</v-card-title>
     <v-card-text>
-      <v-text-field
-        v-model="values.first_name"
-        label="Nombre"
-        append-icon="mdi-content-save"
-        @click:append="update({ field: 'first_name' })"
-        @keyup.enter="update({ field: 'first_name' })"
-      />
-      <v-text-field
-        v-model="values.last_name"
-        label="Apellido"
-        append-icon="mdi-content-save"
-        @click:append="update({ field: 'last_name' })"
-        @keyup.enter="update({ field: 'last_name' })"
-      />
-      <phone-field
-        v-model="values.phone"
-        label="Telefono"
-        append-icon="mdi-content-save"
-        @click:append="update({ field: 'phone' })"
-        @keyup.enter="update({ field: 'phone' })"
-      />
-      <email-field v-model="values.email" label="Email" readonly />
-      <v-text-field
-        v-model="values.dni"
-        label="DNI"
-        append-icon="mdi-content-save"
-        @click:append="update({ field: 'dni' })"
-        @keyup.enter="update({ field: 'dni' })"
-      />
-      <v-text-field
-        v-model="values.cif_dni"
-        label="CIF/DNI"
-        append-icon="mdi-content-save"
-        @click:append="update({ field: 'cif_dni' })"
-        @keyup.enter="update({ field: 'cif_dni' })"
-      />
-      <v-text-field
-        v-model="values.legal_representative"
-        label="Legal representative"
-        append-icon="mdi-content-save"
-        @click:append="update({ field: 'legal_representative' })"
-        @keyup.enter="update({ field: 'legal_representative' })"
-      />
-      <v-text-field
-        v-model="values.iban"
-        label="IBAN"
-        append-icon="mdi-content-save"
-        @click:append="update({ field: 'iban' })"
-        @keyup.enter="update({ field: 'iban' })"
-      />
+      <v-row>
+        <v-col :cols="cols">
+          <v-text-field
+            v-model="values.first_name"
+            label="Nombre"
+            append-icon="mdi-content-save"
+            @click:append="update({ field: 'first_name' })"
+            @keyup.enter="update({ field: 'first_name' })"
+          />
+        </v-col>
+
+        <v-col :cols="cols">
+          <v-text-field
+            v-model="values.last_name"
+            label="Apellido"
+            append-icon="mdi-content-save"
+            @click:append="update({ field: 'last_name' })"
+            @keyup.enter="update({ field: 'last_name' })"
+          />
+        </v-col>
+
+        <v-col :cols="cols">
+          <phone-field
+            v-model="values.phone"
+            label="Telefono"
+            append-icon="mdi-content-save"
+            @click:append="update({ field: 'phone' })"
+            @keyup.enter="update({ field: 'phone' })"
+          />
+        </v-col>
+
+        <v-col :cols="cols">
+          <email-field v-model="values.email" label="Email" readonly />
+        </v-col>
+
+        <v-col :cols="cols">
+          <v-text-field
+            v-model="values.dni"
+            label="DNI"
+            append-icon="mdi-content-save"
+            @click:append="update({ field: 'dni' })"
+            @keyup.enter="update({ field: 'dni' })"
+          />
+        </v-col>
+
+        <v-col :cols="cols">
+          <v-text-field
+            v-model="values.cif_dni"
+            label="CIF/DNI"
+            append-icon="mdi-content-save"
+            @click:append="update({ field: 'cif_dni' })"
+            @keyup.enter="update({ field: 'cif_dni' })"
+          />
+        </v-col>
+
+        <v-col :cols="cols">
+          <v-text-field
+            v-model="values.legal_representative"
+            label="Legal representative"
+            append-icon="mdi-content-save"
+            @click:append="update({ field: 'legal_representative' })"
+            @keyup.enter="update({ field: 'legal_representative' })"
+          />
+        </v-col>
+
+        <v-col :cols="cols">
+          <v-text-field
+            v-model="values.iban"
+            label="IBAN"
+            append-icon="mdi-content-save"
+            @click:append="update({ field: 'iban' })"
+            @keyup.enter="update({ field: 'iban' })"
+          />
+        </v-col>
+      </v-row>
     </v-card-text>
 
     <v-divider />
 
     <v-card-title>Puntos</v-card-title>
     <v-card-text>
-      <puntos-list :puntos="bid.puntos" editable />
+      <puntos-list :puntos="puntos" editable @punto-updated="fetchPuntos" />
     </v-card-text>
 
     <v-card-actions>
@@ -142,6 +167,7 @@ export default {
     }
     return {
       bid,
+      puntos: bid.puntos.sort((a, b) => a.id > b.id),
       puntoHeaders,
       values: {
         first_name: user.first_name,
@@ -156,6 +182,7 @@ export default {
   },
   data() {
     return {
+      cols: 3,
       submitDialog: false,
       data: {
         status: null,
@@ -165,6 +192,12 @@ export default {
     }
   },
   methods: {
+    async fetchPuntos() {
+      const bid = await this.$axios.$get(
+        `bids/bids/${this.bid.id}?support=true`
+      )
+      this.puntos = bid.puntos.sort((a, b) => a.id > b.id)
+    },
     submit() {
       this.$axios
         .$post(`bids/bids/${this.bid.id}/validate/`, this.data)
