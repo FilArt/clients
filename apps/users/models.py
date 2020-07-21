@@ -155,8 +155,12 @@ class Punto(models.Model):
     locality = MyCharField(verbose_name=_("Locality"))
     address = MyCharField(verbose_name=_("Address"))
     postalcode = MyCharField(verbose_name=_("Postalcode"), max_length=5, validators=[MinLengthValidator(5)])
-    last_time_company_luz_changed = models.DateField(blank=True, null=True)
-    last_time_company_gas_changed = models.DateField(blank=True, null=True)
+    last_time_company_luz_changed = models.DateField(
+        verbose_name=_("Last time company light changed"), blank=True, null=True
+    )
+    last_time_company_gas_changed = models.DateField(
+        verbose_name=_("Last time company gas changed"), blank=True, null=True
+    )
     cups_luz = MyCharField(verbose_name=_("CUPS"))
     cups_gas = MyCharField(verbose_name=_("CUPS gas"))
     tarif_luz = MyCharField(verbose_name=_("Tarif"))
