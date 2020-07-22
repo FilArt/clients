@@ -180,7 +180,7 @@ class Punto(models.Model):
     consumo_annual_luz = models.FloatField(verbose_name=_("Annual consumption"), blank=True, null=True)
     consumo_annual_gas = models.FloatField(verbose_name=_("Annual consumption (gas)"), blank=True, null=True)
     iban = models.CharField(verbose_name=_("IBAN"), max_length=255, blank=True, null=True)
-    category = models.CharField(choices=CATEGORY_CHOICES, null=True, max_length=20)
+    category = models.CharField(choices=CATEGORY_CHOICES, max_length=20)
 
     class Meta:
         db_table = "puntos"
