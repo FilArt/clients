@@ -18,6 +18,7 @@
           <p>DNI: {{ user.dni }}</p>
           <p>DNI/CIF: {{ user.dni_cif }}</p>
           <p>IBAN: {{ user.iban }}</p>
+          <p>Representante legal: {{ user.legal_representative }}</p>
         </v-col>
 
         <v-col>
@@ -87,8 +88,8 @@
             <v-row v-for="attachment in attachments" :key="attachment.id">
               <v-col>
                 <v-chip target="_blank" :href="attachment.attachment">
-                  Attachment (punto: {{ attachment.punto }}) (id:
-                  {{ attachment.id }})
+                  {{ attachment.type_verbose_name }} (punto:
+                  {{ attachment.punto }})
                 </v-chip>
               </v-col>
             </v-row>

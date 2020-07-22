@@ -54,5 +54,123 @@
         </v-row>
       </v-col>
     </v-row>
+
+    <v-row v-if="isLeed" class="text-center mx-auto" style="margin-top: 1em;">
+      <v-col>
+        Sí tiene dudas para seleccionar una oferta de nuestro catálogo o
+        prefiere que nuestros agentes le asesoren personalmente. Por favor
+        rellene el siguiente formulario y nos pondremos en contacto con usted lo
+        antes posible.
+      </v-col>
+    </v-row>
+
+    <v-row v-if="isLeed" class="mx-auto" style="max-width: 1000px;">
+      <v-col>
+        <v-form @submit.prevent="submit">
+          <v-file-input
+            v-model="factura"
+            label="Foto factura actual (anverso)"
+            :error-messages="errors.factura"
+          >
+            <template v-if="loadedFactura" v-slot:append-outer>
+              <v-chip
+                link
+                exact
+                target="_blank"
+                :href="loadedFactura.attachment"
+                >{{ loadedFactura.type_verbose_name }}</v-chip
+              >
+            </template>
+          </v-file-input>
+
+          <v-file-input
+            v-model="facturaReverso"
+            label="Foto factura actual (reverso)"
+            :error-messages="errors.factura_1"
+          >
+            <template v-if="loadedFacturaReverso" v-slot:append-outer>
+              <v-chip
+                link
+                exact
+                target="_blank"
+                :href="loadedFacturaReverso.attachment"
+                >{{ loadedFacturaReverso.type_verbose_name }}</v-chip
+              >
+            </template>
+          </v-file-input>
+
+          <submit-button label="Submit" block />
+        </v-form>
+      </v-col>
+    </v-row>
   </v-card>
 </template>
+
+<script>
+export default {
+  components: {
+    SubmitButton: () => import('~/components/buttons/submitButton'),
+  },
+  async asyncData({ $auth, $axios }) {
+    const isLeed = $auth.user.is_leed
+    if (isLeed || isLeed === undefined) {
+      const attachments = await $axios.$get('users/users/load_facturas/')
+      const loadedFactura = attachments.find(
+        (a) => a.attachment_type === 'factura'
+      )
+      const loadedFacturaReverso = attachments.find(
+        (a) => a.attachment_type === 'factura_1'
+      )
+      return {
+        isLeed,
+        loadedFactura,
+        loadedFacturaReverso,
+      }
+    } else {
+      return {
+        isLeed,
+      }
+    }
+  },
+  data() {
+    return {
+      factura: null,
+      facturaReverso: null,
+      errors: {},
+    }
+  },
+  methods: {
+    async submit() {
+      this.errors = {}
+      const formData = new FormData()
+      formData.append('factura', this.factura)
+      formData.append('factura_1', this.facturaReverso)
+      const func = this.loadedFactura ? this.$axios.$patch : this.$axios.$post
+      try {
+        const attachments = await func('users/users/load_facturas/', formData)
+        this.loadedFactura = attachments.find(
+          (a) => a.attachment_type === 'factura'
+        )
+        this.loadedFacturaReverso = attachments.find(
+          (a) => a.attachment_type === 'factura_1'
+        )
+        await this.$swal({
+          title: 'Salvado',
+          icon: 'success',
+        })
+      } catch (e) {
+        this.errors = e.response.data
+        if (this.errors.profileNotFilled) {
+          await this.$swal({
+            title: 'Por favor, complete su perfil por completo.',
+            text:
+              'Para comenzar el proceso de contratación, debe completar su perfil.',
+            icon: 'warning',
+          })
+          await this.$router.push('/profile')
+        }
+      }
+    },
+  },
+}
+</script>

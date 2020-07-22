@@ -11,7 +11,7 @@
     <v-card>
       <v-card-title>
         <p class="flex-grow-1">
-          {{ label ? label : 'Nuevo punto' }}
+          {{ label ? label : 'Nuevo punto suministro' }}
         </p>
         <close-button @click="dialog = false" />
       </v-card-title>
@@ -93,7 +93,7 @@
           </v-row>
 
           <submit-button
-            :label="punto ? 'Guardar' : 'Anadir suministro'"
+            :label="punto ? 'Guardar' : 'Anadir nuevo punto suministro'"
             block
           />
         </v-form>

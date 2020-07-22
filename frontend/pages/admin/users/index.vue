@@ -16,11 +16,18 @@ export default {
     UsersTable: () => import('~/components/tables/UsersTable'),
     AdminHeader: () => import('~/components/admin/AdminHeader'),
   },
-  async asyncData({ $axios }) {
-    const users = await $axios.$get('/users/users/')
+  async asyncData({ $axios, query }) {
+    const users = await $axios.$get(`/users/users/?leeds=${query.leeds}`)
     return {
       users,
     }
+  },
+  watch: {
+    async $route() {
+      this.users = await this.$axios.$get(
+        `/users/users/?leeds=${this.$route.query.leeds}`
+      )
+    },
   },
 }
 </script>
