@@ -5,7 +5,21 @@
       <v-card-text>
         <v-row align="center">
           <v-col>
-            <client-type-select v-model="filters.client_type" @input="fetch" />
+            <v-select
+              v-model="filters.is_price_permanent"
+              label="Typo de precio"
+              :items="[
+                {
+                  text: 'FIJO',
+                  value: true,
+                },
+                {
+                  text: 'INDEXADO',
+                  value: false,
+                },
+              ]"
+              @input="fetch"
+            />
           </v-col>
           <v-col>
             <company-select v-model="filters.company" @input="fetch" />
@@ -23,7 +37,9 @@
             <v-card
               :to="`/offers/detail/${offer.id}?name=${myEscape(
                 offer.name
-              )}&client_type=${offer.client_type}&tarif=${filters.tarif || ''}`"
+              )}&is_price_permanent=${offer.is_price_permanent}&tarif=${
+                filters.tarif || ''
+              }`"
               nuxt
               class="mx-auto"
               max-width="300"
@@ -47,7 +63,7 @@ const filterFields = [
   'company',
   'company_logo',
   'name',
-  'client_type',
+  'is_price_permanent',
 ].join(',')
 export default {
   components: {
@@ -65,7 +81,7 @@ export default {
           ? parseInt(this.$route.query.company || '1')
           : '',
         tarif: this.$route.query.tarif,
-        client_type: this.$route.query.client_type,
+        is_price_permanent: this.$route.query.is_price_permanent,
       },
     }
   },

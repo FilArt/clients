@@ -114,6 +114,7 @@ class Offer(models.Model):
     c1 = PositiveNullableFloatField()
     c2 = PositiveNullableFloatField()
     c3 = PositiveNullableFloatField()
+    is_price_permanent = models.BooleanField()
 
     @staticmethod
     def sync():
@@ -122,6 +123,8 @@ class Offer(models.Model):
         work_sheet = spread_sheet.get_worksheet(0)
         records = [row for row in work_sheet.get_all_records() if row["TYPO"]]
         for item in records:
+            if not item["MODO"]:
+                raise ValueError("Invalid modo! (Can not be null)")
             client_type = 0 if item["TYPO"] == "F" else 1 if item["TYPO"] == "J" else 2
             Offer.objects.update_or_create(
                 uuid=item["UUID"],
@@ -141,5 +144,6 @@ class Offer(models.Model):
                     c1=str_to_float(item["C1"]),
                     c2=str_to_float(item["C2"]),
                     c3=str_to_float(item["C3"]),
+                    is_price_permanent=item["MODO"] == "FIJO",
                 ),
             )

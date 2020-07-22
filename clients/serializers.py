@@ -116,6 +116,7 @@ class OfferListSerializer(DynamicFieldsMixin, serializers.ModelSerializer):
             "consumption_min",
             "consumption_max",
             "client_type",
+            "is_price_permanent",
         ]
 
 
