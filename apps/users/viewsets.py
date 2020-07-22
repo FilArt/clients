@@ -156,6 +156,10 @@ class PuntoViewSet(viewsets.ModelViewSet):
             [{"name": f.verbose_name, "value": f.name, "hint": f.help_text} for f in Punto._meta.fields[3:]]
         )
 
+    @action(methods=["GET"], detail=False)
+    def get_categories(self, request: Request):
+        return Response([{"name": f[1], "value": f[0]} for f in Punto.CATEGORY_CHOICES])
+
 
 class PhoneViewSet(viewsets.ModelViewSet):
     queryset = Phone.objects.all()

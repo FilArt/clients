@@ -18,6 +18,23 @@
 
       <v-card-text>
         <v-form @submit.prevent="addPunto">
+          <v-row>
+            <v-col>
+              <v-radio-group
+                label="Seleccione categoría de cliente"
+                v-model="newPunto.category"
+                mandatory
+              >
+                <v-radio
+                  v-for="category in categories"
+                  :label="category.name"
+                  :value="category.value"
+                  :key="category.value"
+                />
+              </v-radio-group>
+            </v-col>
+          </v-row>
+
           <div class="d-flex flex-wrap">
             <div v-for="field in fields" :key="field.value">
               <company-select
@@ -27,6 +44,7 @@
               </company-select>
 
               <v-text-field
+                v-else
                 v-model="newPunto[field.value]"
                 class="pa-3"
                 clearable
@@ -35,15 +53,15 @@
                 :error-messages="errors[field.value]"
                 v-show="
                   [
+                    'company_luz',
+                    'category',
                     'name',
-                    'cups_luz',
                     'c1',
                     'c2',
                     'c3',
                     'p1',
                     'p2',
                     'p3',
-                    'company_luz',
                     'company_gas',
                     'last_time_company_luz_changed',
                     'last_time_company_gas_changed',
@@ -110,6 +128,10 @@ export default {
     CompanySelect: () => import('~/components/selects/CompanySelect'),
   },
   props: {
+    offerClientType: {
+      type: Number,
+      default: null,
+    },
     bidId: {
       type: Number,
       default: 0,
@@ -180,6 +202,12 @@ export default {
     if (this.punto) {
       this.newPunto = this.punto
     }
+    if (!this.categories || !this.categories.length) {
+      this.$store.commit(
+        'setPuntoCategories',
+        await this.$axios.$get('/users/puntos/get_categories/')
+      )
+    }
   },
   watch: {
     punto: {
@@ -194,6 +222,11 @@ export default {
     },
     fields() {
       return this.$store.state.puntoHeaders
+    },
+    categories() {
+      return this.$store.state.puntoCategories.filter((cat) => {
+        return !(this.offerClientType === 1 && cat.value === 'physical')
+      })
     },
   },
   methods: {

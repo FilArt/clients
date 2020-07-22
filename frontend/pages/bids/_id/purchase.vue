@@ -41,6 +41,7 @@
           Puntos suministros
           <v-col v-for="(punto, idx) in puntos" :key="idx">
             <add-punto
+              :offer-client-type="bid.offer.client_type"
               color="green"
               :punto="punto"
               :label="`Punto suministro #${idx + 1}`"
@@ -55,7 +56,11 @@
 
         <v-row align="center" class="text-center">
           <v-col>
-            <add-punto @punto-created="fetchPuntos" :bidId="bid.id" />
+            <add-punto
+              :offer-client-type="bid.offer.client_type"
+              :bidId="bid.id"
+              @punto-created="fetchPuntos"
+            />
           </v-col>
         </v-row>
 

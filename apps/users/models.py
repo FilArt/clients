@@ -1,4 +1,5 @@
 from functools import cached_property
+from typing import Optional, Sequence, Union
 from django.contrib.auth.models import AbstractUser
 from django.contrib.postgres.fields import ArrayField, JSONField
 from django.core.exceptions import ValidationError
@@ -136,6 +137,7 @@ class Phone(models.Model):
 
 
 class Punto(models.Model):
+    CATEGORY_CHOICES = (("physical", _("Physical")), ("autonomous", _("Autonomous")), ("business", _("Business")))
     bid = models.ForeignKey("bids.Bid", on_delete=models.CASCADE, related_name="puntos")
     user = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name="puntos")
     name = MyCharField(verbose_name=_("Name"))
@@ -178,9 +180,21 @@ class Punto(models.Model):
     consumo_annual_luz = models.FloatField(verbose_name=_("Annual consumption"), blank=True, null=True)
     consumo_annual_gas = models.FloatField(verbose_name=_("Annual consumption (gas)"), blank=True, null=True)
     iban = models.CharField(verbose_name=_("IBAN"), max_length=255, blank=True, null=True)
+    category = models.CharField(choices=CATEGORY_CHOICES, null=True, max_length=20)
 
     class Meta:
         db_table = "puntos"
+
+    def save(
+        self,
+        force_insert: bool,
+        force_update: bool,
+        using: Optional[str],
+        update_fields: Optional[Union[Sequence[str], str]],
+    ) -> None:
+        if self.category == "physical" and self.bid and self.bid.offer and self.bid.offer.client_type == 1:
+            raise ValidationError({"category": [_("Business offer is not available for individuals")]})
+        super().save(force_insert=force_insert, force_update=force_update, using=using, update_fields=update_fields)
 
 
 class Attachment(models.Model):

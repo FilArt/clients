@@ -4,11 +4,15 @@ export const state = () => ({
   tarif: null,
   participant: null,
   puntoHeaders: [],
+  puntoCategories: [],
 })
 
 export const mutations = {
   setPuntoHeaders(state, h) {
     state.puntoHeaders = h
+  },
+  setPuntoCategories(state, c) {
+    state.puntoCategories = c
   },
   setParticipant(state, p) {
     state.participant = p
