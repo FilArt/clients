@@ -205,6 +205,7 @@ class Attachment(models.Model):
         ("dni2", _("DNI reverse side")),
         ("cif1", _("CIF")),
         ("cif2", _("CIF reverse side")),
+        ("recibo1", _("Recibo de Autónomo")),
     )
 
     punto = models.ForeignKey(Punto, on_delete=models.CASCADE, related_name="attachments")

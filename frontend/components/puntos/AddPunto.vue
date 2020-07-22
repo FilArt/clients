@@ -85,7 +85,14 @@
           >
             <template
               v-if="
-                !(fileField.name === 'cif1' && newPunto.category === 'business')
+                !(
+                  (['cif1', 'recibo1'].includes(fileField.name) &&
+                    newPunto.category === 'physical') ||
+                  (newPunto.category === 'autonomous' &&
+                    fileField.name === 'cif1') ||
+                  (newPunto.category === 'business' &&
+                    fileField.name === 'recibo1')
+                )
               "
             >
               <v-col>
@@ -179,6 +186,10 @@ export default {
         {
           name: 'cif1',
           label: 'Foto CIF',
+        },
+        {
+          name: 'recibo1',
+          label: 'Foto recibo de Autónomo',
         },
       ],
       files: {
