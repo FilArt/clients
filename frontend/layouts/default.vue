@@ -30,6 +30,10 @@
       <v-toolbar-title v-text="title" />
       <v-spacer />
 
+      <v-chip>
+        {{ $auth.user ? 'id ' + $auth.user.id : '' }}
+      </v-chip>
+
       <v-btn icon nuxt to="/profile">
         <v-icon color="primary">
           mdi-account
