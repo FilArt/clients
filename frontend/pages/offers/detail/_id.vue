@@ -53,6 +53,9 @@ export default {
       fields: filterFields,
       id: query.id,
     }
+    if (query.tarif) {
+      params.tarif = query.tarif
+    }
     const offers = await $axios.$get('calculator/offers/', { params })
     return { offers }
   },
