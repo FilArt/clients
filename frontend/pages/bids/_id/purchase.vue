@@ -45,7 +45,6 @@
               color="green"
               :punto="punto"
               :label="`Punto suministro #${idx + 1}`"
-              :is-individual="isIndividual"
               @punto-edited="fetchPuntos"
               @punto-deleted="fetchPuntos"
             />

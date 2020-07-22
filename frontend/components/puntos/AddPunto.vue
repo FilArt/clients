@@ -83,7 +83,11 @@
             :key="fileField.name"
             align="center"
           >
-            <template v-if="!(isIndividual && fileField.onlyBusiness)">
+            <template
+              v-if="
+                !(fileField.name === 'cif1' && newPunto.category === 'business')
+              "
+            >
               <v-col>
                 <v-file-input
                   v-model="files[fileField.name]"
@@ -148,10 +152,6 @@ export default {
       type: Object,
       default: () => null,
     },
-    isIndividual: {
-      type: Boolean,
-      default: false,
-    },
   },
   data() {
     return {
@@ -179,7 +179,6 @@ export default {
         {
           name: 'cif1',
           label: 'Foto CIF',
-          onlyBusiness: true,
         },
       ],
       files: {
