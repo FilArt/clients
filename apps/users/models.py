@@ -1,3 +1,4 @@
+from functools import cached_property
 from django.contrib.auth.models import AbstractUser
 from django.contrib.postgres.fields import ArrayField, JSONField
 from django.core.exceptions import ValidationError
@@ -100,6 +101,10 @@ class CustomUser(AbstractUser):
     @property
     def bids_count(self) -> int:
         return self.bids.count()
+
+    @cached_property
+    def is_leed(self) -> int:
+        return not self.bids.exclude(status="new").exists()
 
     def __str__(self):
         if self.first_name and self.last_name:

@@ -52,6 +52,7 @@ class AccountSerializer(serializers.ModelSerializer):
     first_name = serializers.CharField(min_length=1, allow_null=False, required=True)
     last_name = serializers.CharField(min_length=1, allow_null=False, required=True)
     phone = serializers.CharField(min_length=9, allow_null=False, required=True)
+    is_leed = serializers.BooleanField(read_only=True)
 
     class Meta:
         model = CustomUser
@@ -69,6 +70,7 @@ class AccountSerializer(serializers.ModelSerializer):
             "cif_dni",
             "iban",
             "legal_representative",
+            "is_leed",
         ]
         extra_kwargs = {
             "password": {"write_only": True},
