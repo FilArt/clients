@@ -77,16 +77,6 @@
             @keyup.enter="update({ field: 'legal_representative' })"
           />
         </v-col>
-
-        <v-col :cols="cols">
-          <v-text-field
-            v-model="values.iban"
-            label="IBAN"
-            append-icon="mdi-content-save"
-            @click:append="update({ field: 'iban' })"
-            @keyup.enter="update({ field: 'iban' })"
-          />
-        </v-col>
       </v-row>
     </v-card-text>
 

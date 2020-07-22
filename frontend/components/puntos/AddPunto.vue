@@ -86,7 +86,7 @@
                   target="_blank"
                   :href="attachment.attachment"
                   @click:close="deleteAttachment(attachment.id)"
-                  >Archivo adjunto {{ attachment.id }}</v-chip
+                  >{{ attachment.type_verbose_name }}</v-chip
                 >
               </v-col>
             </template>

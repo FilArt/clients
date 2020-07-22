@@ -17,7 +17,6 @@
           <p>Email: {{ user.email }}</p>
           <p>DNI: {{ user.dni }}</p>
           <p>DNI/CIF: {{ user.dni_cif }}</p>
-          <p>IBAN: {{ user.iban }}</p>
           <p>Representante legal: {{ user.legal_representative }}</p>
         </v-col>
 

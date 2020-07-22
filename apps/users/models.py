@@ -67,7 +67,6 @@ class CustomUser(AbstractUser):
     company_changed_at = models.DateTimeField(verbose_name=_("Company changed at"), null=True, blank=True)
 
     dni = models.CharField(verbose_name=_("DNI"), max_length=255, blank=True, null=True)
-    iban = models.CharField(verbose_name=_("IBAN"), max_length=255, blank=True, null=True)
     cif_dni = models.CharField(verbose_name=_("CIF/DNI"), max_length=255, blank=True, null=True)
     legal_representative = models.CharField(
         verbose_name=_("Legal representative"), max_length=255, blank=True, null=True
@@ -178,6 +177,7 @@ class Punto(models.Model):
     c3 = models.FloatField(blank=True, null=True)
     consumo_annual_luz = models.FloatField(verbose_name=_("Annual consumption"), blank=True, null=True)
     consumo_annual_gas = models.FloatField(verbose_name=_("Annual consumption (gas)"), blank=True, null=True)
+    iban = models.CharField(verbose_name=_("IBAN"), max_length=255, blank=True, null=True)
 
     class Meta:
         db_table = "puntos"

@@ -68,7 +68,6 @@ class AccountSerializer(serializers.ModelSerializer):
             "role",
             "dni",
             "cif_dni",
-            "iban",
             "legal_representative",
             "is_leed",
         ]

@@ -92,7 +92,6 @@ class UserSerializer(UserListSerializer):
             "last_name",
             "phone",
             "email",
-            "iban",
             "dni",
             "cif_dni",
             "legal_representative",

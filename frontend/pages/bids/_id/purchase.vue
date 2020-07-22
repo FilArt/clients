@@ -37,8 +37,6 @@
           :error-messages="phoneErrors['city']"
         />
 
-        <v-text-field v-model="form.iban" label="IBAN" />
-
         <v-row align="center" class="text-center">
           Puntos suministros
           <v-col v-for="(punto, idx) in puntos" :key="idx">
@@ -155,6 +153,7 @@ export default {
           `users/account/${this.$auth.user.id}/`,
           this.form
         )
+        await this.$auth.fetchUser()
         await this.$router.push(`/bids/${this.bid.id}`)
         await this.$swal({
           title: 'Contratado!',
