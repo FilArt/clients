@@ -23,7 +23,7 @@
             <v-card
               :to="`/offers/detail/${offer.id}?name=${myEscape(
                 offer.name
-              )}&client_type=${offer.client_type}&tarif=${filters.tarif}`"
+              )}&client_type=${offer.client_type}&tarif=${filters.tarif || ''}`"
               nuxt
               class="mx-auto"
               max-width="300"
