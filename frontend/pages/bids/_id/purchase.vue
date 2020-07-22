@@ -45,7 +45,7 @@
             <add-punto
               color="green"
               :punto="punto"
-              :label="`Punto #${idx + 1}`"
+              :label="`Punto suministro #${idx + 1}`"
               :is-individual="isIndividual"
               @punto-edited="fetchPuntos"
               @punto-deleted="fetchPuntos"

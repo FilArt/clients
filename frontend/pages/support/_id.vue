@@ -92,7 +92,7 @@
 
     <v-divider />
 
-    <v-card-title>Puntos</v-card-title>
+    <v-card-title>Puntos suministros</v-card-title>
     <v-card-text>
       <puntos-list :puntos="puntos" editable @punto-updated="fetchPuntos" />
     </v-card-text>

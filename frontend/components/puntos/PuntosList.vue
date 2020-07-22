@@ -2,7 +2,7 @@
   <div>
     <div v-for="punto in puntos" :key="punto.id">
       <v-card-title>
-        Punto {{ punto.name || `(id: ${punto.id})` }}
+        Punto suministro {{ punto.name || `(id: ${punto.id})` }}
       </v-card-title>
       <v-card-text>
         <v-row>

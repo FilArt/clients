@@ -286,7 +286,10 @@ export default {
       }).then((willDelete) => {
         if (willDelete) {
           this.$axios.$delete(`users/puntos/${id}/`).then(() => {
-            this.$swal({ title: 'Punto eliminada!', icon: 'success' })
+            this.$swal({
+              title: 'Punto suministro eliminada!',
+              icon: 'success',
+            })
             this.$emit('punto-deleted')
           })
         }
