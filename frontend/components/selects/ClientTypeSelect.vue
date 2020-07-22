@@ -3,7 +3,7 @@
     v-model="item"
     :items="items"
     :error-messages="errorMessages"
-    label="Typo de cliente"
+    label="Tipo de cliente"
     style="min-width: 150px;"
     chips
     deletable-chips
