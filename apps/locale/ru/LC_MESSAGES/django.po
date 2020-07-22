@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-07-20 23:41+0000\n"
+"POT-Creation-Date: 2020-07-22 14:28+0000\n"
 "PO-Revision-Date: 2020-06-16 17:27+0200\n"
 "Last-Translator: \n"
 "Language-Team: \n"
@@ -59,7 +59,7 @@ msgstr ""
 msgid "Individual"
 msgstr "Частный"
 
-#: apps/calculator/models.py:98
+#: apps/calculator/models.py:98 apps/users/models.py:140
 msgid "Business"
 msgstr "Юридический"
 
@@ -93,188 +93,200 @@ msgstr ""
 msgid "Superuser must have is_superuser=True."
 msgstr ""
 
-#: apps/users/models.py:25
+#: apps/users/models.py:27
 msgid "Numbers only"
 msgstr "Только численные значения"
 
-#: apps/users/models.py:27
+#: apps/users/models.py:29
 msgid "Should contain 9 digits"
 msgstr "Должен состоять из 9 цифр"
 
-#: apps/users/models.py:38
+#: apps/users/models.py:40
 msgid "Profile"
 msgstr "Профиль"
 
-#: apps/users/models.py:39
+#: apps/users/models.py:41
 msgid "Bids"
 msgstr "Заявки"
 
-#: apps/users/models.py:40
+#: apps/users/models.py:42
 msgid "Offers"
 msgstr "Предложения"
 
-#: apps/users/models.py:41
+#: apps/users/models.py:43
 #, fuzzy
 #| msgid "calculator"
 msgid "Calculator"
 msgstr "калькулятор"
 
-#: apps/users/models.py:53
+#: apps/users/models.py:55
 msgid "Client"
 msgstr "Клиент"
 
-#: apps/users/models.py:54
+#: apps/users/models.py:56
 msgid "Support"
 msgstr "Поддержка"
 
-#: apps/users/models.py:55
-msgid "Admin"
-msgstr ""
-
 #: apps/users/models.py:57
+msgid "Admin"
+msgstr "Админ"
+
+#: apps/users/models.py:59
 msgid "Default"
 msgstr "Стандартный"
 
-#: apps/users/models.py:63
+#: apps/users/models.py:65
 #, fuzzy
 #| msgid "email address"
 msgid "Email address"
 msgstr "электронная почта"
 
-#: apps/users/models.py:64
+#: apps/users/models.py:66
 #, fuzzy
 #| msgid "phone number"
 msgid "Phone number"
 msgstr "номер телефона"
 
-#: apps/users/models.py:66
+#: apps/users/models.py:68
 msgid "Company changed at"
-msgstr ""
+msgstr "Компания была изменена"
 
-#: apps/users/models.py:68 apps/users/models.py:185
+#: apps/users/models.py:70 apps/users/models.py:204
 msgid "DNI"
 msgstr ""
 
-#: apps/users/models.py:69
-msgid "IBAN"
-msgstr ""
-
-#: apps/users/models.py:70
+#: apps/users/models.py:71
 msgid "CIF/DNI"
 msgstr ""
 
-#: apps/users/models.py:72
+#: apps/users/models.py:73
 msgid "Legal representative"
-msgstr ""
+msgstr "Законный представитель"
 
-#: apps/users/models.py:81
+#: apps/users/models.py:82
 #, fuzzy
 #| msgid "Possible values:"
 msgctxt "help text for user permissions field"
 msgid "Possible values:"
 msgstr "Возможные значения:"
 
-#: apps/users/models.py:122
+#: apps/users/models.py:127
 msgid "Mobile"
-msgstr ""
+msgstr "Мобильный"
 
-#: apps/users/models.py:123
+#: apps/users/models.py:128
 msgid "City"
-msgstr ""
+msgstr "Городской"
 
-#: apps/users/models.py:137
+#: apps/users/models.py:140
+msgid "Physical"
+msgstr "Физическое лицо"
+
+#: apps/users/models.py:140
+msgid "Autonomous"
+msgstr "Аутономо"
+
+#: apps/users/models.py:143
 msgid "Name"
-msgstr ""
+msgstr "Имя"
 
-#: apps/users/models.py:139
+#: apps/users/models.py:145
 msgid "Company light"
-msgstr ""
+msgstr "Компания"
 
-#: apps/users/models.py:147
+#: apps/users/models.py:153
 msgid "Company gas"
 msgstr ""
 
-#: apps/users/models.py:154
+#: apps/users/models.py:160
 msgid "Province"
-msgstr ""
+msgstr "Провинция"
 
-#: apps/users/models.py:155
+#: apps/users/models.py:161
 msgid "Locality"
-msgstr ""
+msgstr "Локалидад"
 
-#: apps/users/models.py:156
+#: apps/users/models.py:162
 #, fuzzy
 #| msgid "email address"
 msgid "Address"
 msgstr "электронная почта"
 
-#: apps/users/models.py:157
+#: apps/users/models.py:163
 msgid "Postalcode"
 msgstr "Почтовый индекс"
 
-#: apps/users/models.py:159
+#: apps/users/models.py:165
 msgid "Last time company light changed"
 msgstr ""
 
-#: apps/users/models.py:162
+#: apps/users/models.py:168
 msgid "Last time company gas changed"
 msgstr ""
 
-#: apps/users/models.py:164
+#: apps/users/models.py:170
 msgid "CUPS"
 msgstr "КУПС"
 
-#: apps/users/models.py:165
+#: apps/users/models.py:171
 msgid "CUPS gas"
 msgstr "КУПС газ"
 
-#: apps/users/models.py:166
+#: apps/users/models.py:172
 msgid "Tarif"
 msgstr "Тариф"
 
-#: apps/users/models.py:167
+#: apps/users/models.py:173
 msgid "Tarif gas"
 msgstr "Тариф газ"
 
-#: apps/users/models.py:168
+#: apps/users/models.py:174
 msgid "Power 1"
 msgstr "Мощность 1"
 
-#: apps/users/models.py:174
+#: apps/users/models.py:180
 msgid "Annual consumption"
 msgstr "Годовое потребление"
 
-#: apps/users/models.py:175
+#: apps/users/models.py:181
 msgid "Annual consumption (gas)"
 msgstr "Годовое потребление (газ)"
 
-#: apps/users/models.py:183
+#: apps/users/models.py:182
+msgid "IBAN"
+msgstr ""
+
+#: apps/users/models.py:196
+msgid "Business offer is not available for individuals"
+msgstr ""
+
+#: apps/users/models.py:202
 msgid "Factura"
 msgstr "Фактура"
 
-#: apps/users/models.py:184
+#: apps/users/models.py:203
 #, fuzzy
 #| msgid "Factura"
 msgid "Factura reverso"
 msgstr "Фактура"
 
-#: apps/users/models.py:186
+#: apps/users/models.py:205
 msgid "DNI reverse side"
 msgstr "DNI обратная сторона"
 
-#: apps/users/models.py:187
+#: apps/users/models.py:206
 msgid "CIF"
 msgstr "CIF"
 
-#: apps/users/models.py:188
+#: apps/users/models.py:207
 msgid "CIF reverse side"
 msgstr "CIF обратная сторона"
 
-#: apps/users/serializers.py:28
+#: apps/users/serializers.py:30
 msgid "¡Bienvenido a Gestion Group! "
 msgstr "Добро пожаловать в Гестион Груп!"
 
-#: apps/users/serializers.py:43
+#: apps/users/serializers.py:45
 msgid "Recuperación de contraseña"
 msgstr "Сброс пароля"
 
