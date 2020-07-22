@@ -55,7 +55,7 @@
 
             <tr>
               <td>Tipo de oferta:</td>
-              <td>{{ offer.client_type === 0 ? 'Particular' : 'Negocio' }}</td>
+              <td>{{ offer.client_type === 0 ? 'Físico' : 'Juridico' }}</td>
             </tr>
 
             <tr>

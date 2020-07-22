@@ -29,11 +29,11 @@
 <script>
 const clientTypes = [
   {
-    text: 'Particular',
+    text: 'Físico',
     value: '0',
   },
   {
-    text: 'Negocios',
+    text: 'Juridico',
     value: '1',
   },
 ]
