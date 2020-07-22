@@ -8,6 +8,8 @@ from apps.users.models import Attachment, CustomUser, Punto, UserSettings
 
 
 class AttachmentSerializer(serializers.ModelSerializer):
+    type_verbose_name = serializers.CharField(read_only=True, source="get_attachment_type_display")
+
     class Meta:
         model = Attachment
         fields = "__all__"

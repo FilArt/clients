@@ -52,7 +52,7 @@
           exact
           target="_blank"
           :href="attachment.attachment"
-          >Attachment {{ attachment.id }}</v-chip
+          >{{ attachment.type_verbose_name }}</v-chip
         >
       </v-card-text>
 
