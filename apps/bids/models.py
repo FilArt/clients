@@ -52,6 +52,7 @@ class Bid(models.Model):
         field=status, source=["purchase", "purchase_updated"], target="success", on_error="error",
     )
     def success(self, user, message):
+        self.puntos.update(company_luz=self.offer.company)
         self.bidstory_set.create(
             user=user, old_status=self.status, new_status="success", message=message,
         )
