@@ -59,7 +59,7 @@ msgstr "Individual"
 
 #: apps/calculator/models.py:98 apps/users/models.py:140
 msgid "Business"
-msgstr "Negocio"
+msgstr "Empresa"
 
 #: apps/calculator/views.py:81
 #, fuzzy
