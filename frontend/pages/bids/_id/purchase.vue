@@ -31,6 +31,7 @@
         />
 
         <phone-field
+          v-if="['admin', 'support'].includes($auth.user.role)"
           v-model="phoneCity"
           label="Teléfono fijo"
           :error-messages="phoneErrors['city']"
