@@ -5,10 +5,12 @@ from django.template.loader import render_to_string
 from django.utils.html import strip_tags
 from django.utils.translation import gettext_lazy as _
 from rest_framework import serializers
+from rest_framework.exceptions import ValidationError
 
-from clients.serializers import BidListSerializer
+from apps.bids.models import Bid
+from clients.serializers import BidListSerializer, PuntoSerializer
 
-from .models import Call, CustomUser, Phone
+from .models import Attachment, Call, CustomUser, Phone, Punto
 
 
 class RegisterSerializer(serializers.ModelSerializer):
@@ -77,10 +79,25 @@ class PhoneSerializer(serializers.ModelSerializer):
 class UserSerializer(UserListSerializer):
     bids = BidListSerializer(many=True)
     phones = serializers.ListSerializer(child=PhoneSerializer())
+    puntos = PuntoSerializer(many=True)
 
     class Meta:
         model = CustomUser
-        exclude = ["password"]
+        fields = [
+            "id",
+            "bids",
+            "phones",
+            "puntos",
+            "first_name",
+            "last_name",
+            "phone",
+            "email",
+            "iban",
+            "dni",
+            "cif_dni",
+            "legal_representative",
+            "date_joined",
+        ]
 
 
 class CallSerializer(serializers.ModelSerializer):
@@ -92,3 +109,22 @@ class CallSerializer(serializers.ModelSerializer):
 
     def get_called_at(self, call_file: Call):
         return arrow.get(call_file.called_at).humanize(locale=self.context["request"].LANGUAGE_CODE)
+
+
+class LoadFacturasSerializer(serializers.Serializer):
+    factura = serializers.ImageField()
+    factura_1 = serializers.ImageField()
+
+    def create(self, validated_data):
+        user = self.context["user"]
+        if user.puntos.exists():
+            raise ValidationError("Punto exist!")
+        factura = validated_data.pop("factura")
+        factura_1 = validated_data.pop("factura_1")
+        bid = Bid.objects.create(user=user)
+        punto = Punto.objects.create(bid=bid, user=user)
+        Attachment.objects.create(
+            punto=punto, attachment_type="factura", attachment=factura,
+        )
+        _ = Attachment.objects.create(punto=punto, attachment_type="factura_1", attachment=factura_1)
+        return _

@@ -12,7 +12,14 @@ from clients.serializers import AccountSerializer, AttachmentSerializer, PuntoSe
 
 from .models import Attachment, Call, CustomUser, Phone, Punto
 from .permissions import AdminPermission
-from .serializers import CallSerializer, PhoneSerializer, RegisterSerializer, UserListSerializer, UserSerializer
+from .serializers import (
+    CallSerializer,
+    LoadFacturasSerializer,
+    PhoneSerializer,
+    RegisterSerializer,
+    UserListSerializer,
+    UserSerializer,
+)
 
 
 class RegisterViewSet(viewsets.GenericViewSet, mixins.CreateModelMixin):
@@ -55,9 +62,18 @@ class AccountViewSet(
 
 
 class UserViewSet(mixins.UpdateModelMixin, mixins.ListModelMixin, mixins.RetrieveModelMixin, viewsets.GenericViewSet):
-    queryset = CustomUser.objects.filter(bids__isnull=False).distinct("id")
+    queryset = CustomUser.objects.all()
     permission_classes = (IsAuthenticated, AdminPermission)
     ordering = ("-id",)
+
+    def get_queryset(self):
+        users_ids = Bid.objects.exclude(status="new").values("user").distinct()
+        if self.detail:
+            return self.queryset
+        elif self.request.query_params.get("leeds") == "true":
+            return CustomUser.objects.exclude(id__in=users_ids)
+        else:
+            return CustomUser.objects.filter(id__in=users_ids)
 
     def get_object(self):
         if self.action in ("update", "partial_update") and self.request.user.role != "admin":
@@ -72,9 +88,29 @@ class UserViewSet(mixins.UpdateModelMixin, mixins.ListModelMixin, mixins.Retriev
     def filter_queryset(self, queryset):
         return super().filter_queryset(queryset).exclude(id=self.request.user.id)
 
-
-class LeedsViewSet(UserViewSet):
-    queryset = CustomUser.objects.filter(bids__isnull=True).distinct("id")
+    @action(methods=["GET", "PATCH", "POST"], detail=False, permission_classes=(IsAuthenticated,))
+    def load_facturas(self, request: Request):
+        attachments = None
+        if request.method == "POST":
+            if not self.request.user.profile_filled:
+                raise ValidationError({"profileNotFilled": True})
+            serializer = LoadFacturasSerializer(data=request.data, context={"user": request.user})
+            serializer.is_valid(raise_exception=True)
+            attachments = serializer.save()
+        elif request.method == "PATCH":
+            attachments = Attachment.objects.filter(punto__user=request.user)
+            serializer = LoadFacturasSerializer(data=request.data, context={"user": request.user})
+            serializer.is_valid(raise_exception=True)
+            for _type in ("factura", "factura_1"):
+                try:
+                    attachment = attachments.get(attachment_type=_type)
+                    attachment.file = serializer.validated_data.pop(_type)
+                    attachment.save()
+                except Attachment.DoesNotExist:
+                    raise ValidationError({_type: ["Not found"]})
+        if not attachments:
+            attachments = Attachment.objects.filter(punto__user=request.user)
+        return Response(AttachmentSerializer(attachments, many=True).data)
 
 
 class PuntoViewSet(viewsets.ModelViewSet):
