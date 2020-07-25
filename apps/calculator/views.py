@@ -117,7 +117,7 @@ class CalculatorSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Offer
-        exclude = ["description", "uuid"]
+        exclude = ["description", "uuid", "is_price_permanent"]  # TODO: replace exclude with fields
         extra_kwargs = {
             "name": {"read_only": True},
             "company": {"write_only": True, "allow_null": True},
