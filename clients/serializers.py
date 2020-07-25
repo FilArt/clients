@@ -27,6 +27,18 @@ class PuntoSerializer(serializers.ModelSerializer):
         exclude = ["user"]
 
 
+class DetailPuntoSerializer(serializers.ModelSerializer):
+    attachments = serializers.ListSerializer(child=AttachmentSerializer(read_only=True), read_only=True)
+    province = serializers.CharField(allow_null=False, min_length=1)
+    locality = serializers.CharField(allow_null=False, min_length=1)
+    address = serializers.CharField(allow_null=False, min_length=1)
+    postalcode = serializers.CharField(allow_null=False, min_length=5)
+
+    class Meta:
+        model = Punto
+        fields = ["attachments", "province", "locality", "address", "postalcode", "category", "cups_luz", "iban"]
+
+
 class BidListSerializer(serializers.ModelSerializer):
     status = serializers.CharField(source="get_status_display")
     offer_name = serializers.CharField(read_only=True, source="offer.name")

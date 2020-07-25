@@ -8,7 +8,7 @@ from rest_framework.request import Request
 from rest_framework.response import Response
 
 from apps.bids.models import Bid
-from clients.serializers import AccountSerializer, AttachmentSerializer, PuntoSerializer
+from clients.serializers import AccountSerializer, AttachmentSerializer, DetailPuntoSerializer
 
 from .models import Attachment, Call, CustomUser, Phone, Punto
 from .permissions import AdminPermission
@@ -115,7 +115,7 @@ class UserViewSet(mixins.UpdateModelMixin, mixins.ListModelMixin, mixins.Retriev
 
 class PuntoViewSet(viewsets.ModelViewSet):
     queryset = Punto.objects.all()
-    serializer_class = PuntoSerializer
+    serializer_class = DetailPuntoSerializer
     filterset_fields = ["bid"]
     ordering = ["id"]
 
