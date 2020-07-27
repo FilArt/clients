@@ -122,6 +122,7 @@ class Offer(models.Model):
         spread_sheet = client.open_by_url(settings.OFFERS_SHEET_URL)
         work_sheet = spread_sheet.get_worksheet(0)
         records = [row for row in work_sheet.get_all_records() if row["TYPO"]]
+        print("before:", Offer.objects.count())
         for item in records:
             if not item["MODO"]:
                 raise ValueError("Invalid modo! (Can not be null)")
@@ -147,3 +148,8 @@ class Offer(models.Model):
                     is_price_permanent=item["MODO"] == "FIJO",
                 ),
             )
+
+        uuids = [r["UUID"] for r in records]
+        Offer.objects.exclude(uuid__in=uuids).delete()
+        print("after:", Offer.objects.count())
+        print("all:", len(uuids))
