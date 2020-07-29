@@ -1,5 +1,5 @@
 <template>
-  <v-dialog v-model="dialog">
+  <v-dialog v-model="dialog" max-width="500" :transition="false" eager>
     <template v-slot:activator="{ on }">
       <v-btn v-on="on" :color="color"
         >{{ label ? label : 'Anadir nuevo suministro' }}
@@ -18,76 +18,71 @@
 
       <v-card-text>
         <v-form @submit.prevent="addPunto">
-          <v-row>
-            <v-col>
-              <v-radio-group
-                label="Seleccione categoría de cliente"
-                v-model="newPunto.category"
-                mandatory
-              >
-                <v-radio
-                  v-for="category in categories"
-                  :label="category.name"
-                  :value="category.value"
-                  :key="category.value"
-                />
-              </v-radio-group>
-            </v-col>
-          </v-row>
+          <v-radio-group
+            label="Seleccione categoría de cliente"
+            v-model="newPunto.category"
+            mandatory
+          >
+            <v-radio
+              v-for="category in categories"
+              :label="category.name"
+              :value="category.value"
+              :key="category.value"
+            />
+          </v-radio-group>
 
-          <div class="d-flex flex-wrap">
-            <div v-for="field in fields" :key="field.value">
-              <company-select
-                v-if="field.value === 'company_luz' && admin"
-                v-model="newPunto.company_luz"
-              >
-              </company-select>
+          <div v-for="field in fields" :key="field.value">
+            <company-select
+              v-if="field.value === 'company_luz' && admin"
+              v-model="newPunto.company_luz"
+            >
+            </company-select>
 
-              <v-autocomplete
-                v-else-if="field.value === 'province'"
-                v-model="newPunto.province"
-                :label="field.name"
-                :hint="field.hint"
-                :name="field.value"
-                :items="cities"
-                :error-messages="errors[field.value]"
-              />
+            <v-autocomplete
+              v-else-if="field.value === 'province'"
+              v-model="newPunto.province"
+              :label="field.name"
+              :hint="field.hint"
+              :name="field.value"
+              prepend-icon="mdi-city"
+              :items="cities"
+              :error-messages="errors[field.value]"
+            />
 
-              <v-text-field
-                v-else
-                v-model="newPunto[field.value]"
-                class="pa-3"
-                clearable
-                :label="field.name"
-                :hint="field.hint"
-                :name="field.value"
-                :error-messages="errors[field.value]"
-                v-show="
-                  [
-                    'company_luz',
-                    'category',
-                    'name',
-                    'c1',
-                    'c2',
-                    'c3',
-                    'p1',
-                    'p2',
-                    'p3',
-                    'company_gas',
-                    'last_time_company_luz_changed',
-                    'last_time_company_gas_changed',
-                    'cups_luz',
-                    'cups_gas',
-                    'tarif_luz',
-                    'tarif_gas',
-                    'consumo_annual_luz',
-                    'consumo_annual_gas',
-                  ].includes(field.value)
-                    ? admin
-                    : true
-                "
-              />
-            </div>
+            <v-text-field
+              v-else
+              v-model="newPunto[field.value]"
+              class="pa-3"
+              :prepend-icon="fieldIcons[field.value]"
+              :label="field.name"
+              :hint="field.hint"
+              :name="field.value"
+              :error-messages="errors[field.value]"
+              v-show="
+                [
+                  'company_luz',
+                  'category',
+                  'name',
+                  'c1',
+                  'c2',
+                  'c3',
+                  'p1',
+                  'p2',
+                  'p3',
+                  'company_gas',
+                  'last_time_company_luz_changed',
+                  'last_time_company_gas_changed',
+                  'cups_luz',
+                  'cups_gas',
+                  'tarif_luz',
+                  'tarif_gas',
+                  'consumo_annual_luz',
+                  'consumo_annual_gas',
+                ].includes(field.value)
+                  ? admin
+                  : true
+              "
+            />
           </div>
 
           <v-row
@@ -110,6 +105,7 @@
               <v-col>
                 <v-file-input
                   v-model="files[fileField.name]"
+                  accept="image/*"
                   :label="fileField.label"
                   :error-messages="fileErrors[fileField.name]"
                 />
@@ -178,6 +174,10 @@ export default {
       newPunto: this.punto || {},
       errors: {},
       attachments: (this.punto || {}).attachments || [],
+      fieldIcons: {
+        address: 'mdi-map-marker',
+        iban: 'mdi-bank',
+      },
       fileFields: [
         {
           name: 'factura',
@@ -308,10 +308,6 @@ export default {
         await this.loadFiles(this.punto.id)
         if (Object.keys(this.fileErrors).length) return
 
-        await this.$swal({
-          title: 'punto ' + this.punto.id + ' изменено',
-          icon: 'success',
-        })
         this.$emit('punto-edited')
       } else {
         try {
