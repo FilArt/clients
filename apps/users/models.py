@@ -1,7 +1,7 @@
 from functools import cached_property
-from typing import Optional, Sequence, Union
+
 from django.contrib.auth.models import AbstractUser
-from django.contrib.postgres.fields import ArrayField, JSONField
+from django.contrib.postgres.fields import ArrayField
 from django.core.exceptions import ValidationError
 from django.core.files.storage import FileSystemStorage
 from django.core.validators import MinLengthValidator
@@ -185,16 +185,10 @@ class Punto(models.Model):
     class Meta:
         db_table = "puntos"
 
-    def save(
-        self,
-        force_insert: bool,
-        force_update: bool,
-        using: Optional[str],
-        update_fields: Optional[Union[Sequence[str], str]],
-    ) -> None:
+    def save(self, *args, **kwargs) -> None:
         if self.category == "physical" and self.bid and self.bid.offer and self.bid.offer.client_type == 1:
             raise ValidationError({"category": [_("Business offer is not available for individuals")]})
-        super().save(force_insert=force_insert, force_update=force_update, using=using, update_fields=update_fields)
+        super().save(*args, **kwargs)
 
 
 class Attachment(models.Model):
