@@ -134,7 +134,7 @@
             </v-card-title>
 
             <v-card-title style="color: red;">
-              Paga actualmenta: {{ calculations.current_price }} €
+              Paga actualmente: {{ calculations.current_price }} €
             </v-card-title>
           </v-card>
         </v-col>
