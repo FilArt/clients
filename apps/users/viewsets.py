@@ -138,10 +138,10 @@ class PuntoViewSet(viewsets.ModelViewSet):
             if bid.status != "purchase" and not bid.puntos.exists():
                 try:
                     bid.purchase(self.request.user)
-                    bid.save()
+                    bid.save(update_fields=["status"])
                 except Exception as exc:
                     raise ValidationError({"status": [str(exc)]})
-            serializer.save(user=bid.user)
+            serializer.save(user=bid.user, bid=bid)
 
     def perform_destroy(self, instance):
         bid = instance.bid
@@ -159,6 +159,10 @@ class PuntoViewSet(viewsets.ModelViewSet):
     @action(methods=["GET"], detail=False)
     def get_categories(self, request: Request):
         return Response([{"name": f[1], "value": f[0]} for f in Punto.CATEGORY_CHOICES])
+
+    @action(methods=["GET"], detail=False)
+    def get_cities(self, request: Request):
+        return Response(Punto.CITIES)
 
 
 class PhoneViewSet(viewsets.ModelViewSet):

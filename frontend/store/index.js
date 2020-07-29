@@ -5,9 +5,13 @@ export const state = () => ({
   participant: null,
   puntoHeaders: [],
   puntoCategories: [],
+  cities: [],
 })
 
 export const mutations = {
+  setCities(state, cities) {
+    state.cities = cities
+  },
   setPuntoHeaders(state, h) {
     state.puntoHeaders = h
   },

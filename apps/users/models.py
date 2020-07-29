@@ -137,7 +137,13 @@ class Phone(models.Model):
 
 
 class Punto(models.Model):
+    CITIES = (
+        "Madrid",
+        "Barcelona",
+    )
+
     CATEGORY_CHOICES = (("physical", _("Physical")), ("autonomous", _("Autonomous")), ("business", _("Business")))
+    PROVINCE_CHOICES = [(c, c) for c in CITIES]
     bid = models.ForeignKey("bids.Bid", on_delete=models.CASCADE, related_name="puntos")
     user = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name="puntos")
     name = MyCharField(verbose_name=_("Name"))
@@ -157,10 +163,14 @@ class Punto(models.Model):
         null=True,
         blank=True,
     )
-    province = MyCharField(verbose_name=_("Province"))
-    locality = MyCharField(verbose_name=_("Locality"))
-    address = MyCharField(verbose_name=_("Address"))
-    postalcode = MyCharField(verbose_name=_("Postalcode"), max_length=5, validators=[MinLengthValidator(5)])
+
+    # данные ниже вводит клиент
+    province = models.CharField(verbose_name=_("Province"), choices=PROVINCE_CHOICES, max_length=255)
+    locality = models.CharField(verbose_name=_("Locality"), max_length=255)
+    address = models.CharField(verbose_name=_("Address"), max_length=255)
+    postalcode = models.CharField(verbose_name=_("Postalcode"), max_length=5, validators=[MinLengthValidator(5)])
+    iban = models.CharField(verbose_name=_("IBAN"), max_length=255)
+
     last_time_company_luz_changed = models.DateField(
         verbose_name=_("Last time company light changed"), blank=True, null=True
     )
@@ -179,7 +189,6 @@ class Punto(models.Model):
     c3 = models.FloatField(blank=True, null=True)
     consumo_annual_luz = models.FloatField(verbose_name=_("Annual consumption"), blank=True, null=True)
     consumo_annual_gas = models.FloatField(verbose_name=_("Annual consumption (gas)"), blank=True, null=True)
-    iban = models.CharField(verbose_name=_("IBAN"), max_length=255, blank=True, null=True)
     category = models.CharField(choices=CATEGORY_CHOICES, max_length=20)
 
     class Meta:

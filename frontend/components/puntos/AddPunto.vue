@@ -43,6 +43,16 @@
               >
               </company-select>
 
+              <v-autocomplete
+                v-else-if="field.value === 'province'"
+                v-model="newPunto.province"
+                :label="field.name"
+                :hint="field.hint"
+                :name="field.value"
+                :items="cities"
+                :error-messages="errors[field.value]"
+              />
+
               <v-text-field
                 v-else
                 v-model="newPunto[field.value]"
@@ -50,6 +60,7 @@
                 clearable
                 :label="field.name"
                 :hint="field.hint"
+                :name="field.value"
                 :error-messages="errors[field.value]"
                 v-show="
                   [
@@ -65,6 +76,7 @@
                     'company_gas',
                     'last_time_company_luz_changed',
                     'last_time_company_gas_changed',
+                    'cups_luz',
                     'cups_gas',
                     'tarif_luz',
                     'tarif_gas',
@@ -218,6 +230,12 @@ export default {
         await this.$axios.$get('/users/puntos/get_categories/')
       )
     }
+    if (!this.cities || !this.cities.length) {
+      this.$store.commit(
+        'setCities',
+        await this.$axios.$get('/users/puntos/get_cities/')
+      )
+    }
   },
   watch: {
     punto: {
@@ -237,6 +255,9 @@ export default {
       return this.$store.state.puntoCategories.filter((cat) => {
         return !(this.offerClientType === 1 && cat.value === 'physical')
       })
+    },
+    cities() {
+      return this.$store.state.cities
     },
   },
   methods: {
@@ -278,7 +299,7 @@ export default {
         try {
           await this.$axios.$patch(
             `/users/puntos/${this.punto.id}/`,
-            this.punto
+            this.newPunto
           )
         } catch (e) {
           this.errors = e.response.data
