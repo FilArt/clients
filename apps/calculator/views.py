@@ -94,7 +94,7 @@ class CalculatorSerializer(serializers.ModelSerializer):
     p1 = PotenciaField(required=True)
     p2 = PotenciaField()
     p3 = PotenciaField()
-    current_price = serializers.FloatField(min_value=0, write_only=True, validators=[positive_number])
+    current_price = serializers.FloatField(min_value=0, validators=[positive_number])
 
     c_st_c1 = ConsumoCalculationField()
     c_st_c2 = ConsumoCalculationField()
@@ -109,9 +109,8 @@ class CalculatorSerializer(serializers.ModelSerializer):
     with_calculations = serializers.BooleanField(default=False, write_only=True)
 
     after_rental = BeautyFloatField()
-    paga = BeautyFloatField()
-    paga_percent = serializers.IntegerField(read_only=True)
-    paga_actualmente = BeautyFloatField()
+    profit = BeautyFloatField()
+    profit_percent = serializers.IntegerField(read_only=True)
     total = BeautyFloatField()
     annual_total = BeautyFloatField()
 
@@ -164,9 +163,9 @@ class CalculatorSerializer(serializers.ModelSerializer):
                 tax=F("subtotal") * Value(calculator_settings.tax), iva=F("after_rental") * calculator_settings.iva,
             )
             .annotate(total=F("after_rental") + F("iva") + F("tax"))
-            .annotate(annual_total=F("total") / Value(data["period"]) * Value(365))
-            .annotate(paga=-F("total") + current_price)
-            .annotate(paga_percent=F("paga") / F("total") * Value(100), paga_actualmente=current_price)
+            .annotate(profit=-F("total") + current_price)
+            .annotate(annual_total=F("profit") / Value(data["period"]) * Value(365))
+            .annotate(profit_percent=F("profit") / F("total") * Value(100), current_price=current_price)
         ).order_by("total")
 
         offers_count = qs.count()

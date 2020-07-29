@@ -39,7 +39,7 @@
             </td>
             <td>{{ offer.name }}</td>
             <td>{{ offer.company_name }}</td>
-            <td>{{ offer.total }} €</td>
+            <td>{{ offer.profit }} €</td>
             <td>{{ offer.annual_total }} €</td>
             <td>
               <v-btn

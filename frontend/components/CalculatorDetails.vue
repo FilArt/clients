@@ -134,7 +134,7 @@
             </v-card-title>
 
             <v-card-title style="color: red;">
-              Paga actualmenta: {{ calculations.paga_actualmente }} €
+              Paga actualmenta: {{ calculations.current_price }} €
             </v-card-title>
           </v-card>
         </v-col>
@@ -147,8 +147,8 @@
               <ul>
                 <li>
                   <v-card-title>
-                    Ahorro en factura: {{ calculations.paga }} € ~=
-                    {{ calculations.paga_percent }}%
+                    Ahorro en factura: {{ calculations.profit }} € ~=
+                    {{ calculations.profit_percent }}%
                   </v-card-title>
                 </li>
                 <li>
