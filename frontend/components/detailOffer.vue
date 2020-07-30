@@ -1,18 +1,14 @@
 <template>
   <v-row justify="space-between" align="center">
-    <v-col>
-      <v-img
-        class="mx-auto"
-        :src="offer.company_logo || '/no-image.svg'"
-        max-width="400"
-      />
+    <v-col class="flex-grow-0">
+      <v-img :src="offer.company_logo || '/no-image.svg'" max-width="400" />
     </v-col>
 
     <v-col>
       <v-card-title>{{ offer.name }}</v-card-title>
       <v-divider />
       <v-card-text>
-        <v-simple-table>
+        <v-simple-table class="offer-detail-table">
           <template v-slot:default>
             <tr>
               <td>ID:</td>
@@ -60,7 +56,7 @@
 
             <tr>
               <td>Precio por potencia:</td>
-              <td class="d-flex">
+              <td>
                 <v-chip
                   v-for="p in ['p1', 'p2', 'p3'].filter((p) => offer[p])"
                   :key="p"
@@ -73,7 +69,7 @@
 
             <tr>
               <td>Precio por consumo:</td>
-              <td class="d-flex">
+              <td>
                 <v-chip
                   v-for="p in ['c1', 'c2', 'c3'].filter((p) => offer[p])"
                   :key="p"
@@ -143,3 +139,10 @@ export default {
   },
 }
 </script>
+
+<style lang="sass" scoped>
+.offer-detail-table
+  th, td
+    padding: 5px
+    border-bottom: 1px solid #ddd
+</style>
