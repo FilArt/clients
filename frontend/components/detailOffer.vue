@@ -55,7 +55,7 @@
             </tr>
 
             <tr>
-              <td>Tipo de precion</td>
+              <td>Tipo de precio:</td>
               <td>{{ offer.is_price_permanent }}</td>
             </tr>
 
