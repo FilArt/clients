@@ -122,6 +122,11 @@ class CalculatorSerializer(serializers.ModelSerializer):
             "company": {"write_only": True, "allow_null": True},
         }
 
+    def is_valid(self, raise_exception=False):
+        if self.initial_data.get("company") == "otra":
+            self.initial_data["company"] = None
+        return super().is_valid(raise_exception=raise_exception)
+
     def get_calculated(self) -> list:
         data = self.validated_data
         calculator_settings = CalculatorSettings.objects.first()

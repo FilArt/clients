@@ -21,7 +21,7 @@
               class="mx-auto"
               outlined
               nuxt
-              to="/offers/detail?client_type=0"
+              to="/ofertas/hogar"
               :raised="hover"
             >
               <v-card-text>
@@ -42,7 +42,7 @@
               class="mx-auto"
               outlined
               nuxt
-              to="/offers/detail?client_type=1"
+              to="/ofertas/pyme"
               :raised="hover"
             >
               <v-card-text>

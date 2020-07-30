@@ -181,7 +181,7 @@ export default {
         role === 'support'
           ? await this.$router.push('/support')
           : this.$auth.user.permissions.includes('offers')
-          ? await this.$router.push('/offers')
+          ? await this.$router.push('/ofertas')
           : await this.$router.push('/bids')
       } catch (e) {
         console.log(e)

@@ -54,6 +54,10 @@
 export default {
   name: 'CompanySelect',
   props: {
+    withoutOther: {
+      type: Boolean,
+      default: false,
+    },
     hint: {
       type: Boolean,
       default: false,
@@ -82,7 +86,9 @@ export default {
   watch: {
     value: {
       handler: function (val) {
-        this.company = this.companies.find((c) => c.id === val)
+        this.company = !val
+          ? null
+          : this.companies.find((c) => c.id.toString() === val.toString())
       },
       deep: false,
     },
@@ -100,10 +106,12 @@ export default {
       this.$axios
         .$get('/calculator/companies/')
         .then((companies) => {
-          this.companies = companies.concat({
-            id: null,
-            name: 'OTRA',
-          })
+          this.companies = this.withoutOther
+            ? companies
+            : companies.concat({
+                id: 'otra',
+                name: 'OTRA',
+              })
         })
         .finally(() => (this.loading = false))
     },

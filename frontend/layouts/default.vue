@@ -113,7 +113,7 @@ export default {
         items.push({
           icon: 'mdi-offer',
           title: 'Ofertas',
-          to: '/offers',
+          to: '/ofertas',
         })
       }
       if (this.$auth.user.permissions.includes('calculator')) {

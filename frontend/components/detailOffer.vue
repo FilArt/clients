@@ -144,5 +144,4 @@ export default {
 .offer-detail-table
   th, td
     padding: 5px
-    border-bottom: 1px solid #ddd
 </style>
