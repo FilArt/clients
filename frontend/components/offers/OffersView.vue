@@ -59,7 +59,6 @@ export default {
   },
   methods: {
     async fetch() {
-      if (this.loading === true) return
       this.loading = true
       try {
         this.offers = await this.$axios.$get('calculator/offers/', {

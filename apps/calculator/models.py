@@ -97,6 +97,10 @@ class Offer(models.Model):
         (0, _("Individual")),
         (1, _("Business")),
     )
+    PRICE_CHOICES = (
+        ("Fijo", _("Fijo")),
+        ("Indexado", _("Indexado")),
+    )
 
     uuid = models.UUIDField(unique=True)
     company = models.ForeignKey(Company, on_delete=models.CASCADE)
@@ -114,7 +118,7 @@ class Offer(models.Model):
     c1 = PositiveNullableFloatField()
     c2 = PositiveNullableFloatField()
     c3 = PositiveNullableFloatField()
-    is_price_permanent = models.BooleanField()
+    is_price_permanent = models.CharField(max_length=20, choices=PRICE_CHOICES)
 
     @staticmethod
     def sync():
@@ -124,9 +128,6 @@ class Offer(models.Model):
         records = [row for row in work_sheet.get_all_records() if row["TYPO"]]
         print("before:", Offer.objects.count())
         for item in records:
-            if not item["MODO"]:
-                raise ValueError("Invalid modo! (Can not be null)")
-            client_type = 0 if item["TYPO"] == "F" else 1 if item["TYPO"] == "J" else 2
             Offer.objects.update_or_create(
                 uuid=item["UUID"],
                 defaults=dict(
@@ -138,14 +139,14 @@ class Offer(models.Model):
                     power_max=str_to_float(item["POTENCIA MAX"]),
                     consumption_min=str_to_float(item["CONSUMO MIN"]),
                     consumption_max=str_to_float(item["CONSUMO MAX"]),
-                    client_type=client_type,
+                    client_type=0 if item["TYPO"] == "F" else 1 if item["TYPO"] == "J" else 2,
                     p1=str_to_float(item["P1"]),
                     p2=str_to_float(item["P2"]),
                     p3=str_to_float(item["P3"]),
                     c1=str_to_float(item["C1"]),
                     c2=str_to_float(item["C2"]),
                     c3=str_to_float(item["C3"]),
-                    is_price_permanent=item["MODO"] == "FIJO",
+                    is_price_permanent=item["MODO"].capitalize(),
                 ),
             )
 

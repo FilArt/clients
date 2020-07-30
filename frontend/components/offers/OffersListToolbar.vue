@@ -6,17 +6,15 @@
         <v-col>
           <v-select
             v-model="filters.is_price_permanent"
-            label="Typo de precio"
-            :items="[
-              {
-                text: 'FIJO',
-                value: 'true',
-              },
-              {
-                text: 'INDEXADO',
-                value: 'false',
-              },
-            ]"
+            label="Tipo de precio"
+            :items="
+              ['Fijo', 'Indexado'].map((i) => {
+                return {
+                  text: i,
+                  value: i,
+                }
+              })
+            "
             @input="$emit('filters-updated', filters)"
           />
         </v-col>

@@ -55,6 +55,11 @@
             </tr>
 
             <tr>
+              <td>Tipo de precion</td>
+              <td>{{ offer.is_price_permanent }}</td>
+            </tr>
+
+            <tr>
               <td>Precio por potencia:</td>
               <td>
                 <v-chip

@@ -33,6 +33,7 @@ const filterFields = [
   'consumption_min',
   'consumption_max',
   'client_type',
+  'is_price_permanent',
 ].join(',')
 export default {
   components: {
