@@ -11,7 +11,7 @@
       />
     </v-card-text>
     <v-card-text>
-      <offers-list :offers="offers" />
+      <offers-list :offers="offers" :filters="filters" />
     </v-card-text>
 
     <go-up-button style="margin-bottom: 5rem; margin-right: 5px;" />

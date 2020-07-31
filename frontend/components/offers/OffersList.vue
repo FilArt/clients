@@ -24,25 +24,31 @@ export default {
       type: Array,
       default: () => [],
     },
-    tarif: {
-      type: String,
-      default: '',
+    filters: {
+      type: Object,
+      default: () => {
+        return {
+          client_type: 0,
+        }
+      },
     },
   },
   methods: {
     detailOfferUrl(offer) {
       let params = {
+        ...this.filters,
         name: offer.name,
         is_price_permanent: offer.is_price_permanent,
       }
-      if (this.tarif) {
-        params.tarif = this.tarif
-      }
+
       const query = Object.keys(params)
+        .filter((k) => params[k] || params[k] === 0)
         .map((k) => encodeURIComponent(k) + '=' + encodeURIComponent(params[k]))
         .join('&')
 
-      return `/ofertas/${offer.id}/?${query}`
+      return `/ofertas/${this.filters.client_type === 0 ? 'hogar' : 'pyme'}/${
+        offer.id
+      }/?${query}`
     },
   },
 }

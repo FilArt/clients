@@ -45,7 +45,9 @@
               <v-btn
                 icon
                 nuxt
-                :to="`/ofertas/${offer.id}?id=${offer.id}&showCalculatorDetails=true`"
+                :to="`/ofertas/${offer.client_type === 0 ? 'hogar' : 'pyme'}/${
+                  offer.id
+                }?id=${offer.id}&showCalculatorDetails=true`"
               >
                 <v-icon>mdi-eye</v-icon>
               </v-btn>
