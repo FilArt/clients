@@ -29,7 +29,7 @@
 <script>
 const clientTypes = [
   {
-    text: 'Físico',
+    text: 'Particular',
     value: '0',
   },
   {
