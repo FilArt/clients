@@ -45,8 +45,7 @@
               color="green"
               :punto="punto"
               :label="`Punto suministro #${idx + 1}`"
-              @punto-edited="fetchPuntos"
-              @punto-deleted="fetchPuntos"
+              @fetch-puntos="fetchPuntos"
             />
           </v-col>
         </v-row>
@@ -58,7 +57,7 @@
             <add-punto
               :offer-client-type="bid.offer.client_type"
               :bidId="bid.id"
-              @punto-created="fetchPuntos"
+              @fetch-puntos="fetchPuntos"
             />
           </v-col>
         </v-row>
@@ -111,6 +110,7 @@ export default {
   },
   methods: {
     async fetchPuntos() {
+      this.puntos = []
       this.puntos = await this.$axios.$get(`/users/puntos/?bid=${this.bid.id}`)
     },
     loadPhones() {
