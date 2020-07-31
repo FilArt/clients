@@ -90,7 +90,7 @@
             </template>
           </v-simple-table>
         </v-card-text>
-        <v-card-actions v-if="showActions">
+        <v-card-actions>
           <v-btn rounded block outlined color="primary" @click="addBid">
             Añadir a cartera
             <v-icon right>mdi-briefcase</v-icon>
@@ -115,10 +115,6 @@ export default {
     CalculatorDetails: () => import('~/components/CalculatorDetails'),
   },
   props: {
-    showActions: {
-      type: Boolean,
-      default: false,
-    },
     offer: {
       type: Object,
       default: () => null,
