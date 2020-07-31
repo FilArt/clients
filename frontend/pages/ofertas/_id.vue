@@ -1,10 +1,7 @@
 <template>
   <v-col>
     <v-card v-for="offer in offers" :key="offer.id" style="margin-bottom: 1em;">
-      <detail-offer
-        :offer="offer"
-        :show-actions="!$route.query.showCalculatorDetails"
-      />
+      <detail-offer :offer="offer" />
       <calculator-details
         v-if="$route.query.showCalculatorDetails"
         :offer="offer"
