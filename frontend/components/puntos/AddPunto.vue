@@ -1,5 +1,5 @@
 <template>
-  <v-dialog v-model="dialog" max-width="500" :transition="false" eager>
+  <v-dialog v-model="dialog" max-width="500" :transition="false">
     <template v-slot:activator="{ on }">
       <v-btn v-on="on" :color="color"
         >{{ label ? label : 'Anadir nuevo suministro' }}
@@ -89,6 +89,7 @@
             v-for="fileField in fileFields"
             :key="fileField.name"
             align="center"
+            class="flex-wrap"
           >
             <template
               v-if="
@@ -307,8 +308,7 @@ export default {
         }
         await this.loadFiles(this.punto.id)
         if (Object.keys(this.fileErrors).length) return
-
-        this.$emit('punto-edited')
+        this.$emit('fetch-puntos')
       } else {
         try {
           const punto = await this.$axios.$post('/users/puntos/', {
@@ -317,7 +317,7 @@ export default {
           })
           await this.loadFiles(punto.id)
           if (Object.keys(this.fileErrors).length) return
-          this.$emit('punto-created')
+          this.$emit('fetch-puntos')
         } catch (e) {
           this.errors = e.response.data
           if (this.errors.profileNotFilled) {
@@ -350,7 +350,7 @@ export default {
               title: 'Punto suministro eliminada!',
               icon: 'success',
             })
-            this.$emit('punto-deleted')
+            this.$emit('fetch-puntos')
           })
         }
       })
