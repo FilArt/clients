@@ -10,19 +10,21 @@
     :close="closeChat"
     :icons="icons"
     :open="openChat"
-    :showEmoji="true"
-    :showFile="true"
-    :showEdition="true"
-    :showDeletion="true"
+    showEmoji
+    showFile
+    showEdition
+    showDeletion
+    showLauncher
+    showCloseButton
+    alwaysScrollToBottom
     :showTypingIndicator="showTypingIndicator"
-    :showLauncher="true"
-    :showCloseButton="true"
     :colors="colors"
-    :alwaysScrollToBottom="alwaysScrollToBottom"
     :messageStyling="messageStyling"
     @onType="handleOnType"
     @edit="editMessage"
-  />
+    @remove="deleteMessage"
+  >
+  </beautiful-chat>
 </template>
 
 <script>
@@ -88,8 +90,7 @@ export default {
           bg: '#f4f7f9',
           text: '#565867',
         },
-      }, // specifies the color scheme for the component
-      alwaysScrollToBottom: false, // when set to true always scrolls the chat to the bottom when new events are in (new message, user starts typing...)
+      },
       messageStyling: true, // enables *bold* /emph/ _underline_ and such (more info at github.com/mattezza/msgdown)
     }
   },
@@ -164,6 +165,13 @@ export default {
           this.msgRead(msg.id)
           return msg
         })
+      if (window.innerWidth < 400) {
+        setTimeout(function () {
+          document.getElementsByClassName(
+            'sc-chat-window opened'
+          )[0].style.maxHeight = '90%'
+        }, 1000)
+      }
     },
     async msgRead(msgId) {
       await this.$axios.$patch('chat/messages/' + msgId + '/message_read/')
@@ -181,8 +189,26 @@ export default {
     },
     editMessage(message) {
       const m = this.messageList.find((m) => m.id === message.id)
+      const text = message.data.text
       m.isEdited = true
-      m.data.text = message.data.text
+      this.$axios
+        .$patch(`chat/messages/${message.id}/`, { text: text })
+        .then(() => {
+          m.data.text = text
+        })
+    },
+    deleteMessage(message) {
+      this.$swal({
+        title: 'Delete message?',
+        icon: 'warning',
+        buttons: true,
+        dangerMode: true,
+      }).then((willDelete) => {
+        if (willDelete) {
+          this.$axios.$delete(`chat/messages/${message.id}/`)
+          this.messageList = this.messageList.filter((m) => m.id !== message.id)
+        }
+      })
     },
   },
 }
