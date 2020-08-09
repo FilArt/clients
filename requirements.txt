@@ -16,3 +16,5 @@ channels
 channels_redis
 pylint-django
 mypy
+pip
+uvicorn
