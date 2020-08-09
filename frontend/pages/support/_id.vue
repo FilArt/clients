@@ -108,23 +108,6 @@ export default {
     EmailField: () => import('~/components/fields/emailField'),
     Tramitacion: () => import('~/components/support/Tramitacion'),
   },
-  filters: {
-    bidStatusColor(status) {
-      let color
-      switch (status) {
-        case 'OK':
-          color = 'success'
-          break
-        case 'Pendiente tramitacion':
-          color = 'warning'
-          break
-        default:
-          color = 'error'
-          break
-      }
-      return color
-    },
-  },
   async asyncData({ $axios, params }) {
     const user = await $axios.$get(`users/users/${params.id}/`)
 
@@ -148,6 +131,21 @@ export default {
     }
   },
   methods: {
+    bidStatusColor(status) {
+      let color
+      switch (status) {
+        case 'OK':
+          color = 'success'
+          break
+        case 'Pendiente tramitacion':
+          color = 'warning'
+          break
+        default:
+          color = 'error'
+          break
+      }
+      return color
+    },
     async refresh() {
       this.user = await this.$axios.$get(`users/users/${this.user.id}/`)
     },

@@ -128,22 +128,8 @@ class PuntoViewSet(viewsets.ModelViewSet):
         if not self.request.user.profile_filled:
             raise ValidationError({"profileNotFilled": True})
         bid_id = self.request.data.get("bid")
-        bid = get_object_or_404(Bid, id=bid_id or 0)
-        with transaction.atomic():
-            if bid.status != "purchase" and not bid.puntos.exists():
-                try:
-                    bid.purchase(self.request.user)
-                    bid.save(update_fields=["status"])
-                except Exception as exc:
-                    raise ValidationError({"status": [str(exc)]})
-            serializer.save(user=bid.user, bid=bid)
-
-    def perform_destroy(self, instance):
-        bid = instance.bid
-        if bid.puntos.count() == 1:
-            bid.new(self.request.user)
-            bid.save()
-        return super().perform_destroy(instance)
+        bid = get_object_or_404(Bid, id=bid_id)
+        serializer.save(user=bid.user, bid=bid)
 
     @action(methods=["GET"], detail=False)
     def get_headers(self, request: Request):
