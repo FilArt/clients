@@ -12,7 +12,7 @@ export default {
   async created() {
     const settings = this.$auth.user.settings
     let isDark = true
-    if (settings && settings.hasOwnProperty('dark_theme')) {
+    if (settings && settings.dark_theme !== undefined) {
       isDark = settings.dark_theme
     }
     this.$vuetify.theme.isDark = isDark

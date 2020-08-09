@@ -14,7 +14,10 @@ export default {
     title: 'Area de clientes Gestion Group',
     meta: [
       { charset: 'utf-8' },
-      { name: 'viewport', content: 'width=device-width, initial-scale=1' },
+      {
+        name: 'viewport',
+        content: 'width=device-width, initial-scale=1',
+      },
       {
         hid: 'description',
         name: 'description',
@@ -68,18 +71,12 @@ export default {
    ** See https://axios.nuxtjs.org/options
    */
   axios: {
-    browserBaseURL: !DEV
-      ? 'https://areaclientes.gestiongroup.es/api'
-      : 'http://localhost:8000/api',
+    browserBaseURL: !DEV ? 'https://areaclientes.gestiongroup.es/api' : 'http://localhost:8000/api',
     proxy: true,
   },
   proxy: {
-    '/api/': !DEV
-      ? 'https://areaclientes.gestiongroup.es/'
-      : 'http://localhost:8000/',
-    '/media/': !DEV
-      ? 'https://areaclientes.gestiongroup.es/'
-      : 'http://localhost:8000/',
+    '/api/': !DEV ? 'https://areaclientes.gestiongroup.es/' : 'http://localhost:8000/',
+    '/media/': !DEV ? 'https://areaclientes.gestiongroup.es/' : 'http://localhost:8000/',
   },
   auth: {
     redirect: {
@@ -141,8 +138,7 @@ export default {
     },
   },
   sentry: {
-    dsn:
-      'https://320295fbbb5d437a83399c65dedc1163@o228899.ingest.sentry.io/1443546',
+    dsn: 'https://320295fbbb5d437a83399c65dedc1163@o228899.ingest.sentry.io/1443546',
     disableServerSide: true,
     config: {
       clientIntegrations: {
@@ -157,6 +153,16 @@ export default {
     /*
      ** You can extend webpack config here
      */
-    extend(config, ctx) {},
+    extend(config, ctx) {
+      // Run ESLint on save
+      if (ctx.isDev && ctx.isClient) {
+        config.module.rules.push({
+          enforce: 'pre',
+          test: /\.(js|vue)$/,
+          loader: 'eslint-loader',
+          exclude: /(node_modules)/,
+        })
+      }
+    },
   },
 }

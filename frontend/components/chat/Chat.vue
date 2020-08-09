@@ -2,27 +2,26 @@
   <beautiful-chat
     v-if="chatSocket"
     :participants="participants"
-    :titleImageUrl="titleImageUrl"
-    :onMessageWasSent="onMessageWasSent"
-    :messageList="messageList"
-    :newMessagesCount="newMessagesCount"
-    :isOpen="isChatOpen"
+    :title-image-url="titleImageUrl"
+    :on-message-was-sent="onMessageWasSent"
+    :message-list="messageList"
+    :new-messages-count="newMessagesCount"
+    :is-open="isChatOpen"
     :close="closeChat"
     :open="openChat"
-    showEmoji
-    showFile
-    showEdition
-    showDeletion
-    showLauncher
-    showCloseButton
-    alwaysScrollToBottom
-    :showTypingIndicator="showTypingIndicator"
-    :messageStyling="messageStyling"
+    show-emoji
+    show-file
+    show-edition
+    show-deletion
+    show-launcher
+    show-close-button
+    always-scroll-to-bottom
+    :show-typing-indicator="showTypingIndicator"
+    :message-styling="messageStyling"
     @onType="handleOnType"
     @edit="editMessage"
     @remove="deleteMessage"
-  >
-  </beautiful-chat>
+  />
 </template>
 
 <script>
@@ -48,17 +47,13 @@ export default {
   },
   computed: {
     newMessagesCount() {
-      return this.messageList.filter(
-        (_m) => _m.author !== 'me' && _m.isRead === false
-      ).length
+      return this.messageList.filter((_m) => _m.author !== 'me' && _m.isRead === false).length
     },
   },
   async created() {
     await this.getMessages()
 
-    const chatSocket = new ReconnectingWebSocket(
-      this.getWssUrl(`chat/${this.participant.id}`)
-    )
+    const chatSocket = new ReconnectingWebSocket(this.getWssUrl(`chat/${this.participant.id}`))
     chatSocket.onmessage = (m) => {
       const newMessage = JSON.parse(m.data)
       if (newMessage.author.toString() === this.$auth.user.id.toString()) {
@@ -80,10 +75,7 @@ export default {
           id: m.id,
           type: 'text',
           isRead: m.is_read,
-          author:
-            m.author.toString() === this.$auth.user.id.toString()
-              ? 'me'
-              : m.author,
+          author: m.author.toString() === this.$auth.user.id.toString() ? 'me' : m.author,
           data: { text: m.text, meta: m.created },
         }
       })
@@ -91,12 +83,7 @@ export default {
     getWssUrl(aep) {
       const token = this.$auth.strategies.local.token.get().substring(7)
       const ws_scheme = window.location.protocol === 'https:' ? 'wss' : 'ws'
-      return (
-        ws_scheme +
-        '://' +
-        window.location.host.replace('3000', '8000') +
-        `/ws/${aep}/?token=${token}`
-      )
+      return ws_scheme + '://' + window.location.host.replace('3000', '8000') + `/ws/${aep}/?token=${token}`
     },
     onMessageWasSent(message) {
       const text = message.data.text
@@ -104,7 +91,7 @@ export default {
         this.chatSocket.send(
           JSON.stringify({
             message: text,
-          })
+          }),
         )
       }
     },
@@ -119,9 +106,7 @@ export default {
         })
       if (window.innerWidth < 400) {
         setTimeout(function () {
-          document.getElementsByClassName(
-            'sc-chat-window opened'
-          )[0].style.maxHeight = '90%'
+          document.getElementsByClassName('sc-chat-window opened')[0].style.maxHeight = '90%'
         }, 1000)
       }
     },
@@ -143,11 +128,9 @@ export default {
       const m = this.messageList.find((m) => m.id === message.id)
       const text = message.data.text
       m.isEdited = true
-      this.$axios
-        .$patch(`chat/messages/${message.id}/`, { text: text })
-        .then(() => {
-          m.data.text = text
-        })
+      this.$axios.$patch(`chat/messages/${message.id}/`, { text: text }).then(() => {
+        m.data.text = text
+      })
     },
     deleteMessage(message) {
       this.$swal({

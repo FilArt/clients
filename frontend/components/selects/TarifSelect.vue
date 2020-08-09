@@ -13,15 +13,15 @@
     <template v-if="hint" v-slot:append-outer>
       <v-tooltip bottom>
         <template v-slot:activator="{ on, attrs }">
-          <v-btn v-on="on" icon color="info" v-bind="attrs">
+          <v-btn icon color="info" v-bind="attrs" v-on="on">
             <v-icon>
               mdi-information
             </v-icon>
           </v-btn>
         </template>
-        <span
-          >Elija su tarifa o peaje de acceso. Está información puede obtenerse
-          en su factura.
+
+        <span>
+          Elija su tarifa o peaje de acceso. Está información puede obtenerse en su factura.
         </span>
       </v-tooltip>
     </template>

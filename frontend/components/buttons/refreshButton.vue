@@ -1,14 +1,7 @@
 <template>
   <v-tooltip bottom>
     <template v-slot:activator="{ on }">
-      <v-btn
-        v-on="on"
-        icon
-        color="success"
-        @click="$emit('click')"
-        :loading="loading"
-        :disabled="disabled"
-      >
+      <v-btn icon color="success" :loading="loading" :disabled="disabled" v-on="on" @click="$emit('click')">
         <v-icon>mdi-refresh</v-icon>
       </v-btn>
     </template>
@@ -18,16 +11,16 @@
 
 <script>
 export default {
-  name: 'refreshButton',
+  name: 'RefreshButton',
   props: {
     loading: {
       type: Boolean,
-      default: false
+      default: false,
     },
     disabled: {
       type: Boolean,
-      default: false
-    }
-  }
+      default: false,
+    },
+  },
 }
 </script>

@@ -24,10 +24,10 @@
               <br />
 
               <tr>
-                <td colspan="2">{{ offer.description }}</td>
+                <td colspan="2">
+                  {{ offer.description }}
+                </td>
               </tr>
-
-              <br />
 
               <tr>
                 <td>Tarifa:</td>
@@ -36,9 +36,7 @@
 
               <tr>
                 <td>Potencia contratada:</td>
-                <td>
-                  desde {{ offer.power_min }} kW hasta {{ offer.power_max }} kW
-                </td>
+                <td>desde {{ offer.power_min }} kW hasta {{ offer.power_max }} kW</td>
               </tr>
 
               <tr>
@@ -65,10 +63,7 @@
               <tr>
                 <td>Precio por potencia:</td>
                 <td>
-                  <v-chip
-                    v-for="p in ['p1', 'p2', 'p3'].filter((p) => offer[p])"
-                    :key="p"
-                  >
+                  <v-chip v-for="p in ['p1', 'p2', 'p3'].filter((p) => offer[p])" :key="p">
                     {{ p.toUpperCase() }}:
                     {{ offer[p] ? offer[p] + ' €' : '-' }}
                   </v-chip>
@@ -78,10 +73,7 @@
               <tr>
                 <td>Precio por consumo:</td>
                 <td>
-                  <v-chip
-                    v-for="p in ['c1', 'c2', 'c3'].filter((p) => offer[p])"
-                    :key="p"
-                  >
+                  <v-chip v-for="p in ['c1', 'c2', 'c3'].filter((p) => offer[p])" :key="p">
                     {{ p.replace('c', 'p').toUpperCase() }}:
                     {{ offer[p] ? offer[p] + ' €' : '-' }}
                   </v-chip>
@@ -93,24 +85,23 @@
         <v-card-actions>
           <v-btn rounded block outlined color="primary" @click="addBid">
             Añadir a cartera
-            <v-icon right>mdi-briefcase</v-icon>
+            <v-icon right>
+              mdi-briefcase
+            </v-icon>
           </v-btn>
         </v-card-actions>
       </v-col>
     </v-row>
 
     <v-row>
-      <calculator-details
-        v-if="$route.query.showCalculatorDetails"
-        :offer="offer"
-      />
+      <calculator-details v-if="$route.query.showCalculatorDetails" :offer="offer" />
     </v-row>
   </v-col>
 </template>
 
 <script>
 export default {
-  name: 'detailOffer',
+  name: 'DetailOffer',
   components: {
     CalculatorDetails: () => import('~/components/CalculatorDetails'),
   },

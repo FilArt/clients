@@ -17,9 +17,9 @@
         <v-col>
           <v-btn nuxt :to="`/bids/${bid.id}/purchase`" color="success">
             {{ bid.puntos_count ? 'Editar' : 'Contratar' }}
-            <v-icon right>{{
-              bid.puntos_count ? 'mdi-pencil' : 'mdi-plus'
-            }}</v-icon>
+            <v-icon right>
+              {{ bid.puntos_count ? 'mdi-pencil' : 'mdi-plus' }}
+            </v-icon>
           </v-btn>
         </v-col>
         <v-col>
@@ -58,7 +58,10 @@ export default {
       }).then((willDelete) => {
         if (willDelete) {
           this.$axios.$delete(`bids/bids/${bidId}/`).then(() => {
-            this.$swal({ title: 'Solicitud eliminada!', icon: 'success' })
+            this.$swal({
+              title: 'Solicitud eliminada!',
+              icon: 'success',
+            })
             this.$router.push('/bids')
           })
         }

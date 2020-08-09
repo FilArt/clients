@@ -15,7 +15,7 @@
 
 <script>
 export default {
-  name: 'phoneField',
+  name: 'PhoneField',
   props: {
     appendIcon: {
       type: String,

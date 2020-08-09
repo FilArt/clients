@@ -19,13 +19,7 @@
 </template>
 
 <script>
-const filterFields = [
-  'id',
-  'company',
-  'company_logo',
-  'name',
-  'is_price_permanent',
-].join(',')
+const filterFields = ['id', 'company', 'company_logo', 'name', 'is_price_permanent'].join(',')
 export default {
   name: 'OffersView',
   components: {
@@ -46,9 +40,6 @@ export default {
       filters: this.defaultFilters,
     }
   },
-  async mounted() {
-    await this.fetch()
-  },
   watch: {
     filters: {
       handler: function (v) {
@@ -56,6 +47,9 @@ export default {
       },
       deep: true,
     },
+  },
+  async mounted() {
+    await this.fetch()
   },
   methods: {
     async fetch() {

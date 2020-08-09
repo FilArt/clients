@@ -1,7 +1,7 @@
 <template>
   <v-tooltip bottom>
     <template v-slot:activator="{ on }">
-      <v-btn v-on="on" icon color="warning" @click="$emit('click')">
+      <v-btn icon color="warning" v-on="on" @click="$emit('click')">
         <v-icon>mdi-cancel</v-icon>
       </v-btn>
     </template>
@@ -11,6 +11,6 @@
 
 <script>
 export default {
-  name: 'cancelButton',
+  name: 'CancelButton',
 }
 </script>

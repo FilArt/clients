@@ -1,12 +1,5 @@
 <template>
-  <v-btn
-    :nuxt="!!to"
-    :to="to"
-    rounded
-    block
-    color="primary"
-    @click="$emit('click')"
-  >
+  <v-btn :nuxt="!!to" :to="to" rounded block color="primary" @click="$emit('click')">
     Atrás
     <v-icon>mdi-keyboard-return</v-icon>
   </v-btn>
@@ -14,7 +7,7 @@
 
 <script>
 export default {
-  name: 'returnButton',
+  name: 'ReturnButton',
   props: {
     to: {
       type: String,

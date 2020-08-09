@@ -15,7 +15,7 @@
     <template v-if="hint" v-slot:append-outer>
       <v-tooltip bottom>
         <template v-slot:activator="{ on, attrs }">
-          <v-btn v-on="on" icon color="info" v-bind="attrs">
+          <v-btn icon color="info" v-bind="attrs" v-on="on">
             <v-icon>
               mdi-information
             </v-icon>
@@ -30,7 +30,9 @@
       <v-chip close @click:close="closeItem">
         <v-avatar>
           <v-img v-if="item['logo']" :src="item['logo']" />
-          <v-icon v-else>mdi-cancel</v-icon>
+          <v-icon v-else>
+            mdi-cancel
+          </v-icon>
         </v-avatar>
         {{ item.name }}
       </v-chip>
@@ -40,7 +42,9 @@
         <v-col class="flex-grow-0">
           <v-avatar>
             <v-img v-if="item['logo']" :src="item['logo']" />
-            <v-icon v-else>mdi-cancel</v-icon>
+            <v-icon v-else>
+              mdi-cancel
+            </v-icon>
           </v-avatar>
         </v-col>
 
@@ -86,9 +90,7 @@ export default {
   watch: {
     value: {
       handler: function (val) {
-        this.company = !val
-          ? null
-          : this.companies.find((c) => c.id.toString() === val.toString())
+        this.company = !val ? null : this.companies.find((c) => c.id.toString() === val.toString())
       },
       deep: false,
     },

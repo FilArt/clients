@@ -19,17 +19,10 @@
           />
         </v-col>
         <v-col>
-          <company-select
-            v-model="filters.company"
-            without-other
-            @input="$emit('filters-updated', filters)"
-          />
+          <company-select v-model="filters.company" without-other @input="$emit('filters-updated', filters)" />
         </v-col>
         <v-col>
-          <tarif-select
-            v-model="filters.tarif"
-            @input="$emit('filters-updated', filters)"
-          />
+          <tarif-select v-model="filters.tarif" @input="$emit('filters-updated', filters)" />
         </v-col>
       </v-row>
     </v-card-text>
@@ -40,7 +33,6 @@ export default {
   name: 'OffersListToolbar',
   components: {
     TarifSelect: () => import('~/components/selects/TarifSelect'),
-    ClientTypeSelect: () => import('~/components/selects/ClientTypeSelect'),
     CompanySelect: () => import('~/components/selects/CompanySelect'),
   },
   props: {

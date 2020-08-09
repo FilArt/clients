@@ -6,9 +6,8 @@
       </div>
 
       <div class="text-h6">
-        Hemos recopilado las ofertas más relevantes del mercado energético, que
-        los proveedores de luz más respetados de España tienen actualmente
-        disponibles
+        Hemos recopilado las ofertas más relevantes del mercado energético, que los proveedores de luz más respetados de
+        España tienen actualmente disponibles
       </div>
     </v-card-text>
 
@@ -16,14 +15,7 @@
       <v-row align="center">
         <v-col>
           <v-hover v-slot:default="{ hover }">
-            <v-card
-              max-width="400"
-              class="mx-auto"
-              outlined
-              nuxt
-              to="/ofertas/hogar"
-              :raised="hover"
-            >
+            <v-card max-width="400" class="mx-auto" outlined nuxt to="/ofertas/hogar" :raised="hover">
               <v-card-text>
                 <img src="/hogar.svg" />
               </v-card-text>
@@ -37,14 +29,7 @@
         </v-col>
         <v-col>
           <v-hover v-slot:default="{ hover }">
-            <v-card
-              max-width="400"
-              class="mx-auto"
-              outlined
-              nuxt
-              to="/ofertas/pyme"
-              :raised="hover"
-            >
+            <v-card max-width="400" class="mx-auto" outlined nuxt to="/ofertas/pyme" :raised="hover">
               <v-card-text>
                 <img src="/pyme.svg" />
               </v-card-text>

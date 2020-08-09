@@ -1,22 +1,12 @@
 <template>
   <v-app>
-    <v-navigation-drawer
-      v-if="$auth.loggedIn"
-      v-model="drawer"
-      fixed
-      app
-      clipped
-    >
+    <v-navigation-drawer v-if="$auth.loggedIn" v-model="drawer" fixed app clipped>
       <v-list>
-        <v-list-item
-          v-for="(item, i) in items"
-          :key="i"
-          :to="item.to"
-          router
-          exact
-        >
+        <v-list-item v-for="(item, i) in items" :key="i" :to="item.to" router exact>
           <v-list-item-action>
-            <v-icon color="primary">{{ item.icon }}</v-icon>
+            <v-icon color="primary">
+              {{ item.icon }}
+            </v-icon>
           </v-list-item-action>
           <v-list-item-content>
             <v-list-item-title v-text="item.title" />
@@ -25,8 +15,8 @@
       </v-list>
     </v-navigation-drawer>
 
-    <v-app-bar fixed app v-if="$auth.loggedIn" clipped-left>
-      <v-app-bar-nav-icon @click.stop="drawer = !drawer" color="primary" />
+    <v-app-bar v-if="$auth.loggedIn" fixed app clipped-left>
+      <v-app-bar-nav-icon color="primary" @click.stop="drawer = !drawer" />
       <v-toolbar-title v-text="title" />
       <v-spacer />
 
@@ -42,19 +32,17 @@
 
       <theme-switcher />
       <v-btn v-if="$auth" icon @click.stop="$auth.logout">
-        <v-icon color="primary">mdi-logout</v-icon>
+        <v-icon color="primary">
+          mdi-logout
+        </v-icon>
       </v-btn>
     </v-app-bar>
     <v-main>
-      <v-breadcrumbs
-        v-if="!['index', 'login', 'calculator'].includes($route.name)"
-        :items="breadcrumbs"
-        large
-      >
+      <v-breadcrumbs v-if="!['index', 'login', 'calculator'].includes($route.name)" :items="breadcrumbs" large>
         <template v-slot:item="{ item }">
-          <v-breadcrumbs-item :to="item.to" replace exact>{{
-            item.text
-          }}</v-breadcrumbs-item>
+          <v-breadcrumbs-item :to="item.to" replace exact>
+            {{ item.text }}
+          </v-breadcrumbs-item>
         </template>
       </v-breadcrumbs>
       <nuxt />
@@ -76,25 +64,12 @@ export default {
       title: 'Gestion Group',
     }
   },
-  async created() {
-    if (!this.$auth.user) return
-    const role = this.$auth.user.role
-    if (role === null) {
-      const p = await this.$axios.$get('chat/messages/get_participant/')
-      this.$store.commit('setParticipant', p)
-    }
-  },
   computed: {
     participant() {
       return this.$store.state.participant
     },
     showChat() {
-      return (
-        this.$auth.user &&
-        this.$auth.user.role === null &&
-        this.participant &&
-        this.participant.id
-      )
+      return this.$auth.user && this.$auth.user.role === null && this.participant && this.participant.id
     },
     breadcrumbs() {
       const crumbs = this.$route.path.split('/')
@@ -103,7 +78,11 @@ export default {
         const match = this.$router.match(crumbPath)
         return {
           text: crumb,
-          to: { params: match.params, name: match.name, query: match.query },
+          to: {
+            params: match.params,
+            name: match.name,
+            query: match.query,
+          },
         }
       })
     },
@@ -151,6 +130,14 @@ export default {
       }
       return items
     },
+  },
+  async created() {
+    if (!this.$auth.user) return
+    const role = this.$auth.user.role
+    if (role === null) {
+      const p = await this.$axios.$get('chat/messages/get_participant/')
+      this.$store.commit('setParticipant', p)
+    }
   },
 }
 </script>

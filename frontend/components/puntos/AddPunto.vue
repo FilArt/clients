@@ -1,9 +1,9 @@
 <template>
   <v-dialog v-model="dialog" max-width="500" :transition="false">
     <template v-slot:activator="{ on }">
-      <v-btn v-on="on" :color="color"
-        >{{ label ? label : 'Anadir nuevo suministro' }}
-        <v-icon color="error" v-if="punto" right @click.stop="puntoDeleted">
+      <v-btn :color="color" v-on="on">
+        {{ label ? label : 'Anadir nuevo suministro' }}
+        <v-icon v-if="punto" color="error" right @click.stop="puntoDeleted">
           mdi-trash-can-outline
         </v-icon>
       </v-btn>
@@ -18,25 +18,17 @@
 
       <v-card-text>
         <v-form @submit.prevent="addPunto">
-          <v-radio-group
-            label="Seleccione categoría de cliente"
-            v-model="newPunto.category"
-            mandatory
-          >
+          <v-radio-group v-model="newPunto.category" label="Seleccione categoría de cliente" mandatory>
             <v-radio
               v-for="category in categories"
+              :key="category.value"
               :label="category.name"
               :value="category.value"
-              :key="category.value"
             />
           </v-radio-group>
 
           <div v-for="field in fields" :key="field.value">
-            <company-select
-              v-if="field.value === 'company_luz' && admin"
-              v-model="newPunto.company_luz"
-            >
-            </company-select>
+            <company-select v-if="field.value === 'company_luz' && admin" v-model="newPunto.company_luz" />
 
             <v-autocomplete
               v-else-if="field.value === 'province'"
@@ -51,13 +43,6 @@
 
             <v-text-field
               v-else
-              v-model="newPunto[field.value]"
-              class="pa-3"
-              :prepend-icon="fieldIcons[field.value]"
-              :label="field.name"
-              :hint="field.hint"
-              :name="field.value"
-              :error-messages="errors[field.value]"
               v-show="
                 [
                   'company_luz',
@@ -82,24 +67,23 @@
                   ? admin
                   : true
               "
+              v-model="newPunto[field.value]"
+              class="pa-3"
+              :prepend-icon="fieldIcons[field.value]"
+              :label="field.name"
+              :hint="field.hint"
+              :name="field.value"
+              :error-messages="errors[field.value]"
             />
           </div>
 
-          <v-row
-            v-for="fileField in fileFields"
-            :key="fileField.name"
-            align="center"
-            class="flex-wrap"
-          >
+          <v-row v-for="fileField in fileFields" :key="fileField.name" align="center" class="flex-wrap">
             <template
               v-if="
                 !(
-                  (['cif1', 'recibo1'].includes(fileField.name) &&
-                    newPunto.category === 'physical') ||
-                  (newPunto.category === 'autonomous' &&
-                    fileField.name === 'cif1') ||
-                  (newPunto.category === 'business' &&
-                    fileField.name === 'recibo1')
+                  (['cif1', 'recibo1'].includes(fileField.name) && newPunto.category === 'physical') ||
+                  (newPunto.category === 'autonomous' && fileField.name === 'cif1') ||
+                  (newPunto.category === 'business' && fileField.name === 'recibo1')
                 )
               "
             >
@@ -112,9 +96,7 @@
                 />
               </v-col>
               <v-col
-                v-for="attachment in attachments.filter(
-                  (a) => a.attachment_type === fileField.name
-                )"
+                v-for="attachment in attachments.filter((a) => a.attachment_type === fileField.name)"
                 :key="attachment.id"
               >
                 <v-chip
@@ -124,16 +106,14 @@
                   target="_blank"
                   :href="attachment.attachment"
                   @click:close="deleteAttachment(attachment.id)"
-                  >{{ attachment.type_verbose_name }}</v-chip
                 >
+                  {{ attachment.type_verbose_name }}
+                </v-chip>
               </v-col>
             </template>
           </v-row>
 
-          <submit-button
-            :label="punto ? 'Guardar' : 'Anadir nuevo punto suministro'"
-            block
-          />
+          <submit-button :label="punto ? 'Guardar' : 'Anadir nuevo punto suministro'" block />
         </v-form>
       </v-card-text>
     </v-card>
@@ -215,36 +195,6 @@ export default {
       fileErrors: {},
     }
   },
-  async mounted() {
-    if (!this.fields || !this.fields.length) {
-      this.$store.commit(
-        'setPuntoHeaders',
-        await this.$axios.$get('/users/puntos/get_headers/')
-      )
-    }
-    if (this.punto) {
-      this.newPunto = this.punto
-    }
-    if (!this.categories || !this.categories.length) {
-      this.$store.commit(
-        'setPuntoCategories',
-        await this.$axios.$get('/users/puntos/get_categories/')
-      )
-    }
-    if (!this.cities || !this.cities.length) {
-      this.$store.commit(
-        'setCities',
-        await this.$axios.$get('/users/puntos/get_cities/')
-      )
-    }
-  },
-  watch: {
-    punto: {
-      handler: function (val) {
-        this.newPunto = val
-      },
-    },
-  },
   computed: {
     admin() {
       return this.$auth.user.role === 'admin'
@@ -261,6 +211,27 @@ export default {
       return this.$store.state.cities
     },
   },
+  watch: {
+    punto: {
+      handler: function (val) {
+        this.newPunto = val
+      },
+    },
+  },
+  async mounted() {
+    if (!this.fields || !this.fields.length) {
+      this.$store.commit('setPuntoHeaders', await this.$axios.$get('/users/puntos/get_headers/'))
+    }
+    if (this.punto) {
+      this.newPunto = this.punto
+    }
+    if (!this.categories || !this.categories.length) {
+      this.$store.commit('setPuntoCategories', await this.$axios.$get('/users/puntos/get_categories/'))
+    }
+    if (!this.cities || !this.cities.length) {
+      this.$store.commit('setCities', await this.$axios.$get('/users/puntos/get_cities/'))
+    }
+  },
   methods: {
     deleteAttachment(attachmentId) {
       this.$swal({
@@ -272,10 +243,11 @@ export default {
       }).then((willDelete) => {
         if (willDelete) {
           this.$axios.$delete(`users/attachments/${attachmentId}/`).then(() => {
-            this.$swal({ title: 'Solicitud eliminada!', icon: 'success' })
-            this.attachments = this.attachments.filter(
-              (a) => a.id !== attachmentId
-            )
+            this.$swal({
+              title: 'Solicitud eliminada!',
+              icon: 'success',
+            })
+            this.attachments = this.attachments.filter((a) => a.id !== attachmentId)
           })
         }
       })
@@ -298,10 +270,7 @@ export default {
     async addPunto() {
       if (this.punto) {
         try {
-          await this.$axios.$patch(
-            `/users/puntos/${this.punto.id}/`,
-            this.newPunto
-          )
+          await this.$axios.$patch(`/users/puntos/${this.punto.id}/`, this.newPunto)
         } catch (e) {
           this.errors = e.response.data
           return
@@ -323,8 +292,7 @@ export default {
           if (this.errors.profileNotFilled) {
             await this.$swal({
               title: 'Por favor, complete su perfil por completo.',
-              text:
-                'Para comenzar el proceso de contratación, debe completar su perfil.',
+              text: 'Para comenzar el proceso de contratación, debe completar su perfil.',
               icon: 'warning',
             })
             await this.$router.push('/profile')

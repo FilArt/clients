@@ -15,51 +15,49 @@
             <v-toolbar-title>Acceder</v-toolbar-title>
             <v-spacer />
             <v-toolbar-items>
-              <v-btn small @click="flipCards">Regístrate ahora.</v-btn>
+              <v-btn small @click="flipCards">
+                Regístrate ahora.
+              </v-btn>
             </v-toolbar-items>
           </v-toolbar>
-          <v-form @submit.prevent="submit" novalidate>
+          <v-form novalidate @submit.prevent="submit">
             <v-card-text>
-              <v-alert v-if="error" type="error">{{ error }}</v-alert>
+              <v-alert v-if="error" type="error">
+                {{ error }}
+              </v-alert>
               <v-text-field
+                v-model="form.email"
                 prepend-icon="mdi-account"
                 name="email"
                 label="Email"
                 type="text"
-                v-model="form.email"
                 @input="error = null"
-              ></v-text-field>
+              />
               <v-text-field
                 id="password"
+                v-model="form.password"
                 prepend-icon="mdi-lock"
                 name="password"
                 label="Сontraseña"
                 type="password"
-                v-model="form.password"
-              ></v-text-field>
+              />
             </v-card-text>
             <v-card-actions>
               <v-row>
                 <v-col>
-                  <v-btn
-                    block
-                    type="submit"
-                    dark
-                    color="#004680"
-                    :loading="loading"
-                    >Acceder
-                    <v-icon color="#004680" right>mdi-logout</v-icon>
+                  <v-btn block type="submit" dark color="#004680" :loading="loading">
+                    Acceder
+                    <v-icon color="#004680" right>
+                      mdi-logout
+                    </v-icon>
                   </v-btn>
                 </v-col>
                 <v-col class="flex-grow-0">
-                  <v-btn
-                    :loading="loading"
-                    @click="passwordForgotten"
-                    outlined
-                    rounded
-                  >
+                  <v-btn :loading="loading" outlined rounded @click="passwordForgotten">
                     ¿Olvidasde la contraseña?
-                    <v-icon right>mdi-lock-reset</v-icon>
+                    <v-icon right>
+                      mdi-lock-reset
+                    </v-icon>
                   </v-btn>
                 </v-col>
               </v-row>
@@ -72,30 +70,29 @@
             <v-toolbar-title>Registrarse</v-toolbar-title>
             <v-spacer />
             <v-toolbar-items>
-              <v-btn small @click="flipCards">Accede a tu cuenta</v-btn>
+              <v-btn small @click="flipCards">
+                Accede a tu cuenta
+              </v-btn>
             </v-toolbar-items>
           </v-toolbar>
-          <v-form @submit.prevent="submitRegister" novalidate>
+          <v-form novalidate @submit.prevent="submitRegister">
             <v-card-text>
               <v-text-field
+                v-model="form.email"
                 prepend-icon="mdi-account"
                 name="email"
                 label="Email"
                 type="text"
                 :error-messages="errorMessages2.email"
-                v-model="form.email"
                 @input="errorMessages2.email = null"
-              ></v-text-field>
+              />
             </v-card-text>
             <v-card-actions>
-              <v-btn
-                type="submit"
-                color="#004680"
-                block
-                :loading="loading"
-                :disabled="!privacyAccepted"
-                >Registrarse
-                <v-icon right>mdi-account-plus</v-icon>
+              <v-btn type="submit" color="#004680" block :loading="loading" :disabled="!privacyAccepted">
+                Registrarse
+                <v-icon right>
+                  mdi-account-plus
+                </v-icon>
               </v-btn>
             </v-card-actions>
             <v-card-actions>
@@ -108,12 +105,12 @@
                 persistent-hint
               >
                 <template v-slot:message>
-                  {{ privacyHint }}
-                  <a
-                    target="_blank"
-                    href="https://gestiongroup.es/privacy_policy"
-                    >política de privacidad.</a
-                  >
+                  <span>
+                    {{ privacyHint }}
+                  </span>
+                  <a target="_blank" href="https://gestiongroup.es/privacy_policy">
+                    política de privacidad.
+                  </a>
                 </template>
               </v-checkbox>
             </v-card-actions>
@@ -146,10 +143,7 @@ export default {
       this.showLogin = !this.showLogin
       document
         .getElementById('flipCards')
-        .animate(
-          [{ transform: 'rotateX(180grad)' }, { transform: 'rotateX(0deg)' }],
-          { duration: 500 }
-        )
+        .animate([{ transform: 'rotateX(180grad)' }, { transform: 'rotateX(0deg)' }], { duration: 500 })
     },
     async submit() {
       if (!this.form.email || !this.form.email.length) {
@@ -237,8 +231,7 @@ export default {
       }
 
       await this.$swal({
-        title:
-          'Сorreo electrónico con una nueva contraseña ha sido enviado a su correo.',
+        title: 'Сorreo electrónico con una nueva contraseña ha sido enviado a su correo.',
         icon: 'success',
       })
     },

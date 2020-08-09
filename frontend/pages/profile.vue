@@ -6,7 +6,7 @@
       </div>
     </v-card-text>
     <v-card-text>
-      <v-form @submit.prevent="submit" novalidate>
+      <v-form novalidate @submit.prevent="submit">
         <v-card-text>
           <email-field v-model="form.email" :error-messages="error.email" />
           <v-text-field
@@ -58,10 +58,7 @@ export default {
       this.loading = true
       this.error = {}
       try {
-        this.form = await this.$axios.$patch(
-          `users/account/${this.$auth.user.id}/`,
-          this.form
-        )
+        this.form = await this.$axios.$patch(`users/account/${this.$auth.user.id}/`, this.form)
         await this.$auth.fetchUser()
         await this.$swal({ title: 'Salvado', icon: 'success' })
       } catch (e) {

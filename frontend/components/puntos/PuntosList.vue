@@ -1,16 +1,10 @@
 <template>
   <div>
     <div v-for="punto in puntos" :key="punto.id">
-      <v-card-title>
-        Punto suministro {{ punto.name || `(id: ${punto.id})` }}
-      </v-card-title>
+      <v-card-title> Punto suministro {{ punto.name || `(id: ${punto.id})` }} </v-card-title>
       <v-card-text>
         <v-row>
-          <v-col
-            style="min-width: 30%;"
-            v-for="field in puntoHeaders"
-            :key="field.value"
-          >
+          <v-col v-for="field in puntoHeaders" :key="field.value" style="min-width: 30%;">
             <div v-if="field.value !== 'company_luz' && !editable">
               <span> {{ field.name }}: </span>
             </div>
@@ -43,10 +37,10 @@
         </v-row>
       </v-card-text>
 
-      <v-card-title
-        >Archivos adjuntos:
-        {{ punto.attachments.length ? '' : '...' }}</v-card-title
-      >
+      <v-card-title>
+        Archivos adjuntos:
+        {{ punto.attachments.length ? '' : '...' }}
+      </v-card-title>
       <v-card-text v-if="punto.attachments.length">
         <v-chip
           v-for="attachment in punto.attachments"
@@ -55,8 +49,9 @@
           exact
           target="_blank"
           :href="attachment.attachment"
-          >{{ attachment.type_verbose_name }}</v-chip
         >
+          {{ attachment.type_verbose_name }}
+        </v-chip>
       </v-card-text>
 
       <v-divider :key="punto.id" />
@@ -95,10 +90,7 @@ export default {
   },
   async created() {
     if (!this.puntoHeaders || !this.puntoHeaders.length) {
-      this.$store.commit(
-        'setPuntoHeaders',
-        await this.$axios.$get('/users/puntos/get_headers/')
-      )
+      this.$store.commit('setPuntoHeaders', await this.$axios.$get('/users/puntos/get_headers/'))
     }
   },
   methods: {
@@ -110,9 +102,7 @@ export default {
         await this.$axios.$patch(`users/puntos/${id}/`, data)
         await this.$swal({
           title: 'Salvado',
-          text: `${field.toUpperCase()} esta cambiado ${
-            value || this.values[field] || 'null'
-          }`,
+          text: `${field.toUpperCase()} esta cambiado ${value || this.values[field] || 'null'}`,
           icon: 'success',
         })
         this.$emit('punto-updated')
@@ -120,10 +110,7 @@ export default {
         const errorMsg = e.response.data
         await this.$swal({
           title: 'Error!',
-          text:
-            errorMsg[field] instanceof Array
-              ? errorMsg[field].join(',')
-              : JSON.stringify(errorMsg),
+          text: errorMsg[field] instanceof Array ? errorMsg[field].join(',') : JSON.stringify(errorMsg),
           icon: 'error',
         })
       }

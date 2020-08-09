@@ -2,10 +2,7 @@
   <v-col>
     <v-card v-for="offer in offers" :key="offer.id" style="margin-bottom: 1em;">
       <detail-offer :offer="offer" />
-      <calculator-details
-        v-if="$route.query.showCalculatorDetails"
-        :offer="offer"
-      />
+      <calculator-details v-if="$route.query.showCalculatorDetails" :offer="offer" />
     </v-card>
   </v-col>
 </template>
@@ -36,13 +33,6 @@ export default {
   components: {
     DetailOffer,
     CalculatorDetails: () => import('~/components/CalculatorDetails'),
-    returnButton: () => import('~/components/buttons/returnButton'),
-  },
-  data() {
-    return {
-      isBottomIntersecting: false,
-      isTopIntersecting: true,
-    }
   },
   async asyncData({ $axios, query }) {
     let params = {
@@ -56,6 +46,12 @@ export default {
     }
     const offers = await $axios.$get('calculator/offers/', { params })
     return { offers }
+  },
+  data() {
+    return {
+      isBottomIntersecting: false,
+      isTopIntersecting: true,
+    }
   },
 }
 </script>

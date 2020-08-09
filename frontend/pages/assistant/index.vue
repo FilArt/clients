@@ -2,14 +2,12 @@
   <v-card>
     <v-card-text class="text-center">
       <div class="text-h4">
-        Para nosotros es importante que nuestros clientes reciban atención
-        personalizada
+        Para nosotros es importante que nuestros clientes reciban atención personalizada
       </div>
 
       <div class="text-h6">
-        En esta página encontrará los datos de contacto y el chat de su
-        asistente personal, no dude en ponerse en contacto con él para cualquier
-        pregunta
+        En esta página encontrará los datos de contacto y el chat de su asistente personal, no dude en ponerse en
+        contacto con él para cualquier pregunta
       </div>
     </v-card-text>
 
@@ -45,7 +43,9 @@
           </v-col>
           <v-col>
             <div class="d-flex flex-inline">
-              <v-icon left>mdi-email</v-icon>
+              <v-icon left>
+                mdi-email
+              </v-icon>
               <a href="mailto:isai@gestiongroup.es">
                 isai@gestiongroup.es
               </a>
@@ -57,29 +57,19 @@
 
     <v-row v-if="isLeed" class="text-center mx-auto" style="margin-top: 1em;">
       <v-col>
-        Sí tiene dudas para seleccionar una oferta de nuestro catálogo o
-        prefiere que nuestros agentes le asesoren personalmente. Por favor
-        rellene el siguiente formulario y nos pondremos en contacto con usted lo
-        antes posible.
+        Sí tiene dudas para seleccionar una oferta de nuestro catálogo o prefiere que nuestros agentes le asesoren
+        personalmente. Por favor rellene el siguiente formulario y nos pondremos en contacto con usted lo antes posible.
       </v-col>
     </v-row>
 
     <v-row v-if="isLeed" class="mx-auto" style="max-width: 1000px;">
       <v-col>
         <v-form @submit.prevent="submit">
-          <v-file-input
-            v-model="factura"
-            label="Foto factura actual (anverso)"
-            :error-messages="errors.factura"
-          >
+          <v-file-input v-model="factura" label="Foto factura actual (anverso)" :error-messages="errors.factura">
             <template v-if="loadedFactura" v-slot:append-outer>
-              <v-chip
-                link
-                exact
-                target="_blank"
-                :href="loadedFactura.attachment"
-                >{{ loadedFactura.type_verbose_name }}</v-chip
-              >
+              <v-chip link exact target="_blank" :href="loadedFactura.attachment">
+                {{ loadedFactura.type_verbose_name }}
+              </v-chip>
             </template>
           </v-file-input>
 
@@ -89,13 +79,9 @@
             :error-messages="errors.factura_1"
           >
             <template v-if="loadedFacturaReverso" v-slot:append-outer>
-              <v-chip
-                link
-                exact
-                target="_blank"
-                :href="loadedFacturaReverso.attachment"
-                >{{ loadedFacturaReverso.type_verbose_name }}</v-chip
-              >
+              <v-chip link exact target="_blank" :href="loadedFacturaReverso.attachment">
+                {{ loadedFacturaReverso.type_verbose_name }}
+              </v-chip>
             </template>
           </v-file-input>
 
@@ -115,12 +101,8 @@ export default {
     const isLeed = $auth.user.is_leed
     if (isLeed || isLeed === undefined) {
       const attachments = await $axios.$get('users/users/load_facturas/')
-      const loadedFactura = attachments.find(
-        (a) => a.attachment_type === 'factura'
-      )
-      const loadedFacturaReverso = attachments.find(
-        (a) => a.attachment_type === 'factura_1'
-      )
+      const loadedFactura = attachments.find((a) => a.attachment_type === 'factura')
+      const loadedFacturaReverso = attachments.find((a) => a.attachment_type === 'factura_1')
       return {
         isLeed,
         loadedFactura,
@@ -148,12 +130,8 @@ export default {
       const func = this.loadedFactura ? this.$axios.$patch : this.$axios.$post
       try {
         const attachments = await func('users/users/load_facturas/', formData)
-        this.loadedFactura = attachments.find(
-          (a) => a.attachment_type === 'factura'
-        )
-        this.loadedFacturaReverso = attachments.find(
-          (a) => a.attachment_type === 'factura_1'
-        )
+        this.loadedFactura = attachments.find((a) => a.attachment_type === 'factura')
+        this.loadedFacturaReverso = attachments.find((a) => a.attachment_type === 'factura_1')
         await this.$swal({
           title: 'Salvado',
           icon: 'success',
@@ -163,8 +141,7 @@ export default {
         if (this.errors.profileNotFilled) {
           await this.$swal({
             title: 'Por favor, complete su perfil por completo.',
-            text:
-              'Para comenzar el proceso de contratación, debe completar su perfil.',
+            text: 'Para comenzar el proceso de contratación, debe completar su perfil.',
             icon: 'warning',
           })
           await this.$router.push('/profile')

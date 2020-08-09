@@ -24,9 +24,7 @@ export default {
   },
   watch: {
     async $route() {
-      this.users = await this.$axios.$get(
-        `/users/users/?leeds=${this.$route.query.leeds}`
-      )
+      this.users = await this.$axios.$get(`/users/users/?leeds=${this.$route.query.leeds}`)
     },
   },
 }

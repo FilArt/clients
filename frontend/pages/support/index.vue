@@ -23,9 +23,7 @@ export default {
       { text: 'Bids', value: 'bids_count' },
       { text: 'Bids listo', value: 'bids_contracted_count' },
     ]
-    const users = await $axios.$get(
-      `users/users/?fields=${headers.map((header) => header.value)}`
-    )
+    const users = await $axios.$get(`users/users/?fields=${headers.map((header) => header.value)}`)
     return {
       users,
       headers,

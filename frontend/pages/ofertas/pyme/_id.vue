@@ -31,8 +31,6 @@ const filterFields = [
 export default {
   components: {
     DetailOffer,
-    CalculatorDetails: () => import('~/components/CalculatorDetails'),
-    returnButton: () => import('~/components/buttons/returnButton'),
   },
   async asyncData({ $axios, query }) {
     let params = {

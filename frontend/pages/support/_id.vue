@@ -78,26 +78,14 @@
     <v-card-title>Bids</v-card-title>
     <v-card-text>
       <v-list>
-        <v-list-group
-          v-for="bid in user.bids"
-          :key="bid.id"
-          v-model="bid.active"
-          no-action
-        >
+        <v-list-group v-for="bid in user.bids" :key="bid.id" v-model="bid.active" no-action>
           <template v-slot:activator>
             <v-list-item-content>
               ID: {{ bid.id }}
 
-              <v-chip
-                :color="
-                  bid.status === 'OK'
-                    ? 'success'
-                    : bid.status === 'Pendiente tramitacion'
-                    ? 'warning'
-                    : 'error'
-                "
-                >{{ bid.status }}</v-chip
-              >
+              <v-chip :color="bidStatusColor(bid.status)">
+                {{ bid.status }}
+              </v-chip>
             </v-list-item-content>
           </template>
 
@@ -116,19 +104,28 @@
 export default {
   components: {
     AdminHeader: () => import('~/components/admin/AdminHeader'),
-    SubmitButton: () => import('~/components/buttons/submitButton'),
-    StatusSelect: () => import('~/components/selects/StatusSelect'),
     PhoneField: () => import('~/components/fields/phoneField'),
     EmailField: () => import('~/components/fields/emailField'),
     Tramitacion: () => import('~/components/support/Tramitacion'),
   },
-  data() {
-    return {
-      cols: 3,
-      errorMessages: { status: null, message: null },
-    }
+  filters: {
+    bidStatusColor(status) {
+      let color
+      switch (status) {
+        case 'OK':
+          color = 'success'
+          break
+        case 'Pendiente tramitacion':
+          color = 'warning'
+          break
+        default:
+          color = 'error'
+          break
+      }
+      return color
+    },
   },
-  async asyncData({ $axios, params, store }) {
+  async asyncData({ $axios, params }) {
     const user = await $axios.$get(`users/users/${params.id}/`)
 
     return {
@@ -144,6 +141,12 @@ export default {
       },
     }
   },
+  data() {
+    return {
+      cols: 3,
+      errorMessages: { status: null, message: null },
+    }
+  },
   methods: {
     async refresh() {
       this.user = await this.$axios.$get(`users/users/${this.user.id}/`)
@@ -155,9 +158,7 @@ export default {
       data[field] = value
       try {
         await this.$axios.$patch(`users/users/${this.bid.user.id}/`, data)
-        this.bid = await this.$axios.$get(
-          `bids/bids/${this.bid.id}?support=true`
-        )
+        this.bid = await this.$axios.$get(`bids/bids/${this.bid.id}?support=true`)
         await this.$swal({
           title: 'Salvado',
           text: `${field.toUpperCase()} esta cambiado ${data[field]}`,
@@ -166,9 +167,7 @@ export default {
       } catch (e) {
         await this.$swal({
           title: 'Error!',
-          text: e.response.data[field]
-            ? e.response.data[field].join(', ')
-            : JSON.parse(e.response.data),
+          text: e.response.data[field] ? e.response.data[field].join(', ') : JSON.parse(e.response.data),
           icon: 'error',
         })
       }

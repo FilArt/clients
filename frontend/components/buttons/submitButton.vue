@@ -2,17 +2,19 @@
   <v-tooltip bottom>
     <template v-slot:activator="{ on }">
       <v-btn
-        v-on="on"
         type="submit"
         :icon="!label"
         :disabled="disabled"
         :block="block"
         color="#004680"
         dark
+        v-on="on"
         @click="$emit('click')"
       >
         {{ label }}
-        <v-icon :right="!!label">mdi-check</v-icon>
+        <v-icon :right="!!label">
+          mdi-check
+        </v-icon>
       </v-btn>
     </template>
     <span>{{ label ? label : 'Enviar' }}</span>
@@ -21,7 +23,7 @@
 
 <script>
 export default {
-  name: 'submitButton',
+  name: 'SubmitButton',
   props: {
     disabled: {
       type: Boolean,

@@ -6,16 +6,14 @@
       </div>
 
       <div class="text-h6">
-        Para utilizar el comparador, necesitará su factura de luz actual.
-        Nuestro comparador realizará un cálculo para todas las ofertas
-        disponibles en nuestra base de datos y lo ayudará a elegir la mejor
-        oferta para usted.
+        Para utilizar el comparador, necesitará su factura de luz actual. Nuestro comparador realizará un cálculo para
+        todas las ofertas disponibles en nuestra base de datos y lo ayudará a elegir la mejor oferta para usted.
       </div>
     </v-card-text>
 
-    <v-alert v-show="showResults && !offers.length" type="warning"
-      >Nohay ofertas</v-alert
-    >
+    <v-alert v-show="showResults && !offers.length" type="warning">
+      Nohay ofertas
+    </v-alert>
 
     <v-simple-table v-show="showResults && offers.length">
       <template v-slot:default>
@@ -45,9 +43,9 @@
               <v-btn
                 icon
                 nuxt
-                :to="`/ofertas/${offer.client_type === 0 ? 'hogar' : 'pyme'}/${
+                :to="`/ofertas/${offer.client_type === 0 ? 'hogar' : 'pyme'}/${offer.id}?id=${
                   offer.id
-                }?id=${offer.id}&showCalculatorDetails=true`"
+                }&showCalculatorDetails=true`"
               >
                 <v-icon>mdi-eye</v-icon>
               </v-btn>
@@ -58,7 +56,7 @@
     </v-simple-table>
 
     <div v-show="!showResults">
-      <v-form @submit.prevent="submit" novalidate>
+      <v-form novalidate @submit.prevent="submit">
         <v-card-text class="mx-auto" style="max-width: 1000px;">
           <v-row align="center" class="flex-wrap">
             <v-col>
@@ -103,16 +101,15 @@
                 <template v-slot:append-outer>
                   <v-tooltip bottom>
                     <template v-slot:activator="{ on, attrs }">
-                      <v-btn v-on="on" icon color="info" v-bind="attrs">
+                      <v-btn icon color="info" v-bind="attrs" v-on="on">
                         <v-icon>
                           mdi-information
                         </v-icon>
                       </v-btn>
                     </template>
                     <span>
-                      En este campo, ingrese el período (en días) por el cual se
-                      le factura. Está información puede obtenerse en su
-                      factura.
+                      En este campo, ingrese el período (en días) por el cual se le factura. Está información puede
+                      obtenerse en su factura.
                     </span>
                   </v-tooltip>
                 </template>
@@ -136,17 +133,10 @@
               <v-row v-for="number in [1, 2, 3]" :key="number">
                 <v-col>
                   <v-text-field
-                    v-show="
-                      number === 1 ||
-                      ['3.0A', '3.1A'].includes(tarif) ||
-                      (letter + number === 'c3' &&
-                        ['2.1DHA', '2.0DHA'].includes(tarif))
-                    "
+                    v-show="showInput(letter, number)"
                     :suffix="letter === 'p' ? 'kw' : 'kW/h'"
                     :value="form[letter + number]"
-                    :label="
-                      (letter === 'p' ? 'Potencia' : 'Consumo') + ' P' + number
-                    "
+                    :label="(letter === 'p' ? 'Potencia' : 'Consumo') + ' P' + number"
                     :name="'P' + number"
                     :error-messages="errorMessages[letter + number]"
                     @input="updateForm(letter + number, $event)"
@@ -154,7 +144,7 @@
                     <template v-slot:append-outer>
                       <v-tooltip bottom>
                         <template v-slot:activator="{ on, attrs }">
-                          <v-btn v-on="on" icon color="info" v-bind="attrs">
+                          <v-btn icon color="info" v-bind="attrs" v-on="on">
                             <v-icon>
                               mdi-information
                             </v-icon>
@@ -182,11 +172,7 @@
     </div>
 
     <v-card-actions>
-      <return-button
-        v-show="showResults"
-        @click="showResults = false"
-        :to="null"
-      />
+      <return-button v-show="showResults" :to="null" @click="showResults = false" />
     </v-card-actions>
   </v-card>
 </template>
@@ -218,6 +204,13 @@ export default {
     },
   },
   methods: {
+    showInput(letter, number) {
+      return (
+        number === 1 ||
+        ['3.0A', '3.1A'].includes(this.tarif) ||
+        (letter + number === 'c3' && ['2.1DHA', '2.0DHA'].includes(this.tarif))
+      )
+    },
     updateForm(key, value) {
       this.$store.commit('updateCalculatorForm', {
         key: key,
@@ -228,7 +221,10 @@ export default {
       this.errorMessages = {}
       this.loading = true
       this.$axios
-        .$post('calculator/calculate', { tarif: this.tarif, ...this.form })
+        .$post('calculator/calculate', {
+          tarif: this.tarif,
+          ...this.form,
+        })
         .then((data) => {
           this.$store.commit('setCalculatedOffers', data)
           this.showResults = true

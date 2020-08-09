@@ -10,22 +10,24 @@
             </v-card-title>
             <v-list dense>
               <v-list-item>
-                <v-list-item-content>Comercializadora</v-list-item-content>
-                <v-list-item-content class="align-end">{{
-                  calculations.company_name
-                }}</v-list-item-content>
+                <v-list-item-content>
+                  Comercializadora
+                </v-list-item-content>
+                <v-list-item-content class="align-end">
+                  {{ calculations.company_name }}
+                </v-list-item-content>
               </v-list-item>
               <v-list-item>
                 <v-list-item-content>Oferta</v-list-item-content>
-                <v-list-item-content class="align-end">{{
-                  calculations.name
-                }}</v-list-item-content>
+                <v-list-item-content class="align-end">
+                  {{ calculations.name }}
+                </v-list-item-content>
               </v-list-item>
               <v-list-item>
                 <v-list-item-content>Tarifa</v-list-item-content>
-                <v-list-item-content class="align-end">{{
-                  calculations.tarif
-                }}</v-list-item-content>
+                <v-list-item-content class="align-end">
+                  {{ calculations.tarif }}
+                </v-list-item-content>
               </v-list-item>
             </v-list>
           </v-card>
@@ -39,21 +41,21 @@
             <v-list dense>
               <v-list-item>
                 <v-list-item-content>P1</v-list-item-content>
-                <v-list-item-content class="align-end">{{
-                  calculations.c_st_p1
-                }}</v-list-item-content>
+                <v-list-item-content class="align-end">
+                  {{ calculations.c_st_p1 }}
+                </v-list-item-content>
               </v-list-item>
               <v-list-item>
                 <v-list-item-content>P2</v-list-item-content>
-                <v-list-item-content class="align-end">{{
-                  calculations.c_st_p2
-                }}</v-list-item-content>
+                <v-list-item-content class="align-end">
+                  {{ calculations.c_st_p2 }}
+                </v-list-item-content>
               </v-list-item>
               <v-list-item>
                 <v-list-item-content>P3</v-list-item-content>
-                <v-list-item-content class="align-end">{{
-                  calculations.c_st_p3
-                }}</v-list-item-content>
+                <v-list-item-content class="align-end">
+                  {{ calculations.c_st_p3 }}
+                </v-list-item-content>
               </v-list-item>
             </v-list>
           </v-card>
@@ -67,21 +69,21 @@
             <v-list dense>
               <v-list-item>
                 <v-list-item-content>P1</v-list-item-content>
-                <v-list-item-content class="align-end">{{
-                  calculations.c_st_c1
-                }}</v-list-item-content>
+                <v-list-item-content class="align-end">
+                  {{ calculations.c_st_c1 }}
+                </v-list-item-content>
               </v-list-item>
               <v-list-item>
                 <v-list-item-content>P2</v-list-item-content>
-                <v-list-item-content class="align-end">{{
-                  calculations.c_st_c2
-                }}</v-list-item-content>
+                <v-list-item-content class="align-end">
+                  {{ calculations.c_st_c2 }}
+                </v-list-item-content>
               </v-list-item>
               <v-list-item>
                 <v-list-item-content>P3</v-list-item-content>
-                <v-list-item-content class="align-end">{{
-                  calculations.c_st_c3
-                }}</v-list-item-content>
+                <v-list-item-content class="align-end">
+                  {{ calculations.c_st_c3 }}
+                </v-list-item-content>
               </v-list-item>
             </v-list>
           </v-card>
@@ -94,32 +96,20 @@
             </v-card-title>
             <v-list dense>
               <v-list-item>
-                <v-list-item-content
-                  >Impuesto eléctrico ({{
-                    calculations.tax.percent
-                  }}%)</v-list-item-content
-                >
-                <v-list-item-content class="align-end"
-                  >{{ calculations.tax.value }} €</v-list-item-content
-                >
+                <v-list-item-content> Impuesto eléctrico ({{ calculations.tax.percent }}%) </v-list-item-content>
+                <v-list-item-content class="align-end"> {{ calculations.tax.value }} € </v-list-item-content>
               </v-list-item>
 
               <v-list-item>
-                <v-list-item-content>Alquiler de equipos</v-list-item-content>
-                <v-list-item-content class="align-end"
-                  >{{ calculations.after_rental }} €</v-list-item-content
-                >
+                <v-list-item-content>
+                  Alquiler de equipos
+                </v-list-item-content>
+                <v-list-item-content class="align-end"> {{ calculations.after_rental }} € </v-list-item-content>
               </v-list-item>
 
               <v-list-item>
-                <v-list-item-content
-                  >IVA general ({{
-                    calculations.iva.percent
-                  }}%)</v-list-item-content
-                >
-                <v-list-item-content class="align-end"
-                  >{{ calculations.iva.value }} €</v-list-item-content
-                >
+                <v-list-item-content> IVA general ({{ calculations.iva.percent }}%) </v-list-item-content>
+                <v-list-item-content class="align-end"> {{ calculations.iva.value }} € </v-list-item-content>
               </v-list-item>
             </v-list>
           </v-card>
@@ -129,13 +119,9 @@
       <v-row cols="12" lg="6">
         <v-col>
           <v-card elevation="12">
-            <v-card-title style="color: green;">
-              Total factura: {{ calculations.total }} €
-            </v-card-title>
+            <v-card-title style="color: green;"> Total factura: {{ calculations.total }} € </v-card-title>
 
-            <v-card-title style="color: red;">
-              Paga actualmente: {{ calculations.current_price }} €
-            </v-card-title>
+            <v-card-title style="color: red;"> Paga actualmente: {{ calculations.current_price }} € </v-card-title>
           </v-card>
         </v-col>
       </v-row>
@@ -147,14 +133,11 @@
               <ul>
                 <li>
                   <v-card-title>
-                    Ahorro en factura: {{ calculations.profit }} € ~=
-                    {{ calculations.profit_percent }}%
+                    Ahorro en factura: {{ calculations.profit }} € ~= {{ calculations.profit_percent }}%
                   </v-card-title>
                 </li>
                 <li>
-                  <v-card-title>
-                    Ahorro en anual: {{ calculations.annual_total }} €
-                  </v-card-title>
+                  <v-card-title> Ahorro en anual: {{ calculations.annual_total }} € </v-card-title>
                 </li>
               </ul>
             </v-card-text>
@@ -166,7 +149,9 @@
     <v-card-actions>
       <v-btn rounded block outlined color="primary" @click="addBid">
         Añadir a cartera
-        <v-icon right>mdi-briefcase</v-icon>
+        <v-icon right>
+          mdi-briefcase
+        </v-icon>
       </v-btn>
     </v-card-actions>
   </v-card>

@@ -15,18 +15,9 @@
 
       <v-container v-if="tramitacion">
         <v-row>
-          <v-col cols="12" md="4" v-for="group in groups" :key="group.label">
-            <v-radio-group
-              :label="group.label"
-              v-model="tramitacion[group.value]"
-              @change="tramitate"
-            >
-              <v-radio
-                v-for="state in states"
-                :label="state.label"
-                :value="state.value"
-                :key="state.label"
-              />
+          <v-col v-for="group in groups" :key="group.label" cols="12" md="4">
+            <v-radio-group v-model="tramitacion[group.value]" :label="group.label" @change="tramitate">
+              <v-radio v-for="state in states" :key="state.label" :label="state.label" :value="state.value" />
               <v-btn
                 @click="
                   tramitacion[group.value] = null
@@ -46,7 +37,9 @@
         <template v-slot:activator="{ on }">
           <v-btn color="pink" block outlined v-on="on" @click="fetchHistory">
             Show history?
-            <v-icon right>mdi-history</v-icon>
+            <v-icon right>
+              mdi-history
+            </v-icon>
           </v-btn>
         </template>
         <v-card>
@@ -72,18 +65,17 @@
 <script>
 export default {
   name: 'Tramitacion',
+  components: {
+    CloseButton: () => import('~/components/buttons/closeButton'),
+    PuntosList: () => import('~/components/puntos/PuntosList'),
+    detailOffer: () => import('~/components/detailOffer'),
+    HistoryList: () => import('~/components/history/HistoryList'),
+  },
   props: {
     bidId: {
       type: Number,
       default: null,
     },
-  },
-  components: {
-    CloseButton: () => import('~/components/buttons/closeButton'),
-    PuntosList: () => import('~/components/puntos/PuntosList'),
-    detailOffer: () => import('~/components/detailOffer'),
-    SubmitButton: () => import('~/components/buttons/submitButton'),
-    HistoryList: () => import('~/components/history/HistoryList'),
   },
   data() {
     return {
@@ -130,9 +122,7 @@ export default {
     },
     async fetchTramitacion() {
       if (this.bid.tramitacion) {
-        this.tramitacion = await this.$axios.$get(
-          `tramitacion/${this.bid.tramitacion}/`
-        )
+        this.tramitacion = await this.$axios.$get(`tramitacion/${this.bid.tramitacion}/`)
       } else {
         this.tramitacion = {
           id: null,
@@ -150,10 +140,10 @@ export default {
       })
       try {
         if (this.tramitacion.id) {
-          this.tramitacion = await this.$axios.$patch(
-            `tramitacion/${this.tramitacion.id}/`,
-            { ...this.tramitacion, message }
-          )
+          this.tramitacion = await this.$axios.$patch(`tramitacion/${this.tramitacion.id}/`, {
+            ...this.tramitacion,
+            message,
+          })
         } else {
           this.tramitacion = await this.$axios.$post('tramitacion/', {
             ...this.tramitacion,
