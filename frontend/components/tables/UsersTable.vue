@@ -10,7 +10,7 @@
       ></v-text-field>
     </v-card-title>
     <v-data-table :headers="headers" :items="users" :search="search">
-      <template v-slot:item.email="{ item }">
+      <template v-slot:item.fullname="{ item }">
         <nuxt-link
           :to="
             $route.path.endsWith('/')
@@ -18,7 +18,7 @@
               : $route.path + '/' + item.id
           "
         >
-          {{ item.email }}
+          {{ item.fullname }}
         </nuxt-link>
       </template>
     </v-data-table>
@@ -37,8 +37,8 @@ export default {
           value: 'id',
         },
         {
-          text: 'Email',
-          value: 'email',
+          text: 'Nombre',
+          value: 'fullname',
         },
         {
           text: 'Phone',

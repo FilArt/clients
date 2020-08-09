@@ -43,8 +43,11 @@
         </v-row>
       </v-card-text>
 
-      <v-card-title>Archivos adjuntos</v-card-title>
-      <v-card-text>
+      <v-card-title
+        >Archivos adjuntos:
+        {{ punto.attachments.length ? '' : '...' }}</v-card-title
+      >
+      <v-card-text v-if="punto.attachments.length">
         <v-chip
           v-for="attachment in punto.attachments"
           :key="attachment.id"

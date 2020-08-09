@@ -7,17 +7,14 @@
       :left="story.user === 'me'"
       :right="story.user !== 'me'"
     >
-      <span slot="icon">
-        <v-icon>{{ !story.old_status ? 'mdi-plus' : '' }}</v-icon>
-      </span>
       <span slot="opposite">
         {{ story.dt }}
         <br />
-        {{ story.user.email || story.user }}
+        {{ story.user.fullname || story.user }}
       </span>
       <v-card class="elevation-2">
         <v-card-title class="headline">
-          <span>{{ story.new_status }}</span>
+          <span>{{ story.status }}</span>
         </v-card-title>
         <v-card-text>{{ story.message }}</v-card-text>
       </v-card>
