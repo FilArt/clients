@@ -18,7 +18,7 @@
         </v-avatar>
       </v-col>
 
-      <v-col>
+      <v-col class="text-center">
         <v-row>
           <v-col class="subtitle-1">
             Tu gestor energético personal
@@ -30,9 +30,9 @@
           </v-col>
         </v-row>
 
-        <v-row>
+        <v-row class="flex-wrap">
           <v-col>
-            <div class="d-flex flex-inline">
+            <div>
               <v-icon left>
                 mdi-phone
               </v-icon>
@@ -40,9 +40,8 @@
                 900-838-839
               </a>
             </div>
-          </v-col>
-          <v-col>
-            <div class="d-flex flex-inline">
+
+            <div>
               <v-icon left>
                 mdi-email
               </v-icon>
@@ -55,7 +54,7 @@
       </v-col>
     </v-row>
 
-    <v-row v-if="isLeed" class="text-center mx-auto" style="margin-top: 1em;">
+    <v-row v-if="isLeed" class="pa-3 text-center mx-auto" style="margin-top: 1em;">
       <v-col>
         Sí tiene dudas para seleccionar una oferta de nuestro catálogo o prefiere que nuestros agentes le asesoren
         personalmente. Por favor rellene el siguiente formulario y nos pondremos en contacto con usted lo antes posible.
@@ -85,7 +84,7 @@
             </template>
           </v-file-input>
 
-          <submit-button label="Submit" block />
+          <submit-button label="Enviar" block />
         </v-form>
       </v-col>
     </v-row>
