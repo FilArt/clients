@@ -8,7 +8,6 @@
     :newMessagesCount="newMessagesCount"
     :isOpen="isChatOpen"
     :close="closeChat"
-    :icons="icons"
     :open="openChat"
     showEmoji
     showFile
@@ -18,7 +17,6 @@
     showCloseButton
     alwaysScrollToBottom
     :showTypingIndicator="showTypingIndicator"
-    :colors="colors"
     :messageStyling="messageStyling"
     @onType="handleOnType"
     @edit="editMessage"
@@ -28,10 +26,6 @@
 </template>
 
 <script>
-import CloseIcon from 'vue-beautiful-chat/src/assets/close-icon.png'
-import OpenIcon from 'vue-beautiful-chat/src/assets/logo-no-bg.svg'
-import FileIcon from 'vue-beautiful-chat/src/assets/file.svg'
-import CloseIconSvg from 'vue-beautiful-chat/src/assets/close.svg'
 import ReconnectingWebSocket from 'reconnecting-websocket'
 export default {
   name: 'Chat',
@@ -44,53 +38,11 @@ export default {
   data() {
     return {
       chatSocket: null,
-      icons: {
-        open: {
-          img: OpenIcon,
-          name: 'default',
-        },
-        close: {
-          img: CloseIcon,
-          name: 'default',
-        },
-        file: {
-          img: FileIcon,
-          name: 'default',
-        },
-        closeSvg: {
-          img: CloseIconSvg,
-          name: 'default',
-        },
-      },
       participants: [this.participant],
       titleImageUrl: this.participant.imageUrl || 'null',
       messageList: [],
       isChatOpen: false, // to determine whether the chat window should be open or closed
       showTypingIndicator: '', // when set to a value matching the participant.id it shows the typing indicator for the specific user
-      colors: {
-        header: {
-          bg: '#4e8cff',
-          text: '#ffffff',
-        },
-        launcher: {
-          bg: '#4e8cff',
-        },
-        messageList: {
-          bg: '#ffffff',
-        },
-        sentMessage: {
-          bg: '#4e8cff',
-          text: '#ffffff',
-        },
-        receivedMessage: {
-          bg: '#eaeaea',
-          text: '#222222',
-        },
-        userInput: {
-          bg: '#f4f7f9',
-          text: '#565867',
-        },
-      },
       messageStyling: true, // enables *bold* /emph/ _underline_ and such (more info at github.com/mattezza/msgdown)
     }
   },
