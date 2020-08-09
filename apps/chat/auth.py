@@ -1,3 +1,4 @@
+import logging
 from urllib.parse import parse_qs
 
 from channels.db import database_sync_to_async
@@ -5,17 +6,21 @@ from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.db import close_old_connections
 from jwt import decode as jwt_decode
-from rest_framework_simplejwt.tokens import UntypedToken
 from rest_framework_simplejwt.exceptions import TokenError
+from rest_framework_simplejwt.tokens import UntypedToken
+
+logger = logging.getLogger(__name__)
 
 
 @database_sync_to_async
 def close_connections():
+    logger.info("close_connections")
     close_old_connections()
 
 
 @database_sync_to_async
 def get_user(user_jwt):
+    logger.info("get_user")
     return get_user_model().objects.get(id=user_jwt["user_id"])
 
 
@@ -28,6 +33,7 @@ class TokenAuthMiddleware:
         self.inner = inner
 
     def __call__(self, scope):
+        logger.info("TokenAuthMiddleware - __call__")
         close_connections()
 
         token = parse_qs(scope["query_string"])[b"token"][0]

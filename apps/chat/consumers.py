@@ -1,14 +1,19 @@
+import logging
+
+import arrow
 from channels.db import database_sync_to_async
 from channels.generic.websocket import AsyncJsonWebsocketConsumer
-
-from apps.users.models import CustomUser
-from apps.chat.models import ChatMessage
 from django.utils import timezone
-import arrow
+
+from apps.chat.models import ChatMessage
+from apps.users.models import CustomUser
+
+logger = logging.getLogger(__name__)
 
 
 @database_sync_to_async
 def get_users(**kwargs):
+    logger.info("get_users")
     first = kwargs.pop("first", False)
     qs = CustomUser.objects.filter(**kwargs)
     if first:
@@ -18,12 +23,14 @@ def get_users(**kwargs):
 
 @database_sync_to_async
 def save_message(**kwargs):
+    logger.info("save_message")
     msg = ChatMessage(**kwargs)
     msg.save()
 
 
 class ChatConsumer(AsyncJsonWebsocketConsumer):
     async def connect(self):
+        logger.info("chat - connect")
         user = None
         user_coro = self.scope.get("user")
         if user_coro:
@@ -46,16 +53,19 @@ class ChatConsumer(AsyncJsonWebsocketConsumer):
         await self.accept()
 
     async def disconnect(self, code):
+        logger.info("chat - disconnect")
         if hasattr(self, "room_group_name") and self.channel_name:
             await self.channel_layer.group_discard(self.room_group_name, self.channel_name)
 
     async def receive_json(self, content, **kwargs):
+        logger.info("chat - receive_json")
         if content.get("message") and self.user:
             data = {"type": "chat_message", "author": self.user.id, **content}
             await save_message(author=self.user, recipient=self.participant, text=content["message"])
             await self.channel_layer.group_send(self.room_group_name, data)
 
     async def chat_message(self, event):
+        logger.info("chat - chat_message")
         await self.send_json(
             {
                 "type": "text",
