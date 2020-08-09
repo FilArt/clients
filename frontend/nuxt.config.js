@@ -61,6 +61,7 @@ export default {
         accurateTrackBounce: true,
       },
     ],
+    '@nuxtjs/sentry',
   ],
   /*
    ** Axios module configuration
@@ -136,6 +137,16 @@ export default {
           error: colors.deepOrange.accent4,
           success: colors.green.accent4,
         },
+      },
+    },
+  },
+  sentry: {
+    dsn:
+      'https://320295fbbb5d437a83399c65dedc1163@o228899.ingest.sentry.io/1443546',
+    disableServerSide: true,
+    config: {
+      clientIntegrations: {
+        Vue: { attachProps: true }, //, logErrors: this.options.dev },
       },
     },
   },
