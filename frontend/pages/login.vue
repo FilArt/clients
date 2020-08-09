@@ -159,8 +159,9 @@ export default {
         const role = user.role
 
         if (role === null) {
-          const p = await this.$axios.$get('chat/messages/get_participant/')
-          this.$store.commit('setParticipant', p)
+          // load chat messages
+          // TODO: move it to Chat.vue
+          this.$store.commit('setParticipant', await this.$axios.$get('chat/messages/get_participant/'))
 
           if (!user.phone) {
             await this.$swal({
