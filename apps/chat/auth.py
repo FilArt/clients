@@ -1,48 +1,46 @@
-import logging
 from urllib.parse import parse_qs
 
+from channels.auth import AuthMiddlewareStack
 from channels.db import database_sync_to_async
 from django.conf import settings
 from django.contrib.auth import get_user_model
-from django.db import close_old_connections
 from jwt import decode as jwt_decode
+from jwt.exceptions import ExpiredSignatureError
 from rest_framework_simplejwt.exceptions import TokenError
 from rest_framework_simplejwt.tokens import UntypedToken
 
-logger = logging.getLogger(__name__)
+User = get_user_model()
 
 
 @database_sync_to_async
-def close_connections():
-    logger.info("close_connections")
-    close_old_connections()
+def get_user(user_id):
+    return User.objects.get(id=user_id)
 
 
-@database_sync_to_async
-def get_user(user_jwt):
-    logger.info("get_user")
-    return get_user_model().objects.get(id=user_jwt["user_id"])
+class TokenAuthMiddlewareInstance:
+    def __init__(self, scope, middleware):
+        self.middleware = middleware
+        self.scope = dict(scope)
+        self.inner = self.middleware.inner
+
+    async def __call__(self, receive, send):
+        token = parse_qs(self.scope["query_string"])[b"token"][0]
+        try:
+            UntypedToken(token)
+            user_id = jwt_decode(token.decode(), settings.SECRET_KEY)["user_id"]
+            self.scope["user"] = await get_user(user_id)
+        except (TokenError, ExpiredSignatureError):
+            pass
+        inner = self.inner(self.scope)
+        return await inner(receive, send)
 
 
 class TokenAuthMiddleware:
-    """
-    Custom token auth middleware
-    """
-
     def __init__(self, inner):
         self.inner = inner
 
     def __call__(self, scope):
-        logger.info("TokenAuthMiddleware - __call__")
-        close_connections()
+        return TokenAuthMiddlewareInstance(scope, self)
 
-        token = parse_qs(scope["query_string"])[b"token"][0]
-        user = None
-        try:
-            UntypedToken(token)
-            decoded_data = jwt_decode(token.decode(), settings.SECRET_KEY)
-            user = get_user(decoded_data)
-        except TokenError:
-            pass
 
-        return self.inner(dict(scope, user=user))
+TokenAuthMiddlewareStack = lambda inner: TokenAuthMiddleware(AuthMiddlewareStack(inner))

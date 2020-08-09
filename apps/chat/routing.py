@@ -9,4 +9,4 @@ websocket_urlpatterns = [
     re_path(r"ws/chat/(?P<participant_id>\d+)/$", consumers.ChatConsumer),
 ]
 
-application = ProtocolTypeRouter({"websocket": auth.TokenAuthMiddleware(URLRouter(websocket_urlpatterns))})
+application = ProtocolTypeRouter({"websocket": auth.TokenAuthMiddlewareStack(URLRouter(websocket_urlpatterns))})
