@@ -4,6 +4,7 @@ from django.contrib.auth.base_user import BaseUserManager
 from django.template.loader import render_to_string
 from django.utils.html import strip_tags
 from django.utils.translation import gettext_lazy as _
+from drf_dynamic_fields import DynamicFieldsMixin
 from rest_framework import serializers
 from rest_framework.exceptions import ValidationError
 
@@ -51,7 +52,7 @@ class RegisterSerializer(serializers.ModelSerializer):
             )
 
 
-class UserListSerializer(serializers.ModelSerializer):
+class UserListSerializer(DynamicFieldsMixin, serializers.ModelSerializer):
     date_joined = serializers.SerializerMethodField()
 
     class Meta:
@@ -60,10 +61,12 @@ class UserListSerializer(serializers.ModelSerializer):
             "id",
             "first_name",
             "last_name",
+            "fullname",
             "email",
             "phone",
             "date_joined",
             "bids_count",
+            "bids_contracted_count",
         )
 
     def get_date_joined(self, instance: CustomUser):

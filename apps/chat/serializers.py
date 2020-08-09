@@ -1,7 +1,7 @@
 import arrow
 from rest_framework import serializers
 
-from .models import ChatMessage, ChatMessageStatus
+from .models import ChatMessage, UnreadMessage
 
 
 class ChatMessageSerializer(serializers.ModelSerializer):
@@ -20,4 +20,4 @@ class ChatMessageSerializer(serializers.ModelSerializer):
         user = self.context["request"].user
         if user == instance.author:
             return None
-        return instance.statuses.get(user=user).is_read
+        return not UnreadMessage.objects.filter(user=user, message=instance).exists()

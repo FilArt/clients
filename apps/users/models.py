@@ -9,7 +9,7 @@ from django.db import models
 from django.utils.translation import pgettext_lazy
 from django.utils.translation import ugettext_lazy as _
 
-from .managers import CustomUserManager
+from .managers import ClientsManager, CustomUserManager
 
 
 class MyCharField(models.CharField):
@@ -85,6 +85,7 @@ class CustomUser(AbstractUser):
     )
 
     objects = CustomUserManager()
+    clients = ClientsManager()
 
     class Meta:
         db_table = "users"
@@ -102,14 +103,26 @@ class CustomUser(AbstractUser):
     def bids_count(self) -> int:
         return self.bids.count()
 
+    @property
+    def bids_contracted_count(self) -> int:
+        return self.bids.filter(tramitacion__doc=True, tramitacion__scoring=True, tramitacion__call=True).count()
+
     @cached_property
     def is_leed(self) -> int:
-        return not self.bids.exclude(status="new").exists()
+        return not self.puntos.exists()
 
-    def __str__(self):
+    @property
+    def is_client(self) -> bool:
+        return self.role is None
+
+    @property
+    def fullname(self):
         if self.first_name and self.last_name:
             return f"{self.first_name} {self.last_name}"
         return self.email
+
+    def __str__(self):
+        return self.fullname
 
 
 class UserSettings(models.Model):

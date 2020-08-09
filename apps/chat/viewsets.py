@@ -2,11 +2,10 @@ from django.contrib.auth import get_user_model
 from django.db.models import Q
 from rest_framework import viewsets
 from rest_framework.decorators import action
-from rest_framework.generics import get_object_or_404
 from rest_framework.request import Request
 from rest_framework.response import Response
 
-from .models import ChatMessage, ChatMessageStatus
+from .models import ChatMessage, UnreadMessage
 from .serializers import ChatMessageSerializer
 
 
@@ -26,7 +25,5 @@ class ChatMessageViewSet(viewsets.ModelViewSet):
 
     @action(methods=["PATCH"], detail=True)
     def message_read(self, request: Request, pk: int):
-        status = get_object_or_404(ChatMessageStatus, message_id=pk, user=request.user)
-        status.is_read = True
-        status.save()
+        UnreadMessage.objects.filter(user=request.user, message_id=pk).delete()
         return Response("ok")

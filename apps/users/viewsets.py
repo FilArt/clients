@@ -67,13 +67,11 @@ class UserViewSet(mixins.UpdateModelMixin, mixins.ListModelMixin, mixins.Retriev
     ordering = ("-id",)
 
     def get_queryset(self):
-        users_ids = Bid.objects.exclude(status="new").values("user").distinct()
-        if self.detail:
-            return self.queryset
-        elif self.request.query_params.get("leeds") == "true":
-            return CustomUser.objects.exclude(id__in=users_ids)
-        else:
-            return CustomUser.objects.filter(id__in=users_ids)
+        if self.request.query_params.get("leeds") == "true":
+            return CustomUser.objects.exclude(id__in=CustomUser.clients.values("id"))
+        elif self.request.user.role == "support":
+            return CustomUser.clients.all()
+        return self.queryset
 
     def get_object(self):
         if self.action in ("update", "partial_update") and self.request.user.role != "admin":
@@ -84,9 +82,6 @@ class UserViewSet(mixins.UpdateModelMixin, mixins.ListModelMixin, mixins.Retriev
         if self.detail:
             return UserSerializer
         return UserListSerializer
-
-    def filter_queryset(self, queryset):
-        return super().filter_queryset(queryset).exclude(id=self.request.user.id)
 
     @action(methods=["GET", "PATCH", "POST"], detail=False, permission_classes=(IsAuthenticated,))
     def load_facturas(self, request: Request):

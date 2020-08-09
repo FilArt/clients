@@ -41,8 +41,6 @@ class ChatConsumer(AsyncJsonWebsocketConsumer):
 
         self.room_group_name = "chat_with_user_%i" % (self.participant.id if user.role == "admin" else user.id)
 
-        print("user", user, "joined room", self.room_group_name)
-
         await self.channel_layer.group_add(self.room_group_name, self.channel_name)
 
         await self.accept()

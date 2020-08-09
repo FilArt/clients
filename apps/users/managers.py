@@ -33,3 +33,8 @@ class CustomUserManager(BaseUserManager):
         if extra_fields.get("is_superuser") is not True:
             raise ValueError(_("Superuser must have is_superuser=True."))
         return self.create_user(email, password, **extra_fields)
+
+
+class ClientsManager(BaseUserManager):
+    def get_queryset(self):
+        return super().get_queryset().filter(bids__puntos__isnull=False).distinct("id")

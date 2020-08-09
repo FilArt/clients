@@ -35,10 +35,10 @@ class DetailPuntoSerializer(serializers.ModelSerializer):
         exclude = ["user"]
 
 
-class BidListSerializer(serializers.ModelSerializer):
-    status = serializers.CharField(source="get_status_display")
+class BidListSerializer(DynamicFieldsMixin, serializers.ModelSerializer):
     offer_name = serializers.CharField(read_only=True, source="offer.name")
     pretty_created_at = serializers.SerializerMethodField()
+    status = serializers.CharField(read_only=True)
 
     class Meta:
         model = Bid
@@ -132,14 +132,4 @@ class OfferSerializer(OfferListSerializer):
     class Meta:
         model = Offer
         depth = 1
-        fields = "__all__"
-
-
-class SupportBidSerializer(serializers.ModelSerializer):
-    user = AccountSerializer()
-    puntos = serializers.ListSerializer(child=PuntoSerializer())
-    offer = OfferSerializer()
-
-    class Meta:
-        model = Bid
         fields = "__all__"
