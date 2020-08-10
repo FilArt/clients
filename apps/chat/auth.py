@@ -4,6 +4,7 @@ from channels.auth import AuthMiddlewareStack
 from channels.db import database_sync_to_async
 from django.conf import settings
 from django.contrib.auth import get_user_model
+from django.contrib.auth.models import update_last_login
 from jwt import decode as jwt_decode
 from jwt.exceptions import ExpiredSignatureError
 from rest_framework_simplejwt.exceptions import TokenError
@@ -14,7 +15,9 @@ User = get_user_model()
 
 @database_sync_to_async
 def get_user(user_id):
-    return User.objects.get(id=user_id)
+    user = User.objects.get(id=user_id)
+    update_last_login(None, user)
+    return user
 
 
 class TokenAuthMiddlewareInstance:
