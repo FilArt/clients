@@ -23,8 +23,8 @@ def save_message(**kwargs):
 
 
 class ChatConsumer(AsyncJsonWebsocketConsumer):
-    def __init__(self) -> None:
-        super().__init__()
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
         self.participant = None
         self.room_group_name = None
 
