@@ -39,7 +39,7 @@
                 prepend-icon="mdi-lock"
                 name="password"
                 label="Сontraseña"
-                type="password"
+                type="current-password"
               />
             </v-card-text>
             <v-card-actions>
