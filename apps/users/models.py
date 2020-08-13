@@ -9,7 +9,7 @@ from django.db import models
 from django.utils.translation import pgettext_lazy
 from django.utils.translation import ugettext_lazy as _
 
-from .managers import ClientsManager, CustomUserManager
+from .managers import ClientsManager, CustomUserManager, LeedsManager
 
 
 class MyCharField(models.CharField):
@@ -86,6 +86,7 @@ class CustomUser(AbstractUser):
 
     objects = CustomUserManager()
     clients = ClientsManager()
+    leeds = LeedsManager()
 
     class Meta:
         db_table = "users"

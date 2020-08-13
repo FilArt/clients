@@ -1,4 +1,5 @@
-from django.db import transaction
+from typing import Tuple
+
 from rest_framework import mixins, viewsets
 from rest_framework.decorators import action
 from rest_framework.exceptions import PermissionDenied, ValidationError
@@ -8,7 +9,12 @@ from rest_framework.request import Request
 from rest_framework.response import Response
 
 from apps.bids.models import Bid
-from clients.serializers import AccountSerializer, AttachmentSerializer, DetailPuntoSerializer
+from clients.serializers import (
+    AccountSerializer,
+    AttachmentSerializer,
+    ContractOnlineSerializer,
+    DetailPuntoSerializer,
+)
 
 from .models import Attachment, Call, CustomUser, Phone, Punto
 from .permissions import AdminPermission
@@ -41,6 +47,12 @@ class RegisterViewSet(viewsets.GenericViewSet, mixins.CreateModelMixin):
         return Response("Ok")
 
 
+class ContractOnlineViewSet(viewsets.ModelViewSet):
+    queryset = CustomUser.objects.all()
+    serializer_class = ContractOnlineSerializer
+    permission_classes: Tuple = tuple()
+
+
 class AccountViewSet(
     # pylint: disable=bad-continuation
     viewsets.GenericViewSet,
@@ -68,7 +80,9 @@ class UserViewSet(mixins.UpdateModelMixin, mixins.ListModelMixin, mixins.Retriev
 
     def get_queryset(self):
         if self.request.query_params.get("leeds") == "true":
-            return CustomUser.objects.exclude(id__in=CustomUser.clients.values("id"))
+            return CustomUser.leeds.all()
+        elif self.request.query_params.get("clients") == "true":
+            return CustomUser.clients.all()
         elif self.request.user.role == "support":
             return CustomUser.clients.all()
         return self.queryset

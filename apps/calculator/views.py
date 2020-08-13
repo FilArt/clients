@@ -4,8 +4,7 @@ from django.db import models
 from django.db.models import F, Q, Value
 from django.utils.translation import gettext_lazy as _
 from rest_framework import serializers
-from rest_framework.decorators import api_view
-from rest_framework.exceptions import PermissionDenied
+from rest_framework.decorators import api_view, permission_classes
 from rest_framework.request import Request
 from rest_framework.response import Response
 
@@ -189,9 +188,8 @@ class CalculatorSerializer(serializers.ModelSerializer):
 
 
 @api_view(http_method_names=["POST"])
+@permission_classes([])
 def calculate(request: Request):
-    if "calculator" not in request.user.permissions:
-        raise PermissionDenied
     serializer = CalculatorSerializer(data=request.data)
     serializer.is_valid(raise_exception=True)
     return Response(serializer.get_calculated())

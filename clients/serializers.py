@@ -1,7 +1,8 @@
 import arrow
+from django.contrib.auth.base_user import BaseUserManager
 from drf_dynamic_fields import DynamicFieldsMixin
 from rest_framework import serializers
-
+from django.db import transaction
 from apps.bids.models import Bid
 from apps.calculator.models import Offer
 from apps.users.models import Attachment, CustomUser, Punto, UserSettings
@@ -56,7 +57,7 @@ class UserSettingsSerializer(serializers.ModelSerializer):
 
 
 class AccountSerializer(serializers.ModelSerializer):
-    settings = UserSettingsSerializer()
+    settings = UserSettingsSerializer(required=False)
     first_name = serializers.CharField(min_length=1, allow_null=False, required=True)
     last_name = serializers.CharField(min_length=1, allow_null=False, required=True)
     phone = serializers.CharField(min_length=9, allow_null=False, required=True)
@@ -80,9 +81,16 @@ class AccountSerializer(serializers.ModelSerializer):
             "is_leed",
         ]
         extra_kwargs = {
-            "password": {"write_only": True},
+            "password": {"write_only": True, "required": False},
             "permissions": {"read_only": True},
         }
+
+    def save(self, **kwargs):
+        user = super().save(**kwargs)
+        if "password" in kwargs:
+            user.set_password(kwargs["password"])
+            user.save(update_fields=["password"])
+        return user
 
     def update(self, instance, validated_data):
         user: CustomUser = instance
@@ -133,3 +141,30 @@ class OfferSerializer(OfferListSerializer):
         model = Offer
         depth = 1
         fields = "__all__"
+
+
+class ContractOnlineSerializer(serializers.ModelSerializer):
+    offer = serializers.PrimaryKeyRelatedField(queryset=Offer.objects.all())
+
+    class Meta:
+        model = CustomUser
+        fields = ["email", "offer", "first_name", "last_name", "phone"]
+
+    def create(self, validated_data):
+        password = BaseUserManager().make_random_password()
+
+        offer = validated_data.pop("offer")
+
+        user_ser = AccountSerializer(data=validated_data)
+        user_ser.is_valid(raise_exception=True)
+        with transaction.atomic():
+            user = user_ser.save(password=password)
+            Bid.objects.create(user=user, offer=offer)
+
+        return {
+            "email": user.email,
+            "password": password,
+        }
+
+    def to_representation(self, value):
+        return value

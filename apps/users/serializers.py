@@ -54,6 +54,7 @@ class RegisterSerializer(serializers.ModelSerializer):
 
 class UserListSerializer(DynamicFieldsMixin, serializers.ModelSerializer):
     date_joined = serializers.SerializerMethodField()
+    last_login = serializers.SerializerMethodField()
 
     class Meta:
         model = CustomUser
@@ -65,12 +66,20 @@ class UserListSerializer(DynamicFieldsMixin, serializers.ModelSerializer):
             "email",
             "phone",
             "date_joined",
+            "last_login",
             "bids_count",
             "bids_contracted_count",
         )
 
     def get_date_joined(self, instance: CustomUser):
         return arrow.get(instance.date_joined).humanize(locale=self.context["request"].LANGUAGE_CODE)
+
+    def get_last_login(self, instance: CustomUser):
+        return (
+            arrow.get(instance.last_login).humanize(locale=self.context["request"].LANGUAGE_CODE)
+            if instance.last_login
+            else "-"
+        )
 
 
 class PhoneSerializer(serializers.ModelSerializer):

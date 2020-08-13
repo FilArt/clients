@@ -4,6 +4,7 @@ from . import viewsets
 
 user_router: SimpleRouter = SimpleRouter()
 user_router.register("register_user", viewsets.RegisterViewSet)
+user_router.register("contract_online", viewsets.ContractOnlineViewSet)
 user_router.register("account", viewsets.AccountViewSet)
 user_router.register("users", viewsets.UserViewSet)
 user_router.register("puntos", viewsets.PuntoViewSet)
