@@ -55,7 +55,6 @@ class ConsumoField(serializers.FloatField):
     def __init__(self, **kwargs):
         kwargs["default"] = 0
         kwargs["min_value"] = 0
-        kwargs["write_only"] = True
         kwargs["required"] = False
         super().__init__(**kwargs)
 
@@ -115,10 +114,48 @@ class CalculatorSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Offer
-        exclude = ["description", "uuid", "is_price_permanent"]  # TODO: replace exclude with fields
+        fields = [
+            "id",
+            "company",
+            "company_name",
+            "company_logo",
+            "name",
+            "tarif",
+            "period",
+            "power_min",
+            "power_max",
+            "consumption_min",
+            "consumption_max",
+            "p1",
+            "p2",
+            "p3",
+            "c1",
+            "c2",
+            "c3",
+            "is_price_permanent",
+            "client_type",
+            "description",
+            "c_st_p1",
+            "c_st_p2",
+            "c_st_p3",
+            "c_st_c1",
+            "c_st_c2",
+            "c_st_c3",
+            "tax",
+            "iva",
+            "after_rental",
+            "total",
+            "current_price",
+            "profit",
+            "profit_percent",
+            "annual_total",
+            "with_calculations",
+        ]
         extra_kwargs = {
             "name": {"read_only": True},
             "company": {"write_only": True, "allow_null": True},
+            "is_price_permanent": {"read_only": True},
+            "description": {"read_only": True},
         }
 
     def is_valid(self, raise_exception=False):
