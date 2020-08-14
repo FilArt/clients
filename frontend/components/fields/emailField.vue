@@ -6,6 +6,7 @@
     name="email"
     prepend-icon="mdi-at"
     type="email"
+    @input="$emit('input', $event)"
   />
 </template>
 
