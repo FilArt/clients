@@ -16,7 +16,7 @@ class MyCharField(models.CharField):
     def __init__(self, *args, **kwargs):
         kwargs["null"] = True
         kwargs["blank"] = True
-        kwargs["max_length"] = 100
+        kwargs["max_length"] = kwargs.get("max_length", 100)
         super().__init__(*args, **kwargs)
 
 
@@ -227,10 +227,10 @@ class Punto(models.Model):
     )
 
     # данные ниже вводит клиент
-    province = models.CharField(verbose_name=_("Province"), choices=PROVINCE_CHOICES, max_length=255)
-    locality = models.CharField(verbose_name=_("Locality"), max_length=255)
-    address = models.CharField(verbose_name=_("Address"), max_length=255)
-    postalcode = models.CharField(verbose_name=_("Postalcode"), max_length=5, validators=[MinLengthValidator(5)])
+    province = MyCharField(verbose_name=_("Province"), choices=PROVINCE_CHOICES, max_length=255)
+    locality = MyCharField(verbose_name=_("Locality"), max_length=255)
+    address = MyCharField(verbose_name=_("Address"), max_length=255)
+    postalcode = MyCharField(verbose_name=_("Postalcode"), max_length=5, validators=[MinLengthValidator(5)])
     iban = models.CharField(verbose_name=_("IBAN"), max_length=255)
 
     last_time_company_luz_changed = models.DateField(
