@@ -6,9 +6,13 @@ export const state = () => ({
   puntoHeaders: [],
   puntoCategories: [],
   cities: [],
+  privacyAccepted: false,
 })
 
 export const mutations = {
+  privacyAccepted(state, boolVal) {
+    state.privacyAccepted = boolVal
+  },
   setCities(state, cities) {
     state.cities = cities
   },
