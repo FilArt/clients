@@ -26,7 +26,7 @@ class RegisterSerializer(serializers.ModelSerializer):
 
     def save(self, **kwargs):
         try:
-            notify_telegram("Новый пользователь - со страницы регистрации", **{**self.validated_data, **kwargs})
+            notify_telegram("Nuevo usuario - de pagina registrarse", **{**self.validated_data, **kwargs})
         except Exception as e:
             logger.exception(e)
 

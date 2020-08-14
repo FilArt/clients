@@ -13,7 +13,7 @@ class PositiveNullableFloatField(models.FloatField):
         self.validators.append(validators.MinValueValidator(0))
 
 
-def notify_telegram(premessage: str = "Новый пользователь откуда-то...", **kwargs):
+def notify_telegram(premessage: str = "Nuevo usuario - ...", **kwargs):
     bot = Bot(settings.TELEGRAM_TOKEN)
     chat_id = settings.TELEGRAM_CHAT_ID
     text = f"{premessage}\n{json.dumps(kwargs, indent=4, sort_keys=True)}"
