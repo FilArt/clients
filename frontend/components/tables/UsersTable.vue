@@ -4,7 +4,7 @@
       <v-text-field v-model="search" append-icon="mdi-database-search" label="Search" single-line hide-details />
     </v-card-title>
     <v-data-table :headers="headers" :items="users" :search="search">
-      <template v-slot:item.fullname="{ item }">
+      <template v-slot:[`item.fullname`]="{ item }">
         <nuxt-link :to="$route.path.endsWith('/') ? $route.path + item.id : $route.path + '/' + item.id">
           {{ item.fullname }}
         </nuxt-link>
@@ -43,6 +43,10 @@ export default {
         {
           text: 'Date joined',
           value: 'date_joined',
+        },
+        {
+          text: 'Last login',
+          value: 'last_login',
         },
         {
           text: 'Bids',
