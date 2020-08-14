@@ -41,6 +41,7 @@ export default {
     { src: '~/plugins/vue-swal', mode: 'client' },
     { src: '~/plugins/vue-mask', mode: 'client' },
     { src: '~/plugins/vue-beautiful-chat', mode: 'client' },
+    { src: '~/plugins/localStorage.js', ssr: false, mode: 'client' },
   ],
   /*
    ** Nuxt.js dev-modules
@@ -80,6 +81,7 @@ export default {
   },
   auth: {
     redirect: {
+      home: '/ofertas',
       logout: '/login',
     },
     resetOnError: true,
