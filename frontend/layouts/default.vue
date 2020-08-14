@@ -38,7 +38,11 @@
       </v-btn>
     </v-app-bar>
     <v-main>
-      <v-breadcrumbs v-if="!['index', 'login', 'calculator'].includes($route.name)" :items="breadcrumbs" large>
+      <v-breadcrumbs
+        v-if="!['index', 'login', 'calculator', 'comparador'].includes($route.name) && $auth.loggedIn"
+        :items="breadcrumbs"
+        large
+      >
         <template v-slot:item="{ item }">
           <v-breadcrumbs-item :to="item.to" replace exact>
             {{ item.text }}
