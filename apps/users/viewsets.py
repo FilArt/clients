@@ -11,6 +11,7 @@ from rest_framework.response import Response
 from apps.bids.models import Bid
 from clients.serializers import (
     AccountSerializer,
+    AdditionalContractOnlineSerializer,
     AttachmentSerializer,
     ContractOnlineSerializer,
     DetailPuntoSerializer,
@@ -50,6 +51,12 @@ class RegisterViewSet(viewsets.GenericViewSet, mixins.CreateModelMixin):
 class ContractOnlineViewSet(viewsets.ModelViewSet):
     queryset = CustomUser.objects.all()
     serializer_class = ContractOnlineSerializer
+    permission_classes: Tuple = tuple()
+
+
+class AdditionalContractOnlineViewSet(viewsets.ModelViewSet):
+    queryset = CustomUser.objects.all()
+    serializer_class = AdditionalContractOnlineSerializer
     permission_classes: Tuple = tuple()
 
 

@@ -21,7 +21,7 @@ class TaxField(serializers.CharField):
     def to_representation(self, value):
         return {
             "percent": round(self.context["tax_percent"] * 100, 2),
-            "value": "{:.2f}".format(value.tax),
+            "value": "{:.2f} €".format(value.tax),
         }
 
 
@@ -29,11 +29,13 @@ class IvaField(TaxField):
     def to_representation(self, value):
         return {
             "percent": round(self.context["iva_percent"] * 100, 2),
-            "value": "{:.2f}".format(value.iva),
+            "value": "{:.2f} €".format(value.iva),
         }
 
 
 class ConsumoCalculationField(serializers.CharField):
+    PATTERN = "{user_value} kW/h × {price} € = {subtotal} €"
+
     def __init__(self, **kwargs):
         kwargs["read_only"] = True
         kwargs["source"] = "*"
@@ -48,7 +50,13 @@ class ConsumoCalculationField(serializers.CharField):
 
         subtotal = round(getattr(value, "st_%s" % field_name), 2)
         price = getattr(value, field_name)
-        return f"{user_value} kW/h × {initial_data['period']} dias × {price} € = {subtotal} €"
+        return self.PATTERN.format(
+            **{"user_value": user_value, "price": price, "subtotal": subtotal, "period": initial_data["period"]}
+        )
+
+
+class PotenciaCalculationField(ConsumoCalculationField):
+    PATTERN = "{user_value} kW/h × {period} dias × {price} € = {subtotal} €"
 
 
 class ConsumoField(serializers.FloatField):
@@ -64,14 +72,18 @@ class PotenciaField(ConsumoField):
 
 
 class BeautyFloatField(serializers.FloatField):
-    def __init__(self, **kwargs):
+    def __init__(self, show_euro=False, **kwargs):
         kwargs["read_only"] = True
+        self.show_euro = show_euro
         super().__init__(**kwargs)
 
     def to_representation(self, value: float):
         if not isinstance(value, float):
             raise ValueError("Value %s not float" % value)
-        return decimal.Decimal.from_float(value).quantize(QUANT, decimal.ROUND_HALF_UP).normalize()
+        result = decimal.Decimal.from_float(value).quantize(QUANT, decimal.ROUND_HALF_UP).normalize()
+        if self.show_euro:
+            return f"{result} €"
+        return result
 
 
 def positive_number(value):
@@ -97,20 +109,20 @@ class CalculatorSerializer(serializers.ModelSerializer):
     c_st_c1 = ConsumoCalculationField()
     c_st_c2 = ConsumoCalculationField()
     c_st_c3 = ConsumoCalculationField()
-    c_st_p1 = ConsumoCalculationField()
-    c_st_p2 = ConsumoCalculationField()
-    c_st_p3 = ConsumoCalculationField()
+    c_st_p1 = PotenciaCalculationField()
+    c_st_p2 = PotenciaCalculationField()
+    c_st_p3 = PotenciaCalculationField()
 
     iva = IvaField(read_only=True)
     tax = TaxField(read_only=True)
 
     with_calculations = serializers.BooleanField(default=False, write_only=True)
 
-    after_rental = BeautyFloatField()
-    profit = BeautyFloatField()
+    after_rental = BeautyFloatField(show_euro=True)
+    profit = BeautyFloatField(show_euro=True)
     profit_percent = serializers.IntegerField(read_only=True)
-    total = BeautyFloatField()
-    annual_total = BeautyFloatField()
+    total = BeautyFloatField(show_euro=True)
+    annual_total = BeautyFloatField(show_euro=True)
 
     class Meta:
         model = Offer
@@ -122,10 +134,6 @@ class CalculatorSerializer(serializers.ModelSerializer):
             "name",
             "tarif",
             "period",
-            "power_min",
-            "power_max",
-            "consumption_min",
-            "consumption_max",
             "p1",
             "p2",
             "p3",

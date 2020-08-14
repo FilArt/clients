@@ -143,19 +143,23 @@ class OfferSerializer(OfferListSerializer):
         fields = "__all__"
 
 
+class SimpleAccountSerializer(AccountSerializer):
+    class Meta:
+        model = CustomUser
+        fields = ["email", "first_name", "phone"]
+
+
 class ContractOnlineSerializer(serializers.ModelSerializer):
     offer = serializers.PrimaryKeyRelatedField(queryset=Offer.objects.all())
 
     class Meta:
         model = CustomUser
-        fields = ["email", "offer", "first_name", "last_name", "phone"]
+        fields = ["email", "offer", "first_name", "phone"]
 
     def create(self, validated_data):
         password = BaseUserManager().make_random_password()
-
         offer = validated_data.pop("offer")
-
-        user_ser = AccountSerializer(data=validated_data)
+        user_ser = SimpleAccountSerializer(data=validated_data)
         user_ser.is_valid(raise_exception=True)
         with transaction.atomic():
             user = user_ser.save(password=password)
@@ -168,3 +172,41 @@ class ContractOnlineSerializer(serializers.ModelSerializer):
 
     def to_representation(self, value):
         return value
+
+
+class AdditionalContractOnlineSerializer(ContractOnlineSerializer):
+    factura = serializers.ImageField()
+    factura_1 = serializers.ImageField()
+    dni1 = serializers.ImageField()
+    dni2 = serializers.ImageField()
+    iban = serializers.CharField()
+
+    class Meta:
+        model = CustomUser
+        fields = (*ContractOnlineSerializer.Meta.fields, "factura", "factura_1", "dni1", "dni2", "iban")
+
+    def create(self, validated_data):
+        password = BaseUserManager().make_random_password()
+
+        offer = validated_data.pop("offer")
+        factura = validated_data.pop("factura")
+        factura_1 = validated_data.pop("factura_1")
+        dni1 = validated_data.pop("dni1")
+        dni2 = validated_data.pop("dni2")
+        iban = validated_data.pop("iban")
+
+        user_ser = SimpleAccountSerializer(data=validated_data)
+        user_ser.is_valid(raise_exception=True)
+        with transaction.atomic():
+            user = user_ser.save(password=password)
+            bid = Bid.objects.create(user=user, offer=offer)
+            punto = Punto.objects.create(bid=bid, user=user, iban=iban,)
+            Attachment.objects.create(punto=punto, attachment_type="factura", attachment=factura)
+            Attachment.objects.create(punto=punto, attachment_type="factura_1", attachment=factura_1)
+            Attachment.objects.create(punto=punto, attachment_type="dni1", attachment=dni1)
+            Attachment.objects.create(punto=punto, attachment_type="dni2", attachment=dni2)
+
+        return {
+            "email": user.email,
+            "password": password,
+        }
