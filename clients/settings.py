@@ -177,6 +177,10 @@ LOGGING = {
     "root": {"handlers": ["console"], "level": "INFO",},
 }
 
+# telegram
+TELEGRAM_TOKEN = ""
+TELEGRAM_CHAT_ID = ""
+
 try:
     from .local_settings import *
 except ImportError:

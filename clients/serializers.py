@@ -1,11 +1,17 @@
+import logging
+
 import arrow
 from django.contrib.auth.base_user import BaseUserManager
+from django.db import transaction
 from drf_dynamic_fields import DynamicFieldsMixin
 from rest_framework import serializers
-from django.db import transaction
+
 from apps.bids.models import Bid
 from apps.calculator.models import Offer
 from apps.users.models import Attachment, CustomUser, Punto, UserSettings
+from clients.utils import notify_telegram
+
+logger = logging.getLogger(__name__)
 
 
 class AttachmentSerializer(serializers.ModelSerializer):
@@ -158,12 +164,20 @@ class ContractOnlineSerializer(serializers.ModelSerializer):
 
     def create(self, validated_data):
         password = BaseUserManager().make_random_password()
+
+        data_for_telegam = {**validated_data}
+
         offer = validated_data.pop("offer")
         user_ser = SimpleAccountSerializer(data=validated_data)
         user_ser.is_valid(raise_exception=True)
         with transaction.atomic():
             user = user_ser.save(password=password)
             Bid.objects.create(user=user, offer=offer)
+
+        try:
+            notify_telegram("Новый пользователь - contactar con asistente personal", **data_for_telegam)
+        except Exception as e:
+            logger.exception(e)
 
         return {
             "email": user.email,
@@ -188,6 +202,8 @@ class AdditionalContractOnlineSerializer(ContractOnlineSerializer):
     def create(self, validated_data):
         password = BaseUserManager().make_random_password()
 
+        data_for_telegam = {**validated_data}
+
         offer = validated_data.pop("offer")
         factura = validated_data.pop("factura")
         factura_1 = validated_data.pop("factura_1")
@@ -205,6 +221,11 @@ class AdditionalContractOnlineSerializer(ContractOnlineSerializer):
             Attachment.objects.create(punto=punto, attachment_type="factura_1", attachment=factura_1)
             Attachment.objects.create(punto=punto, attachment_type="dni1", attachment=dni1)
             Attachment.objects.create(punto=punto, attachment_type="dni2", attachment=dni2)
+
+        try:
+            notify_telegram("Новый пользователь - contractar online", **data_for_telegam)
+        except Exception as e:
+            logger.exception(e)
 
         return {
             "email": user.email,

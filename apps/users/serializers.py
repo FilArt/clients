@@ -1,3 +1,5 @@
+import logging
+
 import arrow
 from django.conf import settings
 from django.contrib.auth.base_user import BaseUserManager
@@ -10,8 +12,11 @@ from rest_framework.exceptions import ValidationError
 
 from apps.bids.models import Bid
 from clients.serializers import BidListSerializer, PuntoSerializer
+from clients.utils import notify_telegram
 
 from .models import Attachment, Call, CustomUser, Phone, Punto
+
+logger = logging.getLogger(__name__)
 
 
 class RegisterSerializer(serializers.ModelSerializer):
@@ -20,11 +25,16 @@ class RegisterSerializer(serializers.ModelSerializer):
         fields = ["email"]
 
     def save(self, **kwargs):
+        try:
+            notify_telegram("Новый пользователь - со страницы регистрации", **{**self.validated_data, **kwargs})
+        except Exception as e:
+            logger.exception(e)
+
         email = kwargs.get("email") or self.validated_data.get("email")
         password = BaseUserManager().make_random_password()
         user = CustomUser.objects.create_user(email, password)
         if settings.DEBUG:
-            user.set_password(1)
+            user.set_password("1")
             user.save(update_fields=["password"])
             return user
 
