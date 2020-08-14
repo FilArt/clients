@@ -1,6 +1,6 @@
 <template>
   <div>
-    <v-btn nuxt to="/admin/users" exact>
+    <v-btn nuxt to="/admin/users?clients=true" exact>
       Clientes
     </v-btn>
     <v-btn nuxt to="/admin/users?leeds=true" exact>
