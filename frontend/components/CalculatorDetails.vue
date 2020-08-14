@@ -1,152 +1,96 @@
 <template>
-  <v-card>
-    <v-card-title>Comparativa de facturas</v-card-title>
-    <v-card-text v-if="calculations.tax">
-      <v-row align="center">
-        <v-col cols="12" lg="6">
-          <v-card shaped elevation="12">
-            <v-card-title>
-              <h4></h4>
-            </v-card-title>
-            <v-list dense>
-              <v-list-item>
-                <v-list-item-content>
-                  Comercializadora
-                </v-list-item-content>
-                <v-list-item-content class="align-end">
-                  {{ calculations.company_name }}
-                </v-list-item-content>
-              </v-list-item>
-              <v-list-item>
-                <v-list-item-content>Oferta</v-list-item-content>
-                <v-list-item-content class="align-end">
-                  {{ calculations.name }}
-                </v-list-item-content>
-              </v-list-item>
-              <v-list-item>
-                <v-list-item-content>Tarifa</v-list-item-content>
-                <v-list-item-content class="align-end">
-                  {{ calculations.tarif }}
-                </v-list-item-content>
-              </v-list-item>
-            </v-list>
-          </v-card>
-        </v-col>
+  <div v-if="calculations.tax">
+    <v-card min-width="45%" class="mx-auto" max-width="500px">
+      <v-card-title style="padding-bottom: 0;">
+        Termino de potencia
+      </v-card-title>
 
-        <v-col cols="12" lg="6">
-          <v-card shaped elevation="12">
-            <v-card-title>
-              <h4>Termino de potencia</h4>
-            </v-card-title>
-            <v-list dense>
-              <v-list-item>
-                <v-list-item-content>P1</v-list-item-content>
-                <v-list-item-content class="align-end">
-                  {{ calculations.c_st_p1 }}
-                </v-list-item-content>
-              </v-list-item>
-              <v-list-item>
-                <v-list-item-content>P2</v-list-item-content>
-                <v-list-item-content class="align-end">
-                  {{ calculations.c_st_p2 }}
-                </v-list-item-content>
-              </v-list-item>
-              <v-list-item>
-                <v-list-item-content>P3</v-list-item-content>
-                <v-list-item-content class="align-end">
-                  {{ calculations.c_st_p3 }}
-                </v-list-item-content>
-              </v-list-item>
-            </v-list>
-          </v-card>
-        </v-col>
+      <v-card-text style="line-height: 2px;">
+        <v-row v-for="number in [1, 2, 3]" :key="number" align="center">
+          <div v-if="calculations[`c_st_p${number}`]" class="d-flex">
+            <div class="popusk"></div>
+            <v-col class="font-weight-bold flex-grow-0">P{{ number }}</v-col>
+            <div class="popusk"></div>
+            <v-col style="font-size: 12px;">{{ calculations[`c_st_p${number}`] }}</v-col>
+          </div>
+        </v-row>
+      </v-card-text>
 
-        <v-col cols="12" lg="6">
-          <v-card shaped elevation="12">
-            <v-card-title>
-              <h4>Termino de energia</h4>
-            </v-card-title>
-            <v-list dense>
-              <v-list-item>
-                <v-list-item-content>P1</v-list-item-content>
-                <v-list-item-content class="align-end">
-                  {{ calculations.c_st_c1 }}
-                </v-list-item-content>
-              </v-list-item>
-              <v-list-item>
-                <v-list-item-content>P2</v-list-item-content>
-                <v-list-item-content class="align-end">
-                  {{ calculations.c_st_c2 }}
-                </v-list-item-content>
-              </v-list-item>
-              <v-list-item>
-                <v-list-item-content>P3</v-list-item-content>
-                <v-list-item-content class="align-end">
-                  {{ calculations.c_st_c3 }}
-                </v-list-item-content>
-              </v-list-item>
-            </v-list>
-          </v-card>
-        </v-col>
+      <v-card-title style="padding-bottom: 0;"> Termino de energia </v-card-title>
 
-        <v-col cols="12" lg="6">
-          <v-card shaped elevation="12">
-            <v-card-title>
-              <h4>Otros conceptos</h4>
-            </v-card-title>
-            <v-list dense>
-              <v-list-item>
-                <v-list-item-content> Impuesto eléctrico ({{ calculations.tax.percent }}%) </v-list-item-content>
-                <v-list-item-content class="align-end"> {{ calculations.tax.value }} € </v-list-item-content>
-              </v-list-item>
+      <v-card-text style="line-height: 2px;">
+        <v-row v-for="number in [1, 2, 3]" :key="number" align="center">
+          <div v-if="calculations[`c_st_p${number}`]" class="d-flex">
+            <div class="popusk"></div>
+            <v-col class="font-weight-bold flex-grow-0 text-no-wrap">P{{ number }}</v-col>
+            <div class="popusk"></div>
+            <v-col class="text-no-wrap" style="font-size: 12px;">{{ calculations[`c_st_c${number}`] }}</v-col>
+          </div>
+        </v-row>
+      </v-card-text>
 
-              <v-list-item>
-                <v-list-item-content>
-                  Alquiler de equipos
-                </v-list-item-content>
-                <v-list-item-content class="align-end"> {{ calculations.after_rental }} € </v-list-item-content>
-              </v-list-item>
+      <v-card-title style="padding-bottom: 0;">
+        Otros conceptos
+      </v-card-title>
 
-              <v-list-item>
-                <v-list-item-content> IVA general ({{ calculations.iva.percent }}%) </v-list-item-content>
-                <v-list-item-content class="align-end"> {{ calculations.iva.value }} € </v-list-item-content>
-              </v-list-item>
-            </v-list>
-          </v-card>
-        </v-col>
-      </v-row>
+      <v-card-text style="line-height: 2px;">
+        <v-row align="center">
+          <div class="popusk"></div>
+          <v-col class="popusk-2 font-weight-bold text-no-wrap">
+            Impuesto eléctrico ({{ calculations.tax.percent }}%)
+          </v-col>
+          <v-col style="font-size: 12px;"> {{ calculations.tax.value }}</v-col>
+        </v-row>
 
-      <v-row cols="12" lg="6">
-        <v-col>
-          <v-card elevation="12">
-            <v-card-title style="color: green;"> Total factura: {{ calculations.total }} € </v-card-title>
+        <v-row align="center">
+          <div class="popusk"></div>
+          <v-col class="popusk-2 flex-shrink-0 font-weight-bold text-no-wrap">
+            Alquiler de equipos
+          </v-col>
+          <v-col class="text-no-wrap" style="font-size: 12px;">
+            {{ calculations.after_rental }}
+          </v-col>
+        </v-row>
 
-            <v-card-title style="color: red;"> Paga actualmente: {{ calculations.current_price }} € </v-card-title>
-          </v-card>
-        </v-col>
-      </v-row>
+        <v-row align="center">
+          <div class="popusk"></div>
+          <v-col class="popusk-2 font-weight-bold text-no-wrap"> IVA general ({{ calculations.iva.percent }}%) </v-col>
+          <v-col class="text-no-wrap" style="font-size: 12px;">
+            {{ calculations.iva.value }}
+          </v-col>
+        </v-row>
+      </v-card-text>
 
-      <v-row cols="12" lg="6">
-        <v-col>
-          <v-card elevation="12">
-            <v-card-text>
-              <ul>
-                <li>
-                  <v-card-title>
-                    Ahorro en factura: {{ calculations.profit }} € ~= {{ calculations.profit_percent }}%
-                  </v-card-title>
-                </li>
-                <li>
-                  <v-card-title> Ahorro en anual: {{ calculations.annual_total }} € </v-card-title>
-                </li>
-              </ul>
-            </v-card-text>
-          </v-card>
-        </v-col>
-      </v-row>
-    </v-card-text>
+      <v-card-text class="text-h6 text-right" style="">
+        <hr />
+        Total factura: {{ calculations.total }}
+      </v-card-text>
 
-    <v-card-actions>
+      <v-card-text class="text-center overline red--text font-weight-bold" style="font-size: 18px !important;">
+        Paga actualmente: {{ calculations.current_price }} €
+      </v-card-text>
+
+      <v-card-text>
+        <v-alert border="left" color="#004680" dark>
+          <div class="text-uppercase text-center font-weight-thin" style="font-size: 22px !important;">
+            <p>
+              Ahorro en cada factura
+            </p>
+            <p>
+              <span class="font-weight-bold">{{ calculations.profit }} ({{ calculations.profit_percent }}%)</span>
+            </p>
+            <p>
+              Ahorro en anual
+            </p>
+            <p>
+              <span class="font-weight-bold">{{ calculations.annual_total }}</span>
+            </p>
+          </div>
+        </v-alert>
+      </v-card-text>
+    </v-card>
+
+    <v-card-actions v-if="$auth.loggedIn">
       <v-btn rounded block outlined color="primary" @click="addBid">
         Añadir a cartera
         <v-icon right>
@@ -154,7 +98,7 @@
         </v-icon>
       </v-btn>
     </v-card-actions>
-  </v-card>
+  </div>
 </template>
 
 <script>
@@ -172,10 +116,12 @@ export default {
       calculations: [],
     }
   },
-  computed: mapState({
-    form: (state) => state.calculatorForm,
-    tarif: (state) => state.tarif,
-  }),
+  computed: {
+    ...mapState({
+      form: (state) => state.calculatorForm,
+      tarif: (state) => state.tarif,
+    }),
+  },
   async mounted() {
     await this.getDetails()
   },
@@ -188,6 +134,7 @@ export default {
         tarif: this.tarif,
         with_calculations: true,
       })
+      this.$emit('calculations', this.calculations)
     },
     addBid() {
       let data = { offer: this.offer.id }
@@ -221,3 +168,21 @@ export default {
   },
 }
 </script>
+
+<style scoped>
+.popusk {
+  width: 2em;
+}
+.popusk-2 {
+  flex-grow: 1;
+}
+@media only screen and (max-width: 768px) {
+  /* For mobile phones: */
+  .popusk {
+    width: 0;
+  }
+  .popusk-2 {
+    flex-grow: 3;
+  }
+}
+</style>

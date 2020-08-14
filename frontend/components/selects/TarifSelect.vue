@@ -58,18 +58,14 @@ export default {
       this.tarif = val
     },
   },
-  mounted() {
-    this.refresh()
+  async mounted() {
+    await this.refresh()
   },
   methods: {
-    refresh() {
+    async refresh() {
       this.loading = true
-      this.$axios
-        .$get('/calculator/tarifs/')
-        .then((tarifs) => {
-          this.tarifs = tarifs
-        })
-        .finally(() => (this.loading = false))
+      this.tarifs = await this.$axios.$get('/calculator/tarifs/')
+      this.loading = false
     },
   },
 }

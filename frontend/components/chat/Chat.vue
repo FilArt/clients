@@ -9,6 +9,7 @@
     :is-open="isChatOpen"
     :close="closeChat"
     :open="openChat"
+    :colors="colors"
     show-emoji
     show-file
     show-edition
@@ -43,6 +44,30 @@ export default {
       isChatOpen: false, // to determine whether the chat window should be open or closed
       showTypingIndicator: '', // when set to a value matching the participant.id it shows the typing indicator for the specific user
       messageStyling: true, // enables *bold* /emph/ _underline_ and such (more info at github.com/mattezza/msgdown)
+      colors: {
+        header: {
+          bg: '#4e8cff',
+          text: '#ffffff',
+        },
+        launcher: {
+          bg: '#4e8cff',
+        },
+        messageList: {
+          bg: '#ffffff',
+        },
+        sentMessage: {
+          bg: '#4e8cff',
+          text: '#ffffff',
+        },
+        receivedMessage: {
+          bg: '#eaeaea',
+          text: '#222222',
+        },
+        userInput: {
+          bg: '#f4f7f9',
+          text: '#565867',
+        },
+      },
     }
   },
   computed: {

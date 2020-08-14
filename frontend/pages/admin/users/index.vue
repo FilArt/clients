@@ -17,14 +17,17 @@ export default {
     AdminHeader: () => import('~/components/admin/AdminHeader'),
   },
   async asyncData({ $axios, query }) {
-    const users = await $axios.$get(`/users/users/?leeds=${query.leeds}`)
+    const users = await $axios.$get(`/users/users/?leeds=${query.leeds || false}&clients=${query.clients || false}`)
     return {
       users,
     }
   },
   watch: {
     async $route() {
-      this.users = await this.$axios.$get(`/users/users/?leeds=${this.$route.query.leeds}`)
+      const query = this.$route.query
+      this.users = await this.$axios.$get(
+        `/users/users/?leeds=${query.leeds || false}&clients=${query.clients || false}`,
+      )
     },
   },
 }

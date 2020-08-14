@@ -1,9 +1,7 @@
 <template>
-  <v-col>
-    <v-card v-for="offer in offers" :key="offer.id" style="margin-bottom: 1em;">
-      <detail-offer :offer="offer" />
-    </v-card>
-  </v-col>
+  <div>
+    <detail-offer v-for="offer in offers" :key="offer.id" :offer="offer" />
+  </div>
 </template>
 
 <script>

@@ -1,10 +1,9 @@
 <template>
-  <v-col>
+  <div>
     <v-card v-for="offer in offers" :key="offer.id" style="margin-bottom: 1em;">
       <detail-offer :offer="offer" />
-      <calculator-details v-if="$route.query.showCalculatorDetails" :offer="offer" />
     </v-card>
-  </v-col>
+  </div>
 </template>
 
 <script>
@@ -32,7 +31,6 @@ const filterFields = [
 export default {
   components: {
     DetailOffer,
-    CalculatorDetails: () => import('~/components/CalculatorDetails'),
   },
   async asyncData({ $axios, query }) {
     let params = {

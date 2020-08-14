@@ -88,7 +88,7 @@
               />
             </v-card-text>
             <v-card-actions>
-              <v-btn type="submit" color="#004680" block :loading="loading" :disabled="!privacyAccepted">
+              <v-btn type="submit" color="#004680" block :loading="loading" :disabled="!$store.state.privacyAccepted">
                 Registrarse
                 <v-icon right>
                   mdi-account-plus
@@ -96,23 +96,7 @@
               </v-btn>
             </v-card-actions>
             <v-card-actions>
-              <v-checkbox
-                v-model="privacyAccepted"
-                :success="privacyAccepted"
-                :error="!privacyAccepted"
-                :hint="privacyHint + ' política de privacidad.'"
-                label="Estoy de acuerdo"
-                persistent-hint
-              >
-                <template v-slot:message>
-                  <span>
-                    {{ privacyHint }}
-                  </span>
-                  <a target="_blank" href="https://gestiongroup.es/privacy_policy">
-                    política de privacidad.
-                  </a>
-                </template>
-              </v-checkbox>
+              <privacy />
             </v-card-actions>
           </v-form>
         </v-card>
@@ -123,13 +107,10 @@
 
 <script>
 export default {
-  components: { GGLogo: () => import('~/components/GGLogo') },
+  components: { GGLogo: () => import('~/components/GGLogo'), Privacy: () => import('~/components/other/Privacy') },
   data: () => ({
     loading: false,
     showLogin: true,
-    privacyAccepted: false,
-    privacyHint:
-      'Sus datos personales se utilizarán para simplificar su trabajo con el sitio, controlar el acceso a su cuenta y para otros fines descritos en nuestra',
 
     error: null,
     errorMessages2: { email: null },
@@ -173,11 +154,6 @@ export default {
             await this.$router.push('/profile')
           }
         }
-        role === 'support'
-          ? await this.$router.push('/support')
-          : this.$auth.user.permissions.includes('offers')
-          ? await this.$router.push('/ofertas')
-          : await this.$router.push('/bids')
       } catch (e) {
         console.log(e)
         const errorMsg = e.response.data.detail

@@ -1,5 +1,5 @@
 <template>
-  <v-btn :nuxt="!!to" :to="to" rounded block color="primary" @click="$emit('click')">
+  <v-btn :nuxt="!!to" :to="to" rounded outlined :block="block" color="#004680" @click="$emit('click')">
     Atrás
     <v-icon>mdi-keyboard-return</v-icon>
   </v-btn>
@@ -12,6 +12,10 @@ export default {
     to: {
       type: String,
       default: '/',
+    },
+    block: {
+      type: Boolean,
+      default: false,
     },
   },
 }
