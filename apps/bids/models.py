@@ -20,6 +20,13 @@ class Bid(models.Model):
     offer = models.ForeignKey("calculator.Offer", on_delete=models.CASCADE)
     created_at = models.DateTimeField(auto_now_add=True)
 
+    class Meta:
+        verbose_name = _("Bid")
+        verbose_name_plural = _("Bids")
+
+    def __str__(self) -> str:
+        return f'Offer "{self.offer}" of {self.user}'
+
     def save(self, **kwargs):
         save_bid_story = self.pk is None
         super().save(**kwargs)

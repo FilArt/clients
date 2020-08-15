@@ -120,6 +120,9 @@ class Offer(models.Model):
     c3 = PositiveNullableFloatField()
     is_price_permanent = models.CharField(max_length=20, choices=PRICE_CHOICES)
 
+    def __str__(self) -> str:
+        return self.name
+
     @staticmethod
     def sync():
         client = gspread.service_account(settings.GOOGLE_SERVICE_ACCOUNT_CREDS)
