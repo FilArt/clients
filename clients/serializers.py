@@ -174,15 +174,15 @@ class ContractOnlineSerializer(serializers.ModelSerializer):
             user = user_ser.save(password=password)
             Bid.objects.create(user=user, offer=offer)
 
-        try:
-            notify_telegram(
-                "Nuevo usuario - contactar con asistente personal",
-                **{str(k): str(v) for k, v in data_for_telegam.items()}
-            )
-        except Exception as e:
-            logger.exception(e)
+            try:
+                notify_telegram(
+                    "Nuevo usuario - contactar con asistente personal",
+                    **{str(k): str(v) for k, v in data_for_telegam.items()}
+                )
+            except Exception as e:
+                logger.exception(e)
 
-        return user
+            return user
 
     def to_representation(self, value):
         return value
