@@ -116,8 +116,8 @@ export default {
         formData.append(field, value)
       }
       try {
-        const createdUser = await this.$axios.$post(`users/${aep}/`, formData)
-        await this.$auth.loginWith('local', { data: { email: createdUser.email, password: createdUser.password } })
+        await this.$axios.$post(`users/${aep}/`, formData)
+        location.replace('https://gestiongroup.es/gracias-por-registrarte')
       } catch (e) {
         this.errorMessages = e.response.data
       }

@@ -182,10 +182,7 @@ class ContractOnlineSerializer(serializers.ModelSerializer):
         except Exception as e:
             logger.exception(e)
 
-        return {
-            "email": user.email,
-            "password": password,
-        }
+        return user
 
     def to_representation(self, value):
         return value
@@ -225,14 +222,11 @@ class AdditionalContractOnlineSerializer(ContractOnlineSerializer):
             Attachment.objects.create(punto=punto, attachment_type="dni1", attachment=dni1)
             Attachment.objects.create(punto=punto, attachment_type="dni2", attachment=dni2)
 
-        try:
-            notify_telegram(
-                "Nuevo usuario - contractar online", **{str(k): str(v) for k, v in data_for_telegam.items()}
-            )
-        except Exception as e:
-            logger.exception(e)
+            try:
+                notify_telegram(
+                    "Nuevo usuario - contractar online", **{str(k): str(v) for k, v in data_for_telegam.items()}
+                )
+            except Exception as e:
+                logger.exception(e)
 
-        return {
-            "email": user.email,
-            "password": password,
-        }
+            return user
