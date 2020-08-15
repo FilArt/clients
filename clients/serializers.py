@@ -175,7 +175,10 @@ class ContractOnlineSerializer(serializers.ModelSerializer):
             Bid.objects.create(user=user, offer=offer)
 
         try:
-            notify_telegram("Nuevo usuario - contactar con asistente personal", **data_for_telegam)
+            notify_telegram(
+                "Nuevo usuario - contactar con asistente personal",
+                **{str(k): str(v) for k, v in data_for_telegam.items()}
+            )
         except Exception as e:
             logger.exception(e)
 
@@ -223,7 +226,9 @@ class AdditionalContractOnlineSerializer(ContractOnlineSerializer):
             Attachment.objects.create(punto=punto, attachment_type="dni2", attachment=dni2)
 
         try:
-            notify_telegram("Nuevo usuario - contractar online", **data_for_telegam)
+            notify_telegram(
+                "Nuevo usuario - contractar online", **{str(k): str(v) for k, v in data_for_telegam.items()}
+            )
         except Exception as e:
             logger.exception(e)
 
