@@ -184,9 +184,6 @@ class ContractOnlineSerializer(serializers.ModelSerializer):
 
             return user
 
-    def to_representation(self, value):
-        return value
-
 
 class AdditionalContractOnlineSerializer(ContractOnlineSerializer):
     factura = serializers.ImageField()
