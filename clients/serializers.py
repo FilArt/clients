@@ -156,7 +156,7 @@ class SimpleAccountSerializer(AccountSerializer):
 
 
 class ContractOnlineSerializer(serializers.ModelSerializer):
-    offer = serializers.PrimaryKeyRelatedField(queryset=Offer.objects.all())
+    offer = serializers.PrimaryKeyRelatedField(queryset=Offer.objects.all(), write_only=True)
 
     class Meta:
         model = CustomUser
