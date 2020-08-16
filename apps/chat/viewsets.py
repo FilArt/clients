@@ -1,7 +1,10 @@
+from typing import List
+
 from django.contrib.auth import get_user_model
 from django.db.models import Q
 from rest_framework import viewsets
 from rest_framework.decorators import action
+from rest_framework.exceptions import ValidationError
 from rest_framework.request import Request
 from rest_framework.response import Response
 
@@ -24,7 +27,11 @@ class ChatMessageViewSet(viewsets.ModelViewSet):
         admin = get_user_model().objects.filter(role="admin").first()
         return Response({"id": admin.id, "name": admin.email, "imageUrl": admin.avatar.url if admin.avatar else None})
 
-    @action(methods=["PATCH"], detail=True)
-    def message_read(self, request: Request, pk: int):
-        UnreadMessage.objects.filter(user=request.user, message_id=pk).delete()
-        return Response("ok")
+    @action(methods=["POST"], detail=False)
+    def messages_read(self, request: Request):
+        messages_ids: List[int] = request.data.get("messages_ids")
+        try:
+            UnreadMessage.objects.filter(user=request.user, message_id__in=messages_ids).delete()
+            return Response("ok")
+        except Exception as e:
+            raise ValidationError({"messages_ids": [str(e)]})
