@@ -1,5 +1,5 @@
-import colors from 'vuetify/es5/util/colors'
 import es from 'vuetify/es5/locale/es'
+import colors from 'vuetify/es5/util/colors'
 
 const DEV = process.env.NODE_ENV !== 'production'
 
