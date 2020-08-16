@@ -29,8 +29,5 @@ export default {
       headers,
     }
   },
-  data() {
-    return {}
-  },
 }
 </script>
