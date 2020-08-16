@@ -65,6 +65,7 @@ class RegisterSerializer(serializers.ModelSerializer):
 class UserListSerializer(DynamicFieldsMixin, serializers.ModelSerializer):
     date_joined = serializers.SerializerMethodField()
     last_login = serializers.SerializerMethodField()
+    new_messages_count = serializers.SerializerMethodField()
 
     class Meta:
         model = CustomUser
@@ -79,6 +80,7 @@ class UserListSerializer(DynamicFieldsMixin, serializers.ModelSerializer):
             "last_login",
             "bids_count",
             "bids_contracted_count",
+            "new_messages_count",
         )
 
     def get_date_joined(self, instance: CustomUser):
@@ -90,6 +92,9 @@ class UserListSerializer(DynamicFieldsMixin, serializers.ModelSerializer):
             if instance.last_login
             else "-"
         )
+
+    def get_new_messages_count(self, instance: CustomUser):
+        return self.context["request"].user.unread_messages.filter(message__author=instance).count()
 
 
 class PhoneSerializer(serializers.ModelSerializer):
