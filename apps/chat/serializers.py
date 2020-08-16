@@ -21,3 +21,13 @@ class ChatMessageSerializer(serializers.ModelSerializer):
         if user == instance.author:
             return None
         return not UnreadMessage.objects.filter(user=user, message=instance).exists()
+
+    def to_representation(self, message: ChatMessage):
+        return {
+            "id": message.id,
+            "type": "text",
+            "isRead": self.get_is_read(message),
+            "isEdited": message.is_edited,
+            "author": "me" if message.author == self.context["request"].user else message.author_id,
+            "data": {"text": message.text, "meta": self.get_created(message)},
+        }

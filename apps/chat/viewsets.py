@@ -13,6 +13,7 @@ class ChatMessageViewSet(viewsets.ModelViewSet):
     queryset = ChatMessage.objects.all()
     serializer_class = ChatMessageSerializer
     filterset_fields = {"recipient": ["in"], "author": ["in"]}
+    ordering = ("created",)
 
     def get_queryset(self):
         user = self.request.user
