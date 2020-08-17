@@ -54,7 +54,7 @@
       </v-col>
     </v-row>
 
-    <v-row>
+    <v-row v-if="show === 'calc'" style="margin-top: 2cm;">
       <v-col>
         <contract-online with-factura />
       </v-col>
