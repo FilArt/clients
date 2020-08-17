@@ -94,6 +94,7 @@ class Company(models.Model):
 
 
 class Offer(models.Model):
+    OTRA_OFFER_NAME = '-'
     CLIENT_TYPE_CHOICES = (
         (0, _("Individual")),
         (1, _("Business")),
@@ -155,7 +156,7 @@ class Offer(models.Model):
             )
 
         uuids = [r["UUID"] for r in records]
-        Offer.objects.exclude(uuid__in=uuids).delete()
+        Offer.objects.exclude(uuid__in=uuids).exclude(name=Offer.OTRA_OFFER_NAME).delete()
         print("after:", Offer.objects.count())
         print("all:", len(uuids))
 
@@ -163,7 +164,7 @@ class Offer(models.Model):
     def get_blank_offer():
         company, _ = Company.objects.get_or_create(name='OTRA')
         offer, _ = Offer.objects.get_or_create(
-            name='-',
+            name=Offer.OTRA_OFFER_NAME,
             company=company,
             client_type=0,
             defaults=dict(
