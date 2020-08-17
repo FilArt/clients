@@ -1,3 +1,4 @@
+import logging
 import uuid
 from enum import Enum, unique
 
@@ -8,8 +9,9 @@ from django.utils.translation import gettext_lazy as _
 
 from apps.calculator.fields import NameField
 from clients.utils import PositiveNullableFloatField
-
 from .fields import is_positive
+
+logger = logging.getLogger(__name__)
 
 
 def str_to_float(some):
@@ -131,12 +133,12 @@ class Offer(models.Model):
         spread_sheet = client.open_by_url(settings.OFFERS_SHEET_URL)
         work_sheet = spread_sheet.get_worksheet(0)
         records = [row for row in work_sheet.get_all_records() if row["TYPO"]]
-        print("before:", Offer.objects.count())
+        logger.info("before:", Offer.objects.count())
         for item in records:
             Offer.objects.update_or_create(
                 uuid=item["UUID"],
                 defaults=dict(
-                    company=Company.objects.get_or_create(name=item["COMERCIALIZADORA"].strip().upper(),)[0],
+                    company=Company.objects.get_or_create(name=item["COMERCIALIZADORA"].strip().upper(), )[0],
                     name=item["NOMBRE"],
                     tarif=item["TARIFA"],
                     description=item["DESCRIPCION"],
@@ -157,8 +159,8 @@ class Offer(models.Model):
 
         uuids = [r["UUID"] for r in records]
         Offer.objects.exclude(uuid__in=uuids).exclude(name=Offer.OTRA_OFFER_NAME).delete()
-        print("after:", Offer.objects.count())
-        print("all:", len(uuids))
+        logger.info("after:", Offer.objects.count())
+        logger.info("all:", len(uuids))
 
     @staticmethod
     def get_blank_offer():
