@@ -2,7 +2,6 @@ export const state = () => ({
   calculatedOffers: [],
   calculatorForm: {},
   tarif: null,
-  participant: null,
   puntoHeaders: [],
   puntoCategories: [],
   cities: [],
@@ -21,9 +20,6 @@ export const mutations = {
   },
   setPuntoCategories(state, c) {
     state.puntoCategories = c
-  },
-  setParticipant(state, p) {
-    state.participant = p
   },
   setTarif(state, tarif) {
     state.tarif = tarif

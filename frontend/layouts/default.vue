@@ -50,7 +50,7 @@
         </template>
       </v-breadcrumbs>
       <nuxt />
-      <chat v-if="showChat" :participant="participant" />
+      <chat v-if="showChat" />
     </v-main>
   </v-app>
 </template>
@@ -69,12 +69,6 @@ export default {
     }
   },
   computed: {
-    participant() {
-      return this.$store.state.participant
-    },
-    showChat() {
-      return this.$auth.user && this.$auth.user.role === null && this.participant && this.participant.id
-    },
     breadcrumbs() {
       const crumbs = this.$route.path.split('/')
       return crumbs.map((crumb, idx) => {
@@ -134,14 +128,12 @@ export default {
       }
       return items
     },
+    showChat() {
+      return this.$auth.loggedIn && this.$auth.user.role !== 'admin'
+    },
   },
   async created() {
-    if (!this.$auth.user) return
-    const role = this.$auth.user.role
-    if (role === null) {
-      const p = await this.$axios.$get('chat/messages/get_participant/')
-      this.$store.commit('setParticipant', p)
-    }
+    if (this.showChat) this.$store.dispatch('chat/fetchParticipant')
   },
 }
 </script>

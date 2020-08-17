@@ -142,7 +142,7 @@ export default {
         if (role === null) {
           // load chat messages
           // TODO: move it to Chat.vue
-          this.$store.commit('setParticipant', await this.$axios.$get('chat/messages/get_participant/'))
+          this.$store.dispatch('chat/fetchParticipant')
 
           if (!user.phone) {
             await this.$swal({

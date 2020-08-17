@@ -5,7 +5,7 @@
     </v-card-text>
 
     <v-card-text>
-      <users-table :users="users" />
+      <users-table :users="users" @refresh="refresh" />
     </v-card-text>
   </v-card>
 </template>
@@ -23,11 +23,16 @@ export default {
     }
   },
   watch: {
-    async $route() {
+    $route() {
+      this.refresh()
+    },
+  },
+  methods: {
+    refresh() {
       const query = this.$route.query
-      this.users = await this.$axios.$get(
-        `/users/users/?leeds=${query.leeds || false}&clients=${query.clients || false}`,
-      )
+      this.$axios
+        .$get(`/users/users/?leeds=${query.leeds || false}&clients=${query.clients || false}`)
+        .then((users) => (this.users = users))
     },
   },
 }

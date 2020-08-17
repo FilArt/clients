@@ -1,47 +1,52 @@
 <template>
   <beautiful-chat
-    v-if="chatSocket"
+    v-if="participant"
     :participants="participants"
     :title-image-url="titleImageUrl"
     :on-message-was-sent="onMessageWasSent"
-    :message-list="messageList"
+    :message-list="messages"
     :new-messages-count="newMessagesCount"
     :is-open="isChatOpen"
-    :close="closeChat"
-    :open="openChat"
-    :colors="colors"
+    :close="doCloseChat"
+    :open="doOpenChat"
+    :colors="$vuetify.theme.isDark ? darkColors : colors"
+    :show-file="false"
+    :show-launcher="showLauncher || isChatOpen"
     show-emoji
-    show-file
     show-edition
     show-deletion
-    show-launcher
     show-close-button
     always-scroll-to-bottom
     :show-typing-indicator="showTypingIndicator"
     :message-styling="messageStyling"
     @onType="handleOnType"
-    @edit="editMessage"
-    @remove="deleteMessage"
+    @edit="doEditMessage"
+    @remove="doDeleteMessage"
   />
 </template>
 
 <script>
 import ReconnectingWebSocket from 'reconnecting-websocket'
+import { mapState, mapActions, mapGetters } from 'vuex'
 export default {
   name: 'Chat',
   props: {
-    participant: {
-      type: Object,
-      default: () => {},
+    showLauncher: {
+      type: Boolean,
+      default: true,
+    },
+    closeSocketOnExit: {
+      type: Boolean,
+      default: false,
+    },
+    isChatOpenDefault: {
+      type: Boolean,
+      default: false,
     },
   },
   data() {
     return {
       chatSocket: null,
-      participants: [this.participant],
-      titleImageUrl: this.participant.imageUrl || 'null',
-      messageList: [],
-      isChatOpen: false, // to determine whether the chat window should be open or closed
       showTypingIndicator: '', // when set to a value matching the participant.id it shows the typing indicator for the specific user
       messageStyling: true, // enables *bold* /emph/ _underline_ and such (more info at github.com/mattezza/msgdown)
       colors: {
@@ -68,107 +73,137 @@ export default {
           text: '#565867',
         },
       },
+      darkColors: {
+        header: {
+          bg: '#34495e',
+          text: '#ecf0f1',
+        },
+        launcher: {
+          bg: '#34495e',
+        },
+        messageList: {
+          bg: '#2c3e50',
+        },
+        sentMessage: {
+          bg: '#7f8c8d',
+          text: '#ecf0f1',
+        },
+        receivedMessage: {
+          bg: '#95a5a6',
+          text: '#ecf0f1',
+        },
+        userInput: {
+          bg: '#34495e',
+          text: '#ecf0f1',
+        },
+        userList: {
+          bg: '#2c3e50',
+          text: '#ecf0f1',
+        },
+      },
     }
   },
   computed: {
-    newMessagesCount() {
-      return this.messageList.filter((_m) => _m.author !== 'me' && _m.isRead === false).length
-    },
+    ...mapState({
+      participant: (state) => state.chat.participant,
+      isChatOpen: (state) => state.chat.isChatOpen,
+      messages: (state) => state.chat.messages,
+    }),
+    ...mapGetters({
+      newMessagesCount: 'chat/newMessagesCount',
+      participants: 'chat/participants',
+      titleImageUrl: 'chat/titleImageUrl',
+    }),
   },
-  async created() {
-    await this.getMessages()
-
-    const chatSocket = new ReconnectingWebSocket(this.getWssUrl(`chat/${this.participant.id}`))
-    chatSocket.onmessage = (m) => {
-      const newMessage = JSON.parse(m.data)
-      if (newMessage.author.toString() === this.$auth.user.id.toString()) {
-        newMessage.author = 'me'
-      }
-      this.messageList = [...this.messageList, newMessage]
+  mounted() {
+    if (this.isChatOpenDefault && this.participant) {
+      this.doOpenChat()
+    } else if (this.participant) {
+      this.createSocket()
     }
-    this.chatSocket = chatSocket
   },
   methods: {
-    async getMessages() {
-      const ids = [this.$auth.user.id, this.participant.id].join()
-      const params = { author__in: ids, recipient__in: ids }
-      const messages = await this.$axios.$get('chat/messages/', {
-        params: params,
-      })
-      this.messageList = messages.map((m) => {
-        return {
-          id: m.id,
-          type: 'text',
-          isRead: m.is_read,
-          author: m.author.toString() === this.$auth.user.id.toString() ? 'me' : m.author,
-          data: { text: m.text, meta: m.created },
-        }
-      })
-    },
-    getWssUrl(aep) {
+    ...mapActions({
+      getMessages: 'chat/getMessages',
+      setMessages: 'chat/setMessages',
+      addMessage: 'chat/addMessage',
+      editMessage: 'chat/editMessage',
+      openChat: 'chat/openChat',
+      closeChat: 'chat/closeChat',
+    }),
+    createSocket() {
       const token = this.$auth.strategies.local.token.get().substring(7)
       const ws_scheme = window.location.protocol === 'https:' ? 'wss' : 'ws'
-      return ws_scheme + '://' + window.location.host.replace('3000', '8000') + `/ws/${aep}/?token=${token}`
-    },
-    onMessageWasSent(message) {
-      const text = message.data.text
-      if (text.length > 0) {
-        this.chatSocket.send(
-          JSON.stringify({
-            message: text,
-          }),
-        )
+      const chatSocket = new ReconnectingWebSocket(
+        ws_scheme +
+          '://' +
+          window.location.host.replace('3000', '8000') +
+          `/ws/chat/${this.participant.id}/?token=${token}`,
+      )
+      chatSocket.onerror = (e) => {
+        this.addMessage({ type: 'text', data: { text: `error: ${e.message}` } })
       }
+      chatSocket.onmessage = (m) => {
+        const msgData = JSON.parse(m.data)
+        switch (msgData.type) {
+          case 'edit_message':
+            this.editMessage(msgData)
+            break
+          case 'delete_message':
+            this.setMessages(this.messages.filter((m) => m.id !== msgData.message_id))
+            break
+          case 'text':
+            this.addMessage(msgData)
+            break
+          default:
+            break
+        }
+      }
+      this.chatSocket = chatSocket
     },
-    openChat() {
-      this.isChatOpen = true
-      this.messageList
-        .filter((m) => m.isRead === false && m.author !== 'me')
-        .map((msg) => {
-          msg.isRead = true
-          this.msgRead(msg.id)
-          return msg
-        })
+    doOpenChat() {
+      this.openChat()
+
+      if (!this.chatSocket) this.createSocket()
+
+      // fix govna na telefonah
       if (window.innerWidth < 400) {
         setTimeout(function () {
           document.getElementsByClassName('sc-chat-window opened')[0].style.maxHeight = '90%'
         }, 1000)
       }
     },
-    async msgRead(msgId) {
-      await this.$axios.$patch('chat/messages/' + msgId + '/message_read/')
+    doCloseChat() {
+      this.closeChat()
+      if (this.closeSocketOnExit && this.chatSocket) {
+        this.chatSocket.close()
+        this.chatSocket = null
+      }
+      this.$emit('close-chat')
     },
-    closeChat() {
-      this.isChatOpen = false
+    onMessageWasSent(message) {
+      const dataToSend = message.data.text || message.data.emoji
+      if (!dataToSend) return
+      this.chatSocket.send(JSON.stringify({ message: dataToSend }))
     },
-    handleScrollToTop() {
-      // called when the user scrolls message list to top
-      // leverage pagination for loading another page of messages
-      console.log('scroll on top')
+    doEditMessage(message) {
+      this.chatSocket.send(JSON.stringify({ type: 'edit_message', message_id: message.id, text: message.data.text }))
     },
-    handleOnType() {
-      console.log('Emit typing event')
-    },
-    editMessage(message) {
-      const m = this.messageList.find((m) => m.id === message.id)
-      const text = message.data.text
-      m.isEdited = true
-      this.$axios.$patch(`chat/messages/${message.id}/`, { text: text }).then(() => {
-        m.data.text = text
-      })
-    },
-    deleteMessage(message) {
+    doDeleteMessage(message) {
       this.$swal({
         title: 'Delete message?',
         icon: 'warning',
         buttons: true,
         dangerMode: true,
       }).then((willDelete) => {
-        if (willDelete) {
-          this.$axios.$delete(`chat/messages/${message.id}/`)
-          this.messageList = this.messageList.filter((m) => m.id !== message.id)
-        }
+        if (willDelete) this.chatSocket.send(JSON.stringify({ type: 'delete_message', message_id: message.id }))
       })
+    },
+    handleScrollToTop() {
+      console.debug('scroll on top')
+    },
+    handleOnType() {
+      console.debug('Emit typing event')
     },
   },
 }
