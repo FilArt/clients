@@ -19,3 +19,5 @@ mypy
 pip
 uvicorn
 python-telegram-bot
+flake8
+pip
