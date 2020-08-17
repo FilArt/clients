@@ -90,8 +90,8 @@ class UserViewSet(mixins.UpdateModelMixin, mixins.ListModelMixin, mixins.Retriev
             return CustomUser.leeds.all()
         elif self.request.query_params.get("clients") == "true":
             return CustomUser.clients.all()
-        elif self.request.user.role == "support":
-            return CustomUser.clients.all()
+        elif self.request.user.role == "support" or "support" in self.request.query_params:
+            return CustomUser.ready_for_tramitacion.all()
         return self.queryset
 
     def get_object(self):
