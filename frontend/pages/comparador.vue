@@ -22,9 +22,7 @@
               class="pa-3 ma-3"
               @click="show = 'assis'"
             >
-              <v-card-title class="text-h5 text-no-wrap">
-                Contractar online
-              </v-card-title>
+              <v-card-title class="text-h5 text-no-wrap">Contractar online</v-card-title>
             </v-card>
           </template>
         </v-hover>
@@ -39,9 +37,7 @@
               class="pa-3 ma-3"
               @click="show = 'online'"
             >
-              <v-card-title class="text-h5 text-no-wrap">
-                Obtener una consulta
-              </v-card-title>
+              <v-card-title class="text-h5 text-no-wrap">Obtener una consulta</v-card-title>
             </v-card>
           </template>
         </v-hover>
@@ -57,12 +53,17 @@
         <return-button v-if="show !== 'calc'" :to="null" @click="back" />
       </v-col>
     </v-row>
+
+    <v-row>
+      <v-col>
+        <contract-online with-factura />
+      </v-col>
+    </v-row>
   </v-container>
 </template>
 <script>
 import Calculator from '~/components/forms/Calculator'
 import ReturnButton from '~/components/buttons/returnButton'
-
 export default {
   auth: 'guest',
   components: {

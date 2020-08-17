@@ -1,55 +1,72 @@
 <template>
-  <v-card>
-    <v-card-title>
+  <v-card flat>
+    <div v-if="withFactura" class="text-center" style="font-size: 42px; color: #004680;">
+      No encuentras los datos solicitados?
+    </div>
+
+    <v-card-title v-else>
       {{ showAdditionalFields ? 'Contratar online' : 'Contractar con asistente personal' }}
     </v-card-title>
 
-    <v-card-text>
-      <v-form @submit.prevent="submit">
-        <v-text-field v-model="user.first_name" autofocus label="Nombre" :error-messages="errorMessages.first_name" />
-        <phone-field v-model="user.phone" :error-messages="errorMessages.phone" />
-        <email-field v-model="user.email" :error-messages="errorMessages.email" />
+    <div v-if="withFactura" class="pa-5 text-center" style="color: #004680;">
+      Envianos un duplicado o foto de su factura y uno de nuestros agentes especializados le enviara el estudio
+      detallando toda la informacion sobre su estado acual y propuesta de ahorro.
+    </div>
 
-        <v-file-input
-          v-if="showAdditionalFields"
-          v-model="user.factura"
-          label="Foto factura actual (anverso)"
-          :error-messages="errorMessages.factura"
-        />
+    <v-row>
+      <v-spacer />
+      <v-col>
+        <v-form class="mx-auto" style="max-width: 500px;" @submit.prevent="submit">
+          <v-text-field v-model="user.first_name" autofocus label="Nombre" :error-messages="errorMessages.first_name" />
+          <phone-field v-model="user.phone" :error-messages="errorMessages.phone" />
+          <email-field v-model="user.email" :error-messages="errorMessages.email" />
 
-        <v-file-input
-          v-if="showAdditionalFields"
-          v-model="user.factura_1"
-          label="Foto factura actual (reverso)"
-          :error-messages="errorMessages.factura_1"
-        />
+          <v-file-input
+            v-if="showAdditionalFields || withFactura"
+            v-model="user.factura"
+            label="Foto factura actual (anverso)"
+            accept="image/*"
+            :error-messages="errorMessages.factura"
+          />
 
-        <v-file-input
-          v-if="showAdditionalFields"
-          v-model="user.dni1"
-          label="Foto DNI (anverso)"
-          :error-messages="errorMessages.dni1"
-        />
+          <v-file-input
+            v-if="showAdditionalFields || withFactura"
+            v-model="user.factura_1"
+            label="Foto factura actual (reverso)"
+            accept="image/*"
+            :error-messages="errorMessages.factura_1"
+          />
 
-        <v-file-input
-          v-if="showAdditionalFields"
-          v-model="user.dni2"
-          label="Foto DNI (reverso)"
-          :error-messages="errorMessages.dni2"
-        />
+          <v-file-input
+            v-if="showAdditionalFields"
+            v-model="user.dni1"
+            label="Foto DNI (anverso)"
+            accept="image/*"
+            :error-messages="errorMessages.dni1"
+          />
 
-        <v-text-field
-          v-if="showAdditionalFields"
-          v-model="user.iban"
-          label="IBAN"
-          :error-messages="errorMessages.iban"
-        />
+          <v-file-input
+            v-if="showAdditionalFields"
+            v-model="user.dni2"
+            label="Foto DNI (reverso)"
+            accept="image/*"
+            :error-messages="errorMessages.dni2"
+          />
 
-        <privacy />
+          <v-text-field
+            v-if="showAdditionalFields"
+            v-model="user.iban"
+            label="IBAN"
+            :error-messages="errorMessages.iban"
+          />
 
-        <submit-button label="Contractar" block :loading="loading" :disabled="!$store.state.privacyAccepted" />
-      </v-form>
-    </v-card-text>
+          <privacy />
+
+          <submit-button label="Contractar" block :loading="loading" :disabled="!$store.state.privacyAccepted" />
+        </v-form>
+      </v-col>
+      <v-spacer />
+    </v-row>
   </v-card>
 </template>
 <script>
@@ -67,6 +84,10 @@ export default {
   },
   props: {
     showAdditionalFields: {
+      type: Boolean,
+      default: false,
+    },
+    withFactura: {
       type: Boolean,
       default: false,
     },
@@ -108,12 +129,12 @@ export default {
   },
   methods: {
     async submit() {
-      const aep = this.showAdditionalFields ? 'contract_online_plus' : 'contract_online'
-      const postData = { ...this.user, offer: this.offer.id }
+      const aep = `contract_online${this.showAdditionalFields ? '_plus' : this.withFactura ? '_with_factura' : ''}`
+      const postData = this.withFactura ? { ...this.user } : { ...this.user, offer: this.offer.id }
       const formData = new FormData()
       for (const field in postData) {
         const value = postData[field]
-        formData.append(field, value)
+        if (value !== null) formData.append(field, value)
       }
       try {
         await this.$axios.$post(`users/${aep}/`, formData)
