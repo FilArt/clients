@@ -18,7 +18,7 @@ from clients.serializers import (
     WithFacturaContractOnlineSerializer,
 )
 from .models import Attachment, Call, CustomUser, Phone, Punto
-from .permissions import AdminPermission
+from .permissions import AdminPermission, AdminTramitacionPermission
 from .serializers import (
     CallSerializer,
     LoadFacturasSerializer,
@@ -88,7 +88,7 @@ class AccountViewSet(
 
 class UserViewSet(mixins.UpdateModelMixin, mixins.ListModelMixin, mixins.RetrieveModelMixin, viewsets.GenericViewSet):
     queryset = CustomUser.objects.all()
-    permission_classes = (IsAuthenticated, AdminPermission)
+    permission_classes = (IsAuthenticated, AdminTramitacionPermission)
     ordering = ("-id",)
 
     def get_queryset(self):
@@ -133,6 +133,12 @@ class UserViewSet(mixins.UpdateModelMixin, mixins.ListModelMixin, mixins.Retriev
         if not attachments:
             attachments = Attachment.objects.filter(punto__user=request.user)
         return Response(AttachmentSerializer(attachments, many=True).data)
+
+
+class ManageUsersViewSet(mixins.DestroyModelMixin, viewsets.GenericViewSet):
+    queryset = CustomUser.objects.all()
+    serializer_class = UserListSerializer
+    permission_classes = (IsAuthenticated, AdminPermission)
 
 
 class PuntoViewSet(viewsets.ModelViewSet):

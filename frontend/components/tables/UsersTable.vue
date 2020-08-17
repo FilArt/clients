@@ -30,6 +30,12 @@
           </v-btn>
         </v-badge>
       </template>
+
+      <template v-if="$auth.user.role === 'admin'" v-slot:[`item.actions`]="{ item }">
+        <v-btn icon @click="deleteUser(item)">
+          <v-icon color="error">mdi-trash-can-outline</v-icon>
+        </v-btn>
+      </template>
     </v-data-table>
 
     <chat
@@ -88,6 +94,9 @@ export default {
           text: 'Nuevo mensajes',
           value: 'new_messages_count',
         },
+        {
+          value: 'actions',
+        },
       ],
     },
     users: {
@@ -116,6 +125,23 @@ export default {
         openChat: true,
       }
       this.$store.dispatch('chat/fetchParticipant', options)
+    },
+    async deleteUser(user) {
+      const isConfirm = await this.$swal({
+        title: `Eliminar usuario ${user.fullname || user.email || user.id}?`,
+        icon: 'warning',
+        buttons: true,
+        dangerMode: true,
+      })
+
+      if (!isConfirm) return
+
+      try {
+        await this.$axios.$delete(`users/manage_users/${user.id}/`)
+        this.$emit('refresh')
+      } catch (e) {
+        await this.$swal({ title: 'Error', text: JSON.stringify(e.response.data), icon: 'error' })
+      }
     },
   },
 }
