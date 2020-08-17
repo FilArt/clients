@@ -4,8 +4,10 @@
   "python.linting.enabled": true,
   "prettier.configPath": "frontend/.prettierrc",
   "python.linting.mypyEnabled": true,
-  "python.formatting.blackArgs": [
-    "--line-length=119"
-  ],
-  "python.linting.flake8Enabled": true
+  "python.formatting.blackArgs": ["--line-length=119"],
+  "python.linting.flake8Enabled": true,
+  "editor.codeActionsOnSave": {
+    "source.fixAll.eslint": true
+  },
+  "python.linting.flake8Args": ["--max-line-length=120"]
 }
