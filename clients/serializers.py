@@ -186,11 +186,11 @@ class ContractOnlineSerializer(serializers.ModelSerializer):
 
 
 class AdditionalContractOnlineSerializer(ContractOnlineSerializer):
-    factura = serializers.ImageField()
-    factura_1 = serializers.ImageField()
-    dni1 = serializers.ImageField()
-    dni2 = serializers.ImageField()
-    iban = serializers.CharField()
+    factura = serializers.ImageField(write_only=True)
+    factura_1 = serializers.ImageField(write_only=True)
+    dni1 = serializers.ImageField(write_only=True)
+    dni2 = serializers.ImageField(write_only=True)
+    iban = serializers.CharField(write_only=True)
 
     class Meta:
         model = CustomUser
@@ -213,7 +213,7 @@ class AdditionalContractOnlineSerializer(ContractOnlineSerializer):
         with transaction.atomic():
             user = user_ser.save(password=password)
             bid = Bid.objects.create(user=user, offer=offer)
-            punto = Punto.objects.create(bid=bid, user=user, iban=iban,)
+            punto = Punto.objects.create(bid=bid, user=user, iban=iban)
             Attachment.objects.create(punto=punto, attachment_type="factura", attachment=factura)
             Attachment.objects.create(punto=punto, attachment_type="factura_1", attachment=factura_1)
             Attachment.objects.create(punto=punto, attachment_type="dni1", attachment=dni1)
@@ -222,6 +222,38 @@ class AdditionalContractOnlineSerializer(ContractOnlineSerializer):
             try:
                 notify_telegram(
                     "Nuevo usuario - contractar online", **{str(k): str(v) for k, v in data_for_telegam.items()}
+                )
+            except Exception as e:
+                logger.exception(e)
+
+            return user
+
+
+class WithFacturaContractOnlineSerializer(AdditionalContractOnlineSerializer):
+    class Meta:
+        model = CustomUser
+        fields = (*SimpleAccountSerializer.Meta.fields, 'factura', 'factura_1')
+
+    def create(self, validated_data):
+        password = BaseUserManager().make_random_password()
+
+        factura = validated_data.pop("factura")
+        factura_1 = validated_data.pop("factura_1")
+
+        user_ser = SimpleAccountSerializer(data=validated_data)
+        user_ser.is_valid(raise_exception=True)
+        with transaction.atomic():
+            user = user_ser.save(password=password)
+            offer: Offer = Offer.get_blank_offer()
+            bid = Bid.objects.create(user=user, offer=offer)
+            punto = Punto.objects.create(bid=bid, user=user)
+            Attachment.objects.create(punto=punto, attachment_type="factura", attachment=factura)
+            Attachment.objects.create(punto=punto, attachment_type="factura_1", attachment=factura_1)
+
+            try:
+                data_for_telegam = {str(k): str(v) for k, v in validated_data.items()}
+                notify_telegram(
+                    "Nuevo usuario - contractar online con factura", **data_for_telegam
                 )
             except Exception as e:
                 logger.exception(e)

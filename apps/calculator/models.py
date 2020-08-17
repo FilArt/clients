@@ -1,3 +1,4 @@
+import uuid
 from enum import Enum, unique
 
 import gspread
@@ -157,3 +158,16 @@ class Offer(models.Model):
         Offer.objects.exclude(uuid__in=uuids).delete()
         print("after:", Offer.objects.count())
         print("all:", len(uuids))
+
+    @staticmethod
+    def get_blank_offer():
+        company, _ = Company.objects.get_or_create(name='OTRA')
+        offer, _ = Offer.objects.get_or_create(
+            name='-',
+            company=company,
+            client_type=0,
+            defaults=dict(
+                uuid=uuid.uuid4(),
+            )
+        )
+        return offer

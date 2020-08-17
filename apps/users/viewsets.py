@@ -15,8 +15,8 @@ from clients.serializers import (
     AttachmentSerializer,
     ContractOnlineSerializer,
     DetailPuntoSerializer,
+    WithFacturaContractOnlineSerializer,
 )
-
 from .models import Attachment, Call, CustomUser, Phone, Punto
 from .permissions import AdminPermission
 from .serializers import (
@@ -57,6 +57,12 @@ class ContractOnlineViewSet(viewsets.ModelViewSet):
 class AdditionalContractOnlineViewSet(viewsets.ModelViewSet):
     queryset = CustomUser.objects.all()
     serializer_class = AdditionalContractOnlineSerializer
+    permission_classes: Tuple = tuple()
+
+
+class WithFacturaContractOnlineViewSet(viewsets.ModelViewSet):
+    queryset = CustomUser.objects.all()
+    serializer_class = WithFacturaContractOnlineSerializer
     permission_classes: Tuple = tuple()
 
 
