@@ -111,7 +111,7 @@ class CustomUser(AbstractUser):
 
     @cached_property
     def is_leed(self) -> int:
-        return not self.puntos.exists()
+        return not self.puntos.values('attachments').exists()
 
     @property
     def is_client(self) -> bool:
