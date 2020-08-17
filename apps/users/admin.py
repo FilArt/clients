@@ -18,10 +18,10 @@ class CustomUserAdmin(UserAdmin):
     add_fieldsets = (
         (None, {"classes": ("wide",), "fields": ("email", "password1", "password2", "role", "permissions")}),
     )
-    list_display = ("email", "first_name", "last_name", "phone", "role", "is_staff", "is_active")
+    list_display = ("email", "first_name", "last_name", "phone", "role", "is_staff", "is_active", "date_joined")
     list_filter = ("is_staff", "is_superuser", "is_active", "groups", "role")
     search_fields = ("first_name", "last_name", "email", "phone")
-    ordering = ("email",)
+    ordering = ("-date_joined",)
 
 
 admin.site.register(CustomUser, CustomUserAdmin)
