@@ -117,7 +117,7 @@ export default {
       }
       try {
         await this.$axios.$post(`users/${aep}/`, formData)
-        location.replace('https://gestiongroup.es/gracias-por-registrarte')
+        location.replace('https://gestiongroup.es/gracias-por-registrarte-comparador')
       } catch (e) {
         this.errorMessages = e.response.data
       }
