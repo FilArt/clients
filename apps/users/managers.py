@@ -52,3 +52,10 @@ class LeedsManager(ClientsManager):
             .get_queryset()
             .exclude(id__in=self._get_contracted_users_ids_from_tramitacion())
         )
+
+
+class TramitacionManager(BaseUserManager):
+    def get_queryset(self):
+        return super().get_queryset().filter(
+            role__isnull=True, phones__isnull=False, puntos__attachments__isnull=False
+        ).distinct('id')
