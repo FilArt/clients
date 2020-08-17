@@ -15,7 +15,7 @@
     <template v-if="hint" v-slot:append-outer>
       <v-tooltip bottom>
         <template v-slot:activator="{ on, attrs }">
-          <v-btn icon color="info" v-bind="attrs" v-on="on">
+          <v-btn icon color="#004680" v-bind="attrs" v-on="on">
             <v-icon>
               mdi-information
             </v-icon>
@@ -108,12 +108,7 @@ export default {
       this.$axios
         .$get('/calculator/companies/')
         .then((companies) => {
-          this.companies = this.withoutOther
-            ? companies
-            : companies.concat({
-                id: 'otra',
-                name: 'OTRA',
-              })
+          this.companies = this.withoutOther ? companies.filter((c) => c.name !== 'OTRA') : companies
         })
         .finally(() => (this.loading = false))
     },

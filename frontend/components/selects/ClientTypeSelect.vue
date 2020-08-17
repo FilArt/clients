@@ -12,7 +12,7 @@
     <template v-if="hint" v-slot:append-outer>
       <v-tooltip bottom>
         <template v-slot:activator="{ on, attrs }">
-          <v-btn icon color="info" v-bind="attrs" v-on="on">
+          <v-btn icon color="#004680" v-bind="attrs" v-on="on">
             <v-icon>
               mdi-information
             </v-icon>

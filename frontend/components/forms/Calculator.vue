@@ -62,7 +62,7 @@
                 <template v-slot:append-outer>
                   <v-tooltip bottom open-on-hover open-on-focus open-on-click>
                     <template v-slot:activator="{ on }">
-                      <v-btn icon color="info" v-on="on">
+                      <v-btn icon color="#004680" v-on="on">
                         <v-icon>mdi-information</v-icon>
                       </v-btn>
                     </template>
@@ -103,7 +103,7 @@
                     <template v-slot:append-outer>
                       <v-tooltip bottom open-on-click open-on-focus open-on-hover z-index="1000">
                         <template v-slot:activator="{ on }">
-                          <v-btn icon color="info" v-on="on">
+                          <v-btn icon color="#004680" v-on="on">
                             <v-icon>mdi-information</v-icon>
                           </v-btn>
                         </template>
