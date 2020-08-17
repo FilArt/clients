@@ -2,6 +2,7 @@
   <v-container>
     <calculator
       v-if="show === 'calc'"
+      hide-offer-names
       @offer-choosed="
         offer = $event
         show = 'detail'
@@ -9,7 +10,7 @@
     />
 
     <div v-else-if="show === 'detail'">
-      <detail-offer :offer="offer" />
+      <detail-offer :offer="offer" hide-name />
       <calculator-details :offer="offer" />
 
       <div class="d-flex align-center justify-center flex-wrap text-center">

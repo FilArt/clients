@@ -1,8 +1,6 @@
 <template>
   <v-card :loading="loading" flat>
-    <v-alert v-show="showResults && !offers.length" type="warning">
-      Nohay ofertas
-    </v-alert>
+    <v-alert v-show="showResults && !offers.length" type="warning">Nohay ofertas</v-alert>
 
     <v-data-table
       v-show="showResults && offers.length"
@@ -65,9 +63,7 @@
                   <v-tooltip bottom open-on-hover open-on-focus open-on-click>
                     <template v-slot:activator="{ on }">
                       <v-btn icon color="info" v-on="on">
-                        <v-icon>
-                          mdi-information
-                        </v-icon>
+                        <v-icon>mdi-information</v-icon>
                       </v-btn>
                     </template>
                     <span>
@@ -108,9 +104,7 @@
                       <v-tooltip bottom open-on-click open-on-focus open-on-hover z-index="1000">
                         <template v-slot:activator="{ on }">
                           <v-btn icon color="info" v-on="on">
-                            <v-icon>
-                              mdi-information
-                            </v-icon>
+                            <v-icon>mdi-information</v-icon>
                           </v-btn>
                         </template>
                         <span>
@@ -149,15 +143,40 @@ export default {
     SubmitButton: () => import('~/components/buttons/submitButton'),
     ReturnButton: () => import('~/components/buttons/returnButton'),
   },
+  props: {
+    hideOfferNames: {
+      type: Boolean,
+      default: false,
+    },
+  },
   data() {
     return {
       errorMessages: {},
       loading: false,
       showResults: false,
-      headers: [
+    }
+  },
+  computed: {
+    offers() {
+      return this.$store.state.calculatedOffers
+    },
+    form() {
+      return this.$store.state.calculatorForm
+    },
+    tarif: {
+      set: function (val) {
+        this.$store.commit('setTarif', val)
+      },
+      get: function () {
+        return this.$store.state.tarif
+      },
+    },
+    headers() {
+      const _headers = [
         {
           value: 'company_logo',
           sortable: false,
+          align: 'left',
         },
         {
           text: 'Oferta',
@@ -179,23 +198,10 @@ export default {
           value: 'actions',
           sortable: false,
         },
-      ],
-    }
-  },
-  computed: {
-    offers() {
-      return this.$store.state.calculatedOffers
-    },
-    form() {
-      return this.$store.state.calculatorForm
-    },
-    tarif: {
-      set: function (val) {
-        this.$store.commit('setTarif', val)
-      },
-      get: function () {
-        return this.$store.state.tarif
-      },
+      ]
+      return this.hideOfferNames
+        ? _headers.map((h) => ({ ...h, value: h.value === 'name' ? 'id' : h.value }))
+        : _headers
     },
   },
   methods: {

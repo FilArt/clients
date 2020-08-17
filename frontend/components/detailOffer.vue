@@ -7,7 +7,7 @@
 
       <v-col>
         <p class="text-center headline">
-          {{ offer.name }}
+          {{ hideName ? `Oferta ${offer.id}` : offer.name }}
         </p>
         <v-divider />
         <v-card-text>
@@ -80,6 +80,10 @@ export default {
     CalculatorDetails: () => import('~/components/CalculatorDetails'),
   },
   props: {
+    hideName: {
+      type: Boolean,
+      default: false,
+    },
     showCalculatorDetails: {
       type: Boolean,
       default: false,
