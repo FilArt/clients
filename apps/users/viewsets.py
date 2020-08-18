@@ -16,6 +16,7 @@ from clients.serializers import (
     ContractOnlineSerializer,
     DetailPuntoSerializer,
     WithFacturaContractOnlineSerializer,
+    FastContractSerializer,
 )
 from .models import Attachment, Call, CustomUser, Phone, Punto
 from .permissions import AdminPermission, AdminTramitacionPermission
@@ -46,24 +47,6 @@ class RegisterViewSet(viewsets.GenericViewSet, mixins.CreateModelMixin):
         serializer = self.serializer_class(instance=user)
         serializer.reset_password()
         return Response("Ok")
-
-
-class ContractOnlineViewSet(viewsets.ModelViewSet):
-    queryset = CustomUser.objects.all()
-    serializer_class = ContractOnlineSerializer
-    permission_classes: Tuple = tuple()
-
-
-class AdditionalContractOnlineViewSet(viewsets.ModelViewSet):
-    queryset = CustomUser.objects.all()
-    serializer_class = AdditionalContractOnlineSerializer
-    permission_classes: Tuple = tuple()
-
-
-class WithFacturaContractOnlineViewSet(viewsets.ModelViewSet):
-    queryset = CustomUser.objects.all()
-    serializer_class = WithFacturaContractOnlineSerializer
-    permission_classes: Tuple = tuple()
 
 
 class AccountViewSet(
@@ -218,3 +201,25 @@ class CallViewSet(viewsets.ModelViewSet):
         if phone_numbers:
             qs = qs.filter(phone__value__in=phone_numbers)
         return qs
+
+
+class ContractOnlineViewSet(viewsets.ModelViewSet):
+    queryset = CustomUser.objects.all()
+    serializer_class = ContractOnlineSerializer
+    permission_classes: Tuple = tuple()
+
+
+class AdditionalContractOnlineViewSet(viewsets.ModelViewSet):
+    queryset = CustomUser.objects.all()
+    serializer_class = AdditionalContractOnlineSerializer
+    permission_classes: Tuple = tuple()
+
+
+class WithFacturaContractOnlineViewSet(viewsets.ModelViewSet):
+    queryset = CustomUser.objects.all()
+    serializer_class = WithFacturaContractOnlineSerializer
+    permission_classes: Tuple = tuple()
+
+
+class FastContractViewSet(WithFacturaContractOnlineViewSet):
+    serializer_class = FastContractSerializer
