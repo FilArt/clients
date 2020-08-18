@@ -10,8 +10,6 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/3.0/ref/settings/
 """
 
-# pylint: disable=unused-wildcard-import,wildcard-import
-
 import os
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
@@ -165,14 +163,27 @@ GOOGLE_SERVICE_ACCOUNT_CREDS = "~/.config/gspread/service_account.json"
 # channels
 ASGI_APPLICATION = "apps.chat.routing.application"
 CHANNEL_LAYERS = {
-    "default": {"BACKEND": "channels_redis.core.RedisChannelLayer", "CONFIG": {"hosts": [("127.0.0.1", 6379)],},},
+    "default": {
+        "BACKEND": "channels_redis.core.RedisChannelLayer",
+        "CONFIG": {
+            "hosts": [("127.0.0.1", 6379)],
+        },
+    },
 }
 
 LOGGING = {
     "version": 1,
     "disable_existing_loggers": False,
-    "handlers": {"console": {"level": "INFO", "class": "logging.StreamHandler"},},
-    "root": {"handlers": ["console"], "level": "INFO",},
+    "handlers": {
+        "console": {
+            "level": "INFO",
+            "class": "logging.StreamHandler",
+        },
+    },
+    "root": {
+        "handlers": ["console"],
+        "level": "INFO",
+    },
 }
 
 # telegram
@@ -180,6 +191,6 @@ TELEGRAM_TOKEN = ""
 TELEGRAM_CHAT_ID = ""
 
 try:
-    from .local_settings import *
+    from .local_settings import *  # noqa: F403, F401
 except ImportError:
     pass

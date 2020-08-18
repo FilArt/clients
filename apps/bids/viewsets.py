@@ -46,7 +46,6 @@ class BidViewSet(viewsets.ModelViewSet):
 
     @action(methods=["GET"], detail=True)
     def history(self, request: Request, pk: int):
-        # pylint: disable=unused-argument, invalid-name
         bid = self.get_object()
         qs = bid.stories.order_by("-dt")
         serializer = BidStorySerializer(qs, many=True, context={"request": request})

@@ -50,7 +50,6 @@ class RegisterViewSet(viewsets.GenericViewSet, mixins.CreateModelMixin):
 
 
 class AccountViewSet(
-    # pylint: disable=bad-continuation
     viewsets.GenericViewSet,
     mixins.RetrieveModelMixin,
     mixins.UpdateModelMixin,

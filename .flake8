@@ -1,0 +1,4 @@
+[flake8]
+ignore = E731
+exclude = .git,__pycache__,dist,frontend,venv,*/migrations/*
+max-line-length = 120

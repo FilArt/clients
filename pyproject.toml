@@ -1,0 +1,38 @@
+[tool.poetry]
+name = "clients"
+version = "0.1.0"
+description = "clients project"
+authors = ["Artur Filimonov <artfil@protonmail.com>"]
+license = "Proprietary"
+homepage = "https://areaclientes.gestiongroup.es"
+repository = "https://github.com/FilArt/clients"
+keywords = ["clients", "crm", "vuejs", "drf"]
+
+[tool.poetry.dependencies]
+python = "3.8.5"
+django = "^3.1"
+arrow = "^0.15.8"
+channels-redis = "^3.0.1"
+django-cleanup = "^5.0.0"
+django-cors-headers = "^3.4.0"
+django-filter = "^2.3.0"
+djangorestframework-simplejwt = "^4.4.0"
+djangorestframework = "^3.11.1"
+drf-dynamic-fields = "^0.3.1"
+drf-nested-routers = "^0.91"
+gspread = "^3.6.0"
+Pillow = "^7.2.0"
+psycopg2-binary = "^2.8.5"
+python-telegram-bot = "^12.8"
+sentry-sdk = "^0.16.5"
+pytz = "^2020.1"
+daphne = "^2.5.0"
+channels = "^2.4.0"
+ipython = "^7.17.0"
+
+[tool.poetry.dev-dependencies]
+flake8 = "^3.8.3"
+pre-commit = "^2.6.0"
+django-stubs = "^1.5.0"
+djangorestframework-stubs = "^1.2.0"
+lxml = "^4.5.2"
