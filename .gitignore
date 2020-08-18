@@ -1,4 +1,4 @@
-/venv/
+/.venv/
 /clients/local_settings.py
 /.idea/
 __pycache__/
@@ -6,3 +6,6 @@ __pycache__/
 media/
 static/
 dump.rdb
+.gitignore
+service_account.json
+poetry.lock
