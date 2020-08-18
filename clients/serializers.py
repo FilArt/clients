@@ -295,7 +295,7 @@ class FastContractSerializer(serializers.ModelSerializer):
             if not CustomUser.objects.filter(email=from_user).exists():
                 from_user_ser = RegisterSerializer(data={'email': from_user}, tg_msg='Nuevo usuario - from call&visit')
                 from_user_ser.is_valid(raise_exception=True)
-                invited_by = from_user_ser.save(password=BaseUserManager().make_random_password())
+                invited_by = from_user_ser.save()
             else:
                 invited_by = CustomUser.objects.get(email=from_user)
 
