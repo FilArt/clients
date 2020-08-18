@@ -269,7 +269,46 @@ class FastContractSerializer(serializers.ModelSerializer):
     iban = serializers.CharField(write_only=True, required=False)
     offer = serializers.PrimaryKeyRelatedField(queryset=Offer.objects.all(), write_only=True)
 
+    from_user = serializers.EmailField(write_only=True)
+
     class Meta:
         model = CustomUser
         fields = ['first_name', 'last_name', 'email', 'phone', 'dni1', 'dni2', 'factura', 'factura_1', 'offer', 'iban']
 
+    def create(self, validated_data):
+        from_user = validated_data.pop('from_user')
+        offer = validated_data.pop("offer")
+        factura = validated_data.get("factura")
+        factura_1 = validated_data.get("factura_1")
+        dni1 = validated_data.get("dni1")
+        dni2 = validated_data.get("dni2")
+
+        from_user_ser = SimpleAccountSerializer(data={'email': from_user})
+        from_user_ser.is_valid(raise_exception=True)
+
+        user_ser = SimpleAccountSerializer(data=validated_data)
+        user_ser.is_valid(raise_exception=True)
+        with transaction.atomic():
+            from_user_ser.save(password=BaseUserManager().make_random_password())
+            user = user_ser.save(password=BaseUserManager().make_random_password())
+            bid = Bid.objects.create(user=user, offer=offer)
+            punto = Punto.objects.create(bid=bid, user=user)
+
+            if factura:
+                Attachment.objects.create(punto=punto, attachment_type="factura", attachment=factura)
+            if factura_1:
+                Attachment.objects.create(punto=punto, attachment_type="factura_1", attachment=factura_1)
+            if dni1:
+                Attachment.objects.create(punto=punto, attachment_type="dni1", attachment=dni1)
+            if dni2:
+                Attachment.objects.create(punto=punto, attachment_type="dni2", attachment=dni2)
+
+            try:
+                data_for_telegam = {str(k): str(v) for k, v in validated_data.items()}
+                notify_telegram(
+                    "Nuevo usuario - contractar de Call&Visit", **data_for_telegam
+                )
+            except Exception as e:
+                logger.exception(e)
+
+            return user
