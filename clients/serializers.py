@@ -261,12 +261,15 @@ class WithFacturaContractOnlineSerializer(AdditionalContractOnlineSerializer):
             return user
 
 
-class FastContractSerializer(WithFacturaContractOnlineSerializer):
+class FastContractSerializer(serializers.ModelSerializer):
+    factura = serializers.ImageField(write_only=True, required=False)
+    factura_1 = serializers.ImageField(write_only=True, required=False)
+    dni1 = serializers.ImageField(write_only=True, required=False)
+    dni2 = serializers.ImageField(write_only=True, required=False)
+    iban = serializers.CharField(write_only=True, required=False)
+    offer = serializers.PrimaryKeyRelatedField(queryset=Offer.objects.all(), write_only=True)
+
     class Meta:
-        NOT_REQUIRED_FIELDS = ['last_name', 'dni1', 'dni2', 'factura', 'factura_1', 'iban']
         model = CustomUser
         fields = ['first_name', 'last_name', 'email', 'phone', 'dni1', 'dni2', 'factura', 'factura_1', 'offer', 'iban']
-        extra_kwargs = {
-            **{k: {'required': False} for k in NOT_REQUIRED_FIELDS}
-        }
 
