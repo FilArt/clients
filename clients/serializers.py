@@ -273,7 +273,10 @@ class FastContractSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = CustomUser
-        fields = ['first_name', 'last_name', 'email', 'phone', 'dni1', 'dni2', 'factura', 'factura_1', 'offer', 'iban']
+        fields = [
+            'first_name', 'last_name', 'email', 'phone', 'dni1', 'dni2',
+            'factura', 'factura_1', 'offer', 'iban', 'from_user',
+        ]
 
     def create(self, validated_data):
         from_user = validated_data.pop('from_user')
