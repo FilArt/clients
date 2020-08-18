@@ -20,13 +20,17 @@ logger = logging.getLogger(__name__)
 
 
 class RegisterSerializer(serializers.ModelSerializer):
+    def __init__(self, *args, **kwargs):
+        self.tg_message = kwargs.pop('tg_msg') if 'tg_msg' in kwargs else "Nuevo usuario - de pagina registrarse"
+        super().__init__(*args, **kwargs)
+
     class Meta:
         model = CustomUser
         fields = ["email"]
 
     def save(self, **kwargs):
         try:
-            notify_telegram("Nuevo usuario - de pagina registrarse", **{**self.validated_data, **kwargs})
+            notify_telegram(self.tg_message, **{**self.validated_data, **kwargs})
         except Exception as e:
             logger.exception(e)
 

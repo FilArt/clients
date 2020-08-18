@@ -280,6 +280,8 @@ class FastContractSerializer(serializers.ModelSerializer):
         extra_kwargs = {'last_name': {'required': False}}
 
     def create(self, validated_data):
+        from apps.users.serializers import RegisterSerializer
+
         from_user = validated_data.pop('from_user')
         offer = validated_data.pop("offer")
         factura = validated_data.get("factura")
@@ -287,14 +289,17 @@ class FastContractSerializer(serializers.ModelSerializer):
         dni1 = validated_data.get("dni1")
         dni2 = validated_data.get("dni2")
 
-        from_user_ser = SimpleAccountSerializer(data={'email': from_user})
-        from_user_ser.is_valid(raise_exception=True)
-
         user_ser = SimpleAccountSerializer(data=validated_data)
         user_ser.is_valid(raise_exception=True)
         with transaction.atomic():
-            from_user_ser.save(password=BaseUserManager().make_random_password())
-            user = user_ser.save(password=BaseUserManager().make_random_password())
+            if not CustomUser.objects.filter(email=from_user).exists():
+                from_user_ser = RegisterSerializer(data={'email': from_user}, tg_msg='Nuevo usuario - from call&visit')
+                from_user_ser.is_valid(raise_exception=True)
+                invited_by = from_user_ser.save(password=BaseUserManager().make_random_password())
+            else:
+                invited_by = CustomUser.objects.get(email=from_user)
+
+            user = user_ser.save(password=BaseUserManager().make_random_password(), invited_by=invited_by)
             bid = Bid.objects.create(user=user, offer=offer)
             punto = Punto.objects.create(bid=bid, user=user)
 

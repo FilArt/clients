@@ -84,6 +84,8 @@ class CustomUser(AbstractUser):
         + ", ".join(get_default_user_permissions()),
     )
 
+    invited_by = models.ForeignKey("users.CustomUser", blank=True, null=True, on_delete=models.SET_NULL)
+
     objects = CustomUserManager()
     clients = ClientsManager()
     leeds = LeedsManager()
