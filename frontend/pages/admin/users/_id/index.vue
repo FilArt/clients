@@ -10,7 +10,7 @@
       <v-row>
         <v-col>
           <p>Telefonos</p>
-          <p v-for="phone in user.phones" :key="phone.id">
+          <p v-for="phone in [...user.phones, { number: user.phone }].filter((n) => n)" :key="phone.id">
             {{ phone.number }}
           </p>
         </v-col>
