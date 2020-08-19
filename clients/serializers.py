@@ -151,12 +151,11 @@ class OfferSerializer(OfferListSerializer):
 
 
 class SimpleAccountSerializer(AccountSerializer):
+    last_name = serializers.CharField(required=False, allow_blank=True)
+
     class Meta:
         model = CustomUser
         fields = ["email", "first_name", "phone", "last_name"]
-        extra_kwargs = {
-            'last_name': {'required': False}
-        }
 
 
 class ContractOnlineSerializer(serializers.ModelSerializer):
