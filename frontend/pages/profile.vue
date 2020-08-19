@@ -25,7 +25,13 @@
             type="text"
             :error-messages="error.last_name"
           />
-          <phone-field v-model="form.phone" :error-messages="error.phone" />
+          <vue-phone-number-input
+            id="phone-input"
+            v-model="form.phone"
+            no-example
+            no-country-selector
+            :dark="$vuetify.theme.isDark"
+          />
         </v-card-text>
         <v-card-actions>
           <submit-button block label="Guardar" />
@@ -36,11 +42,11 @@
 </template>
 
 <script>
-import SubmitButton from '~/components/buttons/submitButton'
-import PhoneField from '~/components/fields/phoneField'
-import EmailField from '~/components/fields/emailField'
 export default {
-  components: { EmailField, PhoneField, SubmitButton },
+  components: {
+    EmailField: () => import('~/components/fields/emailField'),
+    SubmitButton: () => import('~/components/buttons/submitButton'),
+  },
   data() {
     return {
       error: {},
@@ -57,6 +63,7 @@ export default {
     async submit() {
       this.loading = true
       this.error = {}
+      this.form.phone = this.form.phone ? this.form.phone.replace(' ', '') : null
       try {
         this.form = await this.$axios.$patch(`users/account/${this.$auth.user.id}/`, this.form)
         await this.$auth.fetchUser()

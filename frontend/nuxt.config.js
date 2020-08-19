@@ -41,7 +41,9 @@ export default {
     { src: '~/plugins/vue-swal', mode: 'client' },
     { src: '~/plugins/vue-mask', mode: 'client' },
     { src: '~/plugins/vue-beautiful-chat', mode: 'client' },
-    { src: '~/plugins/localStorage.js', ssr: false, mode: 'client' },
+    { src: '~/plugins/localStorage', ssr: false, mode: 'client' },
+    { src: '~/plugins/particles', mode: 'client' },
+    { src: '~/plugins/phone-field', mode: 'client' },
   ],
   /*
    ** Nuxt.js dev-modules

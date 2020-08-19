@@ -1,5 +1,5 @@
 <template>
-  <v-container>
+  <v-card flat>
     <calculator
       v-if="show === 'calc'"
       hide-offer-names
@@ -44,34 +44,37 @@
       </div>
     </div>
 
-    <contract-online v-else-if="show === 'online'" :offer="offer" />
-
-    <contract-online v-else-if="show === 'assis'" show-additional-fields :offer="offer" />
-
-    <v-row>
+    <v-row v-if="['calc', 'online', 'assis'].includes(show)" style="margin-top: 2cm;">
       <v-col>
+        <v-row>
+          <v-col>
+            <contract-online
+              :show-additional-fields="show === 'assis'"
+              :with-factura="show === 'calc'"
+              :offer="offer"
+            />
+          </v-col>
+        </v-row>
+      </v-col>
+    </v-row>
+    <v-row>
+      <v-spacer />
+      <v-col class="text-center">
         <return-button v-if="show !== 'calc'" :to="null" @click="back" />
       </v-col>
+      <v-spacer />
     </v-row>
-
-    <v-row v-if="show === 'calc'" style="margin-top: 2cm;">
-      <v-col>
-        <contract-online with-factura />
-      </v-col>
-    </v-row>
-  </v-container>
+  </v-card>
 </template>
 <script>
-import Calculator from '~/components/forms/Calculator'
-import ReturnButton from '~/components/buttons/returnButton'
 export default {
   auth: 'guest',
   components: {
-    Calculator,
-    ReturnButton,
-    detailOffer: () => import('~/components/detailOffer'),
-    ContractOnline: () => import('~/components/forms/ContractOnline'),
-    CalculatorDetails: () => import('~/components/CalculatorDetails'),
+    Calculator: () => import('../components/forms/Calculator'),
+    ReturnButton: () => import('../components/buttons/returnButton'),
+    detailOffer: () => import('../components/detailOffer'),
+    ContractOnline: () => import('../components/forms/ContractOnline'),
+    CalculatorDetails: () => import('../components/CalculatorDetails'),
   },
   data() {
     return {

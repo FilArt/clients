@@ -23,15 +23,16 @@ class TarifViewSet(viewsets.GenericViewSet, mixins.ListModelMixin):
 
 
 class OfferViewSet(viewsets.ReadOnlyModelViewSet):
-    queryset = Offer.objects.all()
+    queryset = Offer.objects.exclude(company__name__iexact='OTRA')
     filterset_fields = ["tarif", "is_price_permanent", "company", "name", "id", "client_type"]
     permission_classes: Tuple = tuple()
     ordering = ("name",)
 
     def get_queryset(self):
+        qs = super().get_queryset()
         if "name" in self.request.query_params:
-            return super().get_queryset()
-        return super().get_queryset().distinct("name")
+            return qs
+        return qs.distinct("name")
 
     def get_serializer_class(self):
         if self.detail:

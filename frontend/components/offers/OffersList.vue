@@ -1,15 +1,13 @@
 <template>
-  <v-responsive class="overflow-y-auto">
-    <v-row class="d-flex align-center justify-space-around flex-wrap">
-      <v-col v-for="offer in offers" :key="offer.id">
-        <v-card :to="detailOfferUrl(offer)" nuxt class="mx-auto">
-          <v-img :src="offer.company_logo || '/no-image.svg'" />
-          <v-card-subtitle v-text="'Comercializadora: ' + offer.company" />
-          <v-card-text>{{ offer.name }}</v-card-text>
-        </v-card>
-      </v-col>
-    </v-row>
-  </v-responsive>
+  <v-row class="d-flex align-center justify-space-around flex-wrap">
+    <v-col v-for="offer in offers" :key="offer.id" class="flex-grow-0">
+      <v-card :to="detailOfferUrl(offer)" nuxt class="mx-auto">
+        <v-img max-height="150" max-width="300" :src="offer.company_logo || '/no-image.svg'" />
+        <v-card-subtitle v-text="'Comercializadora: ' + offer.company" />
+        <v-card-text>{{ offer.name }}</v-card-text>
+      </v-card>
+    </v-col>
+  </v-row>
 </template>
 <script>
 export default {

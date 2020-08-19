@@ -1,7 +1,6 @@
 <template>
-  <v-card :loading="loading" flat>
+  <v-card :loading="loading" flat class="d-flex flex-column align-center">
     <v-alert v-show="showResults && !offers.length" type="warning">Nohay ofertas</v-alert>
-
     <v-data-table
       v-show="showResults && offers.length"
       :headers="headers"
@@ -20,7 +19,6 @@
         </v-btn>
       </template>
     </v-data-table>
-
     <div v-show="!showResults">
       <v-form novalidate @submit.prevent="submit">
         <v-card-text class="mx-auto" style="max-width: 1000px;">
@@ -128,8 +126,9 @@
       </v-form>
     </div>
 
-    <v-card-actions>
-      <return-button v-show="showResults" :to="null" @click="showResults = false" />
+    <v-card-actions v-show="showResults">
+      <v-spacer />
+      <return-button :to="null" @click="showResults = false" />
     </v-card-actions>
   </v-card>
 </template>

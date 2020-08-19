@@ -4,9 +4,9 @@
       No encuentras los datos solicitados?
     </div>
 
-    <v-card-title v-else>
+    <div v-else class="text-center" style="font-size: 30px; color: #004680;">
       {{ showAdditionalFields ? 'Contratar online' : 'Contractar con asistente personal' }}
-    </v-card-title>
+    </div>
 
     <div v-if="withFactura" class="pa-5 text-center" style="color: #004680;">
       Envianos un duplicado o foto de su factura y uno de nuestros agentes especializados le enviara el estudio

@@ -1,76 +1,74 @@
 <template>
-  <v-col>
+  <div class="mx-auto d-flex flex-column justify-center pa-3" style="max-width: 1000px;">
+    <p class="text-center headline">
+      {{ hideName ? `Oferta ${offer.id}` : offer.name }}
+    </p>
+    <v-divider />
+
     <v-row align="center">
-      <v-col class="flex-grow-0 pa-0 mx-auto">
-        <v-img height="150" width="300" :src="offer.company_logo || '/no-image.svg'" />
-      </v-col>
-
       <v-col>
-        <p class="text-center headline">
-          {{ hideName ? `Oferta ${offer.id}` : offer.name }}
-        </p>
-        <v-divider />
-        <v-card-text>
-          <v-simple-table class="offer-detail-table pa-3">
-            <template v-slot:default>
-              <tr>
-                <td colspan="2" class="font-weight-light font-italic text-left" style="padding-bottom: 2em;">
-                  {{ offer.description }}
-                </td>
-              </tr>
+        <v-img class="mx-auto" max-height="250" max-width="500" :src="offer.company_logo || '/no-image.svg'" />
+      </v-col>
+      <v-col>
+        <v-simple-table style="max-width: 750px;" class="pa-3">
+          <template v-slot:default>
+            <tr>
+              <td colspan="2" class="font-weight-light font-italic text-left" style="padding-bottom: 2em;">
+                {{ offer.description }}
+              </td>
+            </tr>
 
-              <tr>
-                <td>Tarifa:</td>
-                <td>{{ offer.tarif }}</td>
-              </tr>
+            <tr>
+              <td>Tarifa:</td>
+              <td>{{ offer.tarif }}</td>
+            </tr>
 
-              <tr>
-                <td>Tipo de oferta:</td>
-                <td>
-                  {{ offer.client_type === 0 ? 'Particular' : 'Juridico' }}
-                </td>
-              </tr>
+            <tr>
+              <td>Tipo de oferta:</td>
+              <td>
+                {{ offer.client_type === 0 ? 'Particular' : 'Juridico' }}
+              </td>
+            </tr>
 
-              <tr>
-                <td>Tipo de precio:</td>
-                <td>{{ offer.is_price_permanent }}</td>
-              </tr>
+            <tr>
+              <td>Tipo de precio:</td>
+              <td>{{ offer.is_price_permanent }}</td>
+            </tr>
 
-              <br />
+            <br />
 
-              <tr>
-                <td :rowspan="powers.length + 1">Precio por potencia:</td>
-              </tr>
+            <tr>
+              <td :rowspan="powers.length + 1">Precio por potencia:</td>
+            </tr>
 
-              <tr v-for="power in powers" :key="power.value">
-                <td>{{ power.text }}: {{ power.value }} €</td>
-              </tr>
+            <tr v-for="power in powers" :key="power.value">
+              <td>{{ power.text }}: {{ power.value }} €</td>
+            </tr>
 
-              <br />
+            <br />
 
-              <tr>
-                <td :rowspan="consumptions.length + 1">Precio por consumo:</td>
-              </tr>
-              <tr v-for="consumption in consumptions" :key="consumption.value">
-                <td>{{ consumption.text }}: {{ consumption.value }} €</td>
-              </tr>
-            </template>
-          </v-simple-table>
-        </v-card-text>
-
-        <v-card-actions v-if="$auth.loggedIn && !showCalcDetails">
-          <v-btn rounded block outlined color="primary" @click="addBid">
-            Añadir a cartera
-            <v-icon right>
-              mdi-briefcase
-            </v-icon>
-          </v-btn>
-        </v-card-actions>
+            <tr>
+              <td :rowspan="consumptions.length + 1">Precio por consumo:</td>
+            </tr>
+            <tr v-for="consumption in consumptions" :key="consumption.value">
+              <td>{{ consumption.text }}: {{ consumption.value }} €</td>
+            </tr>
+          </template>
+        </v-simple-table>
       </v-col>
     </v-row>
 
+    <v-card-actions v-if="$auth.loggedIn && !showCalcDetails">
+      <v-btn rounded block outlined color="primary" @click="addBid">
+        Añadir a cartera
+        <v-icon right>
+          mdi-briefcase
+        </v-icon>
+      </v-btn>
+    </v-card-actions>
+
     <calculator-details v-if="showCalcDetails" :offer="offer" />
-  </v-col>
+  </div>
 </template>
 
 <script>

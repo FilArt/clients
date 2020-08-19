@@ -1,9 +1,9 @@
 <template>
-  <v-col>
+  <div class="d-flex flex-column justify-center">
     <v-card v-for="offer in offers" :key="offer.id" style="margin-bottom: 1em;">
       <detail-offer :offer="offer" />
     </v-card>
-  </v-col>
+  </div>
 </template>
 
 <script>

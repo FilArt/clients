@@ -8,7 +8,7 @@ from rest_framework import serializers
 
 from apps.bids.models import Bid
 from apps.calculator.models import Offer
-from apps.users.models import Attachment, CustomUser, Punto, UserSettings
+from apps.users.models import Attachment, CustomUser, Punto, UserSettings, phone_number_validator
 from clients.utils import notify_telegram
 
 logger = logging.getLogger(__name__)
@@ -66,7 +66,8 @@ class AccountSerializer(serializers.ModelSerializer):
     settings = UserSettingsSerializer(required=False)
     first_name = serializers.CharField(min_length=1, allow_null=False, required=True)
     last_name = serializers.CharField(min_length=1, allow_null=False, required=True)
-    phone = serializers.CharField(min_length=9, allow_null=False, required=True)
+    phone = serializers.CharField(min_length=9, max_length=9, allow_null=False, required=True,
+                                  validators=[phone_number_validator])
     is_leed = serializers.BooleanField(read_only=True)
 
     class Meta:

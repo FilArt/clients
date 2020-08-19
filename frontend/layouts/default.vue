@@ -20,6 +20,8 @@
       <v-toolbar-title v-text="title" />
       <v-spacer />
 
+      <particles-bg type="cobweb" :num="20" color="#004680" :bg="true" />
+
       <v-chip>
         {{ $auth.user ? 'id ' + $auth.user.id : '' }}
       </v-chip>
