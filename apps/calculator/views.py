@@ -1,5 +1,4 @@
 import decimal
-from typing import Optional
 
 from django.db import models
 from django.db.models import F, Q, Value
@@ -7,7 +6,6 @@ from django.utils.translation import gettext_lazy as _
 from rest_framework import serializers
 from rest_framework.request import Request
 from rest_framework.response import Response
-from rest_framework.utils.serializer_helpers import ReturnDict
 from rest_framework.views import APIView
 from rest_framework_tracking.mixins import LoggingMixin
 
@@ -169,7 +167,7 @@ class CalculatorSerializer(serializers.ModelSerializer):
             "description": {"read_only": True},
         }
 
-    def get_calculated(self) -> Optional[ReturnDict, ReturnDict]:
+    def get_calculated(self):
         data = self.validated_data
         calculator_settings = CalculatorSettings.objects.first()
         epd = calculator_settings.get_equip(data["tarif"])
