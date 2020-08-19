@@ -25,13 +25,7 @@
             type="text"
             :error-messages="error.last_name"
           />
-          <vue-phone-number-input
-            id="phone-input"
-            v-model="form.phone"
-            no-example
-            no-country-selector
-            :dark="$vuetify.theme.isDark"
-          />
+          <phone-field v-model="form.phone" />
         </v-card-text>
         <v-card-actions>
           <submit-button block label="Guardar" />
@@ -44,6 +38,7 @@
 <script>
 export default {
   components: {
+    PhoneField: () => import('@/components/fields/phoneField'),
     EmailField: () => import('~/components/fields/emailField'),
     SubmitButton: () => import('~/components/buttons/submitButton'),
   },
