@@ -8,5 +8,4 @@ static/
 dump.rdb
 .gitignore
 service_account.json
-poetry.lock
 clients.egg-info
