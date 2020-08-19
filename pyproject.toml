@@ -30,6 +30,7 @@ daphne = "^2.5.0"
 channels = "^2.4.0"
 ipython = "^7.17.0"
 django-jazzmin = "^2.2.6"
+drf-api-tracking = "^1.7.5"
 
 [tool.poetry.dev-dependencies]
 flake8 = "^3.8.3"

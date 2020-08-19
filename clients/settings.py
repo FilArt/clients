@@ -48,6 +48,7 @@ INSTALLED_APPS = [
     "apps.bids",
     "apps.chat",
     "apps.tramitacion",
+    "rest_framework_tracking",
 ]
 
 MIDDLEWARE = [
@@ -63,7 +64,7 @@ MIDDLEWARE = [
 ]
 
 LOCALE_PATHS = (
-    os.path.join(BASE_DIR, "locale"),
+    # os.path.join(BASE_DIR, "locale"),
     os.path.join(BASE_DIR, "apps", "locale"),
 )
 
@@ -190,6 +191,9 @@ LOGGING = {
 # telegram
 TELEGRAM_TOKEN = ""
 TELEGRAM_CHAT_ID = ""
+
+# drf tracking
+DRF_TRACKING_ADMIN_LOG_READONLY = False
 
 try:
     from .local_settings import *  # noqa: F403, F401

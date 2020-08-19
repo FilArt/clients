@@ -1,12 +1,15 @@
 import decimal
+from typing import Optional
 
 from django.db import models
 from django.db.models import F, Q, Value
 from django.utils.translation import gettext_lazy as _
 from rest_framework import serializers
-from rest_framework.decorators import api_view, permission_classes
 from rest_framework.request import Request
 from rest_framework.response import Response
+from rest_framework.utils.serializer_helpers import ReturnDict
+from rest_framework.views import APIView
+from rest_framework_tracking.mixins import LoggingMixin
 
 from .models import CalculatorSettings, Offer, Tarif
 
@@ -166,7 +169,7 @@ class CalculatorSerializer(serializers.ModelSerializer):
             "description": {"read_only": True},
         }
 
-    def get_calculated(self) -> list:
+    def get_calculated(self) -> Optional[ReturnDict, ReturnDict]:
         data = self.validated_data
         calculator_settings = CalculatorSettings.objects.first()
         epd = calculator_settings.get_equip(data["tarif"])
@@ -227,9 +230,12 @@ class CalculatorSerializer(serializers.ModelSerializer):
         ).data
 
 
-@api_view(http_method_names=["POST"])
-@permission_classes([])
-def calculate(request: Request):
-    serializer = CalculatorSerializer(data=request.data)
-    serializer.is_valid(raise_exception=True)
-    return Response(serializer.get_calculated())
+class CalculateApiView(LoggingMixin, APIView):
+    permission_classes = []
+    http_method_names = ['post']
+    logging_methods = ['POST']
+
+    def post(self, request: Request):
+        serializer = CalculatorSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        return Response(serializer.get_calculated())
