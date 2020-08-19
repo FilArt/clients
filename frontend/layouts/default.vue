@@ -41,7 +41,7 @@
     </v-app-bar>
     <v-main>
       <v-breadcrumbs
-        v-if="!['index', 'login', 'calculator', 'comparador'].includes($route.name) && $auth.loggedIn"
+        v-if="!['index', 'login', 'calculator'].includes($route.name) && $auth.loggedIn"
         :items="breadcrumbs"
         large
       >
