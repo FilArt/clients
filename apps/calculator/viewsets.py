@@ -19,7 +19,16 @@ class TarifViewSet(viewsets.GenericViewSet, mixins.ListModelMixin):
     permission_classes: Tuple = tuple()
 
     def list(self, request, *args, **kwargs):
-        return Response(Offer.objects.values_list("tarif", flat=True).distinct().order_by("tarif"))
+        qs = (
+            Offer.objects.filter(
+                tarif__isnull=False,
+            ).exclude(
+                tarif='',
+            ).values_list("tarif", flat=True)
+             .distinct()
+             .order_by("tarif")
+        )
+        return Response(qs)
 
 
 class OfferViewSet(viewsets.ReadOnlyModelViewSet):
