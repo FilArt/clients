@@ -80,6 +80,7 @@ class UserViewSet(DynamicFieldsMixin, mixins.UpdateModelMixin, mixins.ListModelM
     search_fields = ('first_name', 'last_name', 'email', 'phone')
     filterset_fields = {
         'date_joined': ['gte'],
+        'role': ['isnull'],
     }
     pagination_class = UsersPagination
 
@@ -248,3 +249,11 @@ class RequestLogViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
     filterset_fields = {
         'requested_at': ['gte']
     }
+
+    def filter_queryset(self, queryset):
+        distinct = self.request.query_params.get('distinct')
+        if distinct:
+            if distinct not in self.serializer_class.Meta.fields:
+                raise ValidationError({'distinct': ['Invalid option']})
+            queryset = queryset.distinct(distinct)
+        return queryset

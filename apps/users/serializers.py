@@ -162,9 +162,9 @@ class LoadFacturasSerializer(serializers.Serializer):
         return _
 
 
-class RequestLogSerializer(serializers.ModelSerializer):
+class RequestLogSerializer(DynamicFieldsMixin, serializers.ModelSerializer):
     requested_at = DateTimeToDateField()
 
     class Meta:
         model = APIRequestLog
-        fields = ['requested_at']
+        fields = ['requested_at', 'remote_addr']
