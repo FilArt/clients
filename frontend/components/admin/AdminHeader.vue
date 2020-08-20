@@ -6,6 +6,9 @@
     <v-btn nuxt to="/support">
       Tramitacion
     </v-btn>
+    <v-btn nuxt to="/admin/charts">
+      Charts
+    </v-btn>
   </v-btn-toggle>
 </template>
 <script>

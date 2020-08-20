@@ -1,5 +1,6 @@
 from typing import Tuple
 
+from drf_dynamic_fields import DynamicFieldsMixin
 from rest_framework import mixins, viewsets
 from rest_framework.decorators import action
 from rest_framework.exceptions import PermissionDenied, ValidationError
@@ -7,6 +8,7 @@ from rest_framework.generics import get_object_or_404
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.request import Request
 from rest_framework.response import Response
+from rest_framework_tracking.models import APIRequestLog
 
 from apps.bids.models import Bid
 from clients.serializers import (
@@ -28,6 +30,7 @@ from .serializers import (
     RegisterSerializer,
     UserListSerializer,
     UserSerializer,
+    RequestLogSerializer,
 )
 
 
@@ -69,7 +72,8 @@ class AccountViewSet(
         return account
 
 
-class UserViewSet(mixins.UpdateModelMixin, mixins.ListModelMixin, mixins.RetrieveModelMixin, viewsets.GenericViewSet):
+class UserViewSet(DynamicFieldsMixin, mixins.UpdateModelMixin, mixins.ListModelMixin, mixins.RetrieveModelMixin,
+                  viewsets.GenericViewSet):
     queryset = CustomUser.objects.all()
     permission_classes = (IsAuthenticated, AdminTramitacionPermission)
     ordering = ("-id",)
@@ -232,3 +236,9 @@ class WithFacturaContractOnlineViewSet(viewsets.ModelViewSet):
 
 class FastContractViewSet(WithFacturaContractOnlineViewSet):
     serializer_class = FastContractSerializer
+
+
+class RequestLogViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
+    queryset = APIRequestLog.objects.all()
+    serializer_class = RequestLogSerializer
+    permission_classes = (IsAuthenticated, AdminPermission)

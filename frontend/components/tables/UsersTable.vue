@@ -54,6 +54,7 @@
           <v-spacer />
 
           <v-simple-checkbox
+            v-if="showFilters"
             v-model="onlyNewMessages"
             class="text-center"
             on-icon="mdi-message-plus"

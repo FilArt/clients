@@ -9,11 +9,11 @@ from django.utils.translation import gettext_lazy as _
 from drf_dynamic_fields import DynamicFieldsMixin
 from rest_framework import serializers
 from rest_framework.exceptions import ValidationError
+from rest_framework_tracking.models import APIRequestLog
 
 from apps.bids.models import Bid
 from clients.serializers import BidListSerializer, PuntoSerializer
 from clients.utils import notify_telegram
-
 from .models import Attachment, Call, CustomUser, Phone, Punto
 
 logger = logging.getLogger(__name__)
@@ -66,8 +66,19 @@ class RegisterSerializer(serializers.ModelSerializer):
             )
 
 
+class PrettyDateTimeField(serializers.DateTimeField):
+    def to_representation(self, value):
+        return arrow.get(value).humanize(locale=self.context["request"].LANGUAGE_CODE)
+
+
+class DateTimeToDateField(serializers.CharField):
+    def to_representation(self, value):
+        return value.strftime('%d/%m/%Y')
+
+
 class UserListSerializer(DynamicFieldsMixin, serializers.ModelSerializer):
-    date_joined = serializers.SerializerMethodField()
+    date_joined = PrettyDateTimeField()
+    date_joined_date = DateTimeToDateField(source='date_joined')
     last_login = serializers.SerializerMethodField()
     new_messages_count = serializers.SerializerMethodField()
 
@@ -81,14 +92,12 @@ class UserListSerializer(DynamicFieldsMixin, serializers.ModelSerializer):
             "email",
             "phone",
             "date_joined",
+            "date_joined_date",
             "last_login",
             "bids_count",
             "bids_contracted_count",
             "new_messages_count",
         )
-
-    def get_date_joined(self, instance: CustomUser):
-        return arrow.get(instance.date_joined).humanize(locale=self.context["request"].LANGUAGE_CODE)
 
     def get_last_login(self, instance: CustomUser):
         return (
@@ -158,3 +167,11 @@ class LoadFacturasSerializer(serializers.Serializer):
         )
         _ = Attachment.objects.create(punto=punto, attachment_type="factura_1", attachment=factura_1)
         return _
+
+
+class RequestLogSerializer(serializers.ModelSerializer):
+    requested_at = DateTimeToDateField()
+
+    class Meta:
+        model = APIRequestLog
+        fields = ['requested_at']
