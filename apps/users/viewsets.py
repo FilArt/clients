@@ -19,6 +19,7 @@ from clients.serializers import (
     FastContractSerializer,
 )
 from .models import Attachment, Call, CustomUser, Phone, Punto
+from .pagination import UsersPagination
 from .permissions import AdminPermission, AdminTramitacionPermission
 from .serializers import (
     CallSerializer,
@@ -72,15 +73,24 @@ class UserViewSet(mixins.UpdateModelMixin, mixins.ListModelMixin, mixins.Retriev
     queryset = CustomUser.objects.all()
     permission_classes = (IsAuthenticated, AdminTramitacionPermission)
     ordering = ("-id",)
+    search_fields = ('first_name', 'last_name', 'email')
+    pagination_class = UsersPagination
 
     def get_queryset(self):
+        qs = self.queryset
         if self.request.query_params.get("leeds") == "true":
-            return CustomUser.leeds.all()
+            qs = CustomUser.leeds.all()
         elif self.request.query_params.get("clients") == "true":
-            return CustomUser.clients.all()
-        elif self.request.user.role == "support" or "support" in self.request.query_params:
-            return CustomUser.ready_for_tramitacion.all()
-        return self.queryset
+            qs = CustomUser.clients.all()
+        elif self.request.user.role == "support" or self.request.query_params.get('support') == 'true':
+            qs = CustomUser.ready_for_tramitacion.all()
+        return qs
+
+    def filter_queryset(self, queryset):
+        qs = super().filter_queryset(queryset)
+        if self.request.query_params.get('onlyNewMessages') in (True, 'True', 'true'):
+            qs = qs.filter(id__in=self.request.user.unread_messages.values('message__author'))
+        return qs
 
     def get_object(self):
         if self.action in ("update", "partial_update") and self.request.user.role != "admin":

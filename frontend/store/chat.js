@@ -67,7 +67,6 @@ export const mutations = {
   readMessages(state, messagesIds) {
     const messages = [...state.messages]
     state.messages = messages.map((m) => {
-      console.debug(m.id)
       if (messagesIds.includes(m.id)) {
         m.isRead = true
       }

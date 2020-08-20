@@ -19,7 +19,6 @@
     always-scroll-to-bottom
     :show-typing-indicator="showTypingIndicator"
     :message-styling="messageStyling"
-    @onType="handleOnType"
     @edit="doEditMessage"
     @remove="doDeleteMessage"
   />
@@ -201,12 +200,6 @@ export default {
       }).then((willDelete) => {
         if (willDelete) this.chatSocket.send(JSON.stringify({ type: 'delete_message', message_id: message.id }))
       })
-    },
-    handleScrollToTop() {
-      console.debug('scroll on top')
-    },
-    handleOnType() {
-      console.debug('Emit typing event')
     },
   },
 }
