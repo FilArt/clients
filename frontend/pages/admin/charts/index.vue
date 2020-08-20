@@ -32,7 +32,7 @@ export default {
         },
         yAxis: {
           title: {
-            text: 'Quantity',
+            text: 'Número',
           },
         },
         series: [
