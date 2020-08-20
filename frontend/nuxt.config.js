@@ -68,7 +68,7 @@ export default {
     ],
     '@nuxtjs/webpackmonitor',
     'nuxt-compress',
-    'nuxt-highcharts',
+    ['nuxt-highcharts', { exporting: true }],
   ],
   /*
    ** Axios module configuration
@@ -162,6 +162,6 @@ export default {
     },
     parallel: true,
     cache: true,
-    hardSource: true,
+    // hardSource: true,
   },
 }
