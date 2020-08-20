@@ -18,51 +18,63 @@
       @update:options="updateQuery"
     >
       <template v-slot:top>
-        <v-toolbar dense>
-          <v-text-field
-            v-model="search"
-            :disabled="loading"
-            append-icon="mdi-database-search"
-            label="Search"
-            single-line
-            hide-details
-            @click:append="updateQuery({ search: search })"
-            @keydown.enter="updateQuery({ search: search })"
-          />
+        <div class="pa-3">
+          <v-row align="center" class="elevation-1 pa-3 flex-wrap" justify="space-around">
+            <v-col>
+              <v-text-field
+                v-model="search"
+                :disabled="loading"
+                append-icon="mdi-database-search"
+                label="Buscar"
+                hint="buscar por nombre, número de teléfono o correo electrónico"
+                persistent-hint
+                single-line
+                @click:append="updateQuery({ search: search })"
+                @keydown.enter="updateQuery({ search: search })"
+              />
+            </v-col>
 
-          <v-overflow-btn
-            v-if="showFilters"
-            v-model="userType"
-            :disabled="loading"
-            :items="[
-              {
-                text: 'Clientes',
-                value: 'clients',
-              },
-              {
-                text: 'Leeds',
-                value: 'leeds',
-              },
-            ]"
-            dense
-            hide-details
-            class="text-center pa-3"
-            label="Tipo de usuario"
-            @change="updateQuery({ [userType]: true, [userType === 'clients' ? 'leeds' : 'clients']: false })"
-          />
+            <v-col cols="12" lg="4" xl="4" md="4" sm="4">
+              <v-overflow-btn
+                v-if="showFilters"
+                v-model="userType"
+                :disabled="loading"
+                :items="[
+                  {
+                    text: 'Clientes',
+                    value: 'clients',
+                  },
+                  {
+                    text: 'Leeds',
+                    value: 'leeds',
+                  },
+                ]"
+                hint="los clientes son los que firmaron un contrato con nosotros"
+                persistent-hint
+                class="text-center pa-3"
+                label="Tipo de usuario"
+                @change="updateQuery({ [userType]: true, [userType === 'clients' ? 'leeds' : 'clients']: false })"
+              />
+            </v-col>
 
-          <v-spacer />
-
-          <v-simple-checkbox
-            v-if="showFilters"
-            v-model="onlyNewMessages"
-            class="text-center"
-            on-icon="mdi-message-plus"
-            off-icon="mdi-message-minus"
-            color="red"
-            @input="updateQuery({ onlyNewMessages: onlyNewMessages })"
-          />
-        </v-toolbar>
+            <v-col cols="12" lg="1" xl="1" md="1" sm="1">
+              <v-tooltip v-if="showFilters" bottom>
+                <template v-slot:activator="{ on }">
+                  <v-simple-checkbox
+                    v-model="onlyNewMessages"
+                    class="text-center"
+                    on-icon="mdi-message-plus"
+                    off-icon="mdi-message-minus"
+                    color="red"
+                    v-on="on"
+                    @input="updateQuery({ onlyNewMessages: onlyNewMessages })"
+                  />
+                </template>
+                <span>Filtro por nuevo mensajes</span>
+              </v-tooltip>
+            </v-col>
+          </v-row>
+        </div>
       </template>
 
       <template v-slot:[`item.email`]="{ item }">
@@ -133,12 +145,10 @@ export default {
         {
           text: 'Date joined',
           value: 'date_joined',
-          sortable: false,
         },
         {
           text: 'Last login',
           value: 'last_login',
-          sortable: false,
         },
         {
           text: 'Bids',

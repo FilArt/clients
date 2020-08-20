@@ -77,7 +77,7 @@ class UserViewSet(DynamicFieldsMixin, mixins.UpdateModelMixin, mixins.ListModelM
     queryset = CustomUser.objects.all()
     permission_classes = (IsAuthenticated, AdminTramitacionPermission)
     ordering = ("-id",)
-    search_fields = ('first_name', 'last_name', 'email')
+    search_fields = ('first_name', 'last_name', 'email', 'phone')
     filterset_fields = {
         'date_joined': ['gte'],
     }

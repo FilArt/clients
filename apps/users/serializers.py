@@ -68,18 +68,18 @@ class RegisterSerializer(serializers.ModelSerializer):
 
 class PrettyDateTimeField(serializers.DateTimeField):
     def to_representation(self, value):
-        return arrow.get(value).humanize(locale=self.context["request"].LANGUAGE_CODE)
+        return arrow.get(value).humanize(locale=self.context["request"].LANGUAGE_CODE) if value else '-'
 
 
 class DateTimeToDateField(serializers.CharField):
     def to_representation(self, value):
-        return value.strftime('%d/%m/%Y')
+        return value.strftime('%d/%m/%Y') if value else '-'
 
 
 class UserListSerializer(DynamicFieldsMixin, serializers.ModelSerializer):
     date_joined = PrettyDateTimeField()
     date_joined_date = DateTimeToDateField(source='date_joined')
-    last_login = serializers.SerializerMethodField()
+    last_login = PrettyDateTimeField()
     new_messages_count = serializers.SerializerMethodField()
 
     class Meta:
@@ -97,13 +97,6 @@ class UserListSerializer(DynamicFieldsMixin, serializers.ModelSerializer):
             "bids_count",
             "bids_contracted_count",
             "new_messages_count",
-        )
-
-    def get_last_login(self, instance: CustomUser):
-        return (
-            arrow.get(instance.last_login).humanize(locale=self.context["request"].LANGUAGE_CODE)
-            if instance.last_login
-            else "-"
         )
 
     def get_new_messages_count(self, instance: CustomUser):
