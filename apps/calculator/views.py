@@ -119,7 +119,7 @@ class CalculatorSerializer(serializers.ModelSerializer):
 
     with_calculations = serializers.BooleanField(default=False, write_only=True)
 
-    after_rental = BeautyFloatField(show_euro=True)
+    rental = BeautyFloatField(show_euro=True)
     profit = BeautyFloatField(show_euro=True)
     profit_percent = serializers.IntegerField(read_only=True)
     total = BeautyFloatField(show_euro=True)
@@ -152,7 +152,7 @@ class CalculatorSerializer(serializers.ModelSerializer):
             "c_st_c3",
             "tax",
             "iva",
-            "after_rental",
+            "rental",
             "total",
             "current_price",
             "profit",
@@ -210,7 +210,11 @@ class CalculatorSerializer(serializers.ModelSerializer):
             .annotate(total=F("after_rental") + F("iva") + F("tax"))
             .annotate(profit=-F("total") + current_price)
             .annotate(annual_total=F("profit") / Value(data["period"]) * Value(365))
-            .annotate(profit_percent=F("profit") / F("total") * Value(100), current_price=current_price)
+            .annotate(
+                profit_percent=F("profit") / F("total") * Value(100),
+                current_price=current_price,
+                rental=Value(rental, output_field=models.FloatField()),
+            )
         ).order_by("total")
 
         offers_count = qs.count()

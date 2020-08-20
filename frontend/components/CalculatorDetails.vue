@@ -48,7 +48,7 @@
             Alquiler de equipos
           </v-col>
           <v-col class="text-no-wrap" style="font-size: 12px;">
-            {{ calculations.after_rental }}
+            {{ calculations.rental }}
           </v-col>
         </v-row>
 
