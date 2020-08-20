@@ -78,6 +78,9 @@ class UserViewSet(DynamicFieldsMixin, mixins.UpdateModelMixin, mixins.ListModelM
     permission_classes = (IsAuthenticated, AdminTramitacionPermission)
     ordering = ("-id",)
     search_fields = ('first_name', 'last_name', 'email')
+    filterset_fields = {
+        'date_joined': ['gte'],
+    }
     pagination_class = UsersPagination
 
     def get_queryset(self):
@@ -242,3 +245,6 @@ class RequestLogViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
     queryset = APIRequestLog.objects.all()
     serializer_class = RequestLogSerializer
     permission_classes = (IsAuthenticated, AdminPermission)
+    filterset_fields = {
+        'requested_at': ['gte']
+    }
