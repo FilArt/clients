@@ -79,6 +79,7 @@ export const mutations = {
   },
   closeChat(state) {
     state.isChatOpen = false
+    state.participant = null
   },
   setParticipant(state, p) {
     state.participant = p

@@ -122,6 +122,9 @@ export default {
       this.createSocket()
     }
   },
+  beforeDestroy() {
+    this.$store.commit('chat/setParticipant', null)
+  },
   methods: {
     ...mapActions({
       getMessages: 'chat/getMessages',
