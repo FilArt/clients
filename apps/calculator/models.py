@@ -5,11 +5,13 @@ from enum import Enum, unique
 import gspread
 from django.conf import settings
 from django.db import models
+from django.db.models import Manager
 from django.utils.translation import gettext_lazy as _
 
 from apps.calculator.fields import NameField
 from clients.utils import PositiveNullableFloatField
 from .fields import is_positive
+from .managers import WithoutOtraManager
 
 logger = logging.getLogger(__name__)
 
@@ -105,6 +107,8 @@ class Offer(models.Model):
         ("Fijo", _("Fijo")),
         ("Indexado", _("Indexado")),
     )
+    objects = WithoutOtraManager()
+    default = Manager()
 
     uuid = models.UUIDField(unique=True)
     company = models.ForeignKey(Company, on_delete=models.CASCADE)
@@ -158,7 +162,7 @@ class Offer(models.Model):
             )
 
         uuids = [r["UUID"] for r in records]
-        Offer.objects.exclude(uuid__in=uuids).exclude(name=Offer.OTRA_OFFER_NAME).delete()
+        Offer.objects.exclude(uuid__in=uuids).delete()
         logger.info("after:", Offer.objects.count())
         logger.info("all:", len(uuids))
 
