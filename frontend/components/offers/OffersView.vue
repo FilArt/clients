@@ -17,7 +17,6 @@
 </template>
 
 <script>
-const filterFields = ['id', 'company', 'company_logo', 'name', 'is_price_permanent'].join(',')
 export default {
   name: 'OffersView',
   components: {
@@ -53,7 +52,7 @@ export default {
       this.loading = true
       try {
         this.offers = await this.$axios.$get('calculator/offers/', {
-          params: { ...this.filters, fields: filterFields },
+          params: { ...this.filters },
         })
       } catch (e) {
         const errData = e.response.data
