@@ -1,13 +1,12 @@
 import arrow
 from rest_framework import serializers
 
-from clients.serializers import BidListSerializer, OfferSerializer, PuntoSerializer
-
+from clients.serializers import BidListSerializer, PuntoSerializer, DetailOfferSerializer
 from .models import Bid, BidStory
 
 
 class BidSerializer(BidListSerializer):
-    offer = OfferSerializer()
+    offer = DetailOfferSerializer()
     puntos = serializers.ListSerializer(child=PuntoSerializer())
 
     class Meta:

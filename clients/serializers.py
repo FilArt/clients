@@ -143,11 +143,29 @@ class OfferListSerializer(DynamicFieldsMixin, serializers.ModelSerializer):
         ]
 
 
-class OfferSerializer(OfferListSerializer):
+class DetailOfferSerializer(OfferListSerializer):
     class Meta:
         model = Offer
-        depth = 1
-        fields = "__all__"
+        fields = [
+            'id',
+            'company',
+            'company_logo',
+            'c1',
+            'c2',
+            'c3',
+            'p1',
+            'p2',
+            'p3',
+            'tarif',
+            'description',
+            'name',
+            'power_min',
+            'power_max',
+            'consumption_min',
+            'consumption_max',
+            'client_type',
+            'is_price_permanent',
+        ]
 
 
 class SimpleAccountSerializer(AccountSerializer):

@@ -3,8 +3,7 @@ from typing import Tuple
 from rest_framework import mixins, viewsets
 from rest_framework.response import Response
 
-from clients.serializers import OfferListSerializer, OfferSerializer
-
+from clients.serializers import OfferListSerializer, DetailOfferSerializer
 from .models import Company, Offer
 from .serializers import CompanySerializer
 
@@ -45,5 +44,5 @@ class OfferViewSet(viewsets.ReadOnlyModelViewSet):
 
     def get_serializer_class(self):
         if self.detail:
-            return OfferSerializer
+            return DetailOfferSerializer
         return OfferListSerializer
