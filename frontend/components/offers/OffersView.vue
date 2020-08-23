@@ -13,8 +13,6 @@
     <v-card-text>
       <offers-list :offers="offers" :filters="filters" />
     </v-card-text>
-
-    <go-up-button style="margin-bottom: 5rem; margin-right: 5px;" />
   </v-card>
 </template>
 
@@ -25,7 +23,6 @@ export default {
   components: {
     OffersListToolbar: () => import('~/components/offers/OffersListToolbar'),
     OffersList: () => import('~/components/offers/OffersList'),
-    GoUpButton: () => import('~/components/buttons/goUpButton'),
   },
   props: {
     defaultFilters: {
