@@ -53,7 +53,7 @@
               </v-col>
             </v-row>
           </v-card-title>
-          <v-card-text>
+          <v-card-text v-if="history.length">
             <history-list :history="history" />
           </v-card-text>
         </v-card>
