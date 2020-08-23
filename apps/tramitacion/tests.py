@@ -3,23 +3,24 @@ from uuid import uuid4
 from django.urls import reverse
 from rest_framework import status
 from rest_framework.test import APITestCase
+from rest_framework_simplejwt.tokens import RefreshToken
 
 from apps.bids.models import Bid
 from apps.calculator.models import Company, Offer
 from apps.users.models import CustomUser
-
 from .models import Tramitacion
 
 
 class ClientTramitacionTests(APITestCase):
     def setUp(self) -> None:
-        self.user = CustomUser.objects.create(email="client@mail.com")
-        company = Company.objects.create()
-        offer = Offer.objects.create(uuid=uuid4(), client_type=0, company=company)
-        bid = Bid.objects.create(offer=offer, user=self.user)
-        self.tramitacion: Tramitacion = Tramitacion.objects.create(bid=bid)
+        self.user, _ = CustomUser.objects.get_or_create(email="client@mail.com")
+        company, _ = Company.objects.get_or_create(name='test')
+        self.offer, _ = Offer.objects.get_or_create(client_type=0, company=company, defaults=dict(uuid=uuid4()))
+        bid, _ = Bid.objects.get_or_create(offer=self.offer, user=self.user)
+        self.tramitacion, _ = Tramitacion.objects.get_or_create(bid=bid)
 
-        self.client.force_login(self.user)
+        refresh_token = RefreshToken.for_user(self.user)
+        self.client.credentials(HTTP_AUTHORIZATION=f'Bearer {refresh_token.access_token}')
 
     def test_get_tramitacions(self):
         """
@@ -28,14 +29,6 @@ class ClientTramitacionTests(APITestCase):
         url = reverse("tramitacion-list")
         response = self.client.get(url)
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
-
-    def test_get_tramitacion(self):
-        """
-        Ensure detail view accesible by client
-        """
-        url = reverse("tramitacion-detail", args=[self.tramitacion.id])
-        response = self.client.get(url)
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
 
     def test_create_tramitacion(self):
         url = reverse("tramitacion-list")
@@ -47,7 +40,8 @@ class TramitacionTests(ClientTramitacionTests):
     def setUp(self) -> None:
         super().setUp()
         self.support = CustomUser.objects.create(email="support@mail.com", role="support")
-        self.client.force_login(self.support)
+        refresh_token = RefreshToken.for_user(self.support)
+        self.client.credentials(HTTP_AUTHORIZATION=f'Bearer {refresh_token.access_token}')
 
     def test_get_tramitacions(self):
         """
@@ -90,7 +84,7 @@ class TramitacionTests(ClientTramitacionTests):
 
     def test_update_tramitacion_bid(self):
         url = reverse("tramitacion-detail", args=[self.tramitacion.id])
-        bid = Bid.objects.create(user=self.user)
+        bid = Bid.objects.create(user=self.user, offer=self.offer)
         data = {"bid": bid.id}
         response = self.client.patch(url, data=data, format="json")
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
