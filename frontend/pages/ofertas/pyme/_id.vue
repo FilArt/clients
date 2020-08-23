@@ -1,6 +1,6 @@
 <template>
   <div>
-    <detail-offer v-for="offer in offers" :key="offer.id" :offer="offer" />
+    <detail-offer v-for="offer in offers" :key="offer.id" :offer="offer" show-add-btn />
   </div>
 </template>
 

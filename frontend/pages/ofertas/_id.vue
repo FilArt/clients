@@ -1,7 +1,7 @@
 <template>
   <div>
     <v-card v-for="offer in offers" :key="offer.id" style="margin-bottom: 1em;">
-      <detail-offer :offer="offer" />
+      <detail-offer :offer="offer" show-add-btn />
     </v-card>
   </div>
 </template>

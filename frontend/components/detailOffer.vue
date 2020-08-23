@@ -58,7 +58,7 @@
       </v-col>
     </v-row>
 
-    <v-card-actions v-if="$auth.loggedIn && !showCalcDetails">
+    <v-card-actions v-if="showAddBtn && $auth.loggedIn && !showCalcDetails">
       <v-btn rounded block outlined color="primary" @click="addBid">
         Añadir a cartera
         <v-icon right>
@@ -78,6 +78,10 @@ export default {
     CalculatorDetails: () => import('~/components/CalculatorDetails'),
   },
   props: {
+    showAddBtn: {
+      type: Boolean,
+      default: false,
+    },
     hideName: {
       type: Boolean,
       default: false,
