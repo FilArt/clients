@@ -131,7 +131,7 @@ export default {
       return items
     },
     showChat() {
-      return this.$auth.loggedIn && this.$auth.user.role !== 'admin'
+      return this.$auth.loggedIn && !this.$auth.user.role
     },
   },
   async created() {
