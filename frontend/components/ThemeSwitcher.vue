@@ -19,8 +19,7 @@ export default {
   },
   methods: {
     async switchTheme() {
-      const isDark = this.$vuetify.theme.isDark
-      const newTheme = !isDark
+      const newTheme = !this.$vuetify.theme.isDark
       this.$vuetify.theme.isDark = newTheme
       await this.$axios.$patch(`users/account/${this.$auth.user.id}/`, {
         settings: {

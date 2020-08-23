@@ -107,6 +107,7 @@
 
 <script>
 export default {
+  auth: 'guest',
   components: { GGLogo: () => import('~/components/GGLogo'), Privacy: () => import('~/components/other/Privacy') },
   data: () => ({
     loading: false,

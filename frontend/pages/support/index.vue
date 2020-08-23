@@ -19,7 +19,9 @@ export default {
   async asyncData({ $axios }) {
     const headers = [
       { text: 'ID', value: 'id' },
-      { text: 'Usuario', value: 'fullname' },
+      { text: 'Email', value: 'email' },
+      { text: 'Nombre', value: 'first_name' },
+      { text: 'Apellido', value: 'last_name' },
       { text: 'Bids', value: 'bids_count' },
       { text: 'Bids listo', value: 'bids_contracted_count' },
     ]

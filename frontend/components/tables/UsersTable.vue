@@ -92,9 +92,7 @@
       </template>
 
       <template v-if="$auth.user.role === 'admin'" v-slot:[`item.actions`]="{ item }">
-        <v-btn icon @click="deleteUser(item)">
-          <v-icon color="error">mdi-trash-can-outline</v-icon>
-        </v-btn>
+        <delete-button @click="deleteUser(item)" />
       </template>
     </v-data-table>
 
@@ -112,6 +110,7 @@
 export default {
   name: 'UsersTable',
   components: {
+    DeleteButton: () => import('@/components/buttons/deleteButton'),
     Chat: () => import('~/components/chat/Chat'),
   },
   props: {
