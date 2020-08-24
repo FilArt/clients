@@ -81,6 +81,8 @@ class UserListSerializer(DynamicFieldsMixin, serializers.ModelSerializer):
     date_joined_date = DateTimeToDateField(source='date_joined')
     last_login = PrettyDateTimeField()
     new_messages_count = serializers.SerializerMethodField()
+    affiliate = serializers.CharField()
+    responsible = serializers.CharField()
 
     class Meta:
         model = CustomUser
@@ -97,6 +99,8 @@ class UserListSerializer(DynamicFieldsMixin, serializers.ModelSerializer):
             "bids_count",
             "bids_contracted_count",
             "new_messages_count",
+            "affiliate",
+            "responsible",
         )
 
     def get_new_messages_count(self, instance: CustomUser):
@@ -129,6 +133,9 @@ class UserSerializer(UserListSerializer):
             "cif_dni",
             "legal_representative",
             "date_joined",
+            "last_modified",
+            "last_login",
+            "affiliate",
         ]
 
 

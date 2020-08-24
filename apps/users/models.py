@@ -55,6 +55,8 @@ class CustomUser(AbstractUser):
         (None, _("Client")),
         ("support", _("Support")),
         ("admin", _("Admin")),
+        ("agent", _("Agent")),
+        ("affiliate", _("Affiliate")),
     )
     SOURCES_CHOICES = (("default", _("Default")),)
 
@@ -79,12 +81,16 @@ class CustomUser(AbstractUser):
     permissions = ArrayField(
         models.CharField(choices=PERMISSIONS_CHOICES, max_length=30),
         default=get_default_user_permissions,
-        help_text=pgettext_lazy("help text for user permissions field", "Possible values:")
-        + " "
-        + ", ".join(get_default_user_permissions()),
+        help_text='%s %s' % (
+            pgettext_lazy("help text for user permissions field", "Possible values:"),
+            ", ".join(get_default_user_permissions())
+        )
     )
 
-    invited_by = models.ForeignKey("users.CustomUser", blank=True, null=True, on_delete=models.SET_NULL)
+    invited_by = models.ForeignKey("users.CustomUser", blank=True, null=True, related_name='invites',
+                                   on_delete=models.SET_NULL)
+    responsible = models.ForeignKey("users.CustomUser", blank=True, null=True, related_name='under_responsibility',
+                                    on_delete=models.SET_NULL)
 
     objects = CustomUserManager()
     clients = ClientsManager()
@@ -124,6 +130,12 @@ class CustomUser(AbstractUser):
         if self.first_name and self.last_name:
             return f"{self.first_name} {self.last_name}"
         return self.email
+
+    @property
+    def affiliate(self):
+        if self.invited_by:
+            return self.invited_by.fullname
+        return self.get_source_display()
 
     def __str__(self):
         return self.fullname
@@ -209,6 +221,7 @@ class Punto(models.Model):
 
     CATEGORY_CHOICES = (("physical", _("Physical")), ("autonomous", _("Autonomous")), ("business", _("Business")))
     PROVINCE_CHOICES = [(c, c) for c in CITIES]
+
     bid = models.ForeignKey("bids.Bid", on_delete=models.CASCADE, related_name="puntos")
     user = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name="puntos")
     name = MyCharField(verbose_name=_("Name"))
@@ -255,6 +268,9 @@ class Punto(models.Model):
     consumo_annual_luz = models.FloatField(verbose_name=_("Annual consumption"), blank=True, null=True)
     consumo_annual_gas = models.FloatField(verbose_name=_("Annual consumption (gas)"), blank=True, null=True)
     category = models.CharField(choices=CATEGORY_CHOICES, max_length=20)
+
+    legal_representative = models.CharField(max_length=200, blank=True, null=True)
+    dni = models.CharField(max_length=200, blank=True, null=True)
 
     class Meta:
         db_table = "puntos"

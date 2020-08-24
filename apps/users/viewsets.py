@@ -20,6 +20,7 @@ from clients.serializers import (
     WithFacturaContractOnlineSerializer,
     FastContractSerializer,
 )
+from .filters import UserFilter
 from .models import Attachment, Call, CustomUser, Phone, Punto
 from .pagination import UsersPagination
 from .permissions import AdminPermission, AdminTramitacionPermission
@@ -78,27 +79,8 @@ class UserViewSet(DynamicFieldsMixin, mixins.UpdateModelMixin, mixins.ListModelM
     permission_classes = (IsAuthenticated, AdminTramitacionPermission)
     ordering = ("-id",)
     search_fields = ('first_name', 'last_name', 'email', 'phone')
-    filterset_fields = {
-        'date_joined': ['gte'],
-        'role': ['isnull'],
-    }
     pagination_class = UsersPagination
-
-    def get_queryset(self):
-        qs = self.queryset
-        if self.request.query_params.get("leeds") == "true":
-            qs = CustomUser.leeds.all()
-        elif self.request.query_params.get("clients") == "true":
-            qs = CustomUser.clients.all()
-        elif self.request.user.role == "support" or self.request.query_params.get('support') == 'true':
-            qs = CustomUser.ready_for_tramitacion.all()
-        return qs
-
-    def filter_queryset(self, queryset):
-        qs = super().filter_queryset(queryset)
-        if self.request.query_params.get('onlyNewMessages') in (True, 'True', 'true'):
-            qs = qs.filter(id__in=self.request.user.unread_messages.values('message__author'))
-        return qs
+    filterset_class = UserFilter
 
     def get_object(self):
         if self.action in ("update", "partial_update") and self.request.user.role != "admin":
@@ -165,17 +147,11 @@ class PuntoViewSet(viewsets.ModelViewSet):
         serializer.save(user=bid.user, bid=bid)
 
     @action(methods=["GET"], detail=False)
-    def get_headers(self, request: Request):
-        return Response(
-            [{"name": f.verbose_name, "value": f.name, "hint": f.help_text} for f in Punto._meta.fields[3:]]
-        )
-
-    @action(methods=["GET"], detail=False)
-    def get_categories(self, request: Request):
+    def get_categories(self, _):
         return Response([{"name": f[1], "value": f[0]} for f in Punto.CATEGORY_CHOICES])
 
     @action(methods=["GET"], detail=False)
-    def get_cities(self, request: Request):
+    def get_cities(self, _):
         return Response(Punto.CITIES)
 
 
