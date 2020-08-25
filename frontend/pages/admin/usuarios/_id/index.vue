@@ -1,5 +1,5 @@
 <template>
-  <v-card>
+  <v-card class="pa-3">
     <v-card-text>
       <admin-header />
     </v-card-text>
@@ -7,23 +7,39 @@
     <v-card-title>{{ fullname }}</v-card-title>
 
     <v-card-text>
-      <v-row>
-        <v-col>
-          <p>Telefonos</p>
-          <p v-for="phone in [...user.phones, { number: user.phone }].filter((n) => n)" :key="phone.id">
-            {{ phone.number }}
-          </p>
+      <v-row class="flex-wrap">
+        <v-col md="6" cols="12">
+          <v-toolbar elevation="10" short dense>
+            <v-spacer />
+            <v-toolbar-title>
+              Datos de contacto
+            </v-toolbar-title>
+            <v-spacer />
+          </v-toolbar>
+          <v-card elevation="10" class="pa-3">
+            <v-row>
+              <v-col v-for="item in contactInfo" :key="item.value" xl="4" md="6" cols="12">
+                <v-text-field :prepend-icon="item.icon" :label="item.text" :value="item.value" filled />
+              </v-col>
+            </v-row>
+          </v-card>
         </v-col>
 
         <v-col>
-          <p>Email: {{ user.email }}</p>
-          <p>DNI: {{ user.dni }}</p>
-          <p>DNI/CIF: {{ user.dni_cif }}</p>
-          <p>Representante legal: {{ user.legal_representative }}</p>
-        </v-col>
-
-        <v-col>
-          <p>Fecha de creación: {{ user.date_joined }}</p>
+          <v-toolbar short dense elevation="10">
+            <v-spacer />
+            <v-toolbar-title>
+              Otro
+            </v-toolbar-title>
+            <v-spacer />
+          </v-toolbar>
+          <v-card elevation="10" class="pa-3">
+            <v-row class="flex-wrap">
+              <v-col v-for="date in datesInfo" :key="date.value" xl="4" md="6" cols="12">
+                <v-text-field :prepend-icon="date.icon" :label="date.text" :value="date.value" outlined shaped />
+              </v-col>
+            </v-row>
+          </v-card>
         </v-col>
       </v-row>
     </v-card-text>
@@ -34,7 +50,6 @@
         <v-tab :disabled="!calls.length"> Llamadas ({{ calls.length }}) </v-tab>
         <v-tab>Historia</v-tab>
         <v-tab :disabled="!puntos.length"> Puntos suministros ({{ puntos.length }}) </v-tab>
-        <v-tab :disabled="!attachments.length"> Documentos ({{ attachments.length }}) </v-tab>
 
         <v-tabs-items v-model="tabs">
           <v-tab-item>
@@ -75,16 +90,6 @@
           <v-tab-item>
             <puntos-list :puntos="puntos" editable @punto-updated="fetchPuntos" />
           </v-tab-item>
-
-          <v-tab-item>
-            <v-row v-for="attachment in attachments" :key="attachment.id">
-              <v-col>
-                <v-chip target="_blank" :href="attachment.attachment">
-                  {{ attachment.type_verbose_name }} (punto: {{ attachment.punto }})
-                </v-chip>
-              </v-col>
-            </v-row>
-          </v-tab-item>
         </v-tabs-items>
       </v-tabs>
     </v-card-text>
@@ -118,10 +123,57 @@ export default {
     return {
       user,
       participant,
+      calls,
       puntos: await $axios.$get(`/users/puntos/?user=${params.id}`),
       history: await $axios.$get(`/bids/history/?user=${params.id}`),
-      attachments: await $axios.$get(`/users/attachments/?user=${params.id}`),
-      calls,
+      contactInfo: [
+        {
+          icon: 'mdi-account',
+          text: 'Representante legal',
+          value: user.legal_representative,
+        },
+        ...[...user.phones, { number: user.phone }]
+          .filter((n) => n)
+          .map((phone) => {
+            return {
+              icon: 'mdi-phone',
+              text: 'Telefono',
+              value: phone.number,
+            }
+          }),
+        {
+          icon: 'mdi-email',
+          text: 'Email',
+          value: user.email,
+        },
+      ],
+      datesInfo: [
+        {
+          icon: 'mdi-calendar',
+          text: 'Ultima entrada',
+          value: user.last_login,
+        },
+        {
+          icon: 'mdi-calendar',
+          text: 'Fecha de registro',
+          value: user.date_joined,
+        },
+        {
+          icon: 'mdi-calendar',
+          text: 'Fecha firma',
+          value: user.last_modified,
+        },
+        {
+          icon: 'mdi-account',
+          text: 'Responsable',
+          value: user.responsible,
+        },
+        {
+          icon: 'mdi-target',
+          text: 'Origin',
+          value: user.affiliate,
+        },
+      ],
     }
   },
   data() {
