@@ -15,7 +15,6 @@
         nextIcon: 'mdi-plus',
       }"
       class="elevation-1"
-      @update:options="updateQuery"
     >
       <template v-slot:top>
         <div class="pa-3">
@@ -37,23 +36,14 @@
             <v-col cols="12" lg="4" xl="4" md="4" sm="4">
               <v-overflow-btn
                 v-if="showFilters"
-                v-model="userType"
+                v-model="role"
                 :disabled="loading"
-                :items="[
-                  {
-                    text: 'Clientes',
-                    value: 'clients',
-                  },
-                  {
-                    text: 'Leeds',
-                    value: 'leeds',
-                  },
-                ]"
+                :items="userRoles"
                 hint="los clientes son los que firmaron un contrato con nosotros"
                 persistent-hint
                 class="text-center pa-3"
                 label="Tipo de usuario"
-                @change="updateQuery({ [userType]: true, [userType === 'clients' ? 'leeds' : 'clients']: false })"
+                @change="updateQuery({ user_role: role })"
               />
             </v-col>
 
@@ -78,7 +68,7 @@
       </template>
 
       <template v-slot:[`item.email`]="{ item }">
-        <nuxt-link :to="$route.path.endsWith('/') ? $route.path + item.id : $route.path + '/' + item.id">
+        <nuxt-link :to="isSupport ? `/support/${item.id}` : `/admin/usuarios/${item.id}`">
           {{ item.email }}
         </nuxt-link>
       </template>
@@ -91,7 +81,7 @@
         </v-badge>
       </template>
 
-      <template v-if="$auth.user.role === 'admin'" v-slot:[`item.actions`]="{ item }">
+      <template v-if="allowDelete && $auth.user.role === 'admin'" v-slot:[`item.actions`]="{ item }">
         <delete-button @click="deleteUser(item)" />
       </template>
     </v-data-table>
@@ -107,6 +97,8 @@
 </template>
 
 <script>
+import constants from '@/lib/constants'
+
 export default {
   name: 'UsersTable',
   components: {
@@ -114,11 +106,23 @@ export default {
     Chat: () => import('~/components/chat/Chat'),
   },
   props: {
+    allowDelete: {
+      type: Boolean,
+      default: false,
+    },
     showFilters: {
       type: Boolean,
       default: false,
     },
-    headers: {
+    isSupport: {
+      type: Boolean,
+      default: false,
+    },
+    defaultRole: {
+      type: String,
+      default: null,
+    },
+    defaultHeaders: {
       type: Array,
       default: () => [
         {
@@ -165,12 +169,16 @@ export default {
         },
       ],
     },
+    additionalHeaders: {
+      type: Array,
+      default: () => [],
+    },
   },
   data() {
-    const q = this.$route.query
     return {
+      userRoles: Object.values(constants.userRoles).filter((ut) => !['clients', 'leeds'].includes(ut.value)),
       search: '',
-      userType: q.clients ? 'clients' : q.leeds ? 'leeds' : null,
+      role: this.defaultRole,
       users: [],
       loading: false,
       total: 0,
@@ -178,8 +186,23 @@ export default {
         page: 1,
       },
       onlyNewMessages: false,
-      query: { support: this.$route.name === 'support' },
+      query: {
+        user_role: this.defaultRole,
+        is_support: this.isSupport,
+      },
     }
+  },
+  computed: {
+    headers() {
+      const _h = this.defaultHeaders
+      this.additionalHeaders.forEach((header) => {
+        _h.splice(header.index, 0, header.value)
+      })
+      return _h
+    },
+  },
+  mounted() {
+    if (this.role || this.query.is_support) this.fetchUsers()
   },
   methods: {
     fetchUsers() {

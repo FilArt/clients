@@ -27,13 +27,13 @@
             />
           </v-radio-group>
 
-          <div v-for="field in fields" :key="field.value">
+          <div v-for="field in puntoFields" :key="field.value">
             <company-select v-if="field.value === 'company_luz' && admin" v-model="newPunto.company_luz" />
 
             <v-autocomplete
               v-else-if="field.value === 'province'"
               v-model="newPunto.province"
-              :label="field.name"
+              :label="field.text"
               :hint="field.hint"
               :name="field.value"
               prepend-icon="mdi-city"
@@ -43,34 +43,10 @@
 
             <v-text-field
               v-else
-              v-show="
-                [
-                  'company_luz',
-                  'category',
-                  'name',
-                  'c1',
-                  'c2',
-                  'c3',
-                  'p1',
-                  'p2',
-                  'p3',
-                  'company_gas',
-                  'last_time_company_luz_changed',
-                  'last_time_company_gas_changed',
-                  'cups_luz',
-                  'cups_gas',
-                  'tarif_luz',
-                  'tarif_gas',
-                  'consumo_annual_luz',
-                  'consumo_annual_gas',
-                ].includes(field.value)
-                  ? admin
-                  : true
-              "
               v-model="newPunto[field.value]"
               class="pa-3"
-              :prepend-icon="fieldIcons[field.value]"
-              :label="field.name"
+              :prepend-icon="field.icon"
+              :label="field.text"
               :hint="field.hint"
               :name="field.value"
               :error-messages="errors[field.value]"
@@ -120,6 +96,8 @@
   </v-dialog>
 </template>
 <script>
+import constants from '@/lib/constants'
+
 export default {
   name: 'AddPunto',
   components: {
@@ -151,14 +129,19 @@ export default {
   },
   data() {
     return {
+      puntoFields: Object.values(constants.puntoFields)
+        .filter((field) => this.admin || !field.onlyAdmin)
+        .map((field) => {
+          return {
+            text: field.text,
+            value: field.value,
+            icon: field.icon,
+          }
+        }),
       dialog: false,
       newPunto: this.punto || {},
       errors: {},
       attachments: (this.punto || {}).attachments || [],
-      fieldIcons: {
-        address: 'mdi-map-marker',
-        iban: 'mdi-bank',
-      },
       fileFields: [
         {
           name: 'factura',
@@ -199,9 +182,6 @@ export default {
     admin() {
       return this.$auth.user.role === 'admin'
     },
-    fields() {
-      return this.$store.state.puntoHeaders
-    },
     categories() {
       return this.$store.state.puntoCategories.filter((cat) => {
         return !(this.offerClientType === 1 && cat.value === 'physical')
@@ -219,9 +199,6 @@ export default {
     },
   },
   async mounted() {
-    if (!this.fields || !this.fields.length) {
-      this.$store.commit('setPuntoHeaders', await this.$axios.$get('/users/puntos/get_headers/'))
-    }
     if (this.punto) {
       this.newPunto = this.punto
     }

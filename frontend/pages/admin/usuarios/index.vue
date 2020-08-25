@@ -5,7 +5,7 @@
     </v-card-text>
 
     <v-card-text>
-      <users-table show-filters />
+      <users-table show-filters allow-delete />
     </v-card-text>
   </v-card>
 </template>
