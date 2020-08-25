@@ -38,17 +38,6 @@
       </v-btn>
     </v-app-bar>
     <v-main>
-      <v-breadcrumbs
-        v-if="!['index', 'login', 'calculator'].includes($route.name) && $auth.loggedIn"
-        :items="breadcrumbs"
-        large
-      >
-        <template v-slot:item="{ item }">
-          <v-breadcrumbs-item :to="item.to" replace exact>
-            {{ item.text }}
-          </v-breadcrumbs-item>
-        </template>
-      </v-breadcrumbs>
       <nuxt />
       <chat v-if="showChat" />
     </v-main>
@@ -69,21 +58,6 @@ export default {
     }
   },
   computed: {
-    breadcrumbs() {
-      const crumbs = this.$route.path.split('/')
-      return crumbs.map((crumb, idx) => {
-        const crumbPath = crumbs.filter((c1, idx1) => idx1 <= idx).join('/')
-        const match = this.$router.match(crumbPath)
-        return {
-          text: crumb,
-          to: {
-            params: match.params,
-            name: match.name,
-            query: match.query,
-          },
-        }
-      })
-    },
     items() {
       const items = []
       if (this.$auth.user.permissions.includes('offers')) {
