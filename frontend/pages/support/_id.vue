@@ -75,7 +75,7 @@
 
     <v-divider />
 
-    <v-card-title>Bids</v-card-title>
+    <v-card-title>Solicitudes</v-card-title>
     <v-card-text>
       <v-list>
         <v-list-group v-for="bid in user.bids" :key="bid.id" v-model="bid.active" no-action>

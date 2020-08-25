@@ -130,27 +130,27 @@ export default {
           value: 'email',
         },
         {
-          text: 'Phone',
+          text: 'Telefono',
           value: 'phone',
         },
         {
-          text: 'First name',
+          text: 'Nombre',
           value: 'first_name',
         },
         {
-          text: 'Last name',
+          text: 'Apellido',
           value: 'last_name',
         },
         {
-          text: 'Date joined',
+          text: 'Fecha de registro',
           value: 'date_joined',
         },
         {
-          text: 'Last login',
+          text: 'Ultima entrada',
           value: 'last_login',
         },
         {
-          text: 'Bids',
+          text: 'Cartera',
           value: 'bids_count',
           sortable: false,
         },

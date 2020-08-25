@@ -30,7 +30,7 @@
 
     <v-card-text>
       <v-tabs v-model="tabs" centered>
-        <v-tab>Bids ({{ user.bids.length }})</v-tab>
+        <v-tab>Solicitud ({{ user.bids.length }})</v-tab>
         <v-tab :disabled="!calls.length"> Llamadas ({{ calls.length }}) </v-tab>
         <v-tab>Historia</v-tab>
         <v-tab :disabled="!puntos.length"> Puntos suministros ({{ puntos.length }}) </v-tab>
@@ -40,7 +40,7 @@
           <v-tab-item>
             <v-list three-line subheader nav shaped>
               <v-subheader inset>
-                Bids
+                Solicitudes
               </v-subheader>
 
               <v-list-item v-for="bid in user.bids" :key="bid.id" nuxt :to="`/bids/${bid.id}`">
