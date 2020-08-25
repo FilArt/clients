@@ -97,7 +97,7 @@ export default {
         items.push({
           icon: 'mdi-account-group',
           title: 'Admin',
-          to: '/admin',
+          to: '/admin/dashboard',
         })
       }
       return items
@@ -107,7 +107,7 @@ export default {
     },
   },
   async created() {
-    if (this.showChat) this.$store.dispatch('chat/fetchParticipant')
+    if (this.showChat) await this.$store.dispatch('chat/fetchParticipant')
   },
 }
 </script>
