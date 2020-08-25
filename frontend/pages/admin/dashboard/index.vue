@@ -15,10 +15,8 @@
 </template>
 
 <script>
-function onlyUnique(value, index, self) {
-  return self.indexOf(value) === index
-}
 import { eachDayOfInterval, addDays, format } from 'date-fns'
+import constants from '@/lib/constants'
 export default {
   components: { AdminHeader: () => import('@/components/admin/AdminHeader') },
   data() {
@@ -120,15 +118,15 @@ export default {
           data: days.map((day) => logsData.filter((item) => item.requested_at === day).length),
         },
       ]
-      this.options.xAxis.categories = days.filter(onlyUnique)
+      this.options.xAxis.categories = days.filter(constants.onlyUnique)
       // this.options.subtitle.text = `Total: ${usersData.length} usuarios y ${logsData.length} calculos`
     },
     async fetchUsers() {
-      const clients = await this.$axios.$get('users/users/?role__isnull=True&clients=true&page=1&itemsPerPage=1')
-      const leeds = await this.$axios.$get('users/users/?role__isnull=True&leeds=true&page=1&itemsPerPage=1')
+      const clients = await this.$axios.$get('users/users/?user_role=clients&page=1&itemsPerPage=1')
+      const leeds = await this.$axios.$get('users/users/?user_role=leeds&page=1&itemsPerPage=1')
       const visitorsCount = (await this.$axios.$get('users/logs/?fields=remote_addr&distinct=remote_addr'))
         .map((i) => i.remote_addr)
-        .filter(onlyUnique).length
+        .filter(constants.onlyUnique).length
       this.usersOptions.series[0].data[0].y = clients.count
       this.usersOptions.series[0].data[1].y = leeds.count
       this.usersOptions.series[0].data[2].y = visitorsCount
