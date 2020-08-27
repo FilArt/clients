@@ -4,7 +4,7 @@
     :items="items"
     :error-messages="errorMessages"
     label="Tipo de cliente"
-    style="min-width: 150px;"
+    style="min-width: 150px"
     chips
     deletable-chips
     @input="$emit('input', item)"
@@ -13,14 +13,10 @@
       <v-tooltip bottom>
         <template v-slot:activator="{ on, attrs }">
           <v-btn icon color="#004680" v-bind="attrs" v-on="on">
-            <v-icon>
-              mdi-information
-            </v-icon>
+            <v-icon> mdi-information </v-icon>
           </v-btn>
         </template>
-        <span>
-          Elija el perfil de cliente más adecuado para usted.
-        </span>
+        <span> Elija el perfil de cliente más adecuado para usted. </span>
       </v-tooltip>
     </template>
   </v-autocomplete>

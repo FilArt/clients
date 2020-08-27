@@ -3,9 +3,7 @@
     <template v-slot:activator="{ on }">
       <v-btn :color="color" v-on="on">
         {{ label ? label : 'Anadir nuevo suministro' }}
-        <v-icon v-if="punto" color="error" right @click.stop="puntoDeleted">
-          mdi-trash-can-outline
-        </v-icon>
+        <v-icon v-if="punto" color="error" right @click.stop="puntoDeleted"> mdi-trash-can-outline </v-icon>
       </v-btn>
     </template>
     <v-card>

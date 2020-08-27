@@ -1,5 +1,5 @@
 <template>
-  <div class="mx-auto d-flex flex-column justify-center pa-3" style="max-width: 1000px;">
+  <div class="mx-auto d-flex flex-column justify-center pa-3" style="max-width: 1000px">
     <p class="text-center headline">
       {{ hideName ? `Oferta ${offer.id}` : offer.name }}
     </p>
@@ -10,10 +10,10 @@
         <v-img class="mx-auto" max-height="250" max-width="500" :src="offer.company_logo || '/no-image.svg'" />
       </v-col>
       <v-col>
-        <v-simple-table style="max-width: 750px;" class="pa-3">
+        <v-simple-table style="max-width: 750px" class="pa-3">
           <template v-slot:default>
             <tr>
-              <td colspan="2" class="font-weight-light font-italic text-left" style="padding-bottom: 2em;">
+              <td colspan="2" class="font-weight-light font-italic text-left" style="padding-bottom: 2em">
                 {{ offer.description }}
               </td>
             </tr>
@@ -61,9 +61,7 @@
     <v-card-actions v-if="showAddBtn && $auth.loggedIn && !showCalcDetails">
       <v-btn rounded block outlined color="primary" @click="addBid">
         Añadir a cartera
-        <v-icon right>
-          mdi-briefcase
-        </v-icon>
+        <v-icon right> mdi-briefcase </v-icon>
       </v-btn>
     </v-card-actions>
 

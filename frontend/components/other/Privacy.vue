@@ -12,9 +12,7 @@
         <span>
           {{ privacyHint }}
         </span>
-        <a target="_blank" href="https://gestiongroup.es/privacy_policy">
-          política de privacidad.
-        </a>
+        <a target="_blank" href="https://gestiongroup.es/privacy_policy"> política de privacidad. </a>
       </template>
     </v-checkbox>
   </v-container>

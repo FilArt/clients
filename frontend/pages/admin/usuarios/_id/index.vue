@@ -11,9 +11,7 @@
         <v-col md="6" cols="12">
           <v-toolbar elevation="10" short dense>
             <v-spacer />
-            <v-toolbar-title>
-              Datos de contacto
-            </v-toolbar-title>
+            <v-toolbar-title> Datos de contacto </v-toolbar-title>
             <v-spacer />
           </v-toolbar>
           <v-card elevation="10" class="pa-3">
@@ -28,9 +26,7 @@
         <v-col>
           <v-toolbar short dense elevation="10">
             <v-spacer />
-            <v-toolbar-title>
-              Otro
-            </v-toolbar-title>
+            <v-toolbar-title> Otro </v-toolbar-title>
             <v-spacer />
           </v-toolbar>
           <v-card elevation="10" class="pa-3">
@@ -54,9 +50,7 @@
         <v-tabs-items v-model="tabs">
           <v-tab-item>
             <v-list three-line subheader nav shaped>
-              <v-subheader inset>
-                Solicitudes
-              </v-subheader>
+              <v-subheader inset> Solicitudes </v-subheader>
 
               <v-list-item v-for="bid in user.bids" :key="bid.id" nuxt :to="`/bids/${bid.id}`">
                 <v-list-item-content>

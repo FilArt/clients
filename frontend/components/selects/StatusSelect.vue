@@ -4,7 +4,7 @@
     :items="statuses"
     :error-messages="errors"
     label="Estado"
-    style="min-width: 150px;"
+    style="min-width: 150px"
     :return-object="returnObject"
     chips
     dense

@@ -12,9 +12,7 @@
         @click="$emit('click')"
       >
         {{ label }}
-        <v-icon :right="!!label">
-          mdi-check
-        </v-icon>
+        <v-icon :right="!!label"> mdi-check </v-icon>
       </v-btn>
     </template>
     <span>{{ label ? label : 'Enviar' }}</span>

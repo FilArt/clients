@@ -5,7 +5,7 @@
     :loading="loading"
     :error-messages="errorMessages"
     label="Tarifa"
-    style="min-width: 50px;"
+    style="min-width: 50px"
     chips
     deletable-chips
     @input="$emit('input', tarif)"
@@ -14,15 +14,11 @@
       <v-tooltip bottom>
         <template v-slot:activator="{ on, attrs }">
           <v-btn icon color="#004680" v-bind="attrs" v-on="on">
-            <v-icon>
-              mdi-information
-            </v-icon>
+            <v-icon> mdi-information </v-icon>
           </v-btn>
         </template>
 
-        <span>
-          Elija su tarifa o peaje de acceso. Está información puede obtenerse en su factura.
-        </span>
+        <span> Elija su tarifa o peaje de acceso. Está información puede obtenerse en su factura. </span>
       </v-tooltip>
     </template>
   </v-autocomplete>

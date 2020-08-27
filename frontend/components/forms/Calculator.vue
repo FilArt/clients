@@ -21,7 +21,7 @@
     </v-data-table>
     <div v-show="!showResults">
       <v-form novalidate @submit.prevent="submit">
-        <v-card-text class="mx-auto" style="max-width: 1000px;">
+        <v-card-text class="mx-auto" style="max-width: 1000px">
           <v-row align="center" class="flex-wrap">
             <v-col>
               <company-select

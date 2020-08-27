@@ -15,9 +15,7 @@
             <v-toolbar-title>Acceder</v-toolbar-title>
             <v-spacer />
             <v-toolbar-items>
-              <v-btn small @click="flipCards">
-                Regístrate ahora.
-              </v-btn>
+              <v-btn small @click="flipCards"> Regístrate ahora. </v-btn>
             </v-toolbar-items>
           </v-toolbar>
           <v-form novalidate @submit.prevent="submit">
@@ -47,17 +45,13 @@
                 <v-col>
                   <v-btn block type="submit" dark color="#004680" :loading="loading">
                     Acceder
-                    <v-icon color="#004680" right>
-                      mdi-logout
-                    </v-icon>
+                    <v-icon color="#004680" right> mdi-logout </v-icon>
                   </v-btn>
                 </v-col>
                 <v-col class="flex-grow-0">
                   <v-btn :loading="loading" outlined rounded @click="passwordForgotten">
                     ¿Olvidasde la contraseña?
-                    <v-icon right>
-                      mdi-lock-reset
-                    </v-icon>
+                    <v-icon right> mdi-lock-reset </v-icon>
                   </v-btn>
                 </v-col>
               </v-row>
@@ -70,9 +64,7 @@
             <v-toolbar-title>Registrarse</v-toolbar-title>
             <v-spacer />
             <v-toolbar-items>
-              <v-btn small @click="flipCards">
-                Accede a tu cuenta
-              </v-btn>
+              <v-btn small @click="flipCards"> Accede a tu cuenta </v-btn>
             </v-toolbar-items>
           </v-toolbar>
           <v-form novalidate @submit.prevent="submitRegister">
@@ -90,9 +82,7 @@
             <v-card-actions>
               <v-btn type="submit" color="#004680" block :loading="loading" :disabled="!$store.state.privacyAccepted">
                 Registrarse
-                <v-icon right>
-                  mdi-account-plus
-                </v-icon>
+                <v-icon right> mdi-account-plus </v-icon>
               </v-btn>
             </v-card-actions>
             <v-card-actions>

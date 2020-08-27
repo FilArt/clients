@@ -6,9 +6,7 @@
 
       <v-divider />
 
-      <v-alert v-if="bid.puntos.length === 0" type="warning">
-        No puntos!
-      </v-alert>
+      <v-alert v-if="bid.puntos.length === 0" type="warning"> No puntos! </v-alert>
       <puntos-list v-else :puntos="bid.puntos" />
 
       <v-divider />
@@ -37,17 +35,13 @@
         <template v-slot:activator="{ on }">
           <v-btn color="pink" block outlined v-on="on" @click="fetchHistory">
             Show history?
-            <v-icon right>
-              mdi-history
-            </v-icon>
+            <v-icon right> mdi-history </v-icon>
           </v-btn>
         </template>
         <v-card>
           <v-card-title>
             <v-row>
-              <v-col>
-                History
-              </v-col>
+              <v-col> History </v-col>
               <v-col class="flex-grow-0">
                 <close-button @click="historyDialog = false" />
               </v-col>

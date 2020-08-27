@@ -1,9 +1,7 @@
 <template>
   <v-card>
     <v-card-text class="text-center">
-      <div class="text-h4">
-        Utiliza nuestra herramienta de selección de ofertas.
-      </div>
+      <div class="text-h4">Utiliza nuestra herramienta de selección de ofertas.</div>
 
       <div class="text-h6">
         Para utilizar el comparador, necesitará su factura de luz actual. Nuestro comparador realizará un cálculo para

@@ -9,30 +9,24 @@
     item-value="id"
     chips
     deletable-chips
-    style="min-width: 150px;"
+    style="min-width: 150px"
     @input="$emit('input', company)"
   >
     <template v-if="hint" v-slot:append-outer>
       <v-tooltip bottom>
         <template v-slot:activator="{ on, attrs }">
           <v-btn icon color="#004680" v-bind="attrs" v-on="on">
-            <v-icon>
-              mdi-information
-            </v-icon>
+            <v-icon> mdi-information </v-icon>
           </v-btn>
         </template>
-        <span>
-          Elija la empresa comercializadora con la que está actualmente.
-        </span>
+        <span> Elija la empresa comercializadora con la que está actualmente. </span>
       </v-tooltip>
     </template>
     <template v-slot:selection="{ item }">
       <v-chip close @click:close="closeItem">
         <v-avatar>
           <v-img v-if="item['logo']" :src="item['logo']" />
-          <v-icon v-else>
-            mdi-cancel
-          </v-icon>
+          <v-icon v-else> mdi-cancel </v-icon>
         </v-avatar>
         {{ item.name }}
       </v-chip>
@@ -42,9 +36,7 @@
         <v-col class="flex-grow-0">
           <v-avatar>
             <v-img v-if="item['logo']" :src="item['logo']" />
-            <v-icon v-else>
-              mdi-cancel
-            </v-icon>
+            <v-icon v-else> mdi-cancel </v-icon>
           </v-avatar>
         </v-col>
 

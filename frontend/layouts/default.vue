@@ -25,16 +25,12 @@
       </v-chip>
 
       <v-btn icon nuxt to="/profile">
-        <v-icon color="primary">
-          mdi-account
-        </v-icon>
+        <v-icon color="primary"> mdi-account </v-icon>
       </v-btn>
 
       <theme-switcher />
       <v-btn v-if="$auth" icon @click.stop="$auth.logout">
-        <v-icon color="primary">
-          mdi-logout
-        </v-icon>
+        <v-icon color="primary"> mdi-logout </v-icon>
       </v-btn>
     </v-app-bar>
     <v-main>
