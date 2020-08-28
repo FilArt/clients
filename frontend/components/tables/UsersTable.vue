@@ -77,7 +77,7 @@
         </nuxt-link>
       </template>
 
-      <template v-slot:[`item.new_messages_count`]="{ item }">
+      <template v-if="!hideChat" v-slot:[`item.new_messages_count`]="{ item }">
         <v-badge :content="item.new_messages_count" :value="item.new_messages_count" color="error" overlap>
           <v-btn icon @click="openChat(item)">
             <v-icon>mdi-email</v-icon>
@@ -111,6 +111,10 @@ export default {
     Chat: () => import('~/components/chat/Chat'),
   },
   props: {
+    hideChat: {
+      type: Boolean,
+      default: false,
+    },
     allowDelete: {
       type: Boolean,
       default: false,
