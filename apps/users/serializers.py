@@ -14,7 +14,7 @@ from rest_framework_tracking.models import APIRequestLog
 from apps.bids.models import Bid
 from clients.serializers import BidListSerializer, PuntoSerializer
 from clients.utils import notify_telegram
-from .models import Attachment, Call, CustomUser, Phone, Punto
+from .models import Attachment, CustomUser, Phone, Punto
 
 logger = logging.getLogger(__name__)
 
@@ -151,17 +151,6 @@ class UserSerializer(UserListSerializer):
             "last_login",
             "affiliate",
         ]
-
-
-class CallSerializer(serializers.ModelSerializer):
-    called_at = serializers.SerializerMethodField()
-
-    class Meta:
-        model = Call
-        fields = ["called_at", "file"]
-
-    def get_called_at(self, call_file: Call):
-        return arrow.get(call_file.called_at).humanize(locale=self.context["request"].LANGUAGE_CODE)
 
 
 class LoadFacturasSerializer(serializers.Serializer):

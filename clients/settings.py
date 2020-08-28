@@ -97,12 +97,6 @@ DATABASES = {
         "USER": "clients",
         "PASSWORD": "clients",
     },
-    "call_visit": {
-        "ENGINE": "django.db.backends.postgresql_psycopg2",
-        "NAME": "crm",
-        "USER": "crm",
-        "PASSWORD": "crm",
-    },
 }
 
 # Password validation
@@ -194,6 +188,10 @@ TELEGRAM_CHAT_ID = ""
 
 # drf tracking
 DRF_TRACKING_ADMIN_LOG_READONLY = False
+
+
+# calls
+CALLS_STORAGE_PATH = '/freeswitch_recordings'
 
 try:
     from .local_settings import *  # noqa: F403, F401

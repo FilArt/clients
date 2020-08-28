@@ -70,8 +70,7 @@
             <v-list>
               <v-list-item v-for="call in calls" :key="call.id">
                 <v-list-item-content>
-                  {{ call.called_at }}
-                  <audio :src="call.file" type="audio/mp3" controls></audio>
+                  <audio :src="call" type="audio/mp3" controls></audio>
                 </v-list-item-content>
               </v-list-item>
             </v-list>
@@ -106,7 +105,7 @@ export default {
     const phoneNumbers = [user.phone, ...user.phones.map((phone) => phone.number)].filter((p) => p)
     let calls = []
     if (phoneNumbers.length) {
-      calls = await $axios.$get(`users/calls/?phone_numbers=${phoneNumbers}`)
+      calls = await $axios.$get(`users/calls/${user.id}`)
     }
 
     const participant = {

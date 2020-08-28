@@ -3,7 +3,6 @@ from functools import cached_property
 from django.contrib.auth.models import AbstractUser
 from django.contrib.postgres.fields import ArrayField
 from django.core.exceptions import ValidationError
-from django.core.files.storage import FileSystemStorage
 from django.core.validators import MinLengthValidator
 from django.db import models
 from django.utils.translation import pgettext_lazy
@@ -295,38 +294,3 @@ class Attachment(models.Model):
     punto = models.ForeignKey(Punto, on_delete=models.CASCADE, related_name="attachments")
     attachment_type = models.CharField(max_length=10, choices=ATTACHMENT_TYPE_CHOICES)
     attachment = models.FileField()
-
-
-class CallVisitManager(models.Manager):
-    def get_queryset(self):
-        return super().get_queryset().using("call_visit")
-
-
-class BackendPhone(models.Model):
-    value = models.CharField(max_length=9)
-
-    objects = CallVisitManager()
-
-    class Meta:
-        managed = False
-        db_table = "backend_phone"
-
-
-class FreeswitchStorage(FileSystemStorage):
-    def url(self, name) -> str:
-        return f"https://app.call-visit.com/{name}"
-
-
-fs = FreeswitchStorage(location="/freeswitch_recordings")
-
-
-class Call(models.Model):
-    file = models.FileField(storage=fs)
-    called_at = models.DateTimeField()
-    phone = models.ForeignKey(BackendPhone, models.DO_NOTHING)
-
-    objects = CallVisitManager()
-
-    class Meta:
-        managed = False
-        db_table = "calls_call"

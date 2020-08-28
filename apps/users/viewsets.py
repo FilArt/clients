@@ -21,11 +21,10 @@ from clients.serializers import (
     FastContractSerializer,
 )
 from .filters import UserFilter
-from .models import Attachment, Call, CustomUser, Phone, Punto
+from .models import Attachment, CustomUser, Phone, Punto
 from .pagination import UsersPagination
 from .permissions import AdminPermission, AdminTramitacionPermission
 from .serializers import (
-    CallSerializer,
     LoadFacturasSerializer,
     PhoneSerializer,
     RegisterSerializer,
@@ -190,19 +189,6 @@ class AttachmentsViewSet(viewsets.ModelViewSet):
                 del filter_kwargs["punto__user"]
                 filter_kwargs["punto__user_id"] = user_id
         return super().filter_queryset(queryset.filter(**filter_kwargs))
-
-
-class CallViewSet(viewsets.ModelViewSet):
-    queryset = Call.objects.all()
-    serializer_class = CallSerializer
-
-    def filter_queryset(self, queryset):
-        qs = super().filter_queryset(queryset)
-        phone_numbers = self.request.query_params.get("phone_numbers")
-        phone_numbers = set(phone_numbers.split(","))
-        if phone_numbers:
-            qs = qs.filter(phone__value__in=phone_numbers)
-        return qs
 
 
 class ContractOnlineViewSet(viewsets.ModelViewSet):
