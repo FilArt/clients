@@ -31,7 +31,7 @@
           </v-toolbar>
           <v-card elevation="10" class="pa-3">
             <v-row class="flex-wrap">
-              <v-col v-for="date in datesInfo" :key="date.value" xl="4" md="6" cols="12">
+              <v-col v-for="date in datesInfo" :key="date.text" xl="4" md="6" cols="12">
                 <v-text-field :prepend-icon="date.icon" :label="date.text" :value="date.value" outlined shaped />
               </v-col>
             </v-row>
@@ -42,9 +42,9 @@
 
     <v-card-text>
       <v-tabs v-model="tabs" centered>
-        <v-tab>Solicitud ({{ user.bids.length }})</v-tab>
+        <v-tab :disabled="!user.bids.length">Solicitud ({{ user.bids.length }})</v-tab>
         <v-tab :disabled="!calls.length"> Llamadas ({{ calls.length }}) </v-tab>
-        <v-tab>Historia</v-tab>
+        <v-tab :disabled="!history.length">Historia ({{ history.length }})</v-tab>
         <v-tab :disabled="!puntos.length"> Puntos suministros ({{ puntos.length }}) </v-tab>
 
         <v-tabs-items v-model="tabs">
@@ -118,6 +118,7 @@ export default {
       user,
       participant,
       calls,
+      tabs: user.bids.length ? 0 : null,
       puntos: await $axios.$get(`/users/puntos/?user=${params.id}`),
       history: await $axios.$get(`/bids/history/?user=${params.id}`),
       contactInfo: [
@@ -168,11 +169,6 @@ export default {
           value: user.affiliate,
         },
       ],
-    }
-  },
-  data() {
-    return {
-      tabs: 0,
     }
   },
   computed: {
