@@ -37,7 +37,8 @@
                 prepend-icon="mdi-lock"
                 name="password"
                 label="Сontraseña"
-                type="current-password"
+                type="password"
+                autocomplete="current-password"
               />
             </v-card-text>
             <v-card-actions>
@@ -77,6 +78,15 @@
                 type="text"
                 :error-messages="errorMessages2.email"
                 @input="errorMessages2.email = null"
+              />
+              <v-text-field
+                id="new-password"
+                v-model="form.password"
+                prepend-icon="mdi-lock"
+                name="password"
+                label="Сontraseña"
+                type="password"
+                autocomplete="new-password"
               />
             </v-card-text>
             <v-card-actions>

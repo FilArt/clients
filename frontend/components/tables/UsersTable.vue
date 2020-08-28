@@ -44,7 +44,11 @@
                 class="text-center pa-3"
                 label="Tipo de usuario"
                 @change="updateQuery({ user_role: role })"
-              />
+              >
+                <template v-slot:append>
+                  <add-new-employee @added="fetchUsers" />
+                </template>
+              </v-overflow-btn>
             </v-col>
 
             <v-col cols="12" lg="1" xl="1" md="1" sm="1">
@@ -102,6 +106,7 @@ import constants from '@/lib/constants'
 export default {
   name: 'UsersTable',
   components: {
+    AddNewEmployee: () => import('@/components/forms/AddNewEmployee'),
     DeleteButton: () => import('@/components/buttons/deleteButton'),
     Chat: () => import('~/components/chat/Chat'),
   },

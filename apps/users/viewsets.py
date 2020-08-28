@@ -32,6 +32,7 @@ from .serializers import (
     UserListSerializer,
     UserSerializer,
     RequestLogSerializer,
+    RegisterByAdminSerializer,
 )
 
 
@@ -117,10 +118,18 @@ class UserViewSet(DynamicFieldsMixin, mixins.UpdateModelMixin, mixins.ListModelM
         return Response(AttachmentSerializer(attachments, many=True).data)
 
 
-class ManageUsersViewSet(mixins.DestroyModelMixin, viewsets.GenericViewSet):
+class ManageUsersViewSet(mixins.CreateModelMixin, mixins.DestroyModelMixin, viewsets.GenericViewSet):
     queryset = CustomUser.objects.all()
     serializer_class = UserListSerializer
     permission_classes = (IsAuthenticated, AdminPermission)
+
+    def get_serializer_class(self):
+        if self.action == 'create':
+            return RegisterByAdminSerializer
+        return self.serializer_class
+
+    def perform_create(self, serializer) -> None:
+        serializer.save(invited_by=self.request.user)
 
 
 class PuntoViewSet(viewsets.ModelViewSet):

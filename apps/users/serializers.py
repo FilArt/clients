@@ -26,7 +26,11 @@ class RegisterSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = CustomUser
-        fields = ["email"]
+        fields = [
+            'email',
+            'password',
+        ]
+        extra_kwargs = {'password': {'required': False, 'write_only': True}}
 
     def save(self, **kwargs):
         try:
@@ -34,12 +38,15 @@ class RegisterSerializer(serializers.ModelSerializer):
         except Exception as e:
             logger.exception(e)
 
-        email = kwargs.get("email") or self.validated_data.get("email")
-        password = BaseUserManager().make_random_password()
-        user = CustomUser.objects.create_user(email, password)
-        if settings.DEBUG:
-            user.set_password("1")
-            user.save(update_fields=["password"])
+        if not settings.DEBUG:
+            password = BaseUserManager().make_random_password()
+            user: CustomUser = super().save()
+            user.set_password(password)
+            user.save(update_fields=['password'])
+        else:
+            user: CustomUser = super().save()
+            user.set_password('1')
+            user.save(update_fields=['password'])
             return user
 
         subject = _("¡Bienvenido a Gestion Group! ")
@@ -66,12 +73,19 @@ class RegisterSerializer(serializers.ModelSerializer):
             )
 
 
-class PrettyDateTimeField(serializers.DateTimeField):
+class RegisterByAdminSerializer(RegisterSerializer):
+    class Meta:
+        model = CustomUser
+        fields = (*RegisterSerializer.Meta.fields, 'role', 'first_name', 'last_name')
+        extra_kwargs = RegisterSerializer.Meta.extra_kwargs
+
+
+class PrettyDateTimeField(serializers.DateTimeField, serializers.ReadOnlyField):
     def to_representation(self, value):
         return arrow.get(value).humanize(locale=self.context["request"].LANGUAGE_CODE) if value else '-'
 
 
-class DateTimeToDateField(serializers.CharField):
+class DateTimeToDateField(serializers.CharField, serializers.ReadOnlyField):
     def to_representation(self, value):
         return value.strftime('%d/%m/%Y') if value else '-'
 
