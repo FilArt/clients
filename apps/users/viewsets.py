@@ -1,5 +1,6 @@
 from typing import Tuple
 
+from django.db.models import Q
 from drf_dynamic_fields import DynamicFieldsMixin
 from rest_framework import mixins, viewsets
 from rest_framework.decorators import action
@@ -23,7 +24,7 @@ from clients.serializers import (
 from .filters import UserFilter
 from .models import Attachment, CustomUser, Phone, Punto
 from .pagination import UsersPagination
-from .permissions import AdminPermission, AdminTramitacionPermission
+from .permissions import AdminPermission, UsersPermission, AdminAgentPermission
 from .serializers import (
     LoadFacturasSerializer,
     PhoneSerializer,
@@ -76,14 +77,21 @@ class AccountViewSet(
 class UserViewSet(DynamicFieldsMixin, mixins.UpdateModelMixin, mixins.ListModelMixin, mixins.RetrieveModelMixin,
                   viewsets.GenericViewSet):
     queryset = CustomUser.objects.all()
-    permission_classes = (IsAuthenticated, AdminTramitacionPermission)
+    permission_classes = (IsAuthenticated, UsersPermission)
     ordering = ("-id",)
     search_fields = ('first_name', 'last_name', 'email', 'phone')
     pagination_class = UsersPagination
     filterset_class = UserFilter
 
+    def filter_queryset(self, queryset):
+        queryset = super(UserViewSet, self).filter_queryset(queryset)
+        if self.request.user.role == 'agent':
+            agent_id = self.request.user.id
+            queryset = queryset.filter(Q(responsible_id=agent_id) | Q(invited_by_id=agent_id))
+        return queryset
+
     def get_object(self):
-        if self.action in ("update", "partial_update") and self.request.user.role != "admin":
+        if self.action != 'detail' and self.request.user.role != "admin":
             raise PermissionDenied
         return super().get_object()
 
@@ -117,7 +125,8 @@ class UserViewSet(DynamicFieldsMixin, mixins.UpdateModelMixin, mixins.ListModelM
         return Response(AttachmentSerializer(attachments, many=True).data)
 
 
-class ManageUsersViewSet(mixins.CreateModelMixin, mixins.DestroyModelMixin, viewsets.GenericViewSet):
+class ManageUsersViewSet(mixins.CreateModelMixin, mixins.UpdateModelMixin, mixins.DestroyModelMixin,
+                         viewsets.GenericViewSet):
     queryset = CustomUser.objects.all()
     serializer_class = UserListSerializer
     permission_classes = (IsAuthenticated, AdminPermission)
@@ -216,7 +225,7 @@ class FastContractViewSet(WithFacturaContractOnlineViewSet):
 class RequestLogViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
     queryset = APIRequestLog.objects.all()
     serializer_class = RequestLogSerializer
-    permission_classes = (IsAuthenticated, AdminPermission)
+    permission_classes = (IsAuthenticated, AdminAgentPermission)
     filterset_fields = {
         'requested_at': ['gte']
     }

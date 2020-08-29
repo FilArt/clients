@@ -96,7 +96,6 @@ class UserListSerializer(DynamicFieldsMixin, serializers.ModelSerializer):
     last_login = PrettyDateTimeField()
     new_messages_count = serializers.SerializerMethodField()
     affiliate = serializers.CharField()
-    responsible = serializers.CharField()
 
     class Meta:
         model = CustomUser
@@ -119,6 +118,12 @@ class UserListSerializer(DynamicFieldsMixin, serializers.ModelSerializer):
 
     def get_new_messages_count(self, instance: CustomUser):
         return self.context["request"].user.unread_messages.filter(message__author=instance).count()
+
+    def to_representation(self, instance: CustomUser):
+        rep = super(UserListSerializer, self).to_representation(instance)
+        if instance.responsible:
+            rep['responsible'] = instance.responsible.fullname
+        return rep
 
 
 class PhoneSerializer(serializers.ModelSerializer):

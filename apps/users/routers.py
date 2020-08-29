@@ -9,7 +9,7 @@ user_router.register("contract_online_plus", viewsets.AdditionalContractOnlineVi
 user_router.register("contract_online_with_factura", viewsets.WithFacturaContractOnlineViewSet)
 user_router.register("fast_contract", viewsets.FastContractViewSet)
 user_router.register("account", viewsets.AccountViewSet)
-user_router.register("users", viewsets.UserViewSet)
+user_router.register("users", viewsets.UserViewSet, basename='users')
 user_router.register("manage_users", viewsets.ManageUsersViewSet)
 user_router.register("puntos", viewsets.PuntoViewSet)
 user_router.register("phones", viewsets.PhoneViewSet)
