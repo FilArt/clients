@@ -90,11 +90,6 @@ class UserViewSet(DynamicFieldsMixin, mixins.UpdateModelMixin, mixins.ListModelM
             queryset = queryset.filter(Q(responsible_id=agent_id) | Q(invited_by_id=agent_id))
         return queryset
 
-    def get_object(self):
-        if self.action != 'detail' and self.request.user.role != "admin":
-            raise PermissionDenied
-        return super().get_object()
-
     def get_serializer_class(self):
         if self.detail:
             return UserSerializer
