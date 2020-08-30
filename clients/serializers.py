@@ -40,6 +40,12 @@ class DetailPuntoSerializer(serializers.ModelSerializer):
     class Meta:
         model = Punto
         exclude = ["user"]
+        extra_kwargs = {
+            'province': {'required': True},
+            'locality': {'required': True},
+            'address': {'required': True},
+            'postalcode': {'required': True},
+        }
 
 
 class BidListSerializer(DynamicFieldsMixin, serializers.ModelSerializer):
