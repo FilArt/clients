@@ -88,6 +88,33 @@
       <template v-if="allowDelete && $auth.user.role === 'admin'" v-slot:[`item.actions`]="{ item }">
         <delete-button @click="deleteUser(item)" />
       </template>
+
+      <template v-if="$auth.user.role === 'admin'" v-slot:item.responsible="{ item }">
+        <v-edit-dialog
+          :return-value.sync="item.responsible"
+          large
+          @save="editResponsible"
+          @open="reserved_userId = item.id"
+        >
+          {{ item.responsible }}
+          <template v-slot:input>
+            <v-list dense>
+              <v-subheader>Agentes</v-subheader>
+              <v-list-item-group v-model="reserved_responsible" color="primary">
+                <v-list-item :value="null">
+                  <v-list-item-title>-</v-list-item-title>
+                </v-list-item>
+
+                <v-list-item v-for="resp in responsibles" :key="resp.id" :value="resp.id">
+                  <v-list-item-content>
+                    <v-list-item-title>{{ resp.fullname }}</v-list-item-title>
+                  </v-list-item-content>
+                </v-list-item>
+              </v-list-item-group>
+            </v-list>
+          </template>
+        </v-edit-dialog>
+      </template>
     </v-data-table>
 
     <chat
@@ -199,6 +226,9 @@ export default {
         user_role: this.defaultRole,
         is_support: this.isSupport,
       },
+      responsibles: [],
+      reserved_responsible: null,
+      reserved_userId: null,
     }
   },
   computed: {
@@ -210,10 +240,23 @@ export default {
       return _h
     },
   },
-  mounted() {
-    if (this.role || this.query.is_support) this.fetchUsers()
+  async mounted() {
+    if (this.role || this.query.is_support) await this.fetchUsers()
+    if (this.headers.some((header) => header.value === 'responsible') && !this.responsibles.length) {
+      this.responsibles = (
+        await this.$axios.$get('users/users/?user_role=agent&fields=id,fullname&itemsPerPage=100')
+      ).results
+    }
   },
   methods: {
+    async editResponsible() {
+      await this.$axios.$patch(`users/manage_users/${this.reserved_userId}/`, {
+        responsible: this.reserved_responsible || null,
+      })
+      await this.fetchUsers()
+    },
+
+    //other
     fetchUsers() {
       return new Promise((resolve, reject) => {
         this.loading = true
@@ -222,6 +265,7 @@ export default {
           page: options.page,
           itemsPerPage: options.itemsPerPage,
           ordering: (options.sortDesc[0] === false ? '-' : '') + options.sortBy,
+          fields: this.headers.map((header) => header.value).join(),
           ...this.query,
         }
         this.$axios

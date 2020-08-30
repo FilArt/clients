@@ -5,7 +5,7 @@
     </v-card-text>
 
     <v-card-text>
-      <users-table show-filters allow-delete hide-chat />
+      <users-table show-filters allow-delete hide-chat :default-headers="headers" />
     </v-card-text>
   </v-card>
 </template>
@@ -15,6 +15,44 @@ export default {
   components: {
     UsersTable: () => import('~/components/tables/UsersTable'),
     AdminHeader: () => import('~/components/admin/AdminHeader'),
+  },
+  data() {
+    return {
+      headers: [
+        {
+          text: 'ID',
+          value: 'id',
+        },
+        {
+          text: 'Email',
+          value: 'email',
+        },
+        {
+          text: 'Telefono',
+          value: 'phone',
+        },
+        {
+          text: 'Nombre',
+          value: 'first_name',
+        },
+        {
+          text: 'Apellido',
+          value: 'last_name',
+        },
+        {
+          text: 'Fecha de registro',
+          value: 'date_joined',
+        },
+        {
+          text: 'Ultima entrada',
+          value: 'last_login',
+        },
+        {
+          value: 'actions',
+          sortable: false,
+        },
+      ],
+    }
   },
 }
 </script>

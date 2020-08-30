@@ -96,6 +96,13 @@ export default {
           to: '/admin/dashboard',
         })
       }
+      if (role === 'agent') {
+        items.push({
+          icon: 'mdi-account-group',
+          title: 'Agente',
+          to: '/agente/dashboard',
+        })
+      }
       return items
     },
     showChat() {
