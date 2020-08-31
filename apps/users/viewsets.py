@@ -21,7 +21,6 @@ from clients.serializers import (
     WithFacturaContractOnlineSerializer,
     FastContractSerializer,
 )
-from .filters import UserFilter
 from .models import Attachment, CustomUser, Phone, Punto
 from .pagination import UsersPagination
 from .permissions import AdminPermission, UsersPermission, AdminAgentPermission
@@ -81,7 +80,10 @@ class UserViewSet(DynamicFieldsMixin, mixins.UpdateModelMixin, mixins.ListModelM
     ordering = ("-id",)
     search_fields = ('first_name', 'last_name', 'email', 'phone')
     pagination_class = UsersPagination
-    filterset_class = UserFilter
+    filterset_fields = {
+        'role': ['exact', 'isnull'],
+        'client_role': ['exact'],
+    }
 
     def filter_queryset(self, queryset):
         queryset = super(UserViewSet, self).filter_queryset(queryset)

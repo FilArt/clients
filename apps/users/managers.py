@@ -1,8 +1,6 @@
 from django.contrib.auth.base_user import BaseUserManager
 from django.utils.translation import ugettext_lazy as _
 
-from apps.tramitacion.models import Tramitacion
-
 
 class CustomUserManager(BaseUserManager):
     """
@@ -35,27 +33,3 @@ class CustomUserManager(BaseUserManager):
         if extra_fields.get("is_superuser") is not True:
             raise ValueError(_("Superuser must have is_superuser=True."))
         return self.create_user(email, password, **extra_fields)
-
-
-class ClientsManager(BaseUserManager):
-    def _get_contracted_users_ids_from_tramitacion(self):
-        return Tramitacion.objects.filter(scoring=True, doc=True, call=True).values("bid__user").distinct()
-
-    def get_queryset(self):
-        return super().get_queryset().filter(id__in=self._get_contracted_users_ids_from_tramitacion())
-
-
-class LeedsManager(ClientsManager):
-    def get_queryset(self):
-        return (
-            super(BaseUserManager, self)
-            .get_queryset()
-            .exclude(id__in=self._get_contracted_users_ids_from_tramitacion())
-        )
-
-
-class TramitacionManager(BaseUserManager):
-    def get_queryset(self):
-        return super().get_queryset().filter(
-            role__isnull=True, phones__isnull=False, puntos__attachments__isnull=False
-        ).distinct('id')

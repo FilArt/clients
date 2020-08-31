@@ -114,6 +114,9 @@ class UserListSerializer(DynamicFieldsMixin, serializers.ModelSerializer):
             "new_messages_count",
             "affiliate",
             "responsible",
+            "docs_ok_count",
+            "scoring_ok_count",
+            "calls_ok_count",
         )
 
     def get_new_messages_count(self, instance: CustomUser):

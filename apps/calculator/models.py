@@ -1,5 +1,4 @@
 import logging
-import uuid
 from enum import Enum, unique
 
 import gspread
@@ -169,12 +168,10 @@ class Offer(models.Model):
     @staticmethod
     def get_blank_offer():
         company, _ = Company.objects.get_or_create(name='OTRA')
-        offer, _ = Offer.objects.get_or_create(
+        offer, _ = Offer.default.get_or_create(
+            uuid='ad768f47-1e5f-4074-bc08-7078ef881f32',
             name=Offer.OTRA_OFFER_NAME,
             company=company,
             client_type=0,
-            defaults=dict(
-                uuid=uuid.uuid4(),
-            )
         )
         return offer

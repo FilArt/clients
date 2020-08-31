@@ -8,7 +8,7 @@ from django.db import models
 from django.utils.translation import pgettext_lazy
 from django.utils.translation import ugettext_lazy as _
 
-from .managers import ClientsManager, CustomUserManager, LeedsManager, TramitacionManager
+from .managers import CustomUserManager
 
 
 class MyCharField(models.CharField):
@@ -61,9 +61,15 @@ class CustomUser(AbstractUser):
         ("default", _("Default")),
         ("call&visit", _("Call&Visit")),
     )
+    CLIENT_ROLES_CHOICES = (
+        ("leed", _("Leed")),
+        ("tramitacion", _("Tramitacion")),
+        ("client", _("Client")),
+    )
 
     source = models.CharField(max_length=30, choices=SOURCES_CHOICES, default="default")
     role = models.CharField(max_length=10, null=True, blank=True, choices=USER_ROLES_CHOICES)
+    client_role = models.CharField(max_length=30, choices=CLIENT_ROLES_CHOICES, default='leed')
     avatar = models.ImageField(blank=True, null=True)
     username = models.CharField(blank=True, null=True, max_length=30)
     email = models.EmailField(_("Email address"), unique=True)
@@ -95,9 +101,6 @@ class CustomUser(AbstractUser):
                                     on_delete=models.SET_NULL)
 
     objects = CustomUserManager()
-    clients = ClientsManager()
-    leeds = LeedsManager()
-    ready_for_tramitacion = TramitacionManager()
 
     class Meta:
         db_table = "users"
@@ -111,13 +114,25 @@ class CustomUser(AbstractUser):
     def profile_filled(self) -> bool:
         return self.first_name and self.last_name and self.phone
 
-    @property
+    @cached_property
     def bids_count(self) -> int:
         return self.bids.count()
 
-    @property
+    @cached_property
     def bids_contracted_count(self) -> int:
         return self.bids.filter(tramitacion__doc=True, tramitacion__scoring=True, tramitacion__call=True).count()
+
+    @property
+    def docs_ok_count(self) -> str:
+        return f'{self.bids.filter(tramitacion__doc=True).count()}/{self.bids_count}'
+
+    @property
+    def scoring_ok_count(self) -> str:
+        return f'{self.bids.filter(tramitacion__scoring=True).count()}/{self.bids_count}'
+
+    @property
+    def calls_ok_count(self) -> str:
+        return f'{self.bids.filter(tramitacion__call=True).count()}/{self.bids_count}'
 
     @cached_property
     def is_leed(self) -> int:
@@ -138,6 +153,19 @@ class CustomUser(AbstractUser):
         if self.invited_by:
             return self.invited_by.fullname
         return self.get_source_display()
+
+    def save(self, **kwargs):
+        super(CustomUser, self).save(**kwargs)
+        if kwargs.get('update_fields') is None and self.client_role == 'leed':
+            from apps.calculator.models import Offer
+            if self.phone and self.bids.values('offer').exclude(id=Offer.get_blank_offer().id).exists():
+                self.client_role = 'tramitacion'
+                self.save()
+        elif self.client_role == 'tramitacion':
+            from apps.tramitacion.models import Tramitacion
+            if Tramitacion.objects.filter(bid__in=self.bids.all(), doc=True, scoring=True, call=True).exists():
+                self.client_role = 'client'
+                self.save()
 
     def __str__(self):
         return self.fullname
