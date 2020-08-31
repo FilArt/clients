@@ -179,7 +179,8 @@ class SimpleAccountSerializer(AccountSerializer):
 
     class Meta:
         model = CustomUser
-        fields = ["email", "first_name", "phone", "last_name"]
+        fields = ["email", "first_name", "phone", "last_name", "source"]
+        extra_kwargs = {'source': {'required': False}}
 
 
 class ContractOnlineSerializer(serializers.ModelSerializer):
@@ -326,7 +327,8 @@ class FastContractSerializer(serializers.ModelSerializer):
             else:
                 invited_by = CustomUser.objects.get(email=from_user)
 
-            user = user_ser.save(password=BaseUserManager().make_random_password(), invited_by=invited_by)
+            user = user_ser.save(password=BaseUserManager().make_random_password(),
+                                 invited_by=invited_by, source='call&visit')
             bid = Bid.objects.create(user=user, offer=offer)
             punto = Punto.objects.create(bid=bid, user=user)
 

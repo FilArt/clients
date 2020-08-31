@@ -57,7 +57,10 @@ class CustomUser(AbstractUser):
         ("agent", _("Agent")),
         ("affiliate", _("Affiliate")),
     )
-    SOURCES_CHOICES = (("default", _("Default")),)
+    SOURCES_CHOICES = (
+        ("default", _("Default")),
+        ("call&visit", _("Call&Visit")),
+    )
 
     source = models.CharField(max_length=30, choices=SOURCES_CHOICES, default="default")
     role = models.CharField(max_length=10, null=True, blank=True, choices=USER_ROLES_CHOICES)
