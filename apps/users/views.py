@@ -20,7 +20,7 @@ def get_me(request: Request):
 @api_view()
 def get_calls(request: Request, user_id):
     user = get_object_or_404(CustomUser, pk=user_id)
-    phones = list(filter(None, (user.phone, user.phones.values_list('number', flat=True))))
+    phones = list(filter(None, (user.phone, *list(user.phones.values_list('number', flat=True)))))
 
     result = []
     for phone in phones:
