@@ -16,8 +16,15 @@
           </v-toolbar>
           <v-card elevation="10" class="pa-3">
             <v-row>
-              <v-col v-for="item in contactInfo" :key="item.value" xl="4" md="6" cols="12">
-                <v-text-field :prepend-icon="item.icon" :label="item.text" :value="item.value" filled />
+              <v-col v-for="(item, idx) in contactInfo" :key="idx" xl="4" md="6" cols="12">
+                <v-text-field
+                  v-model="contactInfo[idx].value"
+                  :prepend-icon="item.icon"
+                  :label="item.text"
+                  filled
+                  :append-icon="item.field ? 'mdi-content-save' : ''"
+                  @click:append="updateUser(item.field, contactInfo[idx].value)"
+                />
               </v-col>
             </v-row>
           </v-card>
@@ -125,8 +132,15 @@ export default {
           icon: 'mdi-account',
           text: 'Representante legal',
           value: user.legal_representative,
+          field: 'legal_representative',
         },
-        ...[...user.phones, { number: user.phone }]
+        {
+          icon: 'mdi-phone',
+          text: 'Telefono',
+          value: user.phone,
+          field: 'phone',
+        },
+        ...user.phones
           .filter((n) => n)
           .map((phone) => {
             return {
@@ -139,6 +153,7 @@ export default {
           icon: 'mdi-email',
           text: 'Email',
           value: user.email,
+          field: 'email',
         },
       ],
       datesInfo: [
@@ -183,6 +198,10 @@ export default {
   methods: {
     async fetchPuntos() {
       this.puntos = await this.$axios.$get(`/users/puntos/?user=${this.user.id}`)
+    },
+    async updateUser(field, value) {
+      await this.$axios.$patch(`users/users/${this.user.id}/`, { [field]: value })
+      await this.$swal({ title: 'Salvado', icon: 'success' })
     },
   },
 }

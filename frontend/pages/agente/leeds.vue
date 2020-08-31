@@ -5,7 +5,7 @@
     </v-card-text>
 
     <v-card-text>
-      <users-table :default-role="userRole" />
+      <users-table :client-role="clientRole" />
     </v-card-text>
   </v-card>
 </template>
@@ -20,7 +20,7 @@ export default {
   },
   data() {
     return {
-      userRole: constants.userRoles.leeds.value,
+      clientRole: constants.clientRoles.leeds.value,
     }
   },
 }

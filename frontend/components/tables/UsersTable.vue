@@ -15,6 +15,7 @@
         nextIcon: 'mdi-plus',
       }"
       class="elevation-1"
+      @update:options="fetchUsers"
     >
       <template v-slot:top>
         <div class="pa-3">
@@ -43,7 +44,7 @@
                 persistent-hint
                 class="text-center pa-3"
                 label="Tipo de usuario"
-                @change="updateQuery({ user_role: role })"
+                @change="clientRole ? null : updateQuery({ role: role })"
               >
                 <template v-slot:append>
                   <add-new-employee @added="fetchUsers" />
@@ -154,7 +155,7 @@ export default {
       type: Boolean,
       default: false,
     },
-    defaultRole: {
+    clientRole: {
       type: String,
       default: null,
     },
@@ -212,20 +213,15 @@ export default {
   },
   data() {
     return {
-      userRoles: Object.values(constants.userRoles).filter((ut) => !['clients', 'leeds'].includes(ut.value)),
+      userRoles: Object.values(constants.userRoles),
       search: '',
-      role: this.defaultRole,
+      role: 'admin',
       users: [],
       loading: false,
       total: 0,
-      options: {
-        page: 1,
-      },
+      options: { page: 1 },
       onlyNewMessages: false,
-      query: {
-        user_role: this.defaultRole,
-        is_support: this.isSupport,
-      },
+      query: { is_support: this.isSupport },
       responsibles: [],
       reserved_responsible: null,
       reserved_userId: null,
@@ -240,13 +236,13 @@ export default {
       return _h
     },
   },
-  async mounted() {
-    if (this.role || this.query.is_support) await this.fetchUsers()
+  async created() {
     if (this.headers.some((header) => header.value === 'responsible') && !this.responsibles.length) {
       this.responsibles = (
-        await this.$axios.$get('users/users/?user_role=agent&fields=id,fullname&itemsPerPage=100')
+        await this.$axios.$get('users/users/?role=agent&fields=id,fullname&itemsPerPage=100')
       ).results
     }
+    if (!this.clientRole && this.role) this.query.role = this.role
   },
   methods: {
     async editResponsible() {
@@ -268,6 +264,8 @@ export default {
           fields: this.headers.map((header) => header.value).join(),
           ...this.query,
         }
+        if (this.clientRole) query.client_role = this.clientRole
+
         this.$axios
           .$get(
             'users/users/?' +

@@ -1,13 +1,19 @@
 export default Object.freeze({
-  userRoles: {
+  clientRoles: {
     clients: {
       text: 'Clientes',
-      value: 'clients',
+      value: 'client',
     },
     leeds: {
       text: 'Leeds',
-      value: 'leeds',
+      value: 'leed',
     },
+    tramitacion: {
+      text: 'Leeds',
+      value: 'tramitacion',
+    },
+  },
+  userRoles: {
     admins: {
       text: 'Admins',
       value: 'admin',

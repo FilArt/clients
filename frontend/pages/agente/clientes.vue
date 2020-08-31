@@ -5,7 +5,7 @@
     </v-card-text>
 
     <v-card-text>
-      <users-table :default-role="userRole" :additional-headers="additionalHeaders" />
+      <users-table :client-role="clientRole" :additional-headers="additionalHeaders" />
     </v-card-text>
   </v-card>
 </template>
@@ -20,7 +20,7 @@ export default {
   },
   data() {
     return {
-      userRole: constants.userRoles.clients.value,
+      clientRole: constants.clientRoles.clients.value,
       additionalHeaders: [
         {
           index: 3,

@@ -113,8 +113,8 @@ export default {
       this.options.xAxis.categories = days.filter(constants.onlyUnique)
     },
     async fetchUsers() {
-      const clients = await this.$axios.$get('users/users/?user_role=clients&page=1&itemsPerPage=1')
-      const leeds = await this.$axios.$get('users/users/?user_role=leeds&page=1&itemsPerPage=1')
+      const clients = await this.$axios.$get('users/users/?client_role=client&page=1&itemsPerPage=1')
+      const leeds = await this.$axios.$get('users/users/?client_role=leed&page=1&itemsPerPage=1')
       this.usersOptions.series[0].data[0].y = clients.count
       this.usersOptions.series[0].data[1].y = leeds.count
       this.usersLoaded = Boolean(clients.count || leeds.count)

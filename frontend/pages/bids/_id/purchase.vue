@@ -9,82 +9,53 @@
     </v-card-title>
 
     <v-card-text>
-      <v-form novalidate @submit.prevent="submit">
-        <v-text-field v-if="!isIndividual" v-model="form.cif_dni" label="CIF/DNI" />
+      <v-row>
+        <v-col> Puntos suministros ({{ puntos.length }}) </v-col>
+      </v-row>
+      <v-row align="center" class="text-center">
+        <v-col v-for="(punto, idx) in puntos" :key="idx">
+          <punto-detail-dialog
+            closeable
+            color="green"
+            :offer-client-type="bid.offer.client_type"
+            :bid-id="bid.id"
+            :punto="punto"
+            :label="`Punto suministro #${idx + 1}`"
+            @fetch-puntos="fetchPuntos"
+          />
+        </v-col>
+      </v-row>
+    </v-card-text>
 
-        <v-text-field v-if="!isIndividual" v-model="form.legal_representative" label="Representante legal" />
-
-        <v-text-field v-model="form.dni" label="DNI Representante legal" />
-
-        <phone-field v-model="phoneMobile" label="Teléfono mobil" :error-messages="phoneErrors['mobile']" />
-
-        <phone-field
-          v-if="['admin', 'support'].includes($auth.user.role)"
-          v-model="phoneCity"
-          label="Teléfono fijo"
-          :error-messages="phoneErrors['city']"
-        />
-
-        <v-row align="center" class="text-center">
-          Puntos suministros
-          <v-col v-for="(punto, idx) in puntos" :key="idx">
-            <add-punto
-              :offer-client-type="bid.offer.client_type"
-              color="green"
-              :punto="punto"
-              :label="`Punto suministro #${idx + 1}`"
-              @fetch-puntos="fetchPuntos"
-            />
-          </v-col>
-        </v-row>
-
-        <v-divider />
-
-        <v-row align="center" class="text-center">
-          <v-col>
-            <add-punto :offer-client-type="bid.offer.client_type" :bid-id="bid.id" @fetch-puntos="fetchPuntos" />
-          </v-col>
-        </v-row>
-
-        <v-divider />
-
-        <v-row>
-          <v-col>
-            <submit-button block label="Contratar" />
-          </v-col>
-        </v-row>
-      </v-form>
+    <v-card-text>
+      <v-row>
+        <v-col>
+          <add-punto
+            color="primary"
+            :offer-client-type="bid.offer.client_type"
+            :bid-id="bid.id"
+            label="Añadir nuevo punto suministro"
+            @fetch-puntos="contractar"
+          />
+        </v-col>
+      </v-row>
     </v-card-text>
   </v-card>
 </template>
 
 <script>
-const phoneErrors = { city: [], mobile: [] }
 export default {
   components: {
+    PuntoDetailDialog: () => import('@/components/puntos/PuntoDetailDialog'),
     AdminHeader: () => import('~/components/admin/AdminHeader'),
     AddPunto: () => import('~/components/puntos/AddPunto'),
-    PhoneField: () => import('~/components/fields/phoneField'),
-    SubmitButton: () => import('~/components/buttons/submitButton'),
   },
   async asyncData({ $axios, params }) {
     const bid = await $axios.$get(`bids/bids/${params.id}/`)
     const puntos = await $axios.$get(`/users/puntos/?bid=${bid.id}`)
-    const phones = await $axios.$get('/users/phones/')
     return {
-      phones,
-      phoneMobile: (phones.find((phoneObject) => phoneObject.phone_type == 'mobile') || {}).number,
-      phoneCity: (phones.find((phoneObject) => phoneObject.phone_type == 'city') || {}).number,
       puntos,
       bid,
-      isIndividual: bid.offer.client_type === 0,
-    }
-  },
-  data() {
-    return {
-      form: JSON.parse(JSON.stringify(this.$auth.user)),
-      error: {},
-      phoneErrors: phoneErrors,
     }
   },
   methods: {
@@ -92,52 +63,12 @@ export default {
       this.puntos = []
       this.puntos = await this.$axios.$get(`/users/puntos/?bid=${this.bid.id}`)
     },
-    loadPhones() {
-      this.phoneErrors = phoneErrors
-      const types = ['city', 'mobile']
-      types.forEach((type) => {
-        this.loadPhone(type)
+    async contractar() {
+      await this.$router.push(`/bids/${this.bid.id}`)
+      await this.$swal({
+        title: 'Contratado!',
+        icon: 'success',
       })
-    },
-    async loadPhone(type) {
-      const value = type === 'city' ? this.phoneCity : this.phoneMobile
-      const existedPhone = this.phones.find((phoneObject) => phoneObject.phone_type === type)
-      const axiosFunc = existedPhone ? this.$axios.$patch : this.$axios.$post
-      const aep = existedPhone ? `/users/phones/${existedPhone.id}/` : '/users/phones/'
-      const data = existedPhone
-        ? {
-            id: existedPhone.id,
-            number: value,
-            phone_type: type,
-            bid: this.bid.id,
-          }
-        : { number: value, phone_type: type, bid: this.bid.id }
-      try {
-        await axiosFunc(aep, data)
-      } catch (e) {
-        this.phoneErrors[type] = e.response.data.number
-      }
-    },
-    async submit() {
-      if (!this.puntos || !this.puntos.length) {
-        await this.$swal({
-          title: 'No puntos!',
-          icon: 'error',
-        })
-        return
-      }
-      this.loadPhones()
-      try {
-        await this.$axios.$patch(`users/account/${this.$auth.user.id}/`, this.form)
-        await this.$auth.fetchUser()
-        await this.$router.push(`/bids/${this.bid.id}`)
-        await this.$swal({
-          title: 'Contratado!',
-          icon: 'success',
-        })
-      } catch (e) {
-        this.error = e.response.data
-      }
     },
   },
 }

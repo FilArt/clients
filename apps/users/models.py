@@ -161,11 +161,6 @@ class CustomUser(AbstractUser):
             if self.phone and self.bids.values('offer').exclude(id=Offer.get_blank_offer().id).exists():
                 self.client_role = 'tramitacion'
                 self.save()
-        elif self.client_role == 'tramitacion':
-            from apps.tramitacion.models import Tramitacion
-            if Tramitacion.objects.filter(bid__in=self.bids.all(), doc=True, scoring=True, call=True).exists():
-                self.client_role = 'client'
-                self.save()
 
     def __str__(self):
         return self.fullname

@@ -122,8 +122,8 @@ export default {
       // this.options.subtitle.text = `Total: ${usersData.length} usuarios y ${logsData.length} calculos`
     },
     async fetchUsers() {
-      const clients = await this.$axios.$get('users/users/?user_role=clients&page=1&itemsPerPage=1')
-      const leeds = await this.$axios.$get('users/users/?user_role=leeds&page=1&itemsPerPage=1')
+      const clients = await this.$axios.$get('users/users/?client_role=client&page=1&itemsPerPage=1')
+      const leeds = await this.$axios.$get('users/users/?client_role=leed&page=1&itemsPerPage=1')
       const visitorsCount = (await this.$axios.$get('users/logs/?fields=remote_addr&distinct=remote_addr'))
         .map((i) => i.remote_addr)
         .filter(constants.onlyUnique).length

@@ -5,7 +5,7 @@
     </v-card-text>
 
     <v-card-text>
-      <users-table :default-role="userRole" allow-delete />
+      <users-table :client-role="userRole" allow-delete :additional-headers="additionalHeaders" />
     </v-card-text>
   </v-card>
 </template>
@@ -20,7 +20,23 @@ export default {
   },
   data() {
     return {
-      userRole: constants.userRoles.leeds.value,
+      userRole: constants.clientRoles.leeds.value,
+      additionalHeaders: [
+        {
+          index: 3,
+          value: {
+            text: 'Responsable',
+            value: 'responsible',
+          },
+        },
+        {
+          index: 4,
+          value: {
+            text: 'Origin',
+            value: 'affiliate',
+          },
+        },
+      ],
     }
   },
 }

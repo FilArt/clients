@@ -1,97 +1,89 @@
 <template>
-  <v-dialog v-model="dialog" max-width="500" :transition="false">
-    <template v-slot:activator="{ on }">
-      <v-btn :color="color" v-on="on">
-        {{ label ? label : 'Anadir nuevo suministro' }}
-        <v-icon v-if="punto" color="error" right @click.stop="puntoDeleted"> mdi-trash-can-outline </v-icon>
-      </v-btn>
-    </template>
-    <v-card>
-      <v-card-title>
-        <p class="flex-grow-1">
-          {{ label ? label : 'Nuevo punto suministro' }}
-        </p>
-        <close-button @click="dialog = false" />
-      </v-card-title>
+  <v-card>
+    <v-card-title>
+      <p class="flex-grow-1">
+        {{ label ? label : 'Nuevo punto suministro' }}
+      </p>
+      <close-button v-if="closeable" @click="$emit('close')" />
+    </v-card-title>
 
-      <v-card-text>
-        <v-form @submit.prevent="addPunto">
-          <v-radio-group v-model="newPunto.category" label="Seleccione categoría de cliente" mandatory>
-            <v-radio
-              v-for="category in categories"
-              :key="category.value"
-              :label="category.name"
-              :value="category.value"
-            />
-          </v-radio-group>
+    <v-card-text>
+      <v-form @submit.prevent="addPunto">
+        <v-radio-group v-model="newPunto.category" label="Seleccione categoría de cliente" mandatory>
+          <v-radio
+            v-for="category in categories"
+            :key="category.value"
+            :label="category.name"
+            :value="category.value"
+          />
+        </v-radio-group>
 
-          <div v-for="field in puntoFields" :key="field.value">
-            <company-select v-if="field.value === 'company_luz' && admin" v-model="newPunto.company_luz" />
+        <div v-for="field in puntoFields" :key="field.value">
+          <company-select v-if="field.value === 'company_luz' && admin" v-model="newPunto.company_luz" />
 
-            <v-autocomplete
-              v-else-if="field.value === 'province'"
-              v-model="newPunto.province"
-              :label="field.text"
-              :hint="field.hint"
-              :name="field.value"
-              prepend-icon="mdi-city"
-              :items="cities"
-              :error-messages="errors[field.value]"
-            />
+          <v-autocomplete
+            v-else-if="field.value === 'province'"
+            v-model="newPunto.province"
+            :label="field.text"
+            :hint="field.hint"
+            :name="field.value"
+            prepend-icon="mdi-city"
+            :items="cities"
+            :error-messages="errors[field.value]"
+          />
 
-            <v-text-field
-              v-else
-              v-model="newPunto[field.value]"
-              class="pa-3"
-              :prepend-icon="field.icon"
-              :label="field.text"
-              :hint="field.hint"
-              :name="field.value"
-              :error-messages="errors[field.value]"
-            />
-          </div>
+          <v-text-field
+            v-else
+            v-model="newPunto[field.value]"
+            class="pa-3"
+            :prepend-icon="field.icon"
+            :label="field.text"
+            :hint="field.hint"
+            :name="field.value"
+            :error-messages="errors[field.value]"
+          />
+        </div>
 
-          <v-row v-for="fileField in fileFields" :key="fileField.name" align="center" class="flex-wrap">
-            <template
-              v-if="
-                !(
-                  (['cif1', 'recibo1'].includes(fileField.name) && newPunto.category === 'physical') ||
-                  (newPunto.category === 'autonomous' && fileField.name === 'cif1') ||
-                  (newPunto.category === 'business' && fileField.name === 'recibo1')
-                )
-              "
+        <v-row v-for="fileField in fileFields" :key="fileField.name" align="center" class="flex-wrap">
+          <template
+            v-if="
+              !(
+                (['cif1', 'recibo1'].includes(fileField.name) && newPunto.category === 'physical') ||
+                (newPunto.category === 'autonomous' && fileField.name === 'cif1') ||
+                (newPunto.category === 'business' && fileField.name === 'recibo1')
+              )
+            "
+          >
+            <v-col>
+              <v-file-input
+                v-model="files[fileField.name]"
+                accept="image/*"
+                :label="fileField.label"
+                :error-messages="fileErrors[fileField.name]"
+              />
+            </v-col>
+            <v-col
+              v-for="attachment in attachments.filter((a) => a.attachment_type === fileField.name)"
+              :key="attachment.id"
             >
-              <v-col>
-                <v-file-input
-                  v-model="files[fileField.name]"
-                  accept="image/*"
-                  :label="fileField.label"
-                  :error-messages="fileErrors[fileField.name]"
-                />
-              </v-col>
-              <v-col
-                v-for="attachment in attachments.filter((a) => a.attachment_type === fileField.name)"
-                :key="attachment.id"
+              <v-chip
+                close
+                link
+                exact
+                target="_blank"
+                :href="attachment.attachment"
+                @click:close="deleteAttachment(attachment.id)"
               >
-                <v-chip
-                  close
-                  link
-                  exact
-                  target="_blank"
-                  :href="attachment.attachment"
-                  @click:close="deleteAttachment(attachment.id)"
-                >
-                  {{ attachment.type_verbose_name }}
-                </v-chip>
-              </v-col>
-            </template>
-          </v-row>
+                {{ attachment.type_verbose_name }}
+              </v-chip>
+            </v-col>
+          </template>
+        </v-row>
 
-          <submit-button :label="punto ? 'Guardar' : 'Anadir nuevo punto suministro'" block />
-        </v-form>
-      </v-card-text>
-    </v-card>
-  </v-dialog>
+        <submit-button :label="punto ? 'Guardar' : 'Anadir nuevo punto suministro'" block />
+      </v-form>
+    </v-card-text>
+  </v-card>
 </template>
 <script>
 import constants from '@/lib/constants'
@@ -104,6 +96,10 @@ export default {
     CompanySelect: () => import('~/components/selects/CompanySelect'),
   },
   props: {
+    closeable: {
+      type: Boolean,
+      default: false,
+    },
     offerClientType: {
       type: Number,
       default: null,
@@ -136,7 +132,6 @@ export default {
             icon: field.icon,
           }
         }),
-      dialog: false,
       newPunto: this.punto || {},
       errors: {},
       attachments: (this.punto || {}).attachments || [],
@@ -276,27 +271,7 @@ export default {
         }
       }
       this.newPunto = {}
-      this.dialog = false
-    },
-    puntoDeleted() {
-      const id = this.punto.id
-      this.$swal({
-        title: `Borrar el punto ${id}?`,
-        text: '¡Una vez borrado, no podrás recuperar esto!',
-        icon: 'warning',
-        buttons: true,
-        dangerMode: true,
-      }).then((willDelete) => {
-        if (willDelete) {
-          this.$axios.$delete(`users/puntos/${id}/`).then(() => {
-            this.$swal({
-              title: 'Punto suministro eliminada!',
-              icon: 'success',
-            })
-            this.$emit('fetch-puntos')
-          })
-        }
-      })
+      this.$emit('punto-added')
     },
   },
 }
