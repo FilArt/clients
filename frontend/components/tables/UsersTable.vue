@@ -52,7 +52,7 @@
             </v-col>
 
             <v-col cols="12" lg="1" xl="1" md="1" sm="1">
-              <v-tooltip v-if="showFilters" bottom>
+              <v-tooltip v-if="!hideChat" bottom>
                 <template v-slot:activator="{ on }">
                   <v-simple-checkbox
                     v-model="onlyNewMessages"
