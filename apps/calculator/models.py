@@ -137,7 +137,7 @@ class Offer(models.Model):
         spread_sheet = client.open_by_url(settings.OFFERS_SHEET_URL)
         work_sheet = spread_sheet.get_worksheet(0)
         records = [row for row in work_sheet.get_all_records() if row["TYPO"]]
-        logger.info("before:", Offer.objects.count())
+        logger.info("before: %i", Offer.objects.count())
         for item in records:
             Offer.objects.update_or_create(
                 uuid=item["UUID"],
@@ -163,8 +163,8 @@ class Offer(models.Model):
 
         uuids = [r["UUID"] for r in records]
         Offer.objects.exclude(uuid__in=uuids).delete()
-        logger.info("after:", Offer.objects.count())
-        logger.info("all:", len(uuids))
+        logger.info("after: %i", Offer.objects.count())
+        logger.info("all: %i", len(uuids))
 
     @staticmethod
     def get_blank_offer():
