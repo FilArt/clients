@@ -20,6 +20,7 @@ from clients.serializers import (
     DetailPuntoSerializer,
     WithFacturaContractOnlineSerializer,
     FastContractSerializer,
+    FastContractAttachmentsSerializer,
 )
 from .models import Attachment, CustomUser, Phone, Punto
 from .pagination import UsersPagination
@@ -217,6 +218,12 @@ class WithFacturaContractOnlineViewSet(viewsets.ModelViewSet):
 
 class FastContractViewSet(WithFacturaContractOnlineViewSet):
     serializer_class = FastContractSerializer
+
+
+class FastContractImagesViewSet(viewsets.ModelViewSet):
+    queryset = Attachment.objects.all()
+    permission_classes: Tuple = tuple()
+    serializer_class = FastContractAttachmentsSerializer
 
 
 class RequestLogViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):

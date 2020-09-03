@@ -290,10 +290,6 @@ class WithFacturaContractOnlineSerializer(AdditionalContractOnlineSerializer):
 
 
 class FastContractSerializer(serializers.ModelSerializer):
-    factura = serializers.ImageField(write_only=True, required=False)
-    factura_1 = serializers.ImageField(write_only=True, required=False)
-    dni1 = serializers.ImageField(write_only=True, required=False)
-    dni2 = serializers.ImageField(write_only=True, required=False)
     iban = serializers.CharField(write_only=True, required=False)
     offer = serializers.PrimaryKeyRelatedField(queryset=Offer.objects.all(), write_only=True)
 
@@ -302,20 +298,21 @@ class FastContractSerializer(serializers.ModelSerializer):
     class Meta:
         model = CustomUser
         fields = [
-            'first_name', 'last_name', 'email', 'phone', 'dni1', 'dni2',
-            'factura', 'factura_1', 'offer', 'iban', 'from_user',
+            'first_name', 'last_name', 'email', 'phone',
+            'offer', 'iban', 'from_user',
         ]
         extra_kwargs = {'last_name': {'required': False}}
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self._preserve_user = None
+        self._preserve_bid = None
 
     def create(self, validated_data):
         from apps.users.serializers import RegisterSerializer
 
         from_user = validated_data.pop('from_user')
         offer = validated_data.pop("offer")
-        factura = validated_data.get("factura")
-        factura_1 = validated_data.get("factura_1")
-        dni1 = validated_data.get("dni1")
-        dni2 = validated_data.get("dni2")
 
         user_ser = SimpleAccountSerializer(data=validated_data)
         user_ser.is_valid(raise_exception=True)
@@ -330,16 +327,10 @@ class FastContractSerializer(serializers.ModelSerializer):
             user = user_ser.save(password=BaseUserManager().make_random_password(),
                                  invited_by=invited_by, source='call&visit')
             bid = Bid.objects.create(user=user, offer=offer)
-            punto = Punto.objects.create(bid=bid, user=user)
+            Punto.objects.create(bid=bid, user=user)
 
-            if factura:
-                Attachment.objects.create(punto=punto, attachment_type="factura", attachment=factura)
-            if factura_1:
-                Attachment.objects.create(punto=punto, attachment_type="factura_1", attachment=factura_1)
-            if dni1:
-                Attachment.objects.create(punto=punto, attachment_type="dni1", attachment=dni1)
-            if dni2:
-                Attachment.objects.create(punto=punto, attachment_type="dni2", attachment=dni2)
+            self._preserve_bid = bid.id
+            self._preserve_user = user.id
 
             try:
                 data_for_telegam = {str(k): str(v) for k, v in validated_data.items()}
@@ -350,3 +341,40 @@ class FastContractSerializer(serializers.ModelSerializer):
                 logger.exception(e)
 
             return user
+
+    def to_representation(self, instance):
+        rep = super().to_representation(instance)
+        rep['user'] = self._preserve_user
+        rep['bid'] = self._preserve_bid
+        return rep
+
+
+class FastContractAttachmentsSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Punto
+        fields = '__all__'
+
+    def create(self, validated_data):
+        factura = validated_data.get("factura")
+        factura_1 = validated_data.get("factura_1")
+        dni1 = validated_data.get("dni1")
+        dni2 = validated_data.get("dni2")
+        cif1 = validated_data.get("cif1")
+        cif2 = validated_data.get("cif2")
+
+        punto = super().create(validated_data)
+
+        if factura:
+            Attachment.objects.create(punto=punto, attachment_type="factura", attachment=factura)
+        if factura_1:
+            Attachment.objects.create(punto=punto, attachment_type="factura_1", attachment=factura_1)
+        if cif1:
+            Attachment.objects.create(punto=punto, attachment_type="cif1", attachment=cif1)
+        if cif2:
+            Attachment.objects.create(punto=punto, attachment_type="cif2", attachment=cif2)
+        if dni1:
+            Attachment.objects.create(punto=punto, attachment_type="dni1", attachment=dni1)
+        if dni2:
+            Attachment.objects.create(punto=punto, attachment_type="dni2", attachment=dni2)
+
+        return punto
