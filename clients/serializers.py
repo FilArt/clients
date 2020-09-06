@@ -318,14 +318,22 @@ class FastContractSerializer(serializers.ModelSerializer):
         user_ser.is_valid(raise_exception=True)
         with transaction.atomic():
             if not CustomUser.objects.filter(email=from_user).exists():
-                from_user_ser = RegisterSerializer(data={'email': from_user}, tg_msg='Nuevo usuario - from call&visit')
+                from_user_ser = RegisterSerializer(
+                    data={'email': from_user, 'client_role': 'agent'},
+                    tg_msg='Nuevo usuario - from call&visit'
+                )
                 from_user_ser.is_valid(raise_exception=True)
                 invited_by = from_user_ser.save()
             else:
                 invited_by = CustomUser.objects.get(email=from_user)
 
-            user = user_ser.save(password=BaseUserManager().make_random_password(),
-                                 invited_by=invited_by, source='call&visit')
+            user = user_ser.save(
+                password=BaseUserManager().make_random_password(),
+                invited_by=invited_by,
+                responsible=invited_by,
+                source='call&visit',
+                client_role='tramitacion',
+            )
             bid = Bid.objects.create(user=user, offer=offer)
             Punto.objects.create(bid=bid, user=user)
 
@@ -350,6 +358,13 @@ class FastContractSerializer(serializers.ModelSerializer):
 
 
 class FastContractAttachmentsSerializer(serializers.ModelSerializer):
+    factura = serializers.ImageField(write_only=True, required=False, allow_null=True)
+    factura_1 = serializers.ImageField(write_only=True, required=False, allow_null=True)
+    dni1 = serializers.ImageField(write_only=True, required=False, allow_null=True)
+    dni2 = serializers.ImageField(write_only=True, required=False, allow_null=True)
+    cif1 = serializers.ImageField(write_only=True, required=False, allow_null=True)
+    cif2 = serializers.ImageField(write_only=True, required=False, allow_null=True)
+
     class Meta:
         model = Punto
         fields = '__all__'
@@ -362,7 +377,8 @@ class FastContractAttachmentsSerializer(serializers.ModelSerializer):
         cif1 = validated_data.get("cif1")
         cif2 = validated_data.get("cif2")
 
-        punto = super().create(validated_data)
+        punto_fields = [f.name for f in Punto._meta.fields]
+        punto = super().create({k: v for k, v in validated_data.items() if k in punto_fields})
 
         if factura:
             Attachment.objects.create(punto=punto, attachment_type="factura", attachment=factura)

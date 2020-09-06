@@ -29,8 +29,12 @@ class RegisterSerializer(serializers.ModelSerializer):
         fields = [
             'email',
             'password',
+            'client_role',
         ]
-        extra_kwargs = {'password': {'required': False, 'write_only': True}}
+        extra_kwargs = {
+            'password': {'required': False, 'write_only': True},
+            'client_role': {'required': False, 'write_only': True},
+        }
 
     def save(self, **kwargs):
         try:

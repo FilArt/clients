@@ -219,6 +219,20 @@ class WithFacturaContractOnlineViewSet(viewsets.ModelViewSet):
 class FastContractViewSet(WithFacturaContractOnlineViewSet):
     serializer_class = FastContractSerializer
 
+    def create(self, request, *args, **kwargs):
+        user_email = request.data.get('email')
+        offer = request.data.get('offer')
+        if user_email and offer:
+            try:
+                user = CustomUser.objects.get(email=user_email)
+                bids = Bid.objects.filter(user=user, offer_id=offer)
+                if bids.exists():
+                    return Response({'user': user.id, 'bid': bids.last().id})
+            except CustomUser.NotFound:
+                pass
+
+        return super().create(request, *args, **kwargs)
+
 
 class FastContractImagesViewSet(viewsets.ModelViewSet):
     queryset = Attachment.objects.all()
