@@ -37,10 +37,11 @@ class RegisterSerializer(serializers.ModelSerializer):
         }
 
     def save(self, **kwargs):
-        try:
-            notify_telegram(self.tg_message, **{**self.validated_data, **kwargs})
-        except Exception as e:
-            logger.exception(e)
+        if self.tg_message:
+            try:
+                notify_telegram(self.tg_message, **{**self.validated_data, **kwargs})
+            except Exception as e:
+                logger.exception(e)
 
         if not settings.DEBUG:
             password = BaseUserManager().make_random_password()

@@ -301,7 +301,10 @@ class FastContractSerializer(serializers.ModelSerializer):
             'first_name', 'last_name', 'email', 'phone',
             'offer', 'iban', 'from_user',
         ]
-        extra_kwargs = {'last_name': {'required': False}}
+        extra_kwargs = {
+            'last_name': {'required': False},
+            'phone': {'required': False},
+        }
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -320,7 +323,7 @@ class FastContractSerializer(serializers.ModelSerializer):
             if not CustomUser.objects.filter(email=from_user).exists():
                 from_user_ser = RegisterSerializer(
                     data={'email': from_user, 'client_role': 'agent'},
-                    tg_msg='Nuevo usuario - from call&visit'
+                    tg_msg=None,
                 )
                 from_user_ser.is_valid(raise_exception=True)
                 invited_by = from_user_ser.save()
