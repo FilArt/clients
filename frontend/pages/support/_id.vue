@@ -4,73 +4,8 @@
       <admin-header />
     </v-card-text>
 
-    <v-card-title>Datos de clientes</v-card-title>
     <v-card-text>
-      <v-row>
-        <v-col :cols="cols">
-          <v-text-field
-            v-model="values.first_name"
-            label="Nombre"
-            append-icon="mdi-content-save"
-            @click:append="update({ field: 'first_name' })"
-            @keyup.enter="update({ field: 'first_name' })"
-          />
-        </v-col>
-
-        <v-col :cols="cols">
-          <v-text-field
-            v-model="values.last_name"
-            label="Apellido"
-            append-icon="mdi-content-save"
-            @click:append="update({ field: 'last_name' })"
-            @keyup.enter="update({ field: 'last_name' })"
-          />
-        </v-col>
-
-        <v-col :cols="cols">
-          <phone-field
-            v-model="values.phone"
-            label="Telefono"
-            append-icon="mdi-content-save"
-            @click:append="update({ field: 'phone' })"
-            @keyup.enter="update({ field: 'phone' })"
-          />
-        </v-col>
-
-        <v-col :cols="cols">
-          <email-field v-model="values.email" label="Email" readonly />
-        </v-col>
-
-        <v-col :cols="cols">
-          <v-text-field
-            v-model="values.dni"
-            label="DNI"
-            append-icon="mdi-content-save"
-            @click:append="update({ field: 'dni' })"
-            @keyup.enter="update({ field: 'dni' })"
-          />
-        </v-col>
-
-        <v-col :cols="cols">
-          <v-text-field
-            v-model="values.cif_dni"
-            label="CIF/DNI"
-            append-icon="mdi-content-save"
-            @click:append="update({ field: 'cif_dni' })"
-            @keyup.enter="update({ field: 'cif_dni' })"
-          />
-        </v-col>
-
-        <v-col :cols="cols">
-          <v-text-field
-            v-model="values.legal_representative"
-            label="Legal representative"
-            append-icon="mdi-content-save"
-            @click:append="update({ field: 'legal_representative' })"
-            @keyup.enter="update({ field: 'legal_representative' })"
-          />
-        </v-col>
-      </v-row>
+      <user-detail-data :user="values" />
     </v-card-text>
 
     <v-divider />
@@ -104,8 +39,7 @@
 export default {
   components: {
     AdminHeader: () => import('~/components/admin/AdminHeader'),
-    PhoneField: () => import('~/components/fields/phoneField'),
-    EmailField: () => import('~/components/fields/emailField'),
+    UserDetailData: () => import('@/components/forms/UserDetailData'),
     Tramitacion: () => import('~/components/support/Tramitacion'),
   },
   async asyncData({ $axios, params }) {
@@ -121,6 +55,7 @@ export default {
         dni: user.dni,
         iban: user.iban,
         cif_dni: user.cif_dni,
+        phones: [user.phone],
       },
     }
   },
