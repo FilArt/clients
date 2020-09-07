@@ -126,6 +126,8 @@ class Offer(models.Model):
     c2 = PositiveNullableFloatField()
     c3 = PositiveNullableFloatField()
     is_price_permanent = models.CharField(max_length=20, choices=PRICE_CHOICES)
+    canal_comission = models.IntegerField(default=0)
+    agent_comission = models.IntegerField(default=0)
 
     def __str__(self) -> str:
         return self.name
@@ -138,27 +140,33 @@ class Offer(models.Model):
         records = [row for row in work_sheet.get_all_records() if row["TYPO"]]
         logger.info("before: %i", Offer.objects.count())
         for item in records:
-            Offer.objects.update_or_create(
-                uuid=item["UUID"],
-                defaults=dict(
-                    company=Company.objects.get_or_create(name=item["COMERCIALIZADORA"].strip().upper(), )[0],
-                    name=item["NOMBRE"],
-                    tarif=item["TARIFA"],
-                    description=item["DESCRIPCION"],
-                    power_min=str_to_float(item["POTENCIA MIN"]),
-                    power_max=str_to_float(item["POTENCIA MAX"]),
-                    consumption_min=str_to_float(item["CONSUMO MIN"]),
-                    consumption_max=str_to_float(item["CONSUMO MAX"]),
-                    client_type=0 if item["TYPO"] == "F" else 1 if item["TYPO"] == "J" else 2,
-                    p1=str_to_float(item["P1"]),
-                    p2=str_to_float(item["P2"]),
-                    p3=str_to_float(item["P3"]),
-                    c1=str_to_float(item["C1"]),
-                    c2=str_to_float(item["C2"]),
-                    c3=str_to_float(item["C3"]),
-                    is_price_permanent=item["MODO"].capitalize(),
-                ),
-            )
+            try:
+                Offer.objects.update_or_create(
+                    uuid=item["UUID"],
+                    defaults=dict(
+                        company=Company.objects.get_or_create(name=item["COMERCIALIZADORA"].strip().upper(), )[0],
+                        name=item["NOMBRE"],
+                        tarif=item["TARIFA"],
+                        description=item["DESCRIPCION"],
+                        power_min=str_to_float(item["POTENCIA MIN"]),
+                        power_max=str_to_float(item["POTENCIA MAX"]),
+                        consumption_min=str_to_float(item["CONSUMO MIN"]),
+                        consumption_max=str_to_float(item["CONSUMO MAX"]),
+                        client_type=0 if item["TYPO"] == "F" else 1 if item["TYPO"] == "J" else 2,
+                        p1=str_to_float(item["P1"]),
+                        p2=str_to_float(item["P2"]),
+                        p3=str_to_float(item["P3"]),
+                        c1=str_to_float(item["C1"]),
+                        c2=str_to_float(item["C2"]),
+                        c3=str_to_float(item["C3"]),
+                        is_price_permanent=item["MODO"].capitalize(),
+                        agent_comission=int(item['COMISIONES COMERCIAL']),
+                        canal_comission=int(item['COMISIONES CANAL']),
+                    ),
+                )
+            except Exception as e:
+                logger.exception(e)
+                raise
 
         uuids = [r["UUID"] for r in records]
         Offer.objects.exclude(uuid__in=uuids).delete()
