@@ -90,7 +90,7 @@
         <delete-button @click="deleteUser(item)" />
       </template>
 
-      <template v-if="$auth.user.role === 'admin'" v-slot:item.responsible="{ item }">
+      <template v-if="$auth.user.role === 'admin'" v-slot:[`item.responsible`]="{ item }">
         <v-edit-dialog
           :return-value.sync="item.responsible"
           large
@@ -264,7 +264,10 @@ export default {
           fields: this.headers.map((header) => header.value).join(),
           ...this.query,
         }
-        if (this.clientRole) query.client_role = this.clientRole
+        if (this.clientRole) {
+          query.client_role = this.clientRole
+          query['role__isnull'] = true
+        }
 
         this.$axios
           .$get(
