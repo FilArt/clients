@@ -2,6 +2,7 @@ import es from 'vuetify/es5/locale/es'
 import colors from 'vuetify/es5/util/colors'
 
 const DEV = process.env.NODE_ENV !== 'production'
+const BACKEND_HOST = `http://localhost:${process.env.BACKEND_PORT || '8000'}`
 
 export default {
   mode: 'spa',
@@ -74,12 +75,12 @@ export default {
    ** See https://axios.nuxtjs.org/options
    */
   axios: {
-    browserBaseURL: !DEV ? 'https://areaclientes.gestiongroup.es/api' : 'http://localhost:8000/api',
+    browserBaseURL: !DEV ? 'https://areaclientes.gestiongroup.es/api' : `${BACKEND_HOST}/api`,
     proxy: true,
   },
   proxy: {
-    '/api/': !DEV ? 'https://areaclientes.gestiongroup.es/' : 'http://localhost:8000/',
-    '/media/': !DEV ? 'https://areaclientes.gestiongroup.es/' : 'http://localhost:8000/',
+    '/api/': !DEV ? 'https://areaclientes.gestiongroup.es/' : BACKEND_HOST,
+    '/media/': !DEV ? 'https://areaclientes.gestiongroup.es/' : BACKEND_HOST,
   },
   auth: {
     redirect: {
