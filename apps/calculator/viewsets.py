@@ -13,11 +13,6 @@ class CompanyViewSet(viewsets.GenericViewSet, mixins.ListModelMixin):
     serializer_class = CompanySerializer
     permission_classes: Tuple = tuple()
 
-    def filter_queryset(self, queryset):
-        if self.request.query_params.get('with_comission'):
-            queryset = queryset.filter(offer__agent_comission__gt=0).distinct('id')
-        return queryset
-
 
 class TarifViewSet(viewsets.GenericViewSet, mixins.ListModelMixin):
     permission_classes: Tuple = tuple()
