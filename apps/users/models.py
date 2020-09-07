@@ -156,7 +156,7 @@ class CustomUser(AbstractUser):
 
     def save(self, **kwargs):
         super(CustomUser, self).save(**kwargs)
-        if kwargs.get('update_fields') is None and self.client_role == 'leed':
+        if self.role is None and self.client_role == 'leed':
             from apps.calculator.models import Offer
             if self.phone and self.bids.values('offer').exclude(id=Offer.get_blank_offer().id).exists():
                 self.client_role = 'tramitacion'
