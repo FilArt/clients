@@ -228,7 +228,7 @@ class FastContractViewSet(WithFacturaContractOnlineViewSet):
                 bids = Bid.objects.filter(user=user, offer_id=offer)
                 if bids.exists():
                     return Response({'user': user.id, 'bid': bids.last().id})
-            except CustomUser.NotFound:
+            except CustomUser.DoesNotExist:
                 pass
 
         return super().create(request, *args, **kwargs)
