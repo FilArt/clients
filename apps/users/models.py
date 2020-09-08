@@ -150,8 +150,6 @@ class CustomUser(AbstractUser):
 
     @property
     def affiliate(self):
-        if self.invited_by:
-            return self.invited_by.fullname
         return self.get_source_display()
 
     def save(self, **kwargs):
