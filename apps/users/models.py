@@ -7,6 +7,7 @@ from django.core.validators import MinLengthValidator
 from django.db import models
 from django.utils.translation import pgettext_lazy
 from django.utils.translation import ugettext_lazy as _
+from rest_framework.exceptions import ValidationError as DRFValError
 
 from .managers import CustomUserManager
 
@@ -300,7 +301,7 @@ class Punto(models.Model):
 
     def save(self, *args, **kwargs) -> None:
         if self.category == "physical" and self.bid and self.bid.offer and self.bid.offer.client_type == 1:
-            raise ValueError({"category": [_("Business offer is not available for individuals")]})
+            raise DRFValError({"category": [_("Business offer is not available for individuals")]})
         super().save(*args, **kwargs)
 
 

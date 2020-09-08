@@ -5,7 +5,6 @@ from django.contrib.auth.base_user import BaseUserManager
 from django.db import transaction
 from drf_dynamic_fields import DynamicFieldsMixin
 from rest_framework import serializers
-from rest_framework.exceptions import ValidationError
 
 from apps.bids.models import Bid
 from apps.calculator.models import Offer
@@ -382,10 +381,7 @@ class FastContractAttachmentsSerializer(serializers.ModelSerializer):
         cif2 = validated_data.get("cif2")
 
         punto_fields = [f.name for f in Punto._meta.fields]
-        try:
-            punto = super().create({k: v for k, v in validated_data.items() if k in punto_fields})
-        except ValueError as e:
-            raise ValidationError from e
+        punto = super().create({k: v for k, v in validated_data.items() if k in punto_fields})
 
         if factura:
             Attachment.objects.create(punto=punto, attachment_type="factura", attachment=factura)
