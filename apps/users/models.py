@@ -300,7 +300,7 @@ class Punto(models.Model):
 
     def save(self, *args, **kwargs) -> None:
         if self.category == "physical" and self.bid and self.bid.offer and self.bid.offer.client_type == 1:
-            raise ValidationError({"category": [_("Business offer is not available for individuals")]})
+            raise ValueError({"category": [_("Business offer is not available for individuals")]})
         super().save(*args, **kwargs)
 
 
