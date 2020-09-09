@@ -84,6 +84,7 @@ class UserViewSet(DynamicFieldsMixin, mixins.UpdateModelMixin, mixins.ListModelM
     filterset_fields = {
         'role': ['exact', 'isnull'],
         'client_role': ['exact'],
+        'date_joined': ['range'],
     }
 
     def filter_queryset(self, queryset):
