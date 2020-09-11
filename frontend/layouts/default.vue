@@ -63,13 +63,13 @@ export default {
           to: '/ofertas',
         })
       }
-      if (this.$auth.user.permissions.includes('calculator')) {
-        items.push({
-          icon: 'mdi-calculator',
-          title: 'Comparador',
-          to: '/calculator',
-        })
-      }
+      // if (this.$auth.user.permissions.includes('calculator')) {
+      //   items.push({
+      //     icon: 'mdi-calculator',
+      //     title: 'Comparador',
+      //     to: '/calculator',
+      //   })
+      // }
       items.push({
         icon: 'mdi-briefcase',
         title: 'Cartera',
