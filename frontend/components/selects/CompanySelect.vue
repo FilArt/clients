@@ -74,21 +74,25 @@ export default {
   data() {
     return {
       loading: true,
-
       company: this.value,
-      companies: [],
     }
+  },
+  computed: {
+    companies() {
+      const comps = this.$store.state.companies
+      return this.withoutOther ? comps.filter((c) => c.name !== 'OTRA') : comps
+    },
   },
   watch: {
     value: {
-      handler: function (val) {
+      handler(val) {
         this.company = !val ? null : this.companies.find((c) => c.id.toString() === val.toString())
       },
       deep: false,
     },
   },
   mounted() {
-    this.refresh()
+    if (!this.companies.length) this.refresh()
   },
   methods: {
     closeItem() {
@@ -99,10 +103,10 @@ export default {
       this.loading = true
       this.$axios
         .$get('/calculator/companies/')
-        .then((companies) => {
-          this.companies = this.withoutOther ? companies.filter((c) => c.name !== 'OTRA') : companies
+        .then((companies) => this.$store.commit('setCompanies', companies))
+        .finally(() => {
+          this.loading = false
         })
-        .finally(() => (this.loading = false))
     },
   },
 }
