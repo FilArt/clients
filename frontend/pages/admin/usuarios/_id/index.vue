@@ -51,7 +51,7 @@
           </v-tab-item>
 
           <v-tab-item>
-            <puntos-list :puntos="puntos" editable @punto-updated="fetchPuntos" />
+            <puntos-list :puntos="puntos" @punto-updated="fetchPuntos" />
           </v-tab-item>
         </v-tabs-items>
       </v-tabs>
@@ -96,7 +96,7 @@ export default {
   computed: {
     fullname() {
       const u = this.user
-      let fullname = [u.first_name, u.last_name]
+      const fullname = [u.first_name, u.last_name]
         .filter((name) => !!name)
         .join(' ')
         .trim()
