@@ -70,7 +70,7 @@ class CustomUser(AbstractUser):
 
     source = models.CharField(max_length=30, choices=SOURCES_CHOICES, default="default")
     role = models.CharField(max_length=10, null=True, blank=True, choices=USER_ROLES_CHOICES)
-    client_role = models.CharField(max_length=30, choices=CLIENT_ROLES_CHOICES, default='leed')
+    client_role = models.CharField(max_length=30, choices=CLIENT_ROLES_CHOICES, default="leed")
     avatar = models.ImageField(blank=True, null=True)
     username = models.CharField(blank=True, null=True, max_length=30)
     email = models.EmailField(_("Email address"), unique=True)
@@ -83,6 +83,7 @@ class CustomUser(AbstractUser):
     legal_representative = models.CharField(
         verbose_name=_("Legal representative"), max_length=255, blank=True, null=True
     )
+    company_name = models.CharField(_("Company name"), max_length=255, blank=True, null=True)
 
     created_at = models.DateTimeField(auto_now_add=True)
     last_modified = models.DateTimeField(auto_now=True)
@@ -90,16 +91,19 @@ class CustomUser(AbstractUser):
     permissions = ArrayField(
         models.CharField(choices=PERMISSIONS_CHOICES, max_length=30),
         default=get_default_user_permissions,
-        help_text='%s %s' % (
+        help_text="%s %s"
+        % (
             pgettext_lazy("help text for user permissions field", "Possible values:"),
-            ", ".join(get_default_user_permissions())
-        )
+            ", ".join(get_default_user_permissions()),
+        ),
     )
 
-    invited_by = models.ForeignKey("users.CustomUser", blank=True, null=True, related_name='invites',
-                                   on_delete=models.SET_NULL)
-    responsible = models.ForeignKey("users.CustomUser", blank=True, null=True, related_name='under_responsibility',
-                                    on_delete=models.SET_NULL)
+    invited_by = models.ForeignKey(
+        "users.CustomUser", blank=True, null=True, related_name="invites", on_delete=models.SET_NULL
+    )
+    responsible = models.ForeignKey(
+        "users.CustomUser", blank=True, null=True, related_name="under_responsibility", on_delete=models.SET_NULL
+    )
 
     objects = CustomUserManager()
 
@@ -113,7 +117,9 @@ class CustomUser(AbstractUser):
 
     @property
     def profile_filled(self) -> bool:
-        return self.first_name and self.last_name and self.phone
+        return self.phones is not None and (
+            self.company_name is not None or (self.first_name is not None and self.last_name is not None)
+        )
 
     @cached_property
     def bids_count(self) -> int:
@@ -125,19 +131,19 @@ class CustomUser(AbstractUser):
 
     @property
     def docs_ok_count(self) -> str:
-        return f'{self.bids.filter(tramitacion__doc=True).count()}/{self.bids_count}'
+        return f"{self.bids.filter(tramitacion__doc=True).count()}/{self.bids_count}"
 
     @property
     def scoring_ok_count(self) -> str:
-        return f'{self.bids.filter(tramitacion__scoring=True).count()}/{self.bids_count}'
+        return f"{self.bids.filter(tramitacion__scoring=True).count()}/{self.bids_count}"
 
     @property
     def calls_ok_count(self) -> str:
-        return f'{self.bids.filter(tramitacion__call=True).count()}/{self.bids_count}'
+        return f"{self.bids.filter(tramitacion__call=True).count()}/{self.bids_count}"
 
     @cached_property
     def is_leed(self) -> int:
-        return not self.puntos.values('attachments').exists()
+        return not self.puntos.values("attachments").exists()
 
     @property
     def is_client(self) -> bool:
@@ -145,7 +151,9 @@ class CustomUser(AbstractUser):
 
     @property
     def fullname(self):
-        if self.first_name and self.last_name:
+        if self.company_name:
+            return self.company_name
+        elif self.first_name and self.last_name:
             return f"{self.first_name} {self.last_name}"
         return self.email
 
@@ -155,10 +163,11 @@ class CustomUser(AbstractUser):
 
     def save(self, **kwargs):
         super(CustomUser, self).save(**kwargs)
-        if self.role is None and self.client_role == 'leed':
+        if self.role is None and self.client_role == "leed":
             from apps.calculator.models import Offer
-            if self.phone and self.bids.values('offer').exclude(id=Offer.get_blank_offer().id).exists():
-                self.client_role = 'tramitacion'
+
+            if self.phone and self.bids.values("offer").exclude(id=Offer.get_blank_offer().id).exists():
+                self.client_role = "tramitacion"
                 self.save()
 
     def __str__(self):

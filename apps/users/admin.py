@@ -8,7 +8,7 @@ from .models import CustomUser
 class CustomUserAdmin(UserAdmin):
     fieldsets = (
         (None, {"fields": ("email", "password")}),
-        (_("Personal info"), {"fields": ("first_name", "last_name", "phone")}),
+        (_("Personal info"), {"fields": ("company_name", "first_name", "last_name", "phone")}),
         (
             _("Permissions"),
             {"fields": ("is_active", "is_staff", "is_superuser", "groups", "user_permissions", "role", "avatar")},
@@ -18,9 +18,19 @@ class CustomUserAdmin(UserAdmin):
     add_fieldsets = (
         (None, {"classes": ("wide",), "fields": ("email", "password1", "password2", "role", "permissions")}),
     )
-    list_display = ("email", "first_name", "last_name", "phone", "role", "is_staff", "is_active", "date_joined")
+    list_display = (
+        "email",
+        "company_name",
+        "first_name",
+        "last_name",
+        "phone",
+        "role",
+        "is_staff",
+        "is_active",
+        "date_joined",
+    )
     list_filter = ("is_staff", "is_superuser", "is_active", "groups", "role")
-    search_fields = ("first_name", "last_name", "email", "phone")
+    search_fields = ("company_name", "first_name", "last_name", "email", "phone")
     ordering = ("-date_joined",)
 
 

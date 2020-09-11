@@ -14,7 +14,7 @@ from .serializers import BidSerializer, BidStorySerializer, CreateBidSerializer
 class BidViewSet(viewsets.ModelViewSet):
     permission_classes = (IsAuthenticated, BidsPermission)
     ordering = ("-created_at",)
-    search_fields = ("id", "puntos__cups_luz", "user__first_name", "user__last_name")
+    search_fields = ("id", "puntos__cups_luz", "user__first_name", "user__last_name", "user__company_name")
 
     def get_serializer_class(self):
         if self.action == "create":

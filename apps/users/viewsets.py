@@ -74,22 +74,27 @@ class AccountViewSet(
         return account
 
 
-class UserViewSet(DynamicFieldsMixin, mixins.UpdateModelMixin, mixins.ListModelMixin, mixins.RetrieveModelMixin,
-                  viewsets.GenericViewSet):
+class UserViewSet(
+    DynamicFieldsMixin,
+    mixins.UpdateModelMixin,
+    mixins.ListModelMixin,
+    mixins.RetrieveModelMixin,
+    viewsets.GenericViewSet,
+):
     queryset = CustomUser.objects.all()
     permission_classes = (IsAuthenticated, UsersPermission)
     ordering = ("-id",)
-    search_fields = ('first_name', 'last_name', 'email', 'phone')
+    search_fields = ("company_name", "first_name", "last_name", "email", "phone")
     pagination_class = UsersPagination
     filterset_fields = {
-        'role': ['exact', 'isnull'],
-        'client_role': ['exact'],
-        'date_joined': ['range'],
+        "role": ["exact", "isnull"],
+        "client_role": ["exact"],
+        "date_joined": ["range"],
     }
 
     def filter_queryset(self, queryset):
         queryset = super(UserViewSet, self).filter_queryset(queryset)
-        if self.request.user.role == 'agent':
+        if self.request.user.role == "agent":
             agent_id = self.request.user.id
             queryset = queryset.filter(Q(responsible_id=agent_id) | Q(invited_by_id=agent_id))
         return queryset
@@ -124,14 +129,15 @@ class UserViewSet(DynamicFieldsMixin, mixins.UpdateModelMixin, mixins.ListModelM
         return Response(AttachmentSerializer(attachments, many=True).data)
 
 
-class ManageUsersViewSet(mixins.CreateModelMixin, mixins.UpdateModelMixin, mixins.DestroyModelMixin,
-                         viewsets.GenericViewSet):
+class ManageUsersViewSet(
+    mixins.CreateModelMixin, mixins.UpdateModelMixin, mixins.DestroyModelMixin, viewsets.GenericViewSet
+):
     queryset = CustomUser.objects.all()
     serializer_class = UserListSerializer
     permission_classes = (IsAuthenticated, AdminPermission)
 
     def get_serializer_class(self):
-        if self.action == 'create':
+        if self.action == "create":
             return RegisterByAdminSerializer
         return self.serializer_class
 
@@ -221,14 +227,14 @@ class FastContractViewSet(WithFacturaContractOnlineViewSet):
     serializer_class = FastContractSerializer
 
     def create(self, request, *args, **kwargs):
-        user_email = request.data.get('email')
-        offer = request.data.get('offer')
+        user_email = request.data.get("email")
+        offer = request.data.get("offer")
         if user_email and offer:
             try:
                 user = CustomUser.objects.get(email=user_email)
                 bids = Bid.objects.filter(user=user, offer_id=offer)
                 if bids.exists():
-                    return Response({'user': user.id, 'bid': bids.last().id})
+                    return Response({"user": user.id, "bid": bids.last().id})
             except CustomUser.DoesNotExist:
                 pass
 
@@ -245,14 +251,12 @@ class RequestLogViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
     queryset = APIRequestLog.objects.all()
     serializer_class = RequestLogSerializer
     permission_classes = (IsAuthenticated, AdminAgentPermission)
-    filterset_fields = {
-        'requested_at': ['gte']
-    }
+    filterset_fields = {"requested_at": ["gte"]}
 
     def filter_queryset(self, queryset):
-        distinct = self.request.query_params.get('distinct')
+        distinct = self.request.query_params.get("distinct")
         if distinct:
             if distinct not in self.serializer_class.Meta.fields:
-                raise ValidationError({'distinct': ['Invalid option']})
+                raise ValidationError({"distinct": ["Invalid option"]})
             queryset = queryset.distinct(distinct)
         return queryset

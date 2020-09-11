@@ -21,19 +21,19 @@ logger = logging.getLogger(__name__)
 
 class RegisterSerializer(serializers.ModelSerializer):
     def __init__(self, *args, **kwargs):
-        self.tg_message = kwargs.pop('tg_msg') if 'tg_msg' in kwargs else "Nuevo usuario - de pagina registrarse"
+        self.tg_message = kwargs.pop("tg_msg") if "tg_msg" in kwargs else "Nuevo usuario - de pagina registrarse"
         super().__init__(*args, **kwargs)
 
     class Meta:
         model = CustomUser
         fields = [
-            'email',
-            'password',
-            'role',
+            "email",
+            "password",
+            "role",
         ]
         extra_kwargs = {
-            'password': {'required': False, 'write_only': True},
-            'role': {'required': False, 'write_only': True},
+            "password": {"required": False, "write_only": True},
+            "role": {"required": False, "write_only": True},
         }
 
     def save(self, **kwargs):
@@ -47,11 +47,11 @@ class RegisterSerializer(serializers.ModelSerializer):
             password = BaseUserManager().make_random_password()
             user: CustomUser = super().save()
             user.set_password(password)
-            user.save(update_fields=['password'])
+            user.save(update_fields=["password"])
         else:
             user: CustomUser = super().save()
-            user.set_password('1')
-            user.save(update_fields=['password'])
+            user.set_password("1")
+            user.save(update_fields=["password"])
             return user
 
         subject = _("¡Bienvenido a Gestion Group! ")
@@ -81,23 +81,23 @@ class RegisterSerializer(serializers.ModelSerializer):
 class RegisterByAdminSerializer(RegisterSerializer):
     class Meta:
         model = CustomUser
-        fields = (*RegisterSerializer.Meta.fields, 'role', 'first_name', 'last_name')
+        fields = (*RegisterSerializer.Meta.fields, "role", "first_name", "last_name")
         extra_kwargs = RegisterSerializer.Meta.extra_kwargs
 
 
 class PrettyDateTimeField(serializers.DateTimeField, serializers.ReadOnlyField):
     def to_representation(self, value):
-        return arrow.get(value).humanize(locale=self.context["request"].LANGUAGE_CODE) if value else '-'
+        return arrow.get(value).humanize(locale=self.context["request"].LANGUAGE_CODE) if value else "-"
 
 
 class DateTimeToDateField(serializers.CharField, serializers.ReadOnlyField):
     def to_representation(self, value):
-        return value.strftime('%d/%m/%Y') if value else '-'
+        return value.strftime("%d/%m/%Y") if value else "-"
 
 
 class UserListSerializer(DynamicFieldsMixin, serializers.ModelSerializer):
     date_joined = PrettyDateTimeField()
-    date_joined_date = DateTimeToDateField(source='date_joined')
+    date_joined_date = DateTimeToDateField(source="date_joined")
     last_login = PrettyDateTimeField()
     new_messages_count = serializers.SerializerMethodField()
     affiliate = serializers.CharField()
@@ -106,8 +106,6 @@ class UserListSerializer(DynamicFieldsMixin, serializers.ModelSerializer):
         model = CustomUser
         fields = (
             "id",
-            "first_name",
-            "last_name",
             "fullname",
             "email",
             "phone",
@@ -130,7 +128,7 @@ class UserListSerializer(DynamicFieldsMixin, serializers.ModelSerializer):
     def to_representation(self, instance: CustomUser):
         rep = super(UserListSerializer, self).to_representation(instance)
         if instance.responsible:
-            rep['responsible'] = instance.responsible.fullname
+            rep["responsible"] = instance.responsible.fullname
         return rep
 
 
@@ -152,6 +150,7 @@ class UserSerializer(UserListSerializer):
             "bids",
             "phones",
             "puntos",
+            "fullname",
             "first_name",
             "last_name",
             "phone",
@@ -179,7 +178,9 @@ class LoadFacturasSerializer(serializers.Serializer):
         bid = Bid.objects.create(user=user)
         punto = Punto.objects.create(bid=bid, user=user)
         Attachment.objects.create(
-            punto=punto, attachment_type="factura", attachment=factura,
+            punto=punto,
+            attachment_type="factura",
+            attachment=factura,
         )
         _ = Attachment.objects.create(punto=punto, attachment_type="factura_1", attachment=factura_1)
         return _
@@ -190,4 +191,4 @@ class RequestLogSerializer(DynamicFieldsMixin, serializers.ModelSerializer):
 
     class Meta:
         model = APIRequestLog
-        fields = ['requested_at', 'remote_addr']
+        fields = ["requested_at", "remote_addr"]

@@ -189,8 +189,11 @@ class SimpleAccountSerializer(AccountSerializer):
 
     class Meta:
         model = CustomUser
-        fields = ["email", "first_name", "phone", "last_name", "source"]
-        extra_kwargs = {"source": {"required": False}}
+        fields = ["email", "company_name", "first_name", "phone", "last_name", "source"]
+        extra_kwargs = {
+            "source": {"required": False},
+            "company_name": {"required": False},
+        }
 
 
 class ContractOnlineSerializer(serializers.ModelSerializer):
@@ -330,7 +333,18 @@ class FastContractSerializer(serializers.ModelSerializer):
         from_user = validated_data.pop("from_user")
         offer = validated_data.pop("offer")
 
-        user_ser = SimpleAccountSerializer(data=validated_data)
+        company_name = " ".join(
+            [
+                name
+                for name in [
+                    validated_data.get("first_name"),
+                    validated_data.get("last_name"),
+                ]
+                if name
+            ]
+        ).strip()
+        user_data = {**validated_data, "company_name": company_name}
+        user_ser = SimpleAccountSerializer(data=user_data)
         user_ser.is_valid(raise_exception=True)
         with transaction.atomic():
             if not CustomUser.objects.filter(email=from_user).exists():
