@@ -1,14 +1,16 @@
 import logging
+from decimal import Decimal
 from enum import Enum, unique
 
 import gspread
+from clients.utils import PositiveNullableFloatField
 from django.conf import settings
 from django.db import models
 from django.db.models import Manager
 from django.utils.translation import gettext_lazy as _
 
 from apps.calculator.fields import NameField
-from clients.utils import PositiveNullableFloatField
+
 from .fields import is_positive
 from .managers import WithoutOtraManager
 
@@ -97,7 +99,7 @@ class Company(models.Model):
 
 
 class Offer(models.Model):
-    OTRA_OFFER_NAME = '-'
+    OTRA_OFFER_NAME = "-"
     CLIENT_TYPE_CHOICES = (
         (0, _("Individual")),
         (1, _("Business")),
@@ -126,8 +128,8 @@ class Offer(models.Model):
     c2 = PositiveNullableFloatField()
     c3 = PositiveNullableFloatField()
     is_price_permanent = models.CharField(max_length=20, choices=PRICE_CHOICES)
-    canal_commission = models.IntegerField(default=0)
-    agent_commission = models.IntegerField(default=0)
+    canal_commission = models.DecimalField(max_digits=6, decimal_places=2, default=0)
+    agent_commission = models.DecimalField(max_digits=6, decimal_places=2, default=0)
 
     def __str__(self) -> str:
         return self.name
@@ -144,7 +146,9 @@ class Offer(models.Model):
                 Offer.objects.update_or_create(
                     uuid=item["UUID"],
                     defaults=dict(
-                        company=Company.objects.get_or_create(name=item["COMERCIALIZADORA"].strip().upper(), )[0],
+                        company=Company.objects.get_or_create(
+                            name=item["COMERCIALIZADORA"].strip().upper(),
+                        )[0],
                         name=item["NOMBRE"],
                         tarif=item["TARIFA"],
                         description=item["DESCRIPCION"],
@@ -160,8 +164,8 @@ class Offer(models.Model):
                         c2=str_to_float(item["C2"]),
                         c3=str_to_float(item["C3"]),
                         is_price_permanent=item["MODO"].capitalize(),
-                        agent_commission=int(item['COMISIONES COMERCIAL']),
-                        canal_commission=int(item['COMISIONES CANAL']),
+                        agent_commission=Decimal(item["COMISIONES COMERCIAL"]),
+                        canal_commission=Decimal(item["COMISIONES CANAL"]),
                     ),
                 )
             except Exception as e:
@@ -175,9 +179,9 @@ class Offer(models.Model):
 
     @staticmethod
     def get_blank_offer():
-        company, _ = Company.objects.get_or_create(name='OTRA')
+        company, _ = Company.objects.get_or_create(name="OTRA")
         offer, _ = Offer.default.get_or_create(
-            uuid='ad768f47-1e5f-4074-bc08-7078ef881f32',
+            uuid="ad768f47-1e5f-4074-bc08-7078ef881f32",
             name=Offer.OTRA_OFFER_NAME,
             company=company,
             client_type=0,
