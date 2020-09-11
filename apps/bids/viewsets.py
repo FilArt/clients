@@ -31,6 +31,8 @@ class BidViewSet(viewsets.ModelViewSet):
 
         if user.role in ("admin", "support"):
             return qs
+        elif user.role == "agent":
+            return qs.filter(user__responsible=user)
 
         return qs.filter(user=user)
 

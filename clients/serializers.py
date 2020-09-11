@@ -1,14 +1,14 @@
 import logging
 
 import arrow
+from apps.bids.models import Bid
+from apps.calculator.models import Offer
+from apps.users.models import Attachment, CustomUser, Punto, UserSettings, phone_number_validator
 from django.contrib.auth.base_user import BaseUserManager
 from django.db import transaction
 from drf_dynamic_fields import DynamicFieldsMixin
 from rest_framework import serializers
 
-from apps.bids.models import Bid
-from apps.calculator.models import Offer
-from apps.users.models import Attachment, CustomUser, Punto, UserSettings, phone_number_validator
 from clients.utils import notify_telegram
 
 logger = logging.getLogger(__name__)
@@ -41,17 +41,17 @@ class DetailPuntoSerializer(serializers.ModelSerializer):
         model = Punto
         exclude = ["user"]
         extra_kwargs = {
-            'province': {'required': True},
-            'locality': {'required': True},
-            'address': {'required': True},
-            'postalcode': {'required': True},
+            "province": {"required": True},
+            "locality": {"required": True},
+            "address": {"required": True},
+            "postalcode": {"required": True},
         }
 
 
 class BidListSerializer(DynamicFieldsMixin, serializers.ModelSerializer):
     offer_name = serializers.CharField(read_only=True, source="offer.name")
     pretty_created_at = serializers.SerializerMethodField()
-    status = serializers.CharField(read_only=True)
+    status = serializers.SerializerMethodField()
 
     class Meta:
         model = Bid
@@ -60,6 +60,15 @@ class BidListSerializer(DynamicFieldsMixin, serializers.ModelSerializer):
     # noinspection PyMethodMayBeStatic
     def get_pretty_created_at(self, instance: Bid):
         return arrow.get(instance.created_at).humanize(locale=self.context["request"].LANGUAGE_CODE)
+
+    def get_status(self, bid: Bid):
+        # если это трамитатор, то для него также важно оплачена ли агенту комиссия
+        # поэтому мы здесь переопределяем статус бида, если не оплачено
+        status = bid.status
+        print(status, self.context["request"].user.role, bid.paid)
+        if status == "OK" and self.context["request"].user.role in ("admin", "tramitacion") and not bid.paid:
+            return "Pendiente pagar"
+        return status
 
 
 class UserSettingsSerializer(serializers.ModelSerializer):
@@ -72,8 +81,9 @@ class AccountSerializer(serializers.ModelSerializer):
     settings = UserSettingsSerializer(required=False)
     first_name = serializers.CharField(min_length=1, allow_null=False, required=True)
     last_name = serializers.CharField(min_length=1, allow_null=False, required=True)
-    phone = serializers.CharField(min_length=9, max_length=9, allow_null=False, required=True,
-                                  validators=[phone_number_validator])
+    phone = serializers.CharField(
+        min_length=9, max_length=9, allow_null=False, required=True, validators=[phone_number_validator]
+    )
     is_leed = serializers.BooleanField(read_only=True)
 
     class Meta:
@@ -153,24 +163,24 @@ class DetailOfferSerializer(OfferListSerializer):
     class Meta:
         model = Offer
         fields = [
-            'id',
-            'company',
-            'company_logo',
-            'c1',
-            'c2',
-            'c3',
-            'p1',
-            'p2',
-            'p3',
-            'tarif',
-            'description',
-            'name',
-            'power_min',
-            'power_max',
-            'consumption_min',
-            'consumption_max',
-            'client_type',
-            'is_price_permanent',
+            "id",
+            "company",
+            "company_logo",
+            "c1",
+            "c2",
+            "c3",
+            "p1",
+            "p2",
+            "p3",
+            "tarif",
+            "description",
+            "name",
+            "power_min",
+            "power_max",
+            "consumption_min",
+            "consumption_max",
+            "client_type",
+            "is_price_permanent",
         ]
 
 
@@ -180,7 +190,7 @@ class SimpleAccountSerializer(AccountSerializer):
     class Meta:
         model = CustomUser
         fields = ["email", "first_name", "phone", "last_name", "source"]
-        extra_kwargs = {'source': {'required': False}}
+        extra_kwargs = {"source": {"required": False}}
 
 
 class ContractOnlineSerializer(serializers.ModelSerializer):
@@ -260,7 +270,7 @@ class AdditionalContractOnlineSerializer(ContractOnlineSerializer):
 class WithFacturaContractOnlineSerializer(AdditionalContractOnlineSerializer):
     class Meta:
         model = CustomUser
-        fields = (*SimpleAccountSerializer.Meta.fields, 'factura', 'factura_1')
+        fields = (*SimpleAccountSerializer.Meta.fields, "factura", "factura_1")
 
     def create(self, validated_data):
         password = BaseUserManager().make_random_password()
@@ -280,9 +290,7 @@ class WithFacturaContractOnlineSerializer(AdditionalContractOnlineSerializer):
 
             try:
                 data_for_telegam = {str(k): str(v) for k, v in validated_data.items()}
-                notify_telegram(
-                    "Nuevo usuario - contractar online con factura", **data_for_telegam
-                )
+                notify_telegram("Nuevo usuario - contractar online con factura", **data_for_telegam)
             except Exception as e:
                 logger.exception(e)
 
@@ -298,12 +306,17 @@ class FastContractSerializer(serializers.ModelSerializer):
     class Meta:
         model = CustomUser
         fields = [
-            'first_name', 'last_name', 'email', 'phone',
-            'offer', 'iban', 'from_user',
+            "first_name",
+            "last_name",
+            "email",
+            "phone",
+            "offer",
+            "iban",
+            "from_user",
         ]
         extra_kwargs = {
-            'last_name': {'required': False},
-            'phone': {'required': False},
+            "last_name": {"required": False},
+            "phone": {"required": False},
         }
 
     def __init__(self, *args, **kwargs):
@@ -314,7 +327,7 @@ class FastContractSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         from apps.users.serializers import RegisterSerializer
 
-        from_user = validated_data.pop('from_user')
+        from_user = validated_data.pop("from_user")
         offer = validated_data.pop("offer")
 
         user_ser = SimpleAccountSerializer(data=validated_data)
@@ -322,7 +335,7 @@ class FastContractSerializer(serializers.ModelSerializer):
         with transaction.atomic():
             if not CustomUser.objects.filter(email=from_user).exists():
                 from_user_ser = RegisterSerializer(
-                    data={'email': from_user, 'role': 'agent'},
+                    data={"email": from_user, "role": "agent"},
                     tg_msg=None,
                 )
                 from_user_ser.is_valid(raise_exception=True)
@@ -334,8 +347,8 @@ class FastContractSerializer(serializers.ModelSerializer):
                 password=BaseUserManager().make_random_password(),
                 invited_by=invited_by,
                 responsible=invited_by,
-                source='call&visit',
-                client_role='tramitacion',
+                source="call&visit",
+                client_role="tramitacion",
             )
             bid = Bid.objects.create(user=user, offer=offer)
             Punto.objects.create(bid=bid, user=user)
@@ -345,9 +358,7 @@ class FastContractSerializer(serializers.ModelSerializer):
 
             try:
                 data_for_telegam = {str(k): str(v) for k, v in validated_data.items()}
-                notify_telegram(
-                    "Nuevo usuario - contractar de Call&Visit", **data_for_telegam
-                )
+                notify_telegram("Nuevo usuario - contractar de Call&Visit", **data_for_telegam)
             except Exception as e:
                 logger.exception(e)
 
@@ -355,8 +366,8 @@ class FastContractSerializer(serializers.ModelSerializer):
 
     def to_representation(self, instance):
         rep = super().to_representation(instance)
-        rep['user'] = self._preserve_user
-        rep['bid'] = self._preserve_bid
+        rep["user"] = self._preserve_user
+        rep["bid"] = self._preserve_bid
         return rep
 
 
@@ -370,7 +381,7 @@ class FastContractAttachmentsSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Punto
-        fields = '__all__'
+        fields = "__all__"
 
     def create(self, validated_data):
         factura = validated_data.get("factura")

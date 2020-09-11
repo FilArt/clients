@@ -126,8 +126,8 @@ class Offer(models.Model):
     c2 = PositiveNullableFloatField()
     c3 = PositiveNullableFloatField()
     is_price_permanent = models.CharField(max_length=20, choices=PRICE_CHOICES)
-    canal_comission = models.IntegerField(default=0)
-    agent_comission = models.IntegerField(default=0)
+    canal_commission = models.IntegerField(default=0)
+    agent_commission = models.IntegerField(default=0)
 
     def __str__(self) -> str:
         return self.name
@@ -160,8 +160,8 @@ class Offer(models.Model):
                         c2=str_to_float(item["C2"]),
                         c3=str_to_float(item["C3"]),
                         is_price_permanent=item["MODO"].capitalize(),
-                        agent_comission=int(item['COMISIONES COMERCIAL']),
-                        canal_comission=int(item['COMISIONES CANAL']),
+                        agent_commission=int(item['COMISIONES COMERCIAL']),
+                        canal_commission=int(item['COMISIONES CANAL']),
                     ),
                 )
             except Exception as e:

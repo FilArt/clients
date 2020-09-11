@@ -1,17 +1,41 @@
+from decimal import Decimal
+
 import arrow
+from clients.serializers import BidListSerializer, DetailOfferSerializer, PuntoSerializer
 from rest_framework import serializers
 
-from clients.serializers import BidListSerializer, PuntoSerializer, DetailOfferSerializer
 from .models import Bid, BidStory
+
+
+class CommissionField(serializers.DecimalField):
+    def to_representation(self, value):
+        value = super().to_representation(value)
+        if value is not None and not value or value == Decimal(0.0):
+            return Decimal(float(getattr(self.root.instance.offer, self.field_name.lstrip("final_"))))
+        return value
 
 
 class BidSerializer(BidListSerializer):
     offer = DetailOfferSerializer()
     puntos = serializers.ListSerializer(child=PuntoSerializer())
+    final_canal_commission = CommissionField(max_digits=6, decimal_places=2)
+    final_agent_commission = CommissionField(max_digits=6, decimal_places=2)
+    responsible = serializers.CharField(source="user.responsible")
 
     class Meta:
         model = Bid
-        fields = ["status", "id", "offer", "puntos_count", "tramitacion", "puntos"]
+        fields = [
+            "id",
+            "status",
+            "offer",
+            "puntos_count",
+            "tramitacion",
+            "puntos",
+            "final_agent_commission",
+            "final_canal_commission",
+            "responsible",
+            "paid",
+        ]
 
 
 class CreateBidSerializer(serializers.ModelSerializer):
