@@ -1,7 +1,7 @@
 <template>
   <v-card>
-    <v-card-text v-if="$auth.user.role === 'admin'">
-      <admin-header />
+    <v-card-text>
+      <agent-header />
     </v-card-text>
 
     <v-card-text>
@@ -38,7 +38,7 @@
 <script>
 export default {
   components: {
-    AdminHeader: () => import('~/components/admin/AdminHeader'),
+    AgentHeader: () => import('@/components/agent/AgentHeader'),
     UserDetailData: () => import('@/components/forms/UserDetailData'),
     Tramitacion: () => import('~/components/support/Tramitacion'),
   },

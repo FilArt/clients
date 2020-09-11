@@ -52,8 +52,21 @@
               </v-overflow-btn>
             </v-col>
 
+            <v-col v-if="showDateFilters" cols="12" lg="4" xl="4" md="4" sm="4">
+              <vue-ctk-date-time-picker
+                v-model="fechaFirmaFilter"
+                label="Fecha firma"
+                format="YYYY-MM-DD HH:mm"
+                formatted="DD/MM/YYYY HH:mm"
+                range
+                color="purple"
+                :dark="$vuetify.theme.isDark"
+                @input="$event.end ? updateQuery({ date_joined__range: $event.start + ',' + $event.end }) : null"
+              />
+            </v-col>
+
             <v-col cols="12" lg="1" xl="1" md="1" sm="1">
-              <v-tooltip v-if="!hideChat" bottom>
+              <v-tooltip v-if="!hideChat && !isSupport" bottom>
                 <template v-slot:activator="{ on }">
                   <v-simple-checkbox
                     v-model="onlyNewMessages"
@@ -73,7 +86,7 @@
       </template>
 
       <template v-slot:[`item.email`]="{ item }">
-        <nuxt-link :to="isSupport ? `/support/${item.id}` : `/admin/usuarios/${item.id}`">
+        <nuxt-link :to="getDetailUrl(item.id)">
           {{ item.email }}
         </nuxt-link>
       </template>
@@ -151,6 +164,10 @@ export default {
       type: Boolean,
       default: false,
     },
+    showDateFilters: {
+      type: Boolean,
+      default: false,
+    },
     isSupport: {
       type: Boolean,
       default: false,
@@ -213,6 +230,7 @@ export default {
   },
   data() {
     return {
+      fechaFirmaFilter: null,
       userRoles: Object.values(constants.userRoles),
       search: '',
       role: 'admin',
@@ -229,11 +247,11 @@ export default {
   },
   computed: {
     headers() {
-      const _h = this.defaultHeaders
+      const result = this.defaultHeaders
       this.additionalHeaders.forEach((header) => {
-        _h.splice(header.index, 0, header.value)
+        result.splice(header.index, 0, header.value)
       })
-      return _h
+      return result
     },
   },
   async created() {
@@ -252,33 +270,45 @@ export default {
       await this.fetchUsers()
     },
 
-    //other
+    getDetailUrl(userId) {
+      let detailUrl = `/admin/usuarios/${userId}`
+      if (this.isSupport) {
+        detailUrl = this.$auth.user.role === 'agent' ? `/agente/${userId}` : `/support/${userId}`
+      }
+      return detailUrl
+    },
+
+    // other
     fetchUsers() {
       return new Promise((resolve, reject) => {
         this.loading = true
-        const options = this.options
+        const { options } = this
         const query = {
           page: options.page,
           itemsPerPage: options.itemsPerPage,
-          ordering: (options.sortDesc[0] === false ? '-' : '') + options.sortBy,
+          ordering: options.sortBy
+            .map(
+              (sortBy, idx) =>
+                (options.sortDesc[idx] ? '+' : '-') + (sortBy === 'date_joined_date' ? 'date_joined' : sortBy),
+            )
+            .join(),
           fields: this.headers.map((header) => header.value).join(),
           ...this.query,
         }
         if (this.clientRole) {
           query.client_role = this.clientRole
-          query['role__isnull'] = true
+          query.role__isnull = true
         }
 
         this.$axios
           .$get(
-            'users/users/?' +
-              Object.keys(query)
-                .filter((k) => query[k])
-                .map((k) => {
-                  const value = query[k]
-                  return value instanceof Array ? `${k}=${value.join()}` : `${k}=${value}`
-                })
-                .join('&'),
+            `users/users/?${Object.keys(query)
+              .filter((k) => query[k])
+              .map((k) => {
+                const value = query[k]
+                return value instanceof Array ? `${k}=${value.join()}` : `${k}=${value}`
+              })
+              .join('&')}`,
           )
           .then((data) => {
             this.users = data.results
@@ -286,13 +316,15 @@ export default {
             resolve()
           })
           .catch((e) => reject(e))
-          .finally(() => (this.loading = false))
+          .finally(() => {
+            this.loading = false
+          })
       })
     },
     updateQuery(options) {
-      for (const key in options) {
+      Object.keys(options).forEach((key) => {
         this.query[key] = options[key]
-      }
+      })
       this.fetchUsers()
     },
     openChat(user) {

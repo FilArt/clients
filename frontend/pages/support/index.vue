@@ -5,7 +5,7 @@
     </v-card-text>
 
     <v-card-text>
-      <users-table :client-role="clientRole" :default-headers="headers" is-support />
+      <users-table :client-role="clientRole" :default-headers="headers" is-support show-date-filters />
     </v-card-text>
   </v-card>
 </template>
@@ -23,6 +23,7 @@ export default {
       clientRole: constants.clientRoles.tramitacion.value,
       headers: [
         { text: 'ID', value: 'id' },
+        { text: 'Fecha firmado', value: 'date_joined_date' },
         { text: 'Email', value: 'email' },
         { text: 'Nombre', value: 'first_name' },
         { text: 'Apellido', value: 'last_name' },
