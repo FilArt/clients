@@ -181,6 +181,8 @@ class DetailOfferSerializer(OfferListSerializer):
             "consumption_max",
             "client_type",
             "is_price_permanent",
+            "agent_commission",
+            "canal_commission",
         ]
 
 

@@ -19,8 +19,7 @@ class Bid(models.Model):
     user = models.ForeignKey(get_user_model(), on_delete=models.CASCADE, related_name="bids")
     offer = models.ForeignKey("calculator.Offer", on_delete=models.CASCADE)
     created_at = models.DateTimeField(auto_now_add=True)
-    final_agent_commission = models.DecimalField(max_digits=6, decimal_places=2, default=0)
-    final_canal_commission = models.DecimalField(max_digits=6, decimal_places=2, default=0)
+    commission = models.DecimalField(max_digits=6, decimal_places=2, default=0)
     paid = models.BooleanField(default=False)
 
     class Meta:
