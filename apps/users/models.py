@@ -141,6 +141,10 @@ class CustomUser(AbstractUser):
     def calls_ok_count(self) -> str:
         return f"{self.bids.filter(tramitacion__call=True).count()}/{self.bids_count}"
 
+    @property
+    def paid_count(self) -> str:
+        return f"{self.bids.filter(paid=True).count()}/{self.bids_count}"
+
     @cached_property
     def is_leed(self) -> int:
         return not self.puntos.values("attachments").exists()
