@@ -11,7 +11,7 @@
 
           <div v-for="header in group.headers" :key="header.value">
             <company-select
-              v-if="editable && header.value === 'company_luz'"
+              v-if="header.value === 'company_luz'"
               :value="punto.company_luz"
               @input="
                 save({
@@ -23,17 +23,12 @@
             />
 
             <v-text-field
-              v-else-if="editable"
               :label="header.text"
               :value="punto[header.value]"
               append-icon="mdi-content-save"
               @input="values[header.value] = $event"
               @click:append="save({ id: punto.id, field: header.value })"
             />
-
-            <code v-else>
-              {{ punto[header.value] || '-' }}
-            </code>
           </div>
 
           <v-flex v-if="group.text === 'Documentacion' && punto.attachments.length">
@@ -63,10 +58,6 @@ export default {
     CompanySelect: () => import('~/components/selects/CompanySelect'),
   },
   props: {
-    editable: {
-      type: Boolean,
-      default: false,
-    },
     puntos: {
       type: Array,
       default: () => [],
