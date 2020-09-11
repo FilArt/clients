@@ -2,26 +2,29 @@ module.exports = {
   root: true,
   env: {
     browser: true,
+    node: true,
+    es6: true,
   },
   parserOptions: {
     parser: 'babel-eslint',
-    sourceType: 'module',
   },
-  extends: ['airbnb-base', 'plugin:vue/recommended', 'prettier/vue', 'plugin:prettier/recommended'],
+  extends: ['eslint:recommended', 'plugin:vue/recommended', 'plugin:prettier/recommended'],
+  plugins: ['vue', 'prettier'],
   rules: {
-    'comma-dangle': 'off',
-    'class-methods-use-this': 'off',
-    'import/no-unresolved': 'off',
-    'import/extensions': 'off',
-    'implicit-arrow-linebreak': 'off',
-    'import/prefer-default-export': 'off',
-    'vue/component-name-in-template-casing': [
+    'vue/html-self-closing': [
       'error',
-      'kebab-case',
       {
-        ignores: [],
+        html: {
+          void: 'always',
+          normal: 'never',
+          component: 'any',
+        },
+        svg: 'always',
+        math: 'always',
       },
     ],
-    'prettier/prettier': ['error', { singleQuote: true, endOfLine: 'auto' }],
+    'vue/singleline-html-element-content-newline': 'off',
+    'vue/max-attributes-per-line': 'off',
+    'prettier/prettier': ['error'],
   },
 }

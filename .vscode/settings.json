@@ -13,9 +13,6 @@
     "source.fixAll.eslint": true
   },
   "vetur.validation.template": false,
-  "editor.formatOnPaste": true,
-  "editor.formatOnType": true,
-  "editor.formatOnSave": false,
   "[python]": {
     "editor.formatOnSave": true,
   },
