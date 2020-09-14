@@ -127,7 +127,9 @@ class CustomUser(AbstractUser):
 
     @cached_property
     def bids_contracted_count(self) -> int:
-        return self.bids.filter(tramitacion__doc=True, tramitacion__scoring=True, tramitacion__call=True).count()
+        return self.bids.filter(
+            tramitacion__doc=True, tramitacion__scoring=True, tramitacion__call=True, paid=True
+        ).count()
 
     @property
     def docs_ok_count(self) -> str:
