@@ -4,7 +4,7 @@
       <admin-header />
     </v-card-text>
 
-    <v-card-title>{{ fullname }}</v-card-title>
+    <v-card-title>{{ user.fullname }}</v-card-title>
 
     <v-card-text>
       <user-detail-data :user="user" />
@@ -92,16 +92,6 @@ export default {
       puntos: await $axios.$get(`/users/puntos/?user=${params.id}`),
       history: await $axios.$get(`/bids/history/?user=${params.id}`),
     }
-  },
-  computed: {
-    fullname() {
-      const u = this.user
-      const fullname = [u.first_name, u.last_name]
-        .filter((name) => !!name)
-        .join(' ')
-        .trim()
-      return fullname && fullname.length ? fullname : u.email
-    },
   },
   methods: {
     async fetchPuntos() {

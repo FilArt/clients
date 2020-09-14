@@ -43,7 +43,8 @@
     <v-row v-if="isLeed" class="pa-3 text-center mx-auto" style="margin-top: 1em">
       <v-col>
         Sí tiene dudas para seleccionar una oferta de nuestro catálogo o prefiere que nuestros agentes le asesoren
-        personalmente. Por favor rellene el siguiente formulario y nos pondremos en contacto con usted lo antes posible.
+        personalmente. Por favor rellene el siguiente formulario y nos pondremos en contacto con usted lo antes
+        posible.
       </v-col>
     </v-row>
 
@@ -93,10 +94,9 @@ export default {
         loadedFactura,
         loadedFacturaReverso,
       }
-    } else {
-      return {
-        isLeed,
-      }
+    }
+    return {
+      isLeed,
     }
   },
   data() {

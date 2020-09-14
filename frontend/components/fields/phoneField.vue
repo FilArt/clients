@@ -41,7 +41,7 @@ export default {
   },
   watch: {
     value: {
-      handler: function (val) {
+      handler(val) {
         this.phone = val
       },
       deep: true,

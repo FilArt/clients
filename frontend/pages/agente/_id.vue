@@ -1,10 +1,6 @@
 <template>
   <v-card>
     <v-card-text>
-      <agent-header />
-    </v-card-text>
-
-    <v-card-text>
       <user-detail-data :user="values" />
     </v-card-text>
 
@@ -38,7 +34,6 @@
 <script>
 export default {
   components: {
-    AgentHeader: () => import('@/components/agent/AgentHeader'),
     UserDetailData: () => import('@/components/forms/UserDetailData'),
     Tramitacion: () => import('~/components/support/Tramitacion'),
   },

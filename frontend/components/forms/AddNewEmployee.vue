@@ -40,6 +40,7 @@ import CloseButton from '@/components/buttons/closeButton'
 import PhoneField from '@/components/fields/phoneField'
 import EmailField from '@/components/fields/emailField'
 import SubmitButton from '@/components/buttons/submitButton'
+
 export default {
   name: 'AddNewEmployee',
   components: { SubmitButton, EmailField, PhoneField, CloseButton },

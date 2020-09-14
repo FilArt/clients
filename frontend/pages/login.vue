@@ -137,8 +137,8 @@ export default {
       try {
         await this.$auth.loginWith('local', { data: this.form })
 
-        const user = this.$auth.user
-        const role = user.role
+        const { user } = this.$auth
+        const { role } = user
 
         if (role === null) {
           // load chat messages

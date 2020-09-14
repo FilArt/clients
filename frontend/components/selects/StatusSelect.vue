@@ -42,7 +42,7 @@ export default {
   },
   watch: {
     value: {
-      handler: function (val) {
+      handler(val) {
         this.item = val
       },
       deep: true,
@@ -50,7 +50,7 @@ export default {
   },
   async mounted() {
     const aep = 'bids/bids/statuses/'
-    this.statuses = await this.$axios.$get(this.all ? aep + '?all=true' : aep)
+    this.statuses = await this.$axios.$get(this.all ? `${aep}?all=true` : aep)
   },
 }
 </script>

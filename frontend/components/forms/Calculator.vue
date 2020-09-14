@@ -163,10 +163,10 @@ export default {
       return this.$store.state.calculatorForm
     },
     tarif: {
-      set: function (val) {
+      set(val) {
         this.$store.commit('setTarif', val)
       },
-      get: function () {
+      get() {
         return this.$store.state.tarif
       },
     },
@@ -218,8 +218,8 @@ export default {
     },
     updateForm(key, value) {
       this.$store.commit('updateCalculatorForm', {
-        key: key,
-        value: value,
+        key,
+        value,
       })
     },
     submit() {

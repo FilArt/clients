@@ -4,8 +4,8 @@
       <div class="text-h4">Bienvenido a nuestro catálogo de ofertas</div>
 
       <div class="text-h6">
-        Hemos recopilado las ofertas más relevantes del mercado energético, que los proveedores de luz más respetados de
-        España tienen actualmente disponibles
+        Hemos recopilado las ofertas más relevantes del mercado energético, que los proveedores de luz más respetados
+        de España tienen actualmente disponibles
       </div>
     </v-card-text>
 

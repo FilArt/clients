@@ -30,7 +30,7 @@ export default {
   },
   watch: {
     value: {
-      handler: function (val) {
+      handler(val) {
         this.email = val
       },
       deep: true,

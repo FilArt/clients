@@ -57,7 +57,7 @@ export default {
   },
   watch: {
     value: {
-      handler: function (val) {
+      handler(val) {
         this.item = this.items.find((i) => i.value === val)
       },
       deep: true,

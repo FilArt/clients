@@ -6,12 +6,13 @@
 
 <script>
 import DetailOffer from '~/components/detailOffer'
+
 export default {
   components: {
     DetailOffer,
   },
   async asyncData({ $axios, query }) {
-    let params = {
+    const params = {
       name: query.name,
       client_type: 1,
       id: query.id,

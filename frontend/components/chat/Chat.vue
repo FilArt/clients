@@ -27,6 +27,7 @@
 <script>
 import ReconnectingWebSocket from 'reconnecting-websocket'
 import { mapState, mapActions, mapGetters } from 'vuex'
+
 export default {
   name: 'Chat',
   props: {
@@ -137,10 +138,9 @@ export default {
       const token = this.$auth.strategies.local.token.get().substring(7)
       const ws_scheme = window.location.protocol === 'https:' ? 'wss' : 'ws'
       const chatSocket = new ReconnectingWebSocket(
-        ws_scheme +
-          '://' +
-          window.location.host.replace('3000', '8000') +
-          `/ws/chat/${this.participant.id}/?token=${token}`,
+        `${ws_scheme}://${window.location.host.replace('3000', '8000')}/ws/chat/${
+          this.participant.id
+        }/?token=${token}`,
       )
       chatSocket.onerror = (e) => {
         this.addMessage({ type: 'text', data: { text: `error: ${e.message}` } })

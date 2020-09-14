@@ -186,7 +186,7 @@ export default {
   },
   watch: {
     punto: {
-      handler: function (val) {
+      handler(val) {
         this.newPunto = val
       },
     },
@@ -223,7 +223,7 @@ export default {
       })
     },
     async loadFiles(puntoId) {
-      for await (let fileKey of Object.keys(this.files)) {
+      for await (const fileKey of Object.keys(this.files)) {
         const file = this.files[fileKey]
         if (!file) continue
         const form = new FormData()

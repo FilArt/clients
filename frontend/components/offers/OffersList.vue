@@ -28,7 +28,7 @@ export default {
   },
   methods: {
     detailOfferUrl(offer) {
-      let params = {
+      const params = {
         ...this.filters,
         name: offer.name,
         is_price_permanent: offer.is_price_permanent,
@@ -36,7 +36,7 @@ export default {
 
       const query = Object.keys(params)
         .filter((k) => params[k] || params[k] === 0)
-        .map((k) => encodeURIComponent(k) + '=' + encodeURIComponent(params[k]))
+        .map((k) => `${encodeURIComponent(k)}=${encodeURIComponent(params[k])}`)
         .join('&')
 
       return `/ofertas/${this.filters.client_type === 0 ? 'hogar' : 'pyme'}/${offer.id}/?${query}`

@@ -17,7 +17,22 @@
         <v-list>
           <v-list-group>
             <template v-slot:activator>
-              <v-list-item-content>OFERTA: {{ bid.offer.name }}</v-list-item-content>
+              <v-list-item-content>
+                <v-chip style="cursor: pointer">
+                  <v-col>
+                    <small>id {{ bid.offer.id }}</small>
+                  </v-col>
+                  <v-divider vertical />
+                  <v-col>
+                    <small>{{ bid.offer.company }}</small>
+                  </v-col>
+                  <v-divider vertical />
+                  <v-spacer />
+                  <v-col>
+                    {{ bid.offer.name }}
+                  </v-col>
+                </v-chip>
+              </v-list-item-content>
             </template>
 
             <v-list-item>
@@ -44,8 +59,9 @@
                   tramitacion[group.value] = null
                   tramitate()
                 "
-                >Resetar?</v-btn
               >
+                Resetar?
+              </v-btn>
             </v-radio-group>
           </v-col>
         </v-row>
@@ -54,50 +70,28 @@
           <v-col>
             <v-toolbar> Responsable: {{ bid.responsible || '...' }} </v-toolbar>
 
-            <v-row align="center" justify="center">
-              <v-col>
-                <v-text-field
-                  v-model="bid.final_agent_commission"
-                  label="Agente commission"
-                  prefix="€"
-                  :error-messages="bidErrors.final_agent_commission"
-                />
-              </v-col>
-              <v-col>
-                <v-btn @click="pagar('final_agent_commission', bid.final_agent_commission)"
-                  >Pagar <v-icon right>mdi-currency-eur</v-icon></v-btn
-                >
-              </v-col>
-            </v-row>
-
-            <v-row align="center">
-              <v-col>
-                <v-text-field
-                  v-model="bid.final_canal_commission"
-                  label="Canal commission"
-                  prefix="€"
-                  :error-messages="bidErrors.final_canal_commission"
-                />
-              </v-col>
-              <v-col>
-                <v-btn @click="pagar('final_canal_commission', bid.final_canal_commission)"
-                  >Pagar <v-icon right>mdi-currency-eur</v-icon></v-btn
-                >
-              </v-col>
-            </v-row>
+            <v-radio-group
+              :value="commissions.map((c) => c.value).indexOf(bid.commission)"
+              label="Comisiones"
+              @change="pagar('commission', commissions[$event].value)"
+            >
+              <v-radio v-for="(commission, idx) in commissions" :key="idx" :value="idx" :label="commission.text" />
+              <v-text-field
+                v-model="bid.commission"
+                label="Variable"
+                append-icon="mdi-content-save"
+                prepend-icon="mdi-currency-eur"
+                @click:append="pagar('commission', bid.commission)"
+              />
+            </v-radio-group>
           </v-col>
 
           <v-spacer />
 
           <v-col>
-            <v-radio-group
-              v-model="bid.paid"
-              label="Pagado"
-              :error-messages="bidErrors.paid"
-              @change="pagar('paid', bid.paid)"
-            >
-              <v-radio label="Si" :value="true" color="success" />
-              <v-radio label="No" :value="false" color="error" />
+            <v-radio-group v-model="bid.paid" :error-messages="bidErrors.paid" @change="pagar('paid', bid.paid)">
+              <v-radio label="Pagado" :value="true" color="success" />
+              <v-radio label="Pendiente" :value="false" color="error" />
             </v-radio-group>
           </v-col>
         </v-row>
@@ -180,6 +174,21 @@ export default {
       bidErrors: {},
     }
   },
+  computed: {
+    commissions() {
+      const { agent_commission, canal_commission } = this.bid.offer
+      return [
+        {
+          text: `Agente comisiones: ${agent_commission} €`,
+          value: agent_commission,
+        },
+        {
+          text: `Canal comisiones: ${canal_commission} €`,
+          value: canal_commission,
+        },
+      ]
+    },
+  },
   async mounted() {
     await this.fetchBid()
     await this.fetchTramitacion()
@@ -200,6 +209,7 @@ export default {
         'final_canal_commission',
         'responsible',
         'paid',
+        'commission',
       ].join()
       this.bid = await this.$axios.$get(`bids/bids/${this.bidId}/?fields=${fields}`)
     },

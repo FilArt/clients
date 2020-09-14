@@ -52,11 +52,11 @@ export default {
   },
   computed: {
     contactInfo() {
-      const user = this.user
+      const { user } = this
       return [
         {
           icon: 'mdi-account',
-          text: 'Representante legal',
+          text: 'Persona de contacto',
           value: user.legal_representative,
           field: 'legal_representative',
         },
@@ -85,7 +85,7 @@ export default {
       ]
     },
     datesInfo() {
-      const user = this.user
+      const { user } = this
 
       return [
         {

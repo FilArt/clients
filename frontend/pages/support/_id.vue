@@ -5,6 +5,11 @@
     </v-card-text>
 
     <v-card-text>
+      <v-toolbar>
+        <v-toolbar-title>
+          {{ user.fullname }}
+        </v-toolbar-title>
+      </v-toolbar>
       <user-detail-data :user="values" />
     </v-card-text>
 

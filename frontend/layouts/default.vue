@@ -2,7 +2,7 @@
   <v-app>
     <v-navigation-drawer v-if="$auth.loggedIn" v-model="drawer" fixed app clipped>
       <v-list>
-        <v-list-item v-for="(item, i) in items" :key="i" :to="item.to" router exact>
+        <v-list-item v-for="(item, i) in items" :key="i" :href="item.href" :to="item.to" router exact>
           <v-list-item-action>
             <v-icon color="primary">
               {{ item.icon }}
@@ -56,32 +56,51 @@ export default {
   computed: {
     items() {
       const items = []
-      if (this.$auth.user.permissions.includes('offers')) {
+      const user = this.$auth.user
+      const { permissions, role } = user
+      if (permissions.includes('offers')) {
         items.push({
           icon: 'mdi-offer',
           title: 'Ofertas',
           to: '/ofertas',
         })
       }
-      // if (this.$auth.user.permissions.includes('calculator')) {
+      // if (permissions.includes('calculator')) {
       //   items.push({
       //     icon: 'mdi-calculator',
       //     title: 'Comparador',
       //     to: '/calculator',
       //   })
       // }
-      items.push({
-        icon: 'mdi-briefcase',
-        title: 'Cartera',
-        to: '/bids',
-      })
-      items.push({
-        icon: 'mdi-account-tie',
-        title: 'Asistente personal',
-        to: '/assistant',
-      })
+      if (role === 'agent') {
+        items.push({
+          icon: 'mdi-account-group',
+          title: 'Clientes',
+          to: '/agente/clientes',
+        })
+        items.push({
+          icon: 'mdi-account-group',
+          title: 'Estados tramitacion',
+          to: '/agente/estados',
+        })
+        items.push({
+          icon: 'C&V',
+          title: 'Call&Visit',
+          href: 'https://app.call-visit.com',
+        })
+      } else {
+        items.push({
+          icon: 'mdi-briefcase',
+          title: 'Cartera',
+          to: '/bids',
+        })
+        items.push({
+          icon: 'mdi-account-tie',
+          title: 'Asistente personal',
+          to: '/assistant',
+        })
+      }
 
-      const role = this.$auth.user.role
       if (role === 'support') {
         items.push({
           icon: 'mdi-lifebuoy',
@@ -94,13 +113,6 @@ export default {
           icon: 'mdi-account-group',
           title: 'Admin',
           to: '/admin/dashboard',
-        })
-      }
-      if (role === 'agent') {
-        items.push({
-          icon: 'mdi-account-group',
-          title: 'Agente',
-          to: '/agente/dashboard',
         })
       }
       return items

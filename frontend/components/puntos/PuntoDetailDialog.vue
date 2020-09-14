@@ -57,7 +57,7 @@ export default {
   },
   methods: {
     puntoDeleted() {
-      const id = this.punto.id
+      const { id } = this.punto
       this.$swal({
         title: `Borrar el punto ${id}?`,
         text: '¡Una vez borrado, no podrás recuperar esto!',

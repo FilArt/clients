@@ -29,10 +29,10 @@ export default {
   },
   computed: {
     privacyAccepted: {
-      set: function (val) {
+      set(val) {
         this.$store.commit('privacyAccepted', val)
       },
-      get: function () {
+      get() {
         return this.$store.state.privacyAccepted
       },
     },

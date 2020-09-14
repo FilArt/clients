@@ -32,12 +32,8 @@ export default {
           value: 'phone',
         },
         {
-          text: 'Nombre',
-          value: 'first_name',
-        },
-        {
-          text: 'Apellido',
-          value: 'last_name',
+          text: 'Nombre/Razon social',
+          value: 'fullname',
         },
         {
           text: 'Fecha de registro',

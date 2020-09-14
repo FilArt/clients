@@ -38,7 +38,7 @@ export default {
   },
   watch: {
     filters: {
-      handler: function (v) {
+      handler(v) {
         this.$router.replace({ query: v })
       },
       deep: true,
@@ -60,7 +60,7 @@ export default {
           title: 'Error',
           icon: 'error',
           text: Object.keys(errData)
-            .map((key) => key + ': ' + errData[key].join(', '))
+            .map((key) => `${key}: ${errData[key].join(', ')}`)
             .join('\n'),
         })
       } finally {

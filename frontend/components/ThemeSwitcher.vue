@@ -8,7 +8,7 @@
 export default {
   name: 'ThemeSwitcher',
   async created() {
-    const settings = this.$auth.user.settings
+    const { settings } = this.$auth.user
     let isDark = true
     if (settings && settings.dark_theme !== undefined) {
       isDark = settings.dark_theme

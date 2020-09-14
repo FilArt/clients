@@ -17,6 +17,7 @@
 <script>
 import { eachDayOfInterval, addDays, format } from 'date-fns'
 import constants from '@/lib/constants'
+
 export default {
   components: { AdminHeader: () => import('@/components/admin/AdminHeader') },
   data() {
