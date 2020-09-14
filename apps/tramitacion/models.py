@@ -29,9 +29,9 @@ class Tramitacion(models.Model):
 
     @property
     def success(self) -> bool:
-        return self.doc and self.call and self.scoring
+        return self.doc and self.call and self.scoring and self.bid.paid is True
 
     def save(self, **kwargs):
         if self.success:
-            self.bid.user.client_role = 'client'
+            self.bid.user.client_role = "client"
         super().save(**kwargs)
