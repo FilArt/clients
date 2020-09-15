@@ -18,7 +18,8 @@ class CommissionField(serializers.DecimalField):
 class BidSerializer(BidListSerializer):
     offer = DetailOfferSerializer()
     puntos = serializers.ListSerializer(child=PuntoSerializer())
-    responsible = serializers.CharField(source="user.responsible")
+    responsible = serializers.CharField(source="user.responsible", read_only=True)
+    agent_type = serializers.CharField(source="user.agent_type", read_only=True)
 
     class Meta:
         model = Bid
@@ -31,6 +32,7 @@ class BidSerializer(BidListSerializer):
             "puntos",
             "commission",
             "responsible",
+            "agent_type",
             "paid",
         ]
 

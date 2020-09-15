@@ -85,7 +85,13 @@
         </div>
       </template>
 
-      <template v-slot:[`item.email`]="{ item }">
+      <template v-if="useFullName" v-slot:[`item.fullname`]="{ item }">
+        <nuxt-link :to="getDetailUrl(item.id)">
+          {{ item.fullname }}
+        </nuxt-link>
+      </template>
+
+      <template v-else v-slot:[`item.email`]="{ item }">
         <nuxt-link :to="getDetailUrl(item.id)">
           {{ item.email }}
         </nuxt-link>
@@ -152,6 +158,10 @@ export default {
     Chat: () => import('~/components/chat/Chat'),
   },
   props: {
+    useFullName: {
+      type: Boolean,
+      default: false,
+    },
     hideChat: {
       type: Boolean,
       default: false,
@@ -267,9 +277,11 @@ export default {
     },
 
     getDetailUrl(userId) {
-      let detailUrl = `/admin/usuarios/${userId}`
+      let detailUrl
       if (this.isSupport) {
         detailUrl = this.$auth.user.role === 'agent' ? `/agente/${userId}` : `/support/${userId}`
+      } else {
+        detailUrl = `${this.$route.path}/${userId}`
       }
       return detailUrl
     },

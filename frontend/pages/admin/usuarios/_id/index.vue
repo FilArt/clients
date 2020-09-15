@@ -1,63 +1,123 @@
 <template>
   <v-card class="pa-3">
+    <v-snackbar v-model="snackbar" right bottom :timeout="2500" color="success">
+      {{ snackbarTitle }}
+
+      <template v-slot:action="{ attrs }">
+        <v-btn text v-bind="attrs" @click="snackbar = false"> Cerrar </v-btn>
+      </template>
+    </v-snackbar>
+
     <v-card-text>
       <admin-header />
     </v-card-text>
 
-    <v-card-title>{{ user.fullname }}</v-card-title>
+    <v-toolbar>
+      <v-toolbar-title>
+        {{ user.fullname }}
+      </v-toolbar-title>
+    </v-toolbar>
 
     <v-card-text>
-      <user-detail-data :user="user" />
+      <v-row align="center">
+        <v-col>
+          <v-text-field
+            v-model="settings.first_name"
+            label="Nombre"
+            :error-messages="errorMessages.first_name"
+            :append-icon="user.first_name !== settings.first_name ? 'mdi-content-save' : null"
+            @click:append="update({ first_name: settings.first_name })"
+          />
+          <v-text-field
+            v-model="settings.last_name"
+            label="Apellido"
+            :error-messages="errorMessages.last_name"
+            :append-icon="user.last_name !== settings.last_name ? 'mdi-content-save' : null"
+            @click:append="update({ last_name: settings.last_name })"
+          />
+          <v-text-field
+            v-model="settings.email"
+            label="Email"
+            :error-messages="errorMessages.email"
+            :append-icon="user.email !== settings.email ? 'mdi-content-save' : null"
+            @click:append="update({ email: settings.email })"
+          />
+          <v-select
+            v-model="settings.role"
+            label="Role"
+            :error-messages="errorMessages.role"
+            :items="[
+              { text: 'Admin', value: 'admin' },
+              { text: 'Agente', value: 'agent' },
+            ]"
+            :append-icon="user.role !== settings.role ? 'mdi-content-save' : null"
+            @click:append="update({ role: settings.role })"
+          />
+
+          <v-select
+            v-if="settings.role === 'agent'"
+            v-model="settings.agent_type"
+            label="Tipo de agente"
+            :error-messages="errorMessages.agent_type"
+            :items="[
+              { text: 'Agente', value: 'agent' },
+              { text: 'Canal', value: 'canal' },
+              { text: 'Sueldo fijo', value: 'fixed' },
+            ]"
+            :append-icon="user.agent_type !== settings.agent_type ? 'mdi-content-save' : null"
+            @click:append="update({ agent_type: settings.agent_type })"
+          />
+
+          <v-select
+            v-model="permissions"
+            multiple
+            label="Permissions"
+            :items="[
+              {
+                text: 'Perfil',
+                value: 'profile',
+              },
+              {
+                text: 'Cartera',
+                value: 'bids',
+              },
+              {
+                text: 'Ofertas',
+                value: 'offers',
+              },
+              {
+                text: 'Comparador',
+                value: 'calculator',
+              },
+              {
+                text: 'Leeds - disponible',
+                value: 'leeds_access',
+              },
+            ]"
+            :append-icon="user.permissions !== settings.permissions ? 'mdi-content-save' : null"
+            @click:append="update({ permissions: settings.permissions })"
+          />
+        </v-col>
+
+        <v-divider vertical />
+
+        <v-col>
+          <v-btn block color="error" outlined @click="deleteUser">
+            Eliminar usuario
+            <v-icon right>mdi-trash-can-outline</v-icon>
+          </v-btn>
+
+          <br />
+
+          <v-btn block color="indigo" outlined @click="changePassword">
+            Cambiar contrasena
+            <v-icon right>mdi-lock</v-icon>
+          </v-btn>
+        </v-col>
+      </v-row>
     </v-card-text>
 
-    <v-card-text>
-      <v-tabs v-model="tabs" centered>
-        <v-tab :disabled="!user.bids.length">Solicitud ({{ user.bids.length }})</v-tab>
-        <v-tab :disabled="!calls.length"> Llamadas ({{ calls.length }}) </v-tab>
-        <v-tab :disabled="!history.length">Historia ({{ history.length }})</v-tab>
-        <v-tab :disabled="!puntos.length"> Puntos suministros ({{ puntos.length }}) </v-tab>
-
-        <v-tabs-items v-model="tabs">
-          <v-tab-item>
-            <v-list three-line subheader nav shaped>
-              <v-subheader inset> Solicitudes </v-subheader>
-
-              <v-list-item v-for="bid in user.bids" :key="bid.id" nuxt :to="`/bids/${bid.id}`">
-                <v-list-item-content>
-                  <v-list-item-title v-text="bid.offer_name" />
-                  <v-list-item-subtitle v-text="'id: ' + bid.id" />
-                  <v-list-item-subtitle v-text="bid.created_at" />
-                </v-list-item-content>
-
-                <v-list-item-content>
-                  {{ bid.status }}
-                </v-list-item-content>
-              </v-list-item>
-            </v-list>
-          </v-tab-item>
-
-          <v-tab-item>
-            <v-list>
-              <v-list-item v-for="call in calls" :key="call.id">
-                <v-list-item-content>
-                  <audio :src="call" type="audio/mp3" controls></audio>
-                </v-list-item-content>
-              </v-list-item>
-            </v-list>
-          </v-tab-item>
-
-          <v-tab-item v-if="history.length">
-            <history-list :history="history" />
-          </v-tab-item>
-
-          <v-tab-item>
-            <puntos-list :puntos="puntos" @punto-updated="fetchPuntos" />
-          </v-tab-item>
-        </v-tabs-items>
-      </v-tabs>
-    </v-card-text>
-
-    <chat v-if="participant" :participant="participant" />
+    <v-card-text> </v-card-text>
   </v-card>
 </template>
 
@@ -65,37 +125,88 @@
 export default {
   components: {
     AdminHeader: () => import('~/components/admin/AdminHeader'),
-    Chat: () => import('~/components/chat/Chat'),
-    PuntosList: () => import('~/components/puntos/PuntosList'),
-    HistoryList: () => import('~/components/history/HistoryList'),
-    UserDetailData: () => import('@/components/forms/UserDetailData'),
   },
   async asyncData({ params, $axios }) {
-    const user = await $axios.$get(`/users/users/${params.id}/`)
-
-    const phoneNumbers = [user.phone, ...user.phones.map((phone) => phone.number)].filter((p) => p)
-    let calls = []
-    if (phoneNumbers.length) {
-      calls = await $axios.$get(`users/calls/${user.id}`)
-    }
-
-    const participant = {
-      id: user.id,
-      name: user.email,
-      imageUrl: user.avatar || '',
-    }
+    const user = await $axios.$get(`/users/manage_users/${params.id}/`)
     return {
       user,
-      participant,
-      calls,
-      tabs: user.bids.length ? 0 : null,
-      puntos: await $axios.$get(`/users/puntos/?user=${params.id}`),
-      history: await $axios.$get(`/bids/history/?user=${params.id}`),
+      settings: { ...user },
+      apiUrl: `users/manage_users/${user.id}/`,
     }
   },
+  data() {
+    return {
+      snackbar: false,
+      snackbarTitle: null,
+      errorMessages: {},
+    }
+  },
+  computed: {
+    permissions: {
+      set: function (val) {
+        console.debug(val)
+        this.settings.permissions = val
+      },
+      get: function () {
+        return this.settings.permissions.map((p) => {
+          return {
+            text: p,
+            value: p,
+          }
+        })
+      },
+    },
+  },
   methods: {
-    async fetchPuntos() {
-      this.puntos = await this.$axios.$get(`/users/puntos/?user=${this.user.id}`)
+    snackbarit(title) {
+      if (this.snackbar) this.snackbar = false
+      this.snackbarTitle = title || 'Listo!'
+      this.snackbar = true
+    },
+    update(data) {
+      this.$axios.$patch(this.apiUrl, data).then((user) => {
+        this.user = user
+        this.settings = { ...user }
+        this.snackbarit()
+      })
+    },
+    deleteUser() {
+      this.$swal({
+        title: 'Eliminar usuario',
+        icon: 'warning',
+        buttons: true,
+        dangerMode: true,
+      }).then((isConfirmed) => {
+        if (isConfirmed) {
+          this.$axios
+            .$delete(`users/manage_users/${this.user.id}`)
+            .then(() => {
+              this.$swal({ title: 'Listo', icon: 'success' }).then(() => {
+                this.$router.back()
+              })
+            })
+            .catch((e) => this.$swal({ title: 'Error', text: e.response.data }))
+        }
+      })
+    },
+    changePassword() {
+      this.$swal({
+        title: 'Puntar nuevo contrasena',
+        content: 'input',
+      }).then((password) => {
+        this.$axios
+          .$patch(`users/manage_users/${this.user.id}/`, { password })
+          .then(() => {
+            this.$swal({ title: 'Salvado', icon: 'success' })
+          })
+          .catch((e) => {
+            this.$swal({
+              title: 'Error',
+              text: e.response.data.password.map((m, i) => `${i + 1}) ${m}`).join(' '),
+              icon: 'error',
+            })
+          })
+      })
     },
   },
 }

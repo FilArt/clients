@@ -70,6 +70,8 @@
           <v-col>
             <v-toolbar> Responsable: {{ bid.responsible || '...' }} </v-toolbar>
 
+            {{ bid.agent_type }}
+
             <v-radio-group
               :value="commissions.map((c) => c.value).indexOf(bid.commission)"
               label="Comisiones"
@@ -177,16 +179,20 @@ export default {
   computed: {
     commissions() {
       const { agent_commission, canal_commission } = this.bid.offer
-      return [
-        {
+      const result = []
+      const agentType = this.bid.agent_type
+      if (agentType === 'agent' || agentType === null) {
+        result.push({
           text: `Agente comisiones: ${agent_commission} €`,
           value: agent_commission,
-        },
-        {
+        })
+      } else if (agentType === 'canal') {
+        result.push({
           text: `Canal comisiones: ${canal_commission} €`,
           value: canal_commission,
-        },
-      ]
+        })
+      }
+      return result
     },
   },
   async mounted() {
@@ -205,11 +211,10 @@ export default {
         'status',
         'offer',
         'puntos',
-        'final_agent_commission',
-        'final_canal_commission',
         'responsible',
         'paid',
         'commission',
+        'agent_type',
       ].join()
       this.bid = await this.$axios.$get(`bids/bids/${this.bidId}/?fields=${fields}`)
     },

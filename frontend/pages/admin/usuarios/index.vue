@@ -5,7 +5,7 @@
     </v-card-text>
 
     <v-card-text>
-      <users-table show-filters allow-delete hide-chat :default-headers="headers" />
+      <users-table show-filters allow-delete hide-chat :default-headers="headers" use-full-name />
     </v-card-text>
   </v-card>
 </template>
@@ -24,16 +24,12 @@ export default {
           value: 'id',
         },
         {
-          text: 'Email',
-          value: 'email',
+          text: 'Nombre',
+          value: 'fullname',
         },
         {
           text: 'Telefono',
           value: 'phone',
-        },
-        {
-          text: 'Nombre/Razon social',
-          value: 'fullname',
         },
         {
           text: 'Fecha de registro',
