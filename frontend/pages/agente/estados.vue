@@ -27,7 +27,12 @@ export default {
         { text: 'Scoring ok', value: 'scoring_ok_count' },
         { text: 'Calls ok', value: 'calls_ok_count' },
         { text: 'Pagado', value: 'paid_count' },
-      ],
+      ].filter((h) => {
+        if (this.$auth.user.agent_type === 'fixed' && h.value === 'paid_count') {
+          return false
+        }
+        return true
+      }),
     }
   },
 }

@@ -102,10 +102,12 @@ class AccountSerializer(serializers.ModelSerializer):
             "cif_dni",
             "legal_representative",
             "is_leed",
+            "agent_type",
         ]
         extra_kwargs = {
             "password": {"write_only": True, "required": False},
             "permissions": {"read_only": True},
+            "agent_type": {"read_only": True},
         }
 
     def save(self, **kwargs):

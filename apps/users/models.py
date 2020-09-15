@@ -5,6 +5,7 @@ from django.contrib.postgres.fields import ArrayField
 from django.core.exceptions import ValidationError
 from django.core.validators import MinLengthValidator
 from django.db import models
+from django.db.models.aggregates import Sum
 from django.utils.translation import pgettext_lazy
 from django.utils.translation import ugettext_lazy as _
 from rest_framework.exceptions import ValidationError as DRFValError
@@ -152,7 +153,7 @@ class CustomUser(AbstractUser):
 
     @property
     def paid_count(self) -> str:
-        return f"{self.bids.filter(paid=True).count()}/{self.bids_count}"
+        return self.bids.filter(paid=True).aggregate(paid_sum=Sum("commission"))["paid_sum"]
 
     @cached_property
     def is_leed(self) -> int:
