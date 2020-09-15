@@ -41,6 +41,7 @@ PERMISSIONS_CHOICES = (
     ("bids", _("Bids")),
     ("offers", _("Offers")),
     ("calculator", _("Calculator")),
+    ("leeds_access", _("Leeds")),
 )
 
 
@@ -66,6 +67,11 @@ class CustomUser(AbstractUser):
         ("leed", _("Leed")),
         ("tramitacion", _("Tramitacion")),
         ("client", _("Client")),
+    )
+    AGENT_TYPE_CHOICES = (
+        ("agent", _("Agent")),
+        ("canal", _("Canal")),
+        ("fixed", _("Agent with fixed salary")),
     )
 
     source = models.CharField(max_length=30, choices=SOURCES_CHOICES, default="default")
@@ -97,6 +103,7 @@ class CustomUser(AbstractUser):
             ", ".join(get_default_user_permissions()),
         ),
     )
+    agent_type = models.CharField(max_length=20, choices=AGENT_TYPE_CHOICES, blank=True, null=True)
 
     invited_by = models.ForeignKey(
         "users.CustomUser", blank=True, null=True, related_name="invites", on_delete=models.SET_NULL

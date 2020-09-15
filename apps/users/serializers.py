@@ -10,11 +10,12 @@ from drf_dynamic_fields import DynamicFieldsMixin
 from rest_framework import serializers
 from rest_framework.exceptions import ValidationError
 from rest_framework_tracking.models import APIRequestLog
-
+from django.core.exceptions import ValidationError as DjangoValidationError
 from apps.bids.models import Bid
 from clients.serializers import BidListSerializer, PuntoSerializer
 from clients.utils import notify_telegram
 from .models import Attachment, CustomUser, Phone, Punto
+from django.contrib.auth.password_validation import validate_password
 
 logger = logging.getLogger(__name__)
 
@@ -131,6 +132,45 @@ class UserListSerializer(DynamicFieldsMixin, serializers.ModelSerializer):
         if instance.responsible:
             rep["responsible"] = instance.responsible.fullname
         return rep
+
+
+class ManageUserListSerializer(UserListSerializer):
+    class Meta:
+        model = CustomUser
+        fields = [
+            "id",
+            "fullname",
+            "date_joined",
+            "date_joined_date",
+            "last_login",
+        ]
+
+
+class ManageUserSerializer(UserListSerializer):
+    class Meta:
+        model = CustomUser
+        fields = [
+            "id",
+            "fullname",
+            "first_name",
+            "last_name",
+            "role",
+            "password",
+            "email",
+            "agent_type",
+            "permissions",
+        ]
+        extra_kwargs = {"password": {"write_only": True}, "agent_type": {"allow_null": True}}
+
+    def update(self, user: CustomUser, validated_data):
+        if "password" in validated_data:
+            password = validated_data.pop("password")
+            try:
+                validate_password(password, user=user)
+                user.set_password(password)
+            except DjangoValidationError as e:
+                raise ValidationError({"password": e.messages})
+        return super().update(user, validated_data)
 
 
 class PhoneSerializer(serializers.ModelSerializer):

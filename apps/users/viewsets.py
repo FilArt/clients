@@ -27,6 +27,8 @@ from .pagination import UsersPagination
 from .permissions import AdminPermission, UsersPermission, AdminAgentPermission
 from .serializers import (
     LoadFacturasSerializer,
+    ManageUserListSerializer,
+    ManageUserSerializer,
     PhoneSerializer,
     RegisterSerializer,
     UserListSerializer,
@@ -129,17 +131,16 @@ class UserViewSet(
         return Response(AttachmentSerializer(attachments, many=True).data)
 
 
-class ManageUsersViewSet(
-    mixins.CreateModelMixin, mixins.UpdateModelMixin, mixins.DestroyModelMixin, viewsets.GenericViewSet
-):
+class ManageUsersViewSet(viewsets.ModelViewSet):
     queryset = CustomUser.objects.all()
-    serializer_class = UserListSerializer
     permission_classes = (IsAuthenticated, AdminPermission)
 
     def get_serializer_class(self):
         if self.action == "create":
             return RegisterByAdminSerializer
-        return self.serializer_class
+        elif self.detail:
+            return ManageUserSerializer
+        return ManageUserListSerializer
 
     def perform_create(self, serializer) -> None:
         serializer.save(invited_by=self.request.user)
