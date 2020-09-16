@@ -327,6 +327,9 @@ class Punto(models.Model):
             raise DRFValError({"category": [_("Business offer is not available for individuals")]})
         super().save(*args, **kwargs)
 
+    def __str__(self):
+        return f"{self.id}. {self.user} - {self.bid}"
+
 
 class Attachment(models.Model):
     ATTACHMENT_TYPE_CHOICES = (
