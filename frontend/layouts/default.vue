@@ -58,6 +58,13 @@ export default {
       const items = []
       const user = this.$auth.user
       const { permissions, role } = user
+      if (role === 'admin') {
+        items.push({
+          icon: 'mdi-account-group',
+          title: 'Admin',
+          to: '/admin/dashboard',
+        })
+      }
       if (permissions.includes('offers')) {
         items.push({
           icon: 'mdi-offer',
@@ -88,7 +95,7 @@ export default {
           title: 'Call&Visit',
           href: 'https://app.call-visit.com',
         })
-      } else {
+      } else if (role !== 'admin') {
         items.push({
           icon: 'mdi-briefcase',
           title: 'Cartera',
@@ -106,13 +113,6 @@ export default {
           icon: 'mdi-lifebuoy',
           title: 'Tramitacion',
           to: '/support',
-        })
-      }
-      if (role === 'admin') {
-        items.push({
-          icon: 'mdi-account-group',
-          title: 'Admin',
-          to: '/admin/dashboard',
         })
       }
       return items
