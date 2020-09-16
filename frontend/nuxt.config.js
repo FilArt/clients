@@ -85,7 +85,6 @@ export default {
   },
   auth: {
     redirect: {
-      home: '/ofertas',
       logout: '/login',
     },
     resetOnError: true,

@@ -64,7 +64,7 @@
                 label="Origin"
                 :items="[
                   {
-                    text: 'Default',
+                    text: 'Online',
                     value: 'default',
                   },
                   {

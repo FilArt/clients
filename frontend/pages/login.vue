@@ -141,6 +141,8 @@ export default {
         const { role } = user
 
         if (role === null) {
+          await this.$router.push('/ofertas')
+
           // load chat messages
           // TODO: move it to Chat.vue
           this.$store.dispatch('chat/fetchParticipant')
@@ -154,6 +156,9 @@ export default {
             })
             await this.$router.push('/profile')
           }
+        } else {
+          const path = role === 'admin' ? '/admin/dashboard' : '/agente/clientes'
+          await this.$router.push(path)
         }
       } catch (e) {
         console.log(e)

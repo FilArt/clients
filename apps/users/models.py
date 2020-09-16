@@ -61,7 +61,7 @@ class CustomUser(AbstractUser):
         ("affiliate", _("Affiliate")),
     )
     SOURCES_CHOICES = (
-        ("default", _("Default")),
+        ("default", _("Online")),
         ("call_n_visit", _("Call&Visit")),
     )
     CLIENT_ROLES_CHOICES = (

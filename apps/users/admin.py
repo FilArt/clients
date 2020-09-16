@@ -7,7 +7,21 @@ from .models import CustomUser
 
 class CustomUserAdmin(UserAdmin):
     fieldsets = (
-        (None, {"fields": ("email", "password")}),
+        (
+            None,
+            {
+                "fields": (
+                    "email",
+                    "password",
+                    "role",
+                    "client_role",
+                    "avatar",
+                    "responsible",
+                    "source",
+                    "invited_by",
+                )
+            },
+        ),
         (_("Personal info"), {"fields": ("company_name", "first_name", "last_name", "phone")}),
         (
             _("Permissions"),
@@ -18,9 +32,6 @@ class CustomUserAdmin(UserAdmin):
                     "is_superuser",
                     "groups",
                     "user_permissions",
-                    "role",
-                    "client_role",
-                    "avatar",
                 )
             },
         ),
