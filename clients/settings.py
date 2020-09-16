@@ -41,7 +41,6 @@ INSTALLED_APPS = [
     "corsheaders",
     "rest_framework",
     "django_filters",
-    "django_cleanup",
     "channels",
     "apps.users",
     "apps.calculator",
@@ -191,7 +190,7 @@ DRF_TRACKING_ADMIN_LOG_READONLY = False
 
 
 # calls
-CALLS_STORAGE_PATH = '/freeswitch_recordings'
+CALLS_STORAGE_PATH = "/freeswitch_recordings"
 
 try:
     from .local_settings import *  # noqa: F403, F401
