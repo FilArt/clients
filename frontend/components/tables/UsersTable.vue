@@ -20,7 +20,7 @@
       <template v-slot:top>
         <div class="pa-3">
           <v-row align="center" class="elevation-1 pa-3 flex-wrap" justify="space-around">
-            <v-col cols="11">
+            <v-col :cols="showFilters ? '8' : '11'">
               <v-text-field
                 v-model="search"
                 :disabled="loading"
@@ -34,8 +34,25 @@
               />
             </v-col>
 
-            <v-col cols="1" lg="1" xl="1" md="1" sm="1">
-              <v-tooltip v-if="!hideChat && !isSupport" bottom>
+            <v-col v-if="showFilters" :cols="flexs.cols" :xl="flexs.xl" :lg="flexs.lg" :md="flexs.md" :xs="flexs.xs">
+              <v-overflow-btn
+                v-model="role"
+                :disabled="loading"
+                :items="userRoles"
+                hint="los clientes son los que firmaron un contrato con nosotros"
+                persistent-hint
+                class="text-center pa-3"
+                label="Tipo de usuario"
+                @change="clientRole ? null : updateQuery({ role: role })"
+              >
+                <template v-slot:append>
+                  <add-new-employee @added="fetchUsers" />
+                </template>
+              </v-overflow-btn>
+            </v-col>
+
+            <v-col v-if="!hideChat && !isSupport" cols="1" lg="1" xl="1" md="1" sm="1">
+              <v-tooltip bottom>
                 <template v-slot:activator="{ on }">
                   <v-simple-checkbox
                     v-model="onlyNewMessages"
@@ -77,9 +94,15 @@
               />
             </v-col>
 
-            <v-col :cols="flexs.cols" :xl="flexs.xl" :lg="flexs.lg" :md="flexs.md" :xs="flexs.xs">
+            <v-col
+              v-if="headers.some((h) => h.value === 'responsible')"
+              :cols="flexs.cols"
+              :xl="flexs.xl"
+              :lg="flexs.lg"
+              :md="flexs.md"
+              :xs="flexs.xs"
+            >
               <v-select
-                v-if="headers.some((h) => h.value === 'responsible')"
                 v-model="query.responsible"
                 label="Responsable"
                 :items="responsibles"
@@ -88,24 +111,6 @@
                 clearable
                 @change="updateQuery({ responsible: $event })"
               />
-            </v-col>
-
-            <v-col :cols="flexs.cols" :xl="flexs.xl" :lg="flexs.lg" :md="flexs.md" :xs="flexs.xs">
-              <v-overflow-btn
-                v-if="showFilters"
-                v-model="role"
-                :disabled="loading"
-                :items="userRoles"
-                hint="los clientes son los que firmaron un contrato con nosotros"
-                persistent-hint
-                class="text-center pa-3"
-                label="Tipo de usuario"
-                @change="clientRole ? null : updateQuery({ role: role })"
-              >
-                <template v-slot:append>
-                  <add-new-employee @added="fetchUsers" />
-                </template>
-              </v-overflow-btn>
             </v-col>
 
             <v-col
