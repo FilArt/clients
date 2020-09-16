@@ -66,7 +66,7 @@ class RegisterSerializer(serializers.ModelSerializer):
 
     def reset_password(self):
         user = self.instance
-        password = 1 if settings.DEBUG else BaseUserManager().make_random_password()
+        password = "1" if settings.DEBUG else BaseUserManager().make_random_password()
         user.set_password(password)
         user.save(update_fields=["password"])
         if not settings.DEBUG:
