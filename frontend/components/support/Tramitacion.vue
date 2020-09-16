@@ -8,9 +8,7 @@
       </template>
     </v-snackbar>
 
-    <v-progress-circular v-if="!bid" indermediate />
-
-    <div v-else>
+    <div>
       <v-divider />
 
       <v-card-text>
