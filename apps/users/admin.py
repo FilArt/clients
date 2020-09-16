@@ -11,7 +11,18 @@ class CustomUserAdmin(UserAdmin):
         (_("Personal info"), {"fields": ("company_name", "first_name", "last_name", "phone")}),
         (
             _("Permissions"),
-            {"fields": ("is_active", "is_staff", "is_superuser", "groups", "user_permissions", "role", "avatar")},
+            {
+                "fields": (
+                    "is_active",
+                    "is_staff",
+                    "is_superuser",
+                    "groups",
+                    "user_permissions",
+                    "role",
+                    "client_role",
+                    "avatar",
+                )
+            },
         ),
         (_("Important dates"), {"fields": ("last_login", "date_joined")}),
     )
