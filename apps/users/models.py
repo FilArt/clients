@@ -180,7 +180,7 @@ class CustomUser(AbstractUser):
         if self.role is None and self.client_role == "leed":
             from apps.calculator.models import Offer
 
-            if self.phone and self.bids.values("offer").exclude(id=Offer.get_blank_offer().id).exists():
+            if self.phone and self.bids.values("offer").exclude(offer_id=Offer.get_blank_offer().id).exists():
                 self.client_role = "tramitacion"
                 self.save()
 
