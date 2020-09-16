@@ -143,6 +143,7 @@ class ManageUserListSerializer(UserListSerializer):
             "date_joined",
             "date_joined_date",
             "last_login",
+            "agent_type",
         ]
 
 

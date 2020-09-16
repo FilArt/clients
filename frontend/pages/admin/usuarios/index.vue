@@ -28,6 +28,10 @@ export default {
           value: 'fullname',
         },
         {
+          text: 'Tipo de agente',
+          value: 'agent_type',
+        },
+        {
           text: 'Telefono',
           value: 'phone',
         },

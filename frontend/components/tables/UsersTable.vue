@@ -4,7 +4,7 @@
       :loading="loading"
       :headers="headers"
       :items="users"
-      :options.sync="options"
+      :options.sync="query"
       :server-items-length="total"
       :footer-props="{
         itemsPerPageOptions: [10, 50, 100],
@@ -20,7 +20,7 @@
       <template v-slot:top>
         <div class="pa-3">
           <v-row align="center" class="elevation-1 pa-3 flex-wrap" justify="space-around">
-            <v-col :cols="showFilters ? '8' : '11'">
+            <v-col :cols="showFilters ? 8 : !hideChat && !isSupport ? 11 : 12">
               <v-text-field
                 v-model="search"
                 :disabled="loading"
@@ -290,26 +290,43 @@ export default {
     },
   },
   data() {
+    const query = this.$route.query
+    let dateJoinedFilter = query.date_joined__range || null
+    if (dateJoinedFilter) {
+      try {
+        const [start, end] = dateJoinedFilter.split(',')
+        dateJoinedFilter = { start: new Date(start), end: new Date(end) }
+      } catch (e) {
+        console.error(e)
+      }
+    }
     return {
       flexs: { cols: 12, xl: 3, lg: 3, md: 3, sm: 3, xs: 12 },
-      dateJoinedFilter: null,
+      dateJoinedFilter,
       userRoles: Object.values(constants.userRoles),
-      search: '',
       role: 'admin',
       users: [],
       loading: false,
       total: 0,
-      options: { page: 1 },
       onlyNewMessages: false,
-      query: { is_support: this.isSupport },
       reserved_responsible: null,
       reserved_userId: null,
+
+      search: query.search || '',
+      query: {
+        ...query,
+        responsible: query.responsible ? parseInt(query.responsible) : null,
+        page: query.page ? parseInt(query.page) : 1,
+        itemsPerPage: query.itemsPerPage ? parseInt(query.itemsPerPage) : 10,
+        is_support: query.is_support || this.isSupport,
+      },
     }
   },
   computed: {
     ...mapState({ responsibles: (state) => state.responsibles }),
     headers() {
-      const result = this.defaultHeaders
+      const result =
+        this.query.role === 'agent' ? this.defaultHeaders : this.defaultHeaders.filter((h) => h.value !== 'agent_type')
       this.additionalHeaders.forEach((header) => {
         result.splice(header.index, 0, header.value)
       })
@@ -342,47 +359,50 @@ export default {
     },
 
     // other
-    fetchUsers() {
-      return new Promise((resolve, reject) => {
+    async fetchUsers() {
+      try {
         this.loading = true
-        const { options } = this
+        if (
+          String(this.query.page) !== String(this.$route.query.page) ||
+          String(this.query.itemsPerPage) !== String(this.$route.query.itemsPerPage)
+        ) {
+          await this.$router.replace({ query: { ...this.query } })
+        }
         const query = {
-          page: options.page,
-          itemsPerPage: options.itemsPerPage,
-          ordering: options.sortBy
+          ...this.query,
+          ordering: this.query.sortBy
             .map(
               (sortBy, idx) =>
-                (options.sortDesc[idx] ? '+' : '-') + (sortBy === 'date_joined_date' ? 'date_joined' : sortBy),
+                (this.query.sortDesc[idx] ? '+' : '-') + (sortBy === 'date_joined_date' ? 'date_joined' : sortBy),
             )
             .join(),
           fields: this.headers.map((header) => header.value).join(),
-          ...this.query,
         }
         if (this.clientRole) {
           query.client_role = this.clientRole
           query.role__isnull = true
         }
-
-        this.$axios
-          .$get(
-            `users/users/?${Object.keys(query)
-              .filter((k) => query[k])
-              .map((k) => {
-                const value = query[k]
-                return value instanceof Array ? `${k}=${value.join()}` : `${k}=${value}`
-              })
-              .join('&')}`,
-          )
-          .then((data) => {
-            this.users = data.results
-            this.total = data.count
-            resolve()
-          })
-          .catch((e) => reject(e))
-          .finally(() => {
-            this.loading = false
-          })
-      })
+        const data = await this.$axios.$get(
+          `users/users/?${Object.keys(query)
+            .filter((k) => query[k])
+            .map((k) => {
+              const value = query[k]
+              return value instanceof Array ? `${k}=${value.join()}` : `${k}=${value}`
+            })
+            .join('&')}`,
+        )
+        this.users = data.results
+        this.total = data.count
+      } catch (e) {
+        if (e.response && e.response.status === 404 && this.query.page !== 1) {
+          this.query.page = 1
+          await this.fetchUsers()
+        } else {
+          console.error(e)
+        }
+      } finally {
+        this.loading = false
+      }
     },
     updateDateJoinedFilter(dates) {
       if (dates && dates.start && dates.end) {
@@ -392,6 +412,7 @@ export default {
       }
     },
     updateQuery(options) {
+      this.query.page = 1
       Object.keys(options).forEach((key) => {
         const value = options[key]
         if (value) {
@@ -400,17 +421,17 @@ export default {
           delete this.query[key]
         }
       })
+      this.$router.replace({ query: this.query })
       this.fetchUsers()
     },
     openChat(user) {
-      const options = {
+      this.$store.dispatch('chat/fetchParticipant', {
         participant: {
           id: user.id,
           name: user.fullname,
         },
         openChat: true,
-      }
-      this.$store.dispatch('chat/fetchParticipant', options)
+      })
     },
     async deleteUser(user) {
       const isConfirm = await this.$swal({
