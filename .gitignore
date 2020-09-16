@@ -9,3 +9,4 @@ dump.rdb
 .gitignore
 service_account.json
 clients.egg-info
+.mypy_cache/
