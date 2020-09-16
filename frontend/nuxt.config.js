@@ -5,7 +5,7 @@ const DEV = process.env.NODE_ENV !== 'production'
 const BACKEND_HOST = `http://localhost:${process.env.BACKEND_PORT || '8000'}`
 
 export default {
-  mode: 'spa',
+  ssr: false,
   dev: DEV,
   /*
    ** Headers of the page

@@ -5,7 +5,7 @@
     </v-card-text>
 
     <v-card-text>
-      <users-table :client-role="userRole" allow-delete :additional-headers="additionalHeaders" />
+      <users-table :client-role="userRole" allow-delete :default-headers="headers" use-full-name />
     </v-card-text>
   </v-card>
 </template>
@@ -21,20 +21,44 @@ export default {
   data() {
     return {
       userRole: constants.clientRoles.leeds.value,
-      additionalHeaders: [
+      headers: [
         {
-          index: 3,
-          value: {
-            text: 'Responsable',
-            value: 'responsible',
-          },
+          text: 'ID',
+          value: 'id',
         },
         {
-          index: 4,
-          value: {
-            text: 'Origin',
-            value: 'affiliate',
-          },
+          text: 'Fecha de registro',
+          value: 'date_joined_date',
+        },
+        {
+          text: 'Nombre/Razon social',
+          value: 'fullname',
+        },
+        {
+          text: 'Origin',
+          value: 'affiliate',
+        },
+        {
+          text: 'Responsable',
+          value: 'responsible',
+        },
+        {
+          text: 'Ultima entrada',
+          value: 'last_login',
+        },
+        {
+          text: 'Cartera',
+          value: 'bids_count',
+          sortable: false,
+        },
+        {
+          text: 'Nuevo mensajes',
+          value: 'new_messages_count',
+          sortable: false,
+        },
+        {
+          value: 'actions',
+          sortable: false,
         },
       ],
     }

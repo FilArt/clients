@@ -365,7 +365,7 @@ class FastContractSerializer(serializers.ModelSerializer):
                 password=BaseUserManager().make_random_password(),
                 invited_by=invited_by,
                 responsible=invited_by,
-                source="call&visit",
+                source="call_n_visit",
                 client_role="tramitacion",
             )
             bid = Bid.objects.create(user=user, offer=offer)

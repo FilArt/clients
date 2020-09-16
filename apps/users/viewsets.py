@@ -92,6 +92,8 @@ class UserViewSet(
         "role": ["exact", "isnull"],
         "client_role": ["exact"],
         "date_joined": ["range"],
+        "source": ["exact"],
+        "responsible": ["exact"],
     }
 
     def filter_queryset(self, queryset):

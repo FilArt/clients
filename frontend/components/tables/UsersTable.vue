@@ -20,7 +20,7 @@
       <template v-slot:top>
         <div class="pa-3">
           <v-row align="center" class="elevation-1 pa-3 flex-wrap" justify="space-around">
-            <v-col>
+            <v-col cols="11">
               <v-text-field
                 v-model="search"
                 :disabled="loading"
@@ -34,7 +34,63 @@
               />
             </v-col>
 
-            <v-col cols="12" lg="4" xl="4" md="4" sm="4">
+            <v-col cols="1" lg="1" xl="1" md="1" sm="1">
+              <v-tooltip v-if="!hideChat && !isSupport" bottom>
+                <template v-slot:activator="{ on }">
+                  <v-simple-checkbox
+                    v-model="onlyNewMessages"
+                    class="text-center"
+                    on-icon="mdi-message-plus"
+                    off-icon="mdi-message-minus"
+                    color="red"
+                    v-on="on"
+                    @input="updateQuery({ onlyNewMessages: onlyNewMessages })"
+                  />
+                </template>
+                <span>Filtro por nuevo mensajes</span>
+              </v-tooltip>
+            </v-col>
+
+            <v-col
+              v-if="headers.some((h) => h.value === 'affiliate')"
+              :cols="flexs.cols"
+              :xl="flexs.xl"
+              :lg="flexs.lg"
+              :md="flexs.md"
+              :xs="flexs.xs"
+            >
+              <v-select
+                v-model="query.source"
+                label="Origin"
+                :items="[
+                  {
+                    text: 'Default',
+                    value: 'default',
+                  },
+                  {
+                    text: 'Call&Visit',
+                    value: 'call_n_visit',
+                  },
+                ]"
+                clearable
+                @change="updateQuery({ source: $event })"
+              />
+            </v-col>
+
+            <v-col :cols="flexs.cols" :xl="flexs.xl" :lg="flexs.lg" :md="flexs.md" :xs="flexs.xs">
+              <v-select
+                v-if="headers.some((h) => h.value === 'responsible')"
+                v-model="query.responsible"
+                label="Responsable"
+                :items="responsibles"
+                item-text="fullname"
+                item-value="id"
+                clearable
+                @change="updateQuery({ responsible: $event })"
+              />
+            </v-col>
+
+            <v-col :cols="flexs.cols" :xl="flexs.xl" :lg="flexs.lg" :md="flexs.md" :xs="flexs.xs">
               <v-overflow-btn
                 v-if="showFilters"
                 v-model="role"
@@ -52,34 +108,24 @@
               </v-overflow-btn>
             </v-col>
 
-            <v-col v-if="showDateFilters" cols="12" lg="4" xl="4" md="4" sm="4">
+            <v-col
+              v-if="showDateFilters || headers.some((h) => h.value === 'date_joined_date')"
+              :cols="flexs.cols"
+              :xl="flexs.xl"
+              :lg="flexs.lg"
+              :md="flexs.md"
+              :xs="flexs.xs"
+            >
               <vue-ctk-date-time-picker
-                v-model="fechaFirmaFilter"
-                label="Fecha firma"
+                v-model="dateJoinedFilter"
+                :label="showDateFilters ? 'Fecha firma' : 'Fecha de registro'"
                 format="YYYY-MM-DD HH:mm"
                 formatted="DD/MM/YYYY HH:mm"
                 range
                 color="purple"
                 :dark="$vuetify.theme.isDark"
-                @input="$event.end ? updateQuery({ date_joined__range: $event.start + ',' + $event.end }) : null"
+                @input="updateDateJoinedFilter"
               />
-            </v-col>
-
-            <v-col cols="12" lg="1" xl="1" md="1" sm="1">
-              <v-tooltip v-if="!hideChat && !isSupport" bottom>
-                <template v-slot:activator="{ on }">
-                  <v-simple-checkbox
-                    v-model="onlyNewMessages"
-                    class="text-center"
-                    on-icon="mdi-message-plus"
-                    off-icon="mdi-message-minus"
-                    color="red"
-                    v-on="on"
-                    @input="updateQuery({ onlyNewMessages: onlyNewMessages })"
-                  />
-                </template>
-                <span>Filtro por nuevo mensajes</span>
-              </v-tooltip>
             </v-col>
           </v-row>
         </div>
@@ -149,7 +195,7 @@
 
 <script>
 import constants from '@/lib/constants'
-
+import { mapState } from 'vuex'
 export default {
   name: 'UsersTable',
   components: {
@@ -158,6 +204,10 @@ export default {
     Chat: () => import('~/components/chat/Chat'),
   },
   props: {
+    filtersToShow: {
+      type: Array,
+      default: () => [],
+    },
     useFullName: {
       type: Boolean,
       default: false,
@@ -194,6 +244,10 @@ export default {
           value: 'id',
         },
         {
+          text: 'Fecha de registro',
+          value: 'date_joined_date',
+        },
+        {
           text: 'Email',
           value: 'email',
         },
@@ -204,10 +258,6 @@ export default {
         {
           text: 'Nombre/Razon social',
           value: 'fullname',
-        },
-        {
-          text: 'Fecha de registro',
-          value: 'date_joined',
         },
         {
           text: 'Ultima entrada',
@@ -236,7 +286,8 @@ export default {
   },
   data() {
     return {
-      fechaFirmaFilter: null,
+      flexs: { cols: 12, xl: 3, lg: 3, md: 3, sm: 3, xs: 12 },
+      dateJoinedFilter: null,
       userRoles: Object.values(constants.userRoles),
       search: '',
       role: 'admin',
@@ -246,12 +297,12 @@ export default {
       options: { page: 1 },
       onlyNewMessages: false,
       query: { is_support: this.isSupport },
-      responsibles: [],
       reserved_responsible: null,
       reserved_userId: null,
     }
   },
   computed: {
+    ...mapState({ responsibles: (state) => state.responsibles }),
     headers() {
       const result = this.defaultHeaders
       this.additionalHeaders.forEach((header) => {
@@ -262,9 +313,8 @@ export default {
   },
   async created() {
     if (this.headers.some((header) => header.value === 'responsible') && !this.responsibles.length) {
-      this.responsibles = (
-        await this.$axios.$get('users/users/?role=agent&fields=id,fullname&itemsPerPage=100')
-      ).results
+      const users = (await this.$axios.$get('users/users/?role=agent&fields=id,fullname&itemsPerPage=100')).results
+      this.$store.commit('setResponsibles', users)
     }
     if (!this.clientRole && this.role) this.query.role = this.role
   },
@@ -329,9 +379,21 @@ export default {
           })
       })
     },
+    updateDateJoinedFilter(dates) {
+      if (dates && dates.start && dates.end) {
+        this.updateQuery({ date_joined__range: `${dates.start},${dates.end}` })
+      } else {
+        this.updateQuery({ date_joined__range: null })
+      }
+    },
     updateQuery(options) {
       Object.keys(options).forEach((key) => {
-        this.query[key] = options[key]
+        const value = options[key]
+        if (value) {
+          this.query[key] = options[key]
+        } else {
+          delete this.query[key]
+        }
       })
       this.fetchUsers()
     },

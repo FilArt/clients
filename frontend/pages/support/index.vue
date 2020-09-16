@@ -5,7 +5,7 @@
     </v-card-text>
 
     <v-card-text>
-      <users-table :client-role="clientRole" :default-headers="headers" is-support show-date-filters />
+      <users-table :client-role="clientRole" :default-headers="headers" is-support show-date-filters use-full-name />
     </v-card-text>
   </v-card>
 </template>
@@ -24,8 +24,8 @@ export default {
       headers: [
         { text: 'ID', value: 'id' },
         { text: 'Fecha firmado', value: 'date_joined_date' },
-        { text: 'Email', value: 'email' },
         { text: 'Nombre/Razon social', value: 'fullname' },
+        { text: 'Responsable', value: 'responsible' },
         { text: 'Solicitud', value: 'bids_count' },
         { text: 'Solicitud listo', value: 'bids_contracted_count' },
         { text: 'Docs ok', value: 'docs_ok_count' },

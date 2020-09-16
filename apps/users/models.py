@@ -62,7 +62,7 @@ class CustomUser(AbstractUser):
     )
     SOURCES_CHOICES = (
         ("default", _("Default")),
-        ("call&visit", _("Call&Visit")),
+        ("call_n_visit", _("Call&Visit")),
     )
     CLIENT_ROLES_CHOICES = (
         ("leed", _("Leed")),

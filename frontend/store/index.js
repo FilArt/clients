@@ -6,9 +6,13 @@ export const state = () => ({
   cities: [],
   privacyAccepted: false,
   companies: [],
+  responsibles: [],
 })
 
 export const mutations = {
+  setResponsibles(state, users) {
+    state.responsibles = users
+  },
   setCompanies(state, companies) {
     state.companies = companies
   },
