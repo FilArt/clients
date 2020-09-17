@@ -335,8 +335,7 @@ export default {
   },
   async created() {
     if (this.headers.some((header) => header.value === 'responsible') && !this.responsibles.length) {
-      const users = (await this.$axios.$get('users/users/?role=agent&fields=id,fullname&itemsPerPage=100')).results
-      this.$store.commit('setResponsibles', users)
+      await this.$store.dispatch('fetchResponsibles')
     }
     if (!this.clientRole && this.role) this.query.role = this.role
   },

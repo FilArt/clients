@@ -1,12 +1,6 @@
 <template>
   <v-card class="pa-3">
-    <v-snackbar v-model="snackbar" right bottom :timeout="2500" color="success">
-      {{ snackbarTitle }}
-
-      <template v-slot:action="{ attrs }">
-        <v-btn text v-bind="attrs" @click="snackbar = false"> Cerrar </v-btn>
-      </template>
-    </v-snackbar>
+    <snack-bar-it :noty-key="notificationKey" />
 
     <v-card-text>
       <admin-header />
@@ -55,7 +49,7 @@
           />
 
           <v-select
-            v-if="settings.role === 'agent'"
+            v-if="user.role === 'agent'"
             v-model="settings.agent_type"
             label="Tipo de agente"
             :error-messages="errorMessages.agent_type"
@@ -125,6 +119,7 @@
 export default {
   components: {
     AdminHeader: () => import('~/components/admin/AdminHeader'),
+    SnackBarIt: () => import('@/components/snackbar/SnackBarIt'),
   },
   async asyncData({ params, $axios }) {
     const user = await $axios.$get(`/users/manage_users/${params.id}/`)
@@ -136,8 +131,7 @@ export default {
   },
   data() {
     return {
-      snackbar: false,
-      snackbarTitle: null,
+      notificationKey: 0,
       errorMessages: {},
     }
   },
@@ -158,16 +152,11 @@ export default {
     },
   },
   methods: {
-    snackbarit(title) {
-      if (this.snackbar) this.snackbar = false
-      this.snackbarTitle = title || 'Listo!'
-      this.snackbar = true
-    },
     update(data) {
       this.$axios.$patch(this.apiUrl, data).then((user) => {
         this.user = user
         this.settings = { ...user }
-        this.snackbarit()
+        this.notificationKey += 1
       })
     },
     deleteUser() {

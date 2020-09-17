@@ -26,7 +26,7 @@ export default {
           index: 3,
           value: {
             text: 'Responsable',
-            value: 'responsible',
+            value: 'responsible_fn',
           },
         },
         {

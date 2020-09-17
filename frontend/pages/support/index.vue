@@ -25,7 +25,7 @@ export default {
         { text: 'ID', value: 'id' },
         { text: 'Fecha firmado', value: 'date_joined_date' },
         { text: 'Nombre/Razon social', value: 'fullname' },
-        { text: 'Responsable', value: 'responsible' },
+        { text: 'Responsable', value: 'responsible_fn' },
         { text: 'Solicitud', value: 'bids_count' },
         { text: 'Solicitud listo', value: 'bids_contracted_count' },
         { text: 'Docs ok', value: 'docs_ok_count' },

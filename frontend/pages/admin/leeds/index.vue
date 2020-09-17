@@ -40,7 +40,7 @@ export default {
         },
         {
           text: 'Responsable',
-          value: 'responsible',
+          value: 'responsible_fn',
         },
         {
           text: 'Ultima entrada',

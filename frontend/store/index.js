@@ -9,6 +9,13 @@ export const state = () => ({
   responsibles: [],
 })
 
+export const actions = {
+  async fetchResponsibles({ commit }) {
+    const users = (await this.$axios.$get('users/users/?role=agent&fields=id,fullname&itemsPerPage=100')).results
+    commit('setResponsibles', users)
+  },
+}
+
 export const mutations = {
   setResponsibles(state, users) {
     state.responsibles = users

@@ -1,12 +1,6 @@
 <template>
-  <div>
-    <v-snackbar v-model="snackbar" right bottom :timeout="2500" color="success">
-      {{ snackbarTitle }}
-
-      <template v-slot:action="{ attrs }">
-        <v-btn text v-bind="attrs" @click="snackbar = false"> Cerrar </v-btn>
-      </template>
-    </v-snackbar>
+  <div v-if="bid">
+    <snack-bar-it :noty-key="notificationKey" />
 
     <div>
       <v-divider />
@@ -132,6 +126,7 @@ export default {
     PuntosList: () => import('~/components/puntos/PuntosList'),
     detailOffer: () => import('~/components/detailOffer'),
     HistoryList: () => import('~/components/history/HistoryList'),
+    SnackBarIt: () => import('@/components/snackbar/SnackBarIt'),
   },
   props: {
     bidId: {
@@ -169,8 +164,7 @@ export default {
           value: false,
         },
       ],
-      snackbar: false,
-      snackbarTitle: null,
+      notificationKey: 0,
       bidErrors: {},
     }
   },
@@ -193,7 +187,7 @@ export default {
       return result
     },
   },
-  async mounted() {
+  async created() {
     await this.fetchBid()
     await this.fetchTramitacion()
   },
@@ -255,7 +249,7 @@ export default {
       }
       await this.fetchBid()
       this.$emit('tramitate', this.bid.status)
-      this.snackbarit()
+      this.notificationKey += 1
     },
     async pagar(field, value) {
       this.bidErrors[field] = null
@@ -263,7 +257,7 @@ export default {
         const bid = await this.$axios.$patch(`bids/bids/${this.bid.id}/`, { [field]: value })
         this.bid = bid
         this.$emit('tramitate', bid.status)
-        this.snackbarit()
+        this.notificationKey += 1
       } catch (e) {
         const err = e.response.data
         if (err.detail) {
@@ -271,11 +265,6 @@ export default {
         }
         this.bidErrors = err
       }
-    },
-    snackbarit(title) {
-      if (this.snackbar) this.snackbar = false
-      this.snackbarTitle = title || 'Listo!'
-      this.snackbar = true
     },
   },
 }
