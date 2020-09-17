@@ -7,7 +7,9 @@
       "label": "deploy",
       "type": "shell",
       "command": "./deploy.sh",
-      "problemMatcher": ["$jshint"]
+      "problemMatcher": [
+        "$jshint"
+      ]
     },
     {
       "label": "backend deploy",
@@ -18,7 +20,9 @@
     {
       "type": "shell",
       "command": "cd frontend; yarn run dev",
-      "problemMatcher": ["$jshint"],
+      "problemMatcher": [
+        "$jshint"
+      ],
       "label": "yarn: dev - frontend",
       "detail": "nuxt"
     },
@@ -39,6 +43,14 @@
       "type": "shell",
       "command": "./manage.py migrate",
       "problemMatcher": []
+    },
+    {
+      "type": "npm",
+      "script": "start",
+      "path": "frontend/",
+      "problemMatcher": [],
+      "label": "npm: start - frontend",
+      "detail": "nuxt start"
     }
   ]
 }
