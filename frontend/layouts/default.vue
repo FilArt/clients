@@ -55,15 +55,47 @@ export default {
   },
   computed: {
     items() {
-      const items = []
+      let items = []
       const user = this.$auth.user
       const { permissions, role } = user
       if (role === 'admin') {
-        items.push({
-          icon: 'mdi-account-group',
-          title: 'Admin',
-          to: '/admin/dashboard',
-        })
+        items = [
+          {
+            // icon: 'mdi-account-group',
+            title: 'Dashboard cartera',
+            to: '/admin/cartera',
+          },
+          {
+            icon: 'mdi-account-group',
+            title: 'TRAMITACIÓN',
+            to: '/admin/tramitacion',
+          },
+          {
+            // icon: 'mdi-account-group',
+            title: 'FACTURACIÓN',
+            to: '/admin/facturacion',
+          },
+          {
+            icon: 'mdi-account-group',
+            title: 'DASHBOARD',
+            to: '/admin/dashboard',
+          },
+          {
+            icon: 'mdi-account-group',
+            title: 'LEEDS',
+            to: '/admin/leeds',
+          },
+          {
+            icon: 'mdi-account-group',
+            title: 'CLIENTES',
+            to: '/admin/clientes',
+          },
+          {
+            icon: 'mdi-account-group',
+            title: 'USUARIOS',
+            to: '/admin/usuarios',
+          },
+        ]
       }
       if (permissions.includes('offers')) {
         items.push({
@@ -112,7 +144,7 @@ export default {
         items.push({
           icon: 'mdi-lifebuoy',
           title: 'Tramitacion',
-          to: '/support',
+          to: '/admin/tramitacion',
         })
       }
       return items
