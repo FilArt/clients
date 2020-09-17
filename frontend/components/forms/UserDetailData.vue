@@ -182,7 +182,7 @@ export default {
       this.notificationKey += 1
     },
     async updateUser(field, value) {
-      const user = await this.$axios.$patch(`users/users/${this.user.id}/`, { [field]: value })
+      const user = await this.$axios.$patch(`users/users/${this.userId}/`, { [field]: value })
       this.notify()
       this.$emit('user-updated', user)
     },
