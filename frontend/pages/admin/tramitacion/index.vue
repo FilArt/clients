@@ -32,7 +32,7 @@ export default {
         { text: 'Estado', value: 'status' },
         { text: 'Doc', value: 'docs' },
         { text: 'Scoring', value: 'scorings' },
-        { text: 'Calls', value: 'calls' },
+        { text: 'Llamadas', value: 'calls' },
       ],
     }
   },
