@@ -117,7 +117,6 @@ class UserListSerializer(DynamicFieldsMixin, serializers.ModelSerializer):
             "bids_contracted_count",
             "new_messages_count",
             "affiliate",
-            "responsible",
             "docs_ok_count",
             "scoring_ok_count",
             "calls_ok_count",
@@ -130,7 +129,7 @@ class UserListSerializer(DynamicFieldsMixin, serializers.ModelSerializer):
     def to_representation(self, instance: CustomUser):
         rep = super(UserListSerializer, self).to_representation(instance)
         if instance.responsible:
-            rep["responsible"] = instance.responsible.fullname
+            rep["responsible_fn"] = instance.responsible.fullname
         return rep
 
 
@@ -183,7 +182,6 @@ class PhoneSerializer(serializers.ModelSerializer):
 class UserSerializer(UserListSerializer):
     bids = BidListSerializer(many=True)
     phones = serializers.ListSerializer(child=PhoneSerializer())
-    puntos = PuntoSerializer(many=True)
 
     class Meta:
         model = CustomUser
@@ -191,7 +189,6 @@ class UserSerializer(UserListSerializer):
             "id",
             "bids",
             "phones",
-            "puntos",
             "fullname",
             "first_name",
             "last_name",
@@ -204,6 +201,8 @@ class UserSerializer(UserListSerializer):
             "last_modified",
             "last_login",
             "affiliate",
+            "responsible",
+            "source",
         ]
 
 

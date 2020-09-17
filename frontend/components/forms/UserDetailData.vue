@@ -1,5 +1,7 @@
 <template>
   <v-row class="flex-wrap">
+    <snack-bar-it :noty-key="notificationKey" />
+
     <v-col md="6" cols="12">
       <v-toolbar elevation="10" short dense>
         <v-spacer />
@@ -33,6 +35,43 @@
           <v-col v-for="date in datesInfo" :key="date.text" xl="4" md="6" cols="12">
             <v-text-field :prepend-icon="date.icon" :label="date.text" :value="date.value" outlined shaped />
           </v-col>
+
+          <v-col xl="4" md="6" cols="12">
+            <v-select
+              v-model="source"
+              prepend-icon="mdi-target"
+              label="Origin"
+              outlined
+              shaped
+              :items="[
+                {
+                  text: 'Online',
+                  value: 'default',
+                },
+                {
+                  text: 'Call&Visit',
+                  value: 'call_n_visit',
+                },
+              ]"
+              :append-icon="source !== user.source ? 'mdi-content-save' : null"
+              @click:append="updateUser('source', source)"
+            />
+          </v-col>
+
+          <v-col xl="4" md="6" cols="12">
+            <v-autocomplete
+              v-model="responsible"
+              prepend-icon="mdi-account"
+              label="Responsable"
+              item-text="fullname"
+              item-value="id"
+              outlined
+              shaped
+              :items="responsibles"
+              :append-icon="responsible !== user.responsible ? 'mdi-content-save' : null"
+              @click:append="updateUser('responsible', responsible)"
+            />
+          </v-col>
         </v-row>
       </v-card>
     </v-col>
@@ -40,19 +79,31 @@
 </template>
 
 <script>
+import { mapState } from 'vuex'
 export default {
   name: 'UserDetailData',
+  components: {
+    SnackBarIt: () => import('@/components/snackbar/SnackBarIt'),
+  },
   props: {
-    user: {
-      type: Object,
-      default: () => {
-        return {}
-      },
+    userId: {
+      type: [Number, String],
+      default: 0,
     },
   },
+  data() {
+    return {
+      user: { phones: [] },
+      responsible: null,
+      source: null,
+      notificationKey: 0,
+    }
+  },
   computed: {
+    ...mapState({ responsibles: (state) => state.responsibles }),
     contactInfo() {
       const { user } = this
+
       return [
         {
           icon: 'mdi-account',
@@ -86,7 +137,6 @@ export default {
     },
     datesInfo() {
       const { user } = this
-
       return [
         {
           icon: 'mdi-calendar',
@@ -103,23 +153,38 @@ export default {
           text: 'Fecha firma',
           value: user.last_modified,
         },
-        {
-          icon: 'mdi-account',
-          text: 'Responsable',
-          value: user.responsible,
-        },
-        {
-          icon: 'mdi-target',
-          text: 'Origin',
-          value: user.affiliate,
-        },
       ]
     },
   },
+  async created() {
+    const fields = [
+      'phones',
+      'source',
+      'responsible',
+      'phone',
+      'date_joined',
+      'last_login',
+      'email',
+      'legal_representative',
+      'last_modified',
+    ]
+    const user = await this.$axios.$get(`users/users/${this.userId}/?fields=${fields}`)
+    this.user = user
+    this.responsible = user.responsible
+    this.source = user.source
+
+    if (!this.responsibles.length) {
+      await this.$store.dispatch('fetchResponsibles')
+    }
+  },
   methods: {
+    notify() {
+      this.notificationKey += 1
+    },
     async updateUser(field, value) {
-      await this.$axios.$patch(`users/users/${this.user.id}/`, { [field]: value })
-      await this.$swal({ title: 'Salvado', icon: 'success' })
+      const user = await this.$axios.$patch(`users/users/${this.user.id}/`, { [field]: value })
+      this.notify()
+      this.$emit('user-updated', user)
     },
   },
 }

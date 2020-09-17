@@ -1,7 +1,7 @@
 <template>
   <v-card>
     <v-card-text>
-      <user-detail-data :user="values" />
+      <user-detail-data :user-id="$route.params.id" />
     </v-card-text>
 
     <v-divider />

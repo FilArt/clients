@@ -10,7 +10,7 @@
           {{ user.fullname }}
         </v-toolbar-title>
       </v-toolbar>
-      <user-detail-data :user="values" />
+      <user-detail-data :user-id="$route.params.id" />
     </v-card-text>
 
     <v-divider />

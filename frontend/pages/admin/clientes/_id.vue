@@ -7,12 +7,18 @@
     <v-card-title>{{ user.fullname }}</v-card-title>
 
     <v-card-text>
-      <user-detail-data :user="user" />
+      <user-detail-data
+        :user-id="user.id"
+        @user-updated="
+          user = null
+          user = $event
+        "
+      />
     </v-card-text>
 
     <v-card-text>
       <v-tabs v-model="tabs" centered>
-        <v-tab :disabled="!user.bids.length">Solicitud ({{ user.bids.length }})</v-tab>
+        <v-tab :disabled="!bids.length">Solicitud ({{ bids.length }})</v-tab>
         <v-tab :disabled="!calls.length"> Llamadas ({{ calls.length }}) </v-tab>
         <v-tab :disabled="!history.length">Historia ({{ history.length }})</v-tab>
         <v-tab :disabled="!puntos.length"> Puntos suministros ({{ puntos.length }}) </v-tab>
@@ -22,7 +28,7 @@
             <v-list three-line subheader nav shaped>
               <v-subheader inset> Solicitudes </v-subheader>
 
-              <v-list-item v-for="bid in user.bids" :key="bid.id" nuxt :to="`/bids/${bid.id}`">
+              <v-list-item v-for="bid in bids" :key="bid.id" nuxt :to="`/bids/${bid.id}`">
                 <v-list-item-content>
                   <v-list-item-title v-text="bid.offer_name" />
                   <v-list-item-subtitle v-text="'id: ' + bid.id" />
@@ -71,7 +77,7 @@ export default {
     UserDetailData: () => import('@/components/forms/UserDetailData'),
   },
   async asyncData({ params, $axios }) {
-    const user = await $axios.$get(`/users/users/${params.id}/`)
+    const user = await $axios.$get(`/users/users/${params.id}/?fields=phone,phones,email,avatar,bids`)
 
     const phoneNumbers = [user.phone, ...user.phones.map((phone) => phone.number)].filter((p) => p)
     let calls = []
@@ -80,7 +86,7 @@ export default {
     }
 
     const participant = {
-      id: user.id,
+      id: params.id,
       name: user.email,
       imageUrl: user.avatar || '',
     }
@@ -88,10 +94,15 @@ export default {
       user,
       participant,
       calls,
-      tabs: user.bids.length ? 0 : null,
+      bids: user.bids,
       puntos: await $axios.$get(`/users/puntos/?user=${params.id}`),
       history: await $axios.$get(`/bids/history/?user=${params.id}`),
     }
+  },
+  computed: {
+    tabs() {
+      return this.bids.length ? 0 : null
+    },
   },
   methods: {
     async fetchPuntos() {
