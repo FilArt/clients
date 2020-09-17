@@ -44,13 +44,5 @@
       "command": "./manage.py migrate",
       "problemMatcher": []
     },
-    {
-      "type": "npm",
-      "script": "start",
-      "path": "frontend/",
-      "problemMatcher": [],
-      "label": "npm: start - frontend",
-      "detail": "nuxt start"
-    }
   ]
 }
