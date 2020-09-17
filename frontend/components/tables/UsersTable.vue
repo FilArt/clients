@@ -114,6 +114,26 @@
             </v-col>
 
             <v-col
+              v-if="showDateFilters || headers.some((h) => h.value === 'date_joined_date')"
+              :cols="flexs.cols"
+              :xl="flexs.xl"
+              :lg="flexs.lg"
+              :md="flexs.md"
+              :xs="flexs.xs"
+            >
+              <vue-ctk-date-time-picker
+                v-model="dateJoinedFilter"
+                :label="showDateFilters ? 'Fecha firma' : 'Fecha de registro'"
+                format="YYYY-MM-DD HH:mm"
+                formatted="DD/MM/YYYY HH:mm"
+                range
+                color="purple"
+                :dark="$vuetify.theme.isDark"
+                @input="updateDateJoinedFilter"
+              />
+            </v-col>
+
+            <v-col
               v-if="headers.some((h) => h.value === 'status')"
               :cols="flexs.cols"
               :xl="flexs.xl"
@@ -152,26 +172,6 @@
                 />
               </v-col>
             </template>
-
-            <v-col
-              v-if="showDateFilters || headers.some((h) => h.value === 'date_joined_date')"
-              :cols="flexs.cols"
-              :xl="flexs.xl"
-              :lg="flexs.lg"
-              :md="flexs.md"
-              :xs="flexs.xs"
-            >
-              <vue-ctk-date-time-picker
-                v-model="dateJoinedFilter"
-                :label="showDateFilters ? 'Fecha firma' : 'Fecha de registro'"
-                format="YYYY-MM-DD HH:mm"
-                formatted="DD/MM/YYYY HH:mm"
-                range
-                color="purple"
-                :dark="$vuetify.theme.isDark"
-                @input="updateDateJoinedFilter"
-              />
-            </v-col>
           </v-row>
         </div>
       </template>
