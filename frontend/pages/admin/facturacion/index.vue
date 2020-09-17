@@ -28,10 +28,8 @@ export default {
         { text: 'Nombre/Razon social', value: 'fullname' },
         { text: 'Responsable', value: 'responsible_fn' },
         { text: 'Solicitud', value: 'bids_count' },
+        { text: 'Comisiones', value: 'paid_count' },
         { text: 'Estado', value: 'status' },
-        { text: 'Doc', value: 'docs' },
-        { text: 'Scoring', value: 'scorings' },
-        { text: 'Calls', value: 'calls' },
       ],
     }
   },

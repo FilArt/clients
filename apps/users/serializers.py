@@ -121,6 +121,7 @@ class UserListSerializer(DynamicFieldsMixin, serializers.ModelSerializer):
             "docs",
             "scorings",
             "calls",
+            "paid_count",
         )
 
     def get_status(self, user: CustomUser) -> str:

@@ -1,3 +1,4 @@
+from decimal import ROUND_HALF_UP, Decimal
 from functools import cached_property
 
 from django.contrib.auth.models import AbstractUser
@@ -135,31 +136,32 @@ class CustomUser(AbstractUser):
 
     @property
     def docs(self) -> str:
-        if self.bids.filter(tramitacion__doc=False).exists():
+        if self.bids.filter(doc=False).exists():
             return "KO"
-        elif self.bids.filter(tramitacion__doc=True).exists():
+        elif self.bids.filter(doc=True).exists():
             return "OK"
         return "-"
 
     @property
     def scorings(self) -> str:
-        if self.bids.filter(tramitacion__scoring=False).exists():
+        if self.bids.filter(scoring=False).exists():
             return "KO"
-        elif self.bids.filter(tramitacion__scoring=True).exists():
+        elif self.bids.filter(scoring=True).exists():
             return "OK"
         return "-"
 
     @property
     def calls(self) -> str:
-        if self.bids.filter(tramitacion__call=False).exists():
+        if self.bids.filter(call=False).exists():
             return "KO"
-        elif self.bids.filter(tramitacion__call=True).exists():
+        elif self.bids.filter(call=True).exists():
             return "OK"
         return "-"
 
     @property
     def paid_count(self) -> str:
-        return self.bids.filter(paid=True).aggregate(paid_sum=Sum("commission"))["paid_sum"]
+        money = self.bids.aggregate(paid_sum=Sum("commission"))["paid_sum"] or 0
+        return f"{money} €"
 
     @cached_property
     def is_leed(self) -> int:
