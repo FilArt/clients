@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-09-16 13:08+0000\n"
+"POT-Creation-Date: 2020-09-17 14:21+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -22,17 +22,29 @@ msgstr ""
 msgid "Basic fields"
 msgstr "Campos basico"
 
-#: apps/bids/models.py:15
+#: apps/bids/models.py:13
 msgid "Ensure this value is greater than 0."
 msgstr "Asegúrese de que este valor sea mayor que 0."
 
+#: apps/bids/models.py:24
+msgid "Is docs ok?"
+msgstr ""
+
+#: apps/bids/models.py:25
+msgid "Is scoring ok?"
+msgstr ""
+
 #: apps/bids/models.py:26
+msgid "Is call ok?"
+msgstr ""
+
+#: apps/bids/models.py:29
 #, fuzzy
 #| msgid "Bids"
 msgid "Bid"
 msgstr "Solicitud de contratacion"
 
-#: apps/bids/models.py:27 apps/users/models.py:42
+#: apps/bids/models.py:30 apps/users/models.py:42
 msgid "Bids"
 msgstr "Solicitud de contratacion"
 
@@ -51,7 +63,7 @@ msgstr "% (valor) s no está en mayúscula"
 msgid "Individual"
 msgstr "Individual"
 
-#: apps/calculator/models.py:105 apps/users/models.py:269
+#: apps/calculator/models.py:105 apps/users/models.py:275
 msgid "Business"
 msgstr "Empresa"
 
@@ -172,7 +184,7 @@ msgstr "Número de teléfono"
 msgid "Company changed at"
 msgstr "Compañía cambió a"
 
-#: apps/users/models.py:88 apps/users/models.py:335
+#: apps/users/models.py:88 apps/users/models.py:344
 msgid "DNI"
 msgstr "DNI"
 
@@ -195,121 +207,121 @@ msgctxt "help text for user permissions field"
 msgid "Possible values:"
 msgstr "Valores posibles:"
 
-#: apps/users/models.py:203
+#: apps/users/models.py:209
 msgid "Mobile"
 msgstr "Móvil"
 
-#: apps/users/models.py:204
+#: apps/users/models.py:210
 msgid "City"
 msgstr "Ciudad"
 
-#: apps/users/models.py:269
+#: apps/users/models.py:275
 msgid "Physical"
 msgstr "Particular"
 
-#: apps/users/models.py:269
+#: apps/users/models.py:275
 msgid "Autonomous"
 msgstr "Autonomo"
 
-#: apps/users/models.py:274
+#: apps/users/models.py:280
 msgid "Name"
 msgstr "Nombre"
 
-#: apps/users/models.py:276
+#: apps/users/models.py:282
 #, fuzzy
 #| msgid "Company changed at"
 msgid "Company light"
 msgstr "Comercializadora luz"
 
-#: apps/users/models.py:284
+#: apps/users/models.py:290
 #, fuzzy
 #| msgid "Company changed at"
 msgid "Company gas"
 msgstr "comercializadora gas"
 
-#: apps/users/models.py:293
+#: apps/users/models.py:299
 msgid "Province"
 msgstr "Provincia"
 
-#: apps/users/models.py:294
+#: apps/users/models.py:300
 msgid "Locality"
 msgstr "Localidad"
 
-#: apps/users/models.py:295
+#: apps/users/models.py:301
 #, fuzzy
 msgid "Address"
 msgstr "Dirección"
 
-#: apps/users/models.py:296
+#: apps/users/models.py:302
 msgid "Postalcode"
 msgstr "Código postal"
 
-#: apps/users/models.py:297
+#: apps/users/models.py:303
 msgid "IBAN"
 msgstr "IBAN"
 
-#: apps/users/models.py:300
+#: apps/users/models.py:306
 msgid "Last time company light changed"
 msgstr "Ultima comercializadora luz"
 
-#: apps/users/models.py:303
+#: apps/users/models.py:309
 msgid "Last time company gas changed"
 msgstr "Ultima comercializadora gas"
 
-#: apps/users/models.py:305
+#: apps/users/models.py:311
 msgid "CUPS"
 msgstr "CUPS"
 
-#: apps/users/models.py:306
+#: apps/users/models.py:312
 msgid "CUPS gas"
 msgstr "CUPS GAS"
 
-#: apps/users/models.py:307
+#: apps/users/models.py:313
 msgid "Tarif"
 msgstr "Tarifa"
 
-#: apps/users/models.py:308
+#: apps/users/models.py:314
 msgid "Tarif gas"
 msgstr "Tarifa gas"
 
-#: apps/users/models.py:309
+#: apps/users/models.py:315
 msgid "Power 1"
 msgstr "Potencia 1"
 
-#: apps/users/models.py:315
+#: apps/users/models.py:321
 msgid "Annual consumption"
 msgstr "Consumo anual"
 
-#: apps/users/models.py:316
+#: apps/users/models.py:322
 msgid "Annual consumption (gas)"
 msgstr "Consumo anual (GAS)"
 
-#: apps/users/models.py:327
+#: apps/users/models.py:333
 msgid "Business offer is not available for individuals"
 msgstr "Oferta para pymes no disponible para personas fisico"
 
-#: apps/users/models.py:333
+#: apps/users/models.py:342
 msgid "Factura"
 msgstr "Factura"
 
-#: apps/users/models.py:334
+#: apps/users/models.py:343
 #, fuzzy
 msgid "Factura reverso"
 msgstr "Factura"
 
-#: apps/users/models.py:336
+#: apps/users/models.py:345
 msgid "DNI reverse side"
 msgstr "DNI (reverso)"
 
-#: apps/users/models.py:337
+#: apps/users/models.py:346
 msgid "CIF"
 msgstr "CIF"
 
-#: apps/users/models.py:338
+#: apps/users/models.py:347
 msgid "CIF reverse side"
 msgstr "CIF (reverso)"
 
-#: apps/users/models.py:339
+#: apps/users/models.py:348
 msgid "Recibo de Autónomo"
 msgstr ""
 

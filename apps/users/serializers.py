@@ -102,6 +102,7 @@ class UserListSerializer(DynamicFieldsMixin, serializers.ModelSerializer):
     last_login = PrettyDateTimeField()
     new_messages_count = serializers.SerializerMethodField()
     affiliate = serializers.CharField()
+    status = serializers.SerializerMethodField()
 
     class Meta:
         model = CustomUser
@@ -114,16 +115,27 @@ class UserListSerializer(DynamicFieldsMixin, serializers.ModelSerializer):
             "date_joined_date",
             "last_login",
             "bids_count",
-            "bids_contracted_count",
+            "status",
             "new_messages_count",
             "affiliate",
-            "docs_ok_count",
-            "scoring_ok_count",
-            "calls_ok_count",
-            "paid_count",
+            "docs",
+            "scorings",
+            "calls",
         )
 
-    def get_new_messages_count(self, instance: CustomUser):
+    def get_status(self, user: CustomUser) -> str:
+        by = self.context["request"].user
+        all_bids_statuses = {bid.get_status(by=by) for bid in user.bids.all()}
+        if not all_bids_statuses:
+            return "-"
+        if len(all_bids_statuses) == 1:
+            return list(all_bids_statuses)[0]
+        if "OK" in all_bids_statuses:
+            all_bids_statuses.remove("OK")
+        status = list(all_bids_statuses)[0]
+        return status
+
+    def get_new_messages_count(self, instance: CustomUser) -> int:
         return self.context["request"].user.unread_messages.filter(message__author=instance).count()
 
     def to_representation(self, instance: CustomUser):
@@ -182,6 +194,7 @@ class PhoneSerializer(serializers.ModelSerializer):
 class UserSerializer(UserListSerializer):
     bids = BidListSerializer(many=True)
     phones = serializers.ListSerializer(child=PhoneSerializer())
+    status = serializers.SerializerMethodField()
 
     class Meta:
         model = CustomUser
@@ -204,6 +217,10 @@ class UserSerializer(UserListSerializer):
             "responsible",
             "source",
         ]
+
+    def get_status(self, user: CustomUser):
+        user_bids = user.bids.all()
+        return "status"
 
 
 class LoadFacturasSerializer(serializers.Serializer):

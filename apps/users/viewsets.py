@@ -93,14 +93,33 @@ class UserViewSet(
         "client_role": ["exact"],
         "date_joined": ["range"],
         "source": ["exact"],
-        "responsible": ["exact"],
+        "responsible": ["exact", "in"],
+        "bids__doc": ["exact", "isnull"],
+        "bids__scoring": ["exact", "isnull"],
+        "bids__call": ["exact", "isnull"],
     }
+    ordering_fields = ["date_joined"]
 
     def filter_queryset(self, queryset):
         queryset = super(UserViewSet, self).filter_queryset(queryset)
         if self.request.user.role == "agent":
             agent_id = self.request.user.id
             queryset = queryset.filter(Q(responsible_id=agent_id) | Q(invited_by_id=agent_id))
+        status = self.request.query_params.get("status")
+        if status:
+            if "tramitacion" in status:
+                queryset = queryset.exclude(bids__doc=True, bids__call=True, bids__scoring=True)
+            elif "facturacion" in status:
+                queryset = queryset.filter(bids__doc=True, bids__call=True, bids__scoring=True)
+            if status.lower() == "tramitacion_ko":
+                queryset = queryset.filter(bids__doc=False, bids__call=False, bids__scoring=False)
+            elif status.lower() == "tramitacion_pendiente":
+                queryset = queryset.exclude(bids__doc=False, bids__call=False, bids__scoring=False)
+            if status.lower() == "facturacion_ok":
+                queryset = queryset.filter(bids__paid=True)
+            elif status.lower() == "facturacion_pendiente":
+                queryset = queryset.filter(bids__paid=False)
+
         return queryset
 
     def get_serializer_class(self):

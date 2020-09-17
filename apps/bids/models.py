@@ -5,8 +5,6 @@ from django.core.exceptions import ValidationError
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 
-from apps.tramitacion.models import Tramitacion
-
 logger = logging.getLogger(__name__)
 
 
@@ -16,11 +14,16 @@ def more_than_zero(value):
 
 
 class Bid(models.Model):
+    DEFAULT_STATUS = "Pendiente tramitacion"
+
     user = models.ForeignKey(get_user_model(), on_delete=models.CASCADE, related_name="bids")
     offer = models.ForeignKey("calculator.Offer", on_delete=models.CASCADE)
     created_at = models.DateTimeField(auto_now_add=True)
     commission = models.DecimalField(max_digits=6, decimal_places=2, default=0)
     paid = models.BooleanField(default=False)
+    doc = models.BooleanField(verbose_name=_("Is docs ok?"), blank=True, null=True)
+    scoring = models.BooleanField(verbose_name=_("Is scoring ok?"), blank=True, null=True)
+    call = models.BooleanField(verbose_name=_("Is call ok?"), blank=True, null=True)
 
     class Meta:
         verbose_name = _("Bid")
@@ -35,11 +38,22 @@ class Bid(models.Model):
         if save_bid_story:
             BidStory.objects.create(bid=self, user=self.user)
 
+    def get_status(self, by) -> str:
+        if False in (self.doc, self.call, self.scoring):
+            return "KO"
+        elif self.success:
+            if self.paid is False and by.role in ("admin", "tramitacion"):
+                return "Pendiente pagado"
+            return "OK"
+
+        okays_count = len([i for i in [self.doc, self.call, self.scoring] if i is True])
+        if okays_count:
+            return f"${self.DEFAULT_STATUS} ({okays_count}/3)"
+        return self.DEFAULT_STATUS
+
     @property
-    def status(self) -> str:
-        if hasattr(self, "tramitacion") and self.tramitacion.status:
-            return self.tramitacion.status
-        return Tramitacion.DEFAULT_STATUS
+    def success(self) -> bool:
+        return bool(self.doc and self.call and self.scoring)
 
     @property
     def puntos_count(self) -> int:
@@ -49,6 +63,6 @@ class Bid(models.Model):
 class BidStory(models.Model):
     user = models.ForeignKey(get_user_model(), on_delete=models.CASCADE)
     bid = models.ForeignKey(Bid, on_delete=models.CASCADE, related_name="stories")
-    status = models.CharField(max_length=50, default=Tramitacion.DEFAULT_STATUS)
+    status = models.CharField(max_length=50, default=Bid.DEFAULT_STATUS)
     message = models.TextField(null=True, blank=True)
     dt = models.DateTimeField(auto_now_add=True)

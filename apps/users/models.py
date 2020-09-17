@@ -133,23 +133,29 @@ class CustomUser(AbstractUser):
     def bids_count(self) -> int:
         return self.bids.count()
 
-    @cached_property
-    def bids_contracted_count(self) -> int:
-        return self.bids.filter(
-            tramitacion__doc=True, tramitacion__scoring=True, tramitacion__call=True, paid=True
-        ).count()
+    @property
+    def docs(self) -> str:
+        if self.bids.filter(tramitacion__doc=False).exists():
+            return "KO"
+        elif self.bids.filter(tramitacion__doc=True).exists():
+            return "OK"
+        return "-"
 
     @property
-    def docs_ok_count(self) -> str:
-        return f"{self.bids.filter(tramitacion__doc=True).count()}/{self.bids_count}"
+    def scorings(self) -> str:
+        if self.bids.filter(tramitacion__scoring=False).exists():
+            return "KO"
+        elif self.bids.filter(tramitacion__scoring=True).exists():
+            return "OK"
+        return "-"
 
     @property
-    def scoring_ok_count(self) -> str:
-        return f"{self.bids.filter(tramitacion__scoring=True).count()}/{self.bids_count}"
-
-    @property
-    def calls_ok_count(self) -> str:
-        return f"{self.bids.filter(tramitacion__call=True).count()}/{self.bids_count}"
+    def calls(self) -> str:
+        if self.bids.filter(tramitacion__call=False).exists():
+            return "KO"
+        elif self.bids.filter(tramitacion__call=True).exists():
+            return "OK"
+        return "-"
 
     @property
     def paid_count(self) -> str:

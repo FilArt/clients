@@ -62,13 +62,7 @@ class BidListSerializer(DynamicFieldsMixin, serializers.ModelSerializer):
         return arrow.get(instance.created_at).humanize(locale=self.context["request"].LANGUAGE_CODE)
 
     def get_status(self, bid: Bid):
-        # если это трамитатор, то для него также важно оплачена ли агенту комиссия
-        # поэтому мы здесь переопределяем статус бида, если не оплачено
-        status = bid.status
-        print(status, self.context["request"].user.role, bid.paid)
-        if status == "OK" and self.context["request"].user.role in ("admin", "tramitacion") and not bid.paid:
-            return "Pendiente pagar"
-        return status
+        return bid.get_status(by=self.context["request"].user)
 
 
 class UserSettingsSerializer(serializers.ModelSerializer):
