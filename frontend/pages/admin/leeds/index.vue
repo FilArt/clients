@@ -1,10 +1,6 @@
 <template>
   <v-card>
     <v-card-text>
-      <admin-header />
-    </v-card-text>
-
-    <v-card-text>
       <users-table :client-role="userRole" allow-delete :default-headers="headers" use-full-name />
     </v-card-text>
   </v-card>
@@ -15,7 +11,6 @@ import constants from '@/lib/constants'
 
 export default {
   components: {
-    AdminHeader: () => import('@/components/admin/AdminHeader'),
     UsersTable: () => import('@/components/tables/UsersTable'),
   },
   data() {
@@ -47,7 +42,7 @@ export default {
           value: 'last_login',
         },
         {
-          text: 'Cartera',
+          text: 'Solicitud',
           value: 'bids_count',
           sortable: false,
         },

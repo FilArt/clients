@@ -1,10 +1,6 @@
 <template>
   <v-card>
     <v-card-text>
-      <admin-header />
-    </v-card-text>
-
-    <v-card-text>
       <users-table :client-role="clientRole" :additional-headers="additionalHeaders" />
     </v-card-text>
   </v-card>
@@ -15,7 +11,6 @@ import constants from '@/lib/constants'
 
 export default {
   components: {
-    AdminHeader: () => import('@/components/admin/AdminHeader'),
     UsersTable: () => import('@/components/tables/UsersTable'),
   },
   data() {

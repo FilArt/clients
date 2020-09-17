@@ -1,10 +1,6 @@
 <template>
   <v-card>
     <v-card-text>
-      <admin-header />
-    </v-card-text>
-
-    <v-card-text>
       <highchart :options="options" />
     </v-card-text>
 
@@ -19,7 +15,6 @@ import { eachDayOfInterval, addDays, format } from 'date-fns'
 import constants from '@/lib/constants'
 
 export default {
-  components: { AdminHeader: () => import('@/components/admin/AdminHeader') },
   data() {
     return {
       options: {

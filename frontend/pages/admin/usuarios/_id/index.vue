@@ -2,10 +2,6 @@
   <v-card class="pa-3">
     <snack-bar-it :noty-key="notificationKey" />
 
-    <v-card-text>
-      <admin-header />
-    </v-card-text>
-
     <v-toolbar>
       <v-toolbar-title>
         {{ user.fullname }}
@@ -118,7 +114,6 @@
 <script>
 export default {
   components: {
-    AdminHeader: () => import('~/components/admin/AdminHeader'),
     SnackBarIt: () => import('@/components/snackbar/SnackBarIt'),
   },
   async asyncData({ params, $axios }) {

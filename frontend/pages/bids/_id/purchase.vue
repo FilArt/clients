@@ -1,9 +1,5 @@
 <template>
   <v-card>
-    <v-card-text v-if="$auth.user.role === 'admin'">
-      <admin-header />
-    </v-card-text>
-
     <v-card-title>
       <p class="flex-grow-1">Contratar oferta {{ bid.id }}</p>
     </v-card-title>
@@ -47,7 +43,6 @@
 export default {
   components: {
     PuntoDetailDialog: () => import('@/components/puntos/PuntoDetailDialog'),
-    AdminHeader: () => import('~/components/admin/AdminHeader'),
     AddPunto: () => import('~/components/puntos/AddPunto'),
   },
   async asyncData({ $axios, params }) {
