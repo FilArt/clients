@@ -20,9 +20,7 @@
                   </v-col>
                   <v-divider vertical />
                   <v-spacer />
-                  <v-col>
-                    {{ bid.offer.name }}
-                  </v-col>
+                  <v-col>{{ bid.offer.name }}</v-col>
                 </v-chip>
               </v-list-item-content>
             </template>
@@ -41,29 +39,12 @@
 
       <v-divider />
 
-      <v-container v-if="['admin', 'tramitacion'].includes($auth.user.role) && tramitacion">
-        <v-row>
-          <v-col v-for="group in groups" :key="group.label" cols="12" md="4">
-            <v-radio-group v-model="tramitacion[group.value]" :label="group.label" @change="tramitate">
-              <v-radio v-for="state in states" :key="state.label" :label="state.label" :value="state.value" />
-              <v-btn
-                @click="
-                  tramitacion[group.value] = null
-                  tramitate()
-                "
-              >
-                Resetar?
-              </v-btn>
-            </v-radio-group>
-          </v-col>
-        </v-row>
-
-        <v-row align="center">
+      <div v-if="['admin', 'tramitacion'].includes($auth.user.role)">
+        <v-row v-if="facturacion" align="center">
           <v-col>
-            <v-toolbar> Responsable: {{ bid.responsible || '...' }} </v-toolbar>
+            <v-toolbar>Responsable: {{ bid.responsible || '...' }}</v-toolbar>
 
             {{ bid.agent_type }}
-
             <v-radio-group
               :value="commissions.map((c) => c.value).indexOf(bid.commission)"
               label="Comisiones"
@@ -89,7 +70,25 @@
             </v-radio-group>
           </v-col>
         </v-row>
-      </v-container>
+
+        <v-container v-else>
+          <v-row>
+            <v-col v-for="group in groups" :key="group.label" cols="12" md="4">
+              <v-radio-group v-model="bid[group.value]" :label="group.label" @change="tramitate">
+                <v-radio v-for="state in states" :key="state.label" :label="state.label" :value="state.value" />
+                <v-btn
+                  @click="
+                    bid[group.value] = null
+                    tramitate()
+                  "
+                >
+                  Resetar?
+                </v-btn>
+              </v-radio-group>
+            </v-col>
+          </v-row>
+        </v-container>
+      </div>
 
       <v-divider />
 
@@ -133,13 +132,16 @@ export default {
       type: Number,
       default: null,
     },
+    facturacion: {
+      type: Boolean,
+      default: false,
+    },
   },
   data() {
     return {
       bid: null,
       history: [],
       historyDialog: false,
-      tramitacion: null,
       groups: [
         {
           label: 'Documentacion',
@@ -189,7 +191,6 @@ export default {
   },
   async created() {
     await this.fetchBid()
-    await this.fetchTramitacion()
   },
   methods: {
     async fetchHistory() {
@@ -199,29 +200,18 @@ export default {
       const fields = [
         'id',
         'offer',
-        'tramitacion',
         'status',
         'offer',
         'puntos',
         'responsible',
         'paid',
+        'doc',
+        'scoring',
+        'call',
         'commission',
         'agent_type',
       ].join()
       this.bid = await this.$axios.$get(`bids/bids/${this.bidId}/?fields=${fields}`)
-    },
-    async fetchTramitacion() {
-      if (this.bid.tramitacion) {
-        this.tramitacion = await this.$axios.$get(`tramitacion/${this.bid.tramitacion}/`)
-      } else {
-        this.tramitacion = {
-          id: null,
-          bid: this.bid.id,
-          doc: null,
-          call: null,
-          scoring: null,
-        }
-      }
     },
     async tramitate() {
       const message = await this.$swal({
@@ -229,17 +219,14 @@ export default {
         content: 'input',
       })
       try {
-        if (this.tramitacion.id) {
-          this.tramitacion = await this.$axios.$patch(`tramitacion/${this.tramitacion.id}/`, {
-            ...this.tramitacion,
-            message,
-          })
-        } else {
-          this.tramitacion = await this.$axios.$post('tramitacion/', {
-            ...this.tramitacion,
-            message,
-          })
-        }
+        this.bid = await this.$axios.$patch(`bids/bids/${this.bid.id}/`, {
+          doc: this.bid.doc,
+          call: this.bid.call,
+          scoring: this.bid.scoring,
+          message,
+        })
+        this.$emit('tramitate', this.bid.status)
+        this.notificationKey += 1
       } catch (e) {
         await this.$swal({
           title: 'Error!',
@@ -254,9 +241,8 @@ export default {
     async pagar(field, value) {
       this.bidErrors[field] = null
       try {
-        const bid = await this.$axios.$patch(`bids/bids/${this.bid.id}/`, { [field]: value })
-        this.bid = bid
-        this.$emit('tramitate', bid.status)
+        this.bid = await this.$axios.$patch(`bids/bids/${this.bid.id}/`, { [field]: value })
+        this.$emit('tramitate', this.bid.status)
         this.notificationKey += 1
       } catch (e) {
         const err = e.response.data

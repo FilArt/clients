@@ -1,9 +1,5 @@
 <template>
   <v-card>
-    <v-card-text v-if="$auth.user.role === 'admin'">
-      <admin-header />
-    </v-card-text>
-
     <v-card-text>
       <v-toolbar>
         <v-toolbar-title>
@@ -31,7 +27,7 @@
 
           <v-list-item>
             <v-list-item-content>
-              <tramitacion :bid-id="bid.id" @tramitate="bid.status = $event" />
+              <tramitacion :bid-id="bid.id" facturacion @tramitate="bid.status = $event" />
             </v-list-item-content>
           </v-list-item>
         </v-list-group>
@@ -43,7 +39,6 @@
 <script>
 export default {
   components: {
-    AdminHeader: () => import('~/components/admin/AdminHeader'),
     UserDetailData: () => import('@/components/forms/UserDetailData'),
     Tramitacion: () => import('~/components/support/Tramitacion'),
   },

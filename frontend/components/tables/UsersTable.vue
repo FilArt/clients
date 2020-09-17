@@ -114,6 +114,46 @@
             </v-col>
 
             <v-col
+              v-if="headers.some((h) => h.value === 'status')"
+              :cols="flexs.cols"
+              :xl="flexs.xl"
+              :lg="flexs.lg"
+              :md="flexs.md"
+              :xs="flexs.xs"
+            >
+              <v-select
+                v-model="query.status"
+                label="Estado"
+                :items="isSupport ? tramitacionEstados : facturacionEstados"
+                clearable
+                @change="updateQuery({ status: $event })"
+              />
+            </v-col>
+
+            <template v-if="headers.some((h) => h.value === 'status') && isSupport">
+              <v-col
+                v-for="q in [
+                  { text: 'Doc', value: 'bids__doc' },
+                  { text: 'Scoring', value: 'bids__scoring' },
+                  { text: 'Llamada', value: 'bids__call' },
+                ]"
+                :key="q.value"
+              >
+                <v-select
+                  v-model="query[q.value]"
+                  :label="q.text"
+                  clearable
+                  :items="booleanItems"
+                  @change="
+                    query[q.value] === 'None'
+                      ? updateQuery({ [`${q.value}__isnull`]: 'true', [q.value]: null })
+                      : updateQuery({ [`${q.value}__isnull`]: null, [q.value]: query[q.value] })
+                  "
+                />
+              </v-col>
+            </template>
+
+            <v-col
               v-if="showDateFilters || headers.some((h) => h.value === 'date_joined_date')"
               :cols="flexs.cols"
               :xl="flexs.xl"
@@ -209,6 +249,10 @@ export default {
     Chat: () => import('~/components/chat/Chat'),
   },
   props: {
+    status: {
+      type: String,
+      default: null,
+    },
     filtersToShow: {
       type: Array,
       default: () => [],
@@ -269,7 +313,7 @@ export default {
           value: 'last_login',
         },
         {
-          text: 'Cartera',
+          text: 'Solicitud',
           value: 'bids_count',
           sortable: false,
         },
@@ -301,6 +345,28 @@ export default {
       }
     }
     return {
+      booleanItems: [
+        {
+          text: 'OK',
+          value: 'True',
+        },
+        {
+          text: 'KO',
+          value: 'False',
+        },
+        {
+          text: '-',
+          value: 'None',
+        },
+      ],
+      tramitacionEstados: [
+        { text: 'KO', value: 'tramitacion_ko' },
+        { text: 'Pendiente', value: 'tramitacion_pendiente' },
+      ],
+      facturacionEstados: [
+        { text: 'OK', value: 'facturacion_ok' },
+        { text: 'Pendiente', value: 'facturacion_pendiente' },
+      ],
       flexs: { cols: 12, xl: 3, lg: 3, md: 3, sm: 3, xs: 12 },
       dateJoinedFilter,
       userRoles: Object.values(constants.userRoles),
@@ -315,6 +381,9 @@ export default {
       search: query.search || '',
       query: {
         ...query,
+        bids__call: null,
+        bids__doc: null,
+        bids__scoring: null,
         responsible: query.responsible ? parseInt(query.responsible) : null,
         page: query.page ? parseInt(query.page) : 1,
         itemsPerPage: query.itemsPerPage ? parseInt(query.itemsPerPage) : 10,
@@ -350,7 +419,7 @@ export default {
     getDetailUrl(userId) {
       let detailUrl
       if (this.isSupport) {
-        detailUrl = this.$auth.user.role === 'agent' ? `/agente/${userId}` : `/support/${userId}`
+        detailUrl = this.$auth.user.role === 'agent' ? `/agente/${userId}` : `/admin/tramitacion/${userId}`
       } else {
         detailUrl = `${this.$route.path}/${userId}`
       }
@@ -368,6 +437,7 @@ export default {
           await this.$router.replace({ query: { ...this.query } })
         }
         const query = {
+          status: this.status,
           ...this.query,
           ordering: this.query.sortBy
             .map(
