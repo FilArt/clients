@@ -23,6 +23,7 @@
             />
 
             <v-text-field
+              v-else
               :label="header.text"
               :value="punto[header.value]"
               append-icon="mdi-content-save"

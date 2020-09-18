@@ -77,6 +77,11 @@ export default {
           },
           {
             icon: 'mdi-account-group',
+            title: 'KO',
+            to: '/admin/ko',
+          },
+          {
+            icon: 'mdi-account-group',
             title: 'DASHBOARD',
             to: '/admin/dashboard',
           },

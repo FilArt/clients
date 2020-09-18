@@ -16,6 +16,10 @@ export default Object.freeze({
       text: 'Facturacion',
       value: 'facturacion',
     },
+    ko: {
+      text: 'KO',
+      value: 'ko',
+    },
   },
   userRoles: {
     admins: {

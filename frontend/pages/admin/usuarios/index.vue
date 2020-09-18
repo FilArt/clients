@@ -1,7 +1,14 @@
 <template>
   <v-card>
     <v-card-text>
-      <users-table show-filters allow-delete hide-chat :default-headers="headers" use-full-name />
+      <users-table
+        show-filters
+        allow-delete
+        hide-chat
+        :default-headers="headers"
+        detail-url="/admin/usuarios"
+        use-full-name
+      />
     </v-card-text>
   </v-card>
 </template>

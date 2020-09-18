@@ -90,7 +90,7 @@ class UserViewSet(
     pagination_class = UsersPagination
     filterset_fields = {
         "role": ["exact", "isnull"],
-        "client_role": ["exact"],
+        "client_role": ["exact", "in"],
         "date_joined": ["range"],
         "fecha_firma": ["range"],
         "source": ["exact"],

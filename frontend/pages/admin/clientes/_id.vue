@@ -4,7 +4,7 @@
 
     <v-card-text>
       <user-detail-data
-        :user-id="user.id"
+        :user-id="$route.params.id"
         @user-updated="
           user = null
           user = $event
@@ -77,7 +77,7 @@ export default {
     const phoneNumbers = [user.phone, ...user.phones.map((phone) => phone.number)].filter((p) => p)
     let calls = []
     if (phoneNumbers.length) {
-      calls = await $axios.$get(`users/calls/${user.id}`)
+      calls = await $axios.$get(`users/calls/${params.id}`)
     }
 
     const participant = {
@@ -92,12 +92,8 @@ export default {
       bids: user.bids,
       puntos: await $axios.$get(`/users/puntos/?user=${params.id}`),
       history: await $axios.$get(`/bids/history/?user=${params.id}`),
+      tabs: user.bids.length ? 0 : null,
     }
-  },
-  computed: {
-    tabs() {
-      return this.bids.length ? 0 : null
-    },
   },
   methods: {
     async fetchPuntos() {

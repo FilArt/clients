@@ -1,7 +1,7 @@
 <template>
   <v-card>
     <v-card-text>
-      <users-table :client-role="clientRole" :default-headers="headers" use-full-name />
+      <users-table :client-roles="clientRoles" :default-headers="headers" detail-url="/admin/clientes" use-full-name />
     </v-card-text>
   </v-card>
 </template>
@@ -15,7 +15,7 @@ export default {
   },
   data() {
     return {
-      clientRole: constants.clientRoles.clients.value,
+      clientRoles: [constants.clientRoles.clients.value, constants.clientRoles.facturacion.value],
       headers: [
         { text: 'ID', value: 'id' },
         { text: 'Fecha de registro', value: 'date_joined_date' },

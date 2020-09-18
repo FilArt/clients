@@ -43,7 +43,7 @@
                 persistent-hint
                 class="text-center pa-3"
                 label="Tipo de usuario"
-                @change="clientRole ? null : updateQuery({ role: role })"
+                @change="clientRoles.length ? null : updateQuery({ role: role })"
               >
                 <template v-slot:append>
                   <add-new-employee @added="fetchUsers" />
@@ -269,6 +269,10 @@ export default {
     Chat: () => import('~/components/chat/Chat'),
   },
   props: {
+    detailUrl: {
+      type: String,
+      default: '/admin/tramitacion',
+    },
     useFullName: {
       type: Boolean,
       default: false,
@@ -293,9 +297,9 @@ export default {
       type: Boolean,
       default: false,
     },
-    clientRole: {
-      type: String,
-      default: null,
+    clientRoles: {
+      type: Array,
+      default: () => [],
     },
     defaultHeaders: {
       type: Array,
@@ -384,7 +388,7 @@ export default {
     if (this.headers.some((header) => header.value === 'responsible') && !this.responsibles.length) {
       await this.$store.dispatch('fetchResponsibles')
     }
-    if (!this.clientRole && this.role) this.query.role = this.role
+    if (!this.clientRoles.length && this.role) this.query.role = this.role
   },
   methods: {
     async editResponsible() {
@@ -395,13 +399,7 @@ export default {
     },
 
     getDetailUrl(userId) {
-      let detailUrl
-      if (this.isSupport) {
-        detailUrl = this.$auth.user.role === 'agent' ? `/agente/${userId}` : `/admin/tramitacion/${userId}`
-      } else {
-        detailUrl = `${this.$route.path}/${userId}`
-      }
-      return detailUrl
+      return `${this.detailUrl}/${userId}`
     },
 
     // other
@@ -427,8 +425,8 @@ export default {
             .join(),
           fields: this.headers.map((header) => header.value).join(),
         }
-        if (this.clientRole) {
-          query.client_role = this.clientRole
+        if (this.clientRoles.length) {
+          query.client_role__in = this.clientRoles.join(',')
           query.role__isnull = true
         }
         const data = await this.$axios.$get(

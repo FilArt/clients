@@ -99,6 +99,7 @@ class DateTimeToDateField(serializers.CharField, serializers.ReadOnlyField):
 class UserListSerializer(DynamicFieldsMixin, serializers.ModelSerializer):
     date_joined = PrettyDateTimeField()
     date_joined_date = DateTimeToDateField(source="date_joined")
+    fecha_firma = DateTimeToDateField()
     last_login = PrettyDateTimeField()
     new_messages_count = serializers.SerializerMethodField()
     affiliate = serializers.CharField()
@@ -126,6 +127,8 @@ class UserListSerializer(DynamicFieldsMixin, serializers.ModelSerializer):
         )
 
     def get_status(self, user: CustomUser) -> str:
+        if user.client_role == "leed":
+            return "Leed"
         by = self.context["request"].user
         all_bids_statuses = {bid.get_status(by=by) for bid in user.bids.all()}
         if not all_bids_statuses:

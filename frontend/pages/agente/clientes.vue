@@ -1,7 +1,7 @@
 <template>
   <v-card>
     <v-card-text>
-      <users-table :client-role="clientRole" use-full-name />
+      <users-table :client-roles="clientRoles" detail-url="/agente" use-full-name />
     </v-card-text>
   </v-card>
 </template>
@@ -15,7 +15,7 @@ export default {
   },
   data() {
     return {
-      clientRole: constants.clientRoles.clients.value,
+      clientRoles: [constants.clientRoles.clients.value],
     }
   },
 }

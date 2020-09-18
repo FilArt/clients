@@ -52,9 +52,10 @@ export default {
       agentsFilter: [],
       chartOptions: {
         chart: {
-          // plotBackgroundColor: null,
-          // plotBorderWidth: null,
-          // plotShadow: false,
+          // backgroundColor: 'yellow',
+          // plotBackgroundColor: 'indigo',
+          plotBorderWidth: 1,
+          plotShadow: true,
           type: 'bar',
         },
         title: {
@@ -71,7 +72,7 @@ export default {
         },
         series: [
           {
-            name: 'Estados por clientes',
+            name: 'Fichas',
             data: [],
           },
         ],

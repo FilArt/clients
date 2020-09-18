@@ -1,7 +1,14 @@
 <template>
   <v-card>
     <v-card-text>
-      <users-table :client-role="clientRole" :default-headers="headers" is-support read-only show-date-filters />
+      <users-table
+        :client-roles="clientRoles"
+        :default-headers="headers"
+        detail-url="/agente"
+        is-support
+        read-only
+        show-date-filters
+      />
     </v-card-text>
   </v-card>
 </template>
@@ -15,7 +22,7 @@ export default {
   },
   data() {
     return {
-      clientRole: constants.clientRoles.tramitacion.value,
+      clientRoles: [constants.clientRoles.tramitacion.value],
       headers: [
         { text: 'ID', value: 'id' },
         { text: 'Fecha firma', value: 'fecha_firma' },
