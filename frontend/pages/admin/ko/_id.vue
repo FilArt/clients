@@ -27,7 +27,12 @@
 
           <v-list-item>
             <v-list-item-content>
-              <tramitacion :bid-id="bid.id" push-to-title="KO" @tramitate="onTramitate" @push-to="pushToKo(bid.id)" />
+              <tramitacion
+                :bid-id="bid.id"
+                push-to-title="Tramitacion"
+                @tramitate="onTramitate"
+                @push-to="pushToTramitacion(bid.id)"
+              />
             </v-list-item-content>
           </v-list-item>
         </v-list-group>
@@ -43,7 +48,7 @@ export default {
     Tramitacion: () => import('~/components/support/Tramitacion'),
   },
   async asyncData({ $axios, params }) {
-    const user = await $axios.$get(`users/users/${params.id}/?client_role=tramitacion`)
+    const user = await $axios.$get(`users/users/${params.id}/?client_role=ko`)
 
     return {
       user,
@@ -60,15 +65,15 @@ export default {
     }
   },
   methods: {
-    pushToKo(bidId) {
+    pushToTramitacion(bidId) {
       this.$swal({
-        title: 'Mover a la KO?',
+        title: 'Mover a la Tramitacion?',
         icon: 'warning',
         buttons: true,
         dangerMode: true,
       }).then((willDelete) => {
         if (willDelete) {
-          this.$axios.$post(`bids/bids/${bidId}/push_to_ko/`).then(() => this.$router.back())
+          this.$axios.$post(`bids/bids/${bidId}/push_to_tramitacion/`).then(() => this.$router.back())
         }
       })
     },

@@ -70,6 +70,7 @@ class CustomUser(AbstractUser):
         ("tramitacion", _("Tramitacion")),
         ("facturacion", _("Facturacion")),
         ("client", _("Client")),
+        ("ko", _("KO")),
     )
     AGENT_TYPE_CHOICES = (
         ("agent", _("Agent")),

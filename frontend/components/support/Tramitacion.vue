@@ -87,6 +87,7 @@
               </v-radio-group>
             </v-col>
           </v-row>
+          <v-btn v-if="pushToTitle" block color="error" @click="$emit('push-to')">Mover a la {{ pushToTitle }}?</v-btn>
         </v-container>
       </div>
 
@@ -128,6 +129,10 @@ export default {
     SnackBarIt: () => import('@/components/snackbar/SnackBarIt'),
   },
   props: {
+    pushToTitle: {
+      type: String,
+      default: 'KO',
+    },
     bidId: {
       type: Number,
       default: null,
