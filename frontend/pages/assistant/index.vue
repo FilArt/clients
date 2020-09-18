@@ -84,8 +84,8 @@ export default {
     SubmitButton: () => import('~/components/buttons/submitButton'),
   },
   async asyncData({ $auth, $axios }) {
-    const isLeed = $auth.user.is_leed
-    if (isLeed || isLeed === undefined) {
+    const isLeed = $auth.user.client_role === 'leed'
+    if (isLeed) {
       const attachments = await $axios.$get('users/users/load_facturas/')
       const loadedFactura = attachments.find((a) => a.attachment_type === 'factura')
       const loadedFacturaReverso = attachments.find((a) => a.attachment_type === 'factura_1')
