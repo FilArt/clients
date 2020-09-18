@@ -44,11 +44,10 @@ class Bid(models.Model):
         elif self.success:
             if self.paid is False and by.role in ("admin", "tramitacion"):
                 return "Pendiente pagado"
+            if by.role in ("admin", "tramitacion"):
+                return "Firmado"
             return "OK"
 
-        okays_count = len([i for i in [self.doc, self.call, self.scoring] if i is True])
-        if okays_count:
-            return f"{self.DEFAULT_STATUS} ({okays_count}/3)"
         return self.DEFAULT_STATUS
 
     @property
