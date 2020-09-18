@@ -1,14 +1,7 @@
 <template>
   <v-card>
     <v-card-text>
-      <users-table
-        :client-role="clientRole"
-        :default-headers="headers"
-        is-support
-        show-date-filters
-        use-full-name
-        status="all_tramitacion"
-      />
+      <users-table :client-role="clientRole" :default-headers="headers" is-support show-date-filters use-full-name />
     </v-card-text>
   </v-card>
 </template>
@@ -25,7 +18,7 @@ export default {
       clientRole: constants.clientRoles.tramitacion.value,
       headers: [
         { text: 'ID', value: 'id' },
-        { text: 'Fecha firmado', value: 'date_joined_date' },
+        { text: 'Fecha de registro', value: 'date_joined_date' },
         { text: 'Nombre/Razon social', value: 'fullname' },
         { text: 'Responsable', value: 'responsible_fn' },
         { text: 'Solicitud', value: 'bids_count' },
@@ -33,6 +26,7 @@ export default {
         { text: 'Doc', value: 'docs' },
         { text: 'Scoring', value: 'scorings' },
         { text: 'Llamadas', value: 'calls' },
+        { text: '', value: 'new_messages_count' },
       ],
     }
   },

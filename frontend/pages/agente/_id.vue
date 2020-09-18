@@ -22,7 +22,7 @@
 
           <v-list-item>
             <v-list-item-content>
-              <tramitacion :bid-id="bid.id" @tramitate="bid.status = $event" />
+              <tramitacion :bid-id="bid.id" />
             </v-list-item-content>
           </v-list-item>
         </v-list-group>

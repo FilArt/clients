@@ -27,7 +27,7 @@
 
           <v-list-item>
             <v-list-item-content>
-              <tramitacion :bid-id="bid.id" @tramitate="bid.status = $event" />
+              <tramitacion :bid-id="bid.id" @tramitate="onTramitate" />
             </v-list-item-content>
           </v-list-item>
         </v-list-group>
@@ -43,7 +43,7 @@ export default {
     Tramitacion: () => import('~/components/support/Tramitacion'),
   },
   async asyncData({ $axios, params }) {
-    const user = await $axios.$get(`users/users/${params.id}/`)
+    const user = await $axios.$get(`users/users/${params.id}/?client_role=tramitacion`)
 
     return {
       user,
@@ -60,6 +60,14 @@ export default {
     }
   },
   methods: {
+    async onTramitate() {
+      const user = await this.$axios.$get(`users/users/${this.$route.params.id}/`)
+      this.user = user
+      this.values = { phones: [user.phone], ...user }
+      if (user.client_role !== 'tramitacion') {
+        await this.$router.push(`/admin/facturacion/${this.user.id}`)
+      }
+    },
     bidStatusColor(status) {
       let color
       switch (status) {

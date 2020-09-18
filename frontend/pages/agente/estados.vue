@@ -18,7 +18,7 @@ export default {
       clientRole: constants.clientRoles.tramitacion.value,
       headers: [
         { text: 'ID', value: 'id' },
-        { text: 'Fecha firmado', value: 'date_joined_date' },
+        { text: 'Fecha firma', value: 'fecha_firma' },
         { text: 'Email', value: 'email' },
         { text: 'Nombre/Razon social', value: 'fullname' },
         { text: 'Solicitud', value: 'bids_count' },

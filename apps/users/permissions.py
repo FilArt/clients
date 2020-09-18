@@ -14,8 +14,8 @@ class UsersPermission(BasePermission):
 
     def has_object_permission(self, request, view, obj: CustomUser):
         if request.user.role == "support":
-            return not obj.is_leed
-        elif request.user.role == 'agent':
+            return obj.client_role != "leed"
+        elif request.user.role == "agent":
             agent_id = request.user.id
             return agent_id in (obj.responsible_id, obj.invited_by_id)
         return True
@@ -23,4 +23,4 @@ class UsersPermission(BasePermission):
 
 class AdminAgentPermission(BasePermission):
     def has_permission(self, request, view) -> bool:
-        return request.user.role in ('admin', 'agent')
+        return request.user.role in ("admin", "agent")

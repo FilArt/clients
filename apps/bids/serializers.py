@@ -3,6 +3,7 @@ from decimal import Decimal
 import arrow
 from clients.serializers import BidListSerializer, DetailOfferSerializer, PuntoSerializer
 from django.db import transaction
+from django.utils import timezone
 from rest_framework import serializers
 
 from .models import Bid, BidStory
@@ -52,7 +53,29 @@ class BidSerializer(BidListSerializer):
 
         user = self.context["request"].user
         with transaction.atomic():
-            bid = super().save(**kwargs)
+            bid: Bid = super().save(**kwargs)
+
+            bid_user = bid.user
+            bid_user_client_role = bid_user.client_role
+
+            if bid_user_client_role == "leed":
+                ...
+
+            elif bid_user_client_role == "tramitacion":
+                # если у клиента не осталось неоттрамитареных бидов, то переводим его в фактурасьон
+                if bid_user.bids.exclude(doc=True, call=True, scoring=True).exists() is False:
+                    bid_user.client_role = "facturacion"
+                    bid_user.fecha_firma = timezone.now().date()
+                    bid_user.save(update_fields=["client_role", "fecha_firma"])
+
+            elif bid_user_client_role == "facturacion":
+                # если у клиента появились неоттрамитаренные биды, возвращаем его в трамитасьон
+                if bid_user.bids.exclude(doc=True, call=True, scoring=True).exists() is True:
+                    bid_user.client_role = "tramitacion"
+                    bid_user.save(update_fields=["client_role"])
+
+            elif bid_user_client_role == "client":
+                ...
 
             BidStory.objects.create(
                 user=user,

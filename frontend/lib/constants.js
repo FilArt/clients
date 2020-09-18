@@ -9,8 +9,12 @@ export default Object.freeze({
       value: 'leed',
     },
     tramitacion: {
-      text: 'Leeds',
+      text: 'Tramitacion',
       value: 'tramitacion',
+    },
+    facturacion: {
+      text: 'Facturacion',
+      value: 'facturacion',
     },
   },
   userRoles: {

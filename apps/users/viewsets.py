@@ -92,6 +92,7 @@ class UserViewSet(
         "role": ["exact", "isnull"],
         "client_role": ["exact"],
         "date_joined": ["range"],
+        "fecha_firma": ["range"],
         "source": ["exact"],
         "responsible": ["exact", "in"],
         "bids__doc": ["exact", "isnull"],
@@ -108,9 +109,9 @@ class UserViewSet(
         status = self.request.query_params.get("status")
         if status:
             if "tramitacion" in status:
-                queryset = queryset.exclude(bids__doc=True, bids__call=True, bids__scoring=True)
+                queryset = queryset.filter(client_role="tramitacion")
             elif "facturacion" in status:
-                queryset = queryset.filter(bids__doc=True, bids__call=True, bids__scoring=True)
+                queryset = queryset.filter(client_role="facturacion")
             if status.lower() == "tramitacion_ko":
                 queryset = queryset.filter(bids__doc=False, bids__call=False, bids__scoring=False)
             elif status.lower() == "tramitacion_pendiente":

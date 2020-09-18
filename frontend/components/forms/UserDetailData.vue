@@ -151,7 +151,7 @@ export default {
         {
           icon: 'mdi-calendar',
           text: 'Fecha firma',
-          value: user.last_modified,
+          value: user.fecha_firma,
         },
       ]
     },
@@ -167,6 +167,7 @@ export default {
       'email',
       'legal_representative',
       'last_modified',
+      'fecha_firma',
     ]
     const user = await this.$axios.$get(`users/users/${this.userId}/?fields=${fields}`)
     this.user = user

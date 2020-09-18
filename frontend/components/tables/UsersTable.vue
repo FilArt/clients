@@ -123,13 +123,33 @@
             >
               <vue-ctk-date-time-picker
                 v-model="dateJoinedFilter"
-                :label="showDateFilters ? 'Fecha firma' : 'Fecha de registro'"
+                label="Fecha de registro"
                 format="YYYY-MM-DD HH:mm"
                 formatted="DD/MM/YYYY HH:mm"
                 range
                 color="purple"
                 :dark="$vuetify.theme.isDark"
                 @input="updateDateJoinedFilter"
+              />
+            </v-col>
+
+            <v-col
+              v-if="headers.some((h) => h.value === 'fecha_firma')"
+              :cols="flexs.cols"
+              :xl="flexs.xl"
+              :lg="flexs.lg"
+              :md="flexs.md"
+              :xs="flexs.xs"
+            >
+              <vue-ctk-date-time-picker
+                v-model="fechaFirmaFilter"
+                label="Fecha firma"
+                format="YYYY-MM-DD"
+                formatted="DD/MM/YYYY"
+                range
+                color="ingido"
+                :dark="$vuetify.theme.isDark"
+                @input="updateFechaFirmaFilter"
               />
             </v-col>
 
@@ -249,14 +269,6 @@ export default {
     Chat: () => import('~/components/chat/Chat'),
   },
   props: {
-    status: {
-      type: String,
-      default: null,
-    },
-    filtersToShow: {
-      type: Array,
-      default: () => [],
-    },
     useFullName: {
       type: Boolean,
       default: false,
@@ -287,59 +299,25 @@ export default {
     },
     defaultHeaders: {
       type: Array,
-      default: () => [
-        {
-          text: 'ID',
-          value: 'id',
-        },
-        {
-          text: 'Fecha de registro',
-          value: 'date_joined_date',
-        },
-        {
-          text: 'Email',
-          value: 'email',
-        },
-        {
-          text: 'Telefono',
-          value: 'phone',
-        },
-        {
-          text: 'Nombre/Razon social',
-          value: 'fullname',
-        },
-        {
-          text: 'Ultima entrada',
-          value: 'last_login',
-        },
-        {
-          text: 'Solicitud',
-          value: 'bids_count',
-          sortable: false,
-        },
-        {
-          text: 'Nuevo mensajes',
-          value: 'new_messages_count',
-          sortable: false,
-        },
-        {
-          value: 'actions',
-          sortable: false,
-        },
-      ],
-    },
-    additionalHeaders: {
-      type: Array,
       default: () => [],
     },
   },
   data() {
     const query = this.$route.query
     let dateJoinedFilter = query.date_joined__range || null
+    let fechaFirmaFilter = query.fecha_firma__range || null
     if (dateJoinedFilter) {
       try {
         const [start, end] = dateJoinedFilter.split(',')
         dateJoinedFilter = { start: new Date(start), end: new Date(end) }
+      } catch (e) {
+        console.error(e)
+      }
+    }
+    if (fechaFirmaFilter) {
+      try {
+        const [start, end] = fechaFirmaFilter.split(',')
+        fechaFirmaFilter = { start: new Date(start), end: new Date(end) }
       } catch (e) {
         console.error(e)
       }
@@ -369,6 +347,7 @@ export default {
       ],
       flexs: { cols: 12, xl: 3, lg: 3, md: 3, sm: 3, xs: 12 },
       dateJoinedFilter,
+      fechaFirmaFilter,
       userRoles: Object.values(constants.userRoles),
       role: 'admin',
       users: [],
@@ -381,6 +360,8 @@ export default {
       search: query.search || '',
       query: {
         ...query,
+        mustSort: null,
+        multiSort: null,
         bids__call: null,
         bids__doc: null,
         bids__scoring: null,
@@ -394,12 +375,9 @@ export default {
   computed: {
     ...mapState({ responsibles: (state) => state.responsibles }),
     headers() {
-      const result =
-        this.query.role === 'agent' ? this.defaultHeaders : this.defaultHeaders.filter((h) => h.value !== 'agent_type')
-      this.additionalHeaders.forEach((header) => {
-        result.splice(header.index, 0, header.value)
-      })
-      return result
+      return this.query.role === 'agent'
+        ? this.defaultHeaders
+        : this.defaultHeaders.filter((h) => h.value !== 'agent_type')
     },
   },
   async created() {
@@ -434,10 +412,12 @@ export default {
           String(this.query.page) !== String(this.$route.query.page) ||
           String(this.query.itemsPerPage) !== String(this.$route.query.itemsPerPage)
         ) {
-          await this.$router.replace({ query: { ...this.query } })
+          // await this.$router.replace({ query: this.query })
+          await this.$router.replace({
+            query: Object.entries(this.query).reduce((a, [k, v]) => (v ? ((a[k] = v), a) : a), {}),
+          })
         }
         const query = {
-          status: this.status,
           ...this.query,
           ordering: this.query.sortBy
             .map(
@@ -480,6 +460,13 @@ export default {
         this.updateQuery({ date_joined__range: null })
       }
     },
+    updateFechaFirmaFilter(dates) {
+      if (dates && dates.start && dates.end) {
+        this.updateQuery({ fecha_firma__range: `${dates.start},${dates.end}` })
+      } else {
+        this.updateQuery({ fecha_firma__range: null })
+      }
+    },
     updateQuery(options) {
       this.query.page = 1
       Object.keys(options).forEach((key) => {
@@ -490,7 +477,7 @@ export default {
           delete this.query[key]
         }
       })
-      this.$router.replace({ query: this.query })
+      this.$router.replace({ query: Object.entries(this.query).reduce((a, [k, v]) => (v ? ((a[k] = v), a) : a), {}) })
       this.fetchUsers()
     },
     openChat(user) {

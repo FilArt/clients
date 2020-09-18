@@ -12,7 +12,7 @@ from rest_framework.exceptions import ValidationError
 from rest_framework_tracking.models import APIRequestLog
 from django.core.exceptions import ValidationError as DjangoValidationError
 from apps.bids.models import Bid
-from clients.serializers import BidListSerializer, PuntoSerializer
+from clients.serializers import BidListSerializer
 from clients.utils import notify_telegram
 from .models import Attachment, CustomUser, Phone, Punto
 from django.contrib.auth.password_validation import validate_password
@@ -113,6 +113,7 @@ class UserListSerializer(DynamicFieldsMixin, serializers.ModelSerializer):
             "phone",
             "date_joined",
             "date_joined_date",
+            "fecha_firma",
             "last_login",
             "bids_count",
             "status",
@@ -195,7 +196,6 @@ class PhoneSerializer(serializers.ModelSerializer):
 class UserSerializer(UserListSerializer):
     bids = BidListSerializer(many=True)
     phones = serializers.ListSerializer(child=PhoneSerializer())
-    status = serializers.SerializerMethodField()
 
     class Meta:
         model = CustomUser
@@ -217,11 +217,9 @@ class UserSerializer(UserListSerializer):
             "affiliate",
             "responsible",
             "source",
+            "client_role",
+            "fecha_firma",
         ]
-
-    def get_status(self, user: CustomUser):
-        user_bids = user.bids.all()
-        return "status"
 
 
 class LoadFacturasSerializer(serializers.Serializer):

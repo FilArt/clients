@@ -68,6 +68,7 @@ class CustomUser(AbstractUser):
     CLIENT_ROLES_CHOICES = (
         ("leed", _("Leed")),
         ("tramitacion", _("Tramitacion")),
+        ("facturacion", _("Facturacion")),
         ("client", _("Client")),
     )
     AGENT_TYPE_CHOICES = (
@@ -95,6 +96,7 @@ class CustomUser(AbstractUser):
 
     created_at = models.DateTimeField(auto_now_add=True)
     last_modified = models.DateTimeField(auto_now=True)
+    fecha_firma = models.DateField(blank=True, null=True)
 
     permissions = ArrayField(
         models.CharField(choices=PERMISSIONS_CHOICES, max_length=30),
@@ -163,10 +165,6 @@ class CustomUser(AbstractUser):
         money = self.bids.aggregate(paid_sum=Sum("commission"))["paid_sum"] or 0
         return f"{money} €"
 
-    @cached_property
-    def is_leed(self) -> int:
-        return not self.puntos.values("attachments").exists()
-
     @property
     def is_client(self) -> bool:
         return self.role is None
@@ -182,15 +180,6 @@ class CustomUser(AbstractUser):
     @property
     def affiliate(self):
         return self.get_source_display()
-
-    def save(self, **kwargs):
-        super(CustomUser, self).save(**kwargs)
-        if self.role is None and self.client_role == "leed":
-            from apps.calculator.models import Offer
-
-            if self.phone and self.bids.values("offer").exclude(offer_id=Offer.get_blank_offer().id).exists():
-                self.client_role = "tramitacion"
-                self.save()
 
     def __str__(self):
         return self.fullname

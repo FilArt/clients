@@ -219,30 +219,27 @@ export default {
         content: 'input',
       })
       try {
-        this.bid = await this.$axios.$patch(`bids/bids/${this.bid.id}/`, {
+        const bid = await this.$axios.$patch(`bids/bids/${this.bid.id}/`, {
           doc: this.bid.doc,
           call: this.bid.call,
           scoring: this.bid.scoring,
           message,
         })
-        this.$emit('tramitate', this.bid.status)
+        this.bid = bid
+        this.$emit('tramitate')
         this.notificationKey += 1
       } catch (e) {
         await this.$swal({
           title: 'Error!',
           text: JSON.stringify(e.response.data),
         })
-        return
       }
-      await this.fetchBid()
-      this.$emit('tramitate', this.bid.status)
-      this.notificationKey += 1
     },
     async pagar(field, value) {
       this.bidErrors[field] = null
       try {
         this.bid = await this.$axios.$patch(`bids/bids/${this.bid.id}/`, { [field]: value })
-        this.$emit('tramitate', this.bid.status)
+        this.$emit('tramitate')
         this.notificationKey += 1
       } catch (e) {
         const err = e.response.data

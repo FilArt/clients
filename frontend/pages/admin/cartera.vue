@@ -43,28 +43,35 @@
 
 <script>
 import constants from '@/lib/constants'
-import { format } from 'date-fns'
+import { format, addDays } from 'date-fns'
 export default {
   data() {
-    const today = format(new Date(), 'yyyy-MM-dd HH:mm')
+    const fdates = [addDays(new Date(), -30), new Date()].map((d) => format(d, 'yyyy-MM-dd HH:mm'))
     return {
-      datesFilter: { start: today, end: today },
+      datesFilter: { start: fdates[0], end: fdates[1] },
       agentsFilter: [],
       chartOptions: {
+        chart: {
+          // plotBackgroundColor: null,
+          // plotBorderWidth: null,
+          // plotShadow: false,
+          type: 'bar',
+        },
         title: {
-          text: '',
+          text: 'Estados',
         },
         xAxis: {
           categories: [],
         },
         yAxis: {
           title: {
-            text: '',
+            text: 'Cantidad',
           },
           step: 1,
         },
         series: [
           {
+            name: 'Estados por clientes',
             data: [],
           },
         ],
@@ -89,11 +96,11 @@ export default {
       const clients = await this.$axios.$get(
         `users/users/?fields=responsible,date_joined_date,status&ordering=date_joined&date_joined__range=${start},${end}&responsible__in=${this.agentsFilter.join(
           ',',
-        )}`,
+        )}&role__isnull=true`,
       )
-      this.chartOptions.xAxis.categories = clients.map((c) => c.date_joined_date).filter(constants.onlyUnique)
+      this.chartOptions.xAxis.categories = clients.map((c) => c.status).filter(constants.onlyUnique)
       this.chartOptions.series[0].data = this.chartOptions.xAxis.categories.map(
-        (date) => clients.filter((c) => c.date_joined_date === date).length,
+        (status) => clients.filter((c) => c.status === status).length,
       )
     },
   },

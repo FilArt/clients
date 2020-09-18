@@ -48,7 +48,7 @@ class Bid(models.Model):
 
         okays_count = len([i for i in [self.doc, self.call, self.scoring] if i is True])
         if okays_count:
-            return f"${self.DEFAULT_STATUS} ({okays_count}/3)"
+            return f"{self.DEFAULT_STATUS} ({okays_count}/3)"
         return self.DEFAULT_STATUS
 
     @property
