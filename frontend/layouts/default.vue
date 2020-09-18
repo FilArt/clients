@@ -61,42 +61,37 @@ export default {
       if (role === 'admin') {
         items = [
           {
-            // icon: 'mdi-account-group',
-            title: 'Dashboard cartera',
-            to: '/admin/cartera',
-          },
-          {
-            icon: 'mdi-account-group',
-            title: 'TRAMITACIÓN',
-            to: '/admin/tramitacion',
-          },
-          {
-            // icon: 'mdi-account-group',
-            title: 'FACTURACIÓN',
-            to: '/admin/facturacion',
-          },
-          {
-            icon: 'mdi-account-group',
-            title: 'KO',
-            to: '/admin/ko',
-          },
-          {
-            icon: 'mdi-account-group',
+            icon: 'mdi-monitor-dashboard',
             title: 'DASHBOARD',
             to: '/admin/dashboard',
           },
           {
-            icon: 'mdi-account-group',
+            icon: 'mdi-file-document-edit',
+            title: 'TRAMITACIÓN',
+            to: '/admin/tramitacion',
+          },
+          {
+            icon: 'mdi-currency-eur',
+            title: 'FACTURACIÓN',
+            to: '/admin/facturacion',
+          },
+          {
+            icon: 'mdi-file-cancel-outline',
+            title: 'KO',
+            to: '/admin/ko',
+          },
+          {
+            icon: 'mdi-account-multiple',
             title: 'LEEDS',
             to: '/admin/leeds',
           },
           {
-            icon: 'mdi-account-group',
+            icon: 'mdi-briefcase-account-outline',
             title: 'CLIENTES',
             to: '/admin/clientes',
           },
           {
-            icon: 'mdi-account-group',
+            icon: 'mdi-account-tie',
             title: 'USUARIOS',
             to: '/admin/usuarios',
           },
