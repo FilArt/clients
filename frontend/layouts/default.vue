@@ -124,6 +124,13 @@ export default {
             href: 'https://app.call-visit.com',
           },
         ]
+        if (user.permissions.includes('leeds_access')) {
+          items.push({
+            icon: 'mdi-account-multiple',
+            title: 'LEEDS',
+            to: '/agente/leeds',
+          })
+        }
       } else {
         items = [
           {
