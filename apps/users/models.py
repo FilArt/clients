@@ -1,4 +1,3 @@
-from decimal import ROUND_HALF_UP, Decimal
 from functools import cached_property
 
 from django.contrib.auth.models import AbstractUser
@@ -48,7 +47,7 @@ PERMISSIONS_CHOICES = (
 
 
 def get_default_user_permissions():
-    return [p[0] for p in PERMISSIONS_CHOICES]
+    return ["profile", "bids", "offers", "calculator"]
 
 
 class CustomUser(AbstractUser):
