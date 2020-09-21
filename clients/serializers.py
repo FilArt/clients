@@ -2,7 +2,7 @@ import logging
 
 import arrow
 from apps.bids.models import Bid
-from apps.calculator.models import Offer
+from apps.calculator.models import Company, Offer
 from apps.users.models import Attachment, CustomUser, Punto, UserSettings, phone_number_validator
 from django.contrib.auth.base_user import BaseUserManager
 from django.db import transaction
@@ -152,6 +152,20 @@ class OfferListSerializer(DynamicFieldsMixin, serializers.ModelSerializer):
             "client_type",
             "is_price_permanent",
         ]
+
+
+class CompanySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Company
+        fields = ("id", "name", "logo")
+
+
+class AdminOfferListSerializer(DynamicFieldsMixin, serializers.ModelSerializer):
+    company = CompanySerializer()
+
+    class Meta:
+        model = Offer
+        fields = "__all__"
 
 
 class DetailOfferSerializer(OfferListSerializer):

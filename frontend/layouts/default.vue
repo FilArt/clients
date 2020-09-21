@@ -95,6 +95,11 @@ export default {
             title: 'USUARIOS',
             to: '/admin/usuarios',
           },
+          {
+            icon: 'mdi-table',
+            title: 'OFERTAS',
+            to: '/admin/ofertas',
+          },
         ]
       }
       if (permissions.includes('offers')) {

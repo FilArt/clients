@@ -1,9 +1,11 @@
 from typing import Tuple
 
+from clients.serializers import AdminOfferListSerializer, DetailOfferSerializer, OfferListSerializer
 from rest_framework import mixins, viewsets
+from rest_framework.permissions import IsAdminUser
 from rest_framework.response import Response
+from apps.calculator.pagination import OffersPagination
 
-from clients.serializers import OfferListSerializer, DetailOfferSerializer
 from .models import Company, Offer
 from .serializers import CompanySerializer
 
@@ -21,11 +23,13 @@ class TarifViewSet(viewsets.GenericViewSet, mixins.ListModelMixin):
         qs = (
             Offer.objects.filter(
                 tarif__isnull=False,
-            ).exclude(
-                tarif='',
-            ).values_list("tarif", flat=True)
-             .distinct()
-             .order_by("tarif")
+            )
+            .exclude(
+                tarif="",
+            )
+            .values_list("tarif", flat=True)
+            .distinct()
+            .order_by("tarif")
         )
         return Response(qs)
 
@@ -46,3 +50,12 @@ class OfferViewSet(viewsets.ReadOnlyModelViewSet):
         if self.detail:
             return DetailOfferSerializer
         return OfferListSerializer
+
+
+class PaginatedOfferViewSet(viewsets.ModelViewSet):
+    queryset = Offer.objects.all()
+    permission_classes: Tuple = (IsAdminUser,)
+    ordering = ("id",)
+    ordering_fields = "__all__"
+    pagination_class = OffersPagination
+    serializer_class = AdminOfferListSerializer

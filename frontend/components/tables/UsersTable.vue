@@ -410,7 +410,6 @@ export default {
           String(this.query.page) !== String(this.$route.query.page) ||
           String(this.query.itemsPerPage) !== String(this.$route.query.itemsPerPage)
         ) {
-          // await this.$router.replace({ query: this.query })
           await this.$router.replace({
             query: Object.entries(this.query).reduce((a, [k, v]) => (v ? ((a[k] = v), a) : a), {}),
           })
