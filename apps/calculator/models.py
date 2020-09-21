@@ -8,7 +8,7 @@ from django.conf import settings
 from django.db import models
 from django.db.models import Manager
 from django.utils.translation import gettext_lazy as _
-
+from django.contrib.postgres.fields import ArrayField
 from apps.calculator.fields import NameField
 
 from .fields import is_positive
@@ -108,6 +108,18 @@ class Offer(models.Model):
         ("Fijo", _("Fijo")),
         ("Indexado", _("Indexado")),
     )
+    REQUIRED_FIELD_CHOICES = (
+        ("photo_cif1", _("Photo CIF")),
+        ("photo_dni1", _("Photo DNI")),
+        ("photo_dni2", _("Photo DNI reverse side")),
+        ("photo_factura", _("Photo factura")),
+        ("photo_factura_1", _("Photo factura reverse side")),
+        ("photo_recibo1", _("Photo Recibo de Autónomo")),
+        ("recibo1", _("Recibo de Autónomo")),
+        ("cif", _("CIF")),
+        ("dni", _("DNI")),
+        ("phone", _("Phone")),
+    )
     objects = WithoutOtraManager()
     default = Manager()
 
@@ -130,6 +142,11 @@ class Offer(models.Model):
     is_price_permanent = models.CharField(max_length=20, choices=PRICE_CHOICES)
     canal_commission = models.DecimalField(max_digits=6, decimal_places=2, default=0)
     agent_commission = models.DecimalField(max_digits=6, decimal_places=2, default=0)
+    required_fields = ArrayField(
+        models.CharField(max_length=30, choices=REQUIRED_FIELD_CHOICES),
+        blank=True,
+        null=True,
+    )
 
     def __str__(self) -> str:
         return self.name
