@@ -301,7 +301,7 @@ export default {
       type: Array,
       default: () => [],
     },
-    defaultHeaders: {
+    headers: {
       type: Array,
       default: () => [],
     },
@@ -378,11 +378,6 @@ export default {
   },
   computed: {
     ...mapState({ responsibles: (state) => state.responsibles }),
-    headers() {
-      return this.query.role === 'agent'
-        ? this.defaultHeaders
-        : this.defaultHeaders.filter((h) => h.value !== 'agent_type')
-    },
   },
   async created() {
     if (this.headers.some((header) => header.value === 'responsible') && !this.responsibles.length) {
@@ -435,7 +430,7 @@ export default {
               const value = query[k]
               return value instanceof Array ? `${k}=${value.join()}` : `${k}=${value}`
             })
-            .join('&')}`,
+            .join('&')}&fields=${this.headers.map((h) => h.value).join(',')}`,
         )
         this.users = data.results
         this.total = data.count

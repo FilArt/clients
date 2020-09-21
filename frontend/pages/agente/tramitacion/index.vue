@@ -3,11 +3,11 @@
     <v-card-text>
       <users-table
         :client-roles="clientRoles"
-        :default-headers="headers"
-        detail-url="/agente"
+        :headers="headers"
+        detail-url="/agente/tramitacion"
         is-support
-        read-only
         show-date-filters
+        use-full-name
       />
     </v-card-text>
   </v-card>
@@ -25,8 +25,7 @@ export default {
       clientRoles: [constants.clientRoles.tramitacion.value],
       headers: [
         { text: 'ID', value: 'id' },
-        { text: 'Fecha firma', value: 'fecha_firma' },
-        { text: 'Email', value: 'email' },
+        { text: 'Fecha de registro', value: 'date_joined_date' },
         { text: 'Nombre/Razon social', value: 'fullname' },
         { text: 'Solicitud', value: 'bids_count' },
         { text: 'Estado', value: 'status' },

@@ -4,8 +4,7 @@
       <users-table
         :client-roles="clientRoles"
         :headers="headers"
-        detail-url="/admin/ko"
-        is-support
+        detail-url="/agente/facturacion"
         show-date-filters
         use-full-name
       />
@@ -22,18 +21,15 @@ export default {
   },
   data() {
     return {
-      clientRoles: [constants.clientRoles.ko.value],
+      clientRoles: [constants.clientRoles.facturacion.value],
       headers: [
         { text: 'ID', value: 'id' },
         { text: 'Fecha de registro', value: 'date_joined_date' },
+        { text: 'Fecha firma', value: 'fecha_firma' },
         { text: 'Nombre/Razon social', value: 'fullname' },
-        { text: 'Responsable', value: 'responsible_fn' },
         { text: 'Solicitud', value: 'bids_count' },
+        { text: 'Comisiones', value: 'paid_count' },
         { text: 'Estado', value: 'status' },
-        { text: 'Doc', value: 'docs' },
-        { text: 'Scoring', value: 'scorings' },
-        { text: 'Llamadas', value: 'calls' },
-        { text: '', value: 'new_messages_count' },
       ],
     }
   },

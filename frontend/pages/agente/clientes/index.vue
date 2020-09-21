@@ -1,13 +1,7 @@
 <template>
   <v-card>
     <v-card-text>
-      <users-table
-        :client-roles="clientRoles"
-        :headers="headers"
-        detail-url="/admin/facturacion"
-        show-date-filters
-        use-full-name
-      />
+      <users-table :client-roles="clientRoles" :headers="headers" detail-url="/agente/clientes" use-full-name />
     </v-card-text>
   </v-card>
 </template>
@@ -17,21 +11,20 @@ import constants from '@/lib/constants'
 
 export default {
   components: {
-    UsersTable: () => import('~/components/tables/UsersTable'),
+    UsersTable: () => import('@/components/tables/UsersTable'),
   },
-  data() {
+  asyncData() {
     return {
-      clientRoles: [constants.clientRoles.facturacion.value],
+      clientRoles: [constants.clientRoles.clients.value, constants.clientRoles.facturacion.value],
       headers: [
         { text: 'ID', value: 'id' },
         { text: 'Fecha de registro', value: 'date_joined_date' },
         { text: 'Fecha firma', value: 'fecha_firma' },
         { text: 'Nombre/Razon social', value: 'fullname' },
-        { text: 'Responsable', value: 'responsible_fn' },
+        { text: 'Origin', value: 'affiliate' },
         { text: 'Solicitud', value: 'bids_count' },
         { text: 'Comisiones', value: 'paid_count' },
-        { text: 'Estado', value: 'status' },
-        { text: '', value: 'new_messages_count' },
+        { text: 'Ultima entrada', value: 'last_login' },
       ],
     }
   },

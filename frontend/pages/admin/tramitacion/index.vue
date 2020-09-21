@@ -3,7 +3,7 @@
     <v-card-text>
       <users-table
         :client-roles="clientRoles"
-        :default-headers="headers"
+        :headers="headers"
         detail-url="/admin/tramitacion"
         is-support
         show-date-filters

@@ -4,7 +4,7 @@
       <users-table
         :client-roles="clientRoles"
         allow-delete
-        :default-headers="headers"
+        :headers="headers"
         detail-url="/admin/leeds"
         use-full-name
       />

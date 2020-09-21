@@ -1,7 +1,7 @@
 <template>
   <v-card>
     <v-card-text>
-      <users-table :client-roles="clientRoles" :default-headers="headers" detail-url="/admin/clientes" use-full-name />
+      <users-table :client-roles="clientRoles" :headers="headers" detail-url="/admin/clientes" use-full-name />
     </v-card-text>
   </v-card>
 </template>

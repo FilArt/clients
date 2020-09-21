@@ -101,7 +101,44 @@ export default {
             to: '/admin/ofertas',
           },
         ]
+      } else if (role === 'agent') {
+        items = [
+          {
+            icon: 'mdi-file-document-edit',
+            title: 'TRAMITACIÓN',
+            to: '/agente/tramitacion',
+          },
+          {
+            icon: 'mdi-currency-eur',
+            title: 'FACTURACIÓN',
+            to: '/agente/facturacion',
+          },
+          {
+            icon: 'mdi-briefcase-account-outline',
+            title: 'CLIENTES',
+            to: '/agente/clientes',
+          },
+          {
+            icon: 'C&V',
+            title: 'Call&Visit',
+            href: 'https://app.call-visit.com',
+          },
+        ]
+      } else {
+        items = [
+          {
+            icon: 'mdi-briefcase',
+            title: 'Cartera',
+            to: '/bids',
+          },
+          {
+            icon: 'mdi-account-tie',
+            title: 'Asistente personal',
+            to: '/assistant',
+          },
+        ]
       }
+
       if (permissions.includes('offers')) {
         items.push({
           icon: 'mdi-offer',
@@ -109,41 +146,7 @@ export default {
           to: '/ofertas',
         })
       }
-      // if (permissions.includes('calculator')) {
-      //   items.push({
-      //     icon: 'mdi-calculator',
-      //     title: 'Comparador',
-      //     to: '/calculator',
-      //   })
-      // }
-      if (role === 'agent') {
-        items.push({
-          icon: 'mdi-account-group',
-          title: 'Clientes',
-          to: '/agente/clientes',
-        })
-        items.push({
-          icon: 'mdi-account-group',
-          title: 'Estados tramitacion',
-          to: '/agente/estados',
-        })
-        items.push({
-          icon: 'C&V',
-          title: 'Call&Visit',
-          href: 'https://app.call-visit.com',
-        })
-      } else if (role !== 'admin') {
-        items.push({
-          icon: 'mdi-briefcase',
-          title: 'Cartera',
-          to: '/bids',
-        })
-        items.push({
-          icon: 'mdi-account-tie',
-          title: 'Asistente personal',
-          to: '/assistant',
-        })
-      }
+      // if (permissions.includes('calculator')) {items.push({icon:'mdi-calculator',title:'Comparador',to:'/calculator',})}
 
       if (role === 'support') {
         items.push({
