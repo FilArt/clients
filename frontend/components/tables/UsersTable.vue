@@ -121,14 +121,10 @@
               :md="flexs.md"
               :xs="flexs.xs"
             >
-              <vue-ctk-date-time-picker
+              <date-time-filter
                 v-model="dateJoinedFilter"
                 label="Fecha de registro"
-                format="YYYY-MM-DD HH:mm"
-                formatted="DD/MM/YYYY HH:mm"
                 range
-                color="purple"
-                :dark="$vuetify.theme.isDark"
                 @input="updateDateJoinedFilter"
               />
             </v-col>
@@ -141,14 +137,13 @@
               :md="flexs.md"
               :xs="flexs.xs"
             >
-              <vue-ctk-date-time-picker
+              <date-time-filter
                 v-model="fechaFirmaFilter"
                 label="Fecha firma"
                 format="YYYY-MM-DD"
                 formatted="DD/MM/YYYY"
                 range
                 color="ingido"
-                :dark="$vuetify.theme.isDark"
                 @input="updateFechaFirmaFilter"
               />
             </v-col>
@@ -267,6 +262,7 @@ export default {
     AddNewEmployee: () => import('@/components/forms/AddNewEmployee'),
     DeleteButton: () => import('@/components/buttons/deleteButton'),
     Chat: () => import('~/components/chat/Chat'),
+    DateTimeFilter: () => import('~/components/DateTimeFilter'),
   },
   props: {
     detailUrl: {
