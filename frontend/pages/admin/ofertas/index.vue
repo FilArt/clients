@@ -12,7 +12,14 @@
             <v-card-title class="headline">Editar {{ fieldToEdit.field }}</v-card-title>
 
             <v-card-text>
-              <v-text-field v-model="newValue" autofocus />
+              <v-select
+                v-if="fieldToEdit.field === 'required_fields'"
+                v-model="newValue"
+                :items="requiredFieldsItems"
+                multiple
+              />
+
+              <v-text-field v-else v-model="newValue" autofocus />
             </v-card-text>
 
             <v-card-actions>
@@ -63,12 +70,7 @@
             {{ props.row.company.name }}
           </span>
           <span v-else-if="props.column.field === 'required_fields'">
-            <v-select
-              v-model="props.row.required_fields"
-              :items="requiredFieldsItems"
-              multiple
-              @change="save(props.row.id, { required_fields: $event })"
-            />
+            {{ getRequiredFieldText(props.row[props.column.field]) }}
           </span>
           <span v-else>
             {{ props.formattedRow[props.column.field] }}
@@ -114,8 +116,8 @@ export default {
       columns: [
         { label: 'ID', field: 'id' },
         { label: 'Comers', field: 'company' },
-        { label: 'Nombre', field: 'name' },
-        { label: 'Descripcion', field: 'description', sortable: false },
+        { label: 'Nombre', field: 'name', width: '200px' },
+        { label: 'Descripcion', field: 'description', sortable: false, width: '50px' },
         { label: 'P1', field: 'p1' },
         { label: 'P2', field: 'p2' },
         { label: 'P3', field: 'p3' },
@@ -131,7 +133,7 @@ export default {
         { label: 'Tipo de precio', field: 'is_price_permanent', sortable: false },
         { label: 'Canal comisiones', field: 'canal_commission' },
         { label: 'Agente comisiones', field: 'agent_commission' },
-        { label: 'Campos obligatorio', field: 'required_fields', sortable: false },
+        { label: 'Campos obligatorio', field: 'required_fields', sortable: false, width: '200px' },
       ],
     }
   },
@@ -183,10 +185,12 @@ export default {
 
     // hueta
     getRequiredFieldText(values) {
-      return this.requiredFieldsItems
+      const str = this.requiredFieldsItems
         .filter((i) => values.includes(i.value))
         .map((i) => i.text)
         .join(', ')
+      const len = 17
+      return str.length > len ? str.substr(0, len) + '...' : str
     },
     onCellClick({ row, column }) {
       this.fieldToEdit = column
