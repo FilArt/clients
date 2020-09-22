@@ -27,7 +27,12 @@
 
           <v-list-item>
             <v-list-item-content>
-              <tramitacion :bid-id="bid.id" push-to-title="KO" @tramitate="onTramitate" @push-to="pushToKo(bid.id)" />
+              <tramitacion
+                :bid-id="bid.id"
+                push-to-title="Papelera"
+                @tramitate="onTramitate"
+                @push-to="pushToKo(bid.id)"
+              />
             </v-list-item-content>
           </v-list-item>
         </v-list-group>
@@ -62,7 +67,7 @@ export default {
   methods: {
     pushToKo(bidId) {
       this.$swal({
-        title: 'Mover a la KO?',
+        title: 'Mover a la Papelera?',
         icon: 'warning',
         buttons: true,
         dangerMode: true,

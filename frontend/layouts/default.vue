@@ -77,7 +77,7 @@ export default {
           },
           {
             icon: 'mdi-file-cancel-outline',
-            title: 'KO',
+            title: 'PAPELERA',
             to: '/admin/ko',
           },
           {

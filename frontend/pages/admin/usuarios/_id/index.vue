@@ -67,6 +67,12 @@
                 text: 'Perfil',
                 value: 'profile',
               },
+
+              {
+                text: 'Bids',
+                value: 'bids',
+              },
+
               {
                 text: 'Cartera',
                 value: 'bids',

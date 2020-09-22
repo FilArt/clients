@@ -131,7 +131,7 @@ export default {
   props: {
     pushToTitle: {
       type: String,
-      default: 'KO',
+      default: 'PAPELERA',
     },
     bidId: {
       type: Number,
@@ -216,7 +216,13 @@ export default {
         'commission',
         'agent_type',
       ].join()
-      this.bid = await this.$axios.$get(`bids/bids/${this.bidId}/?fields=${fields}`)
+      try {
+        this.bid = await this.$axios.$get(`bids/bids/${this.bidId}/?fields=${fields}`)
+      } catch (e) {
+        if (e.response.status === 403) {
+          await this.$swal({ title: 'Permission denied', icon: 'error' })
+        }
+      }
     },
     async tramitate() {
       const message = await this.$swal({
