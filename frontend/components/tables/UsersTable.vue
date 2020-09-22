@@ -95,14 +95,14 @@
             </v-col>
 
             <v-col
-              v-if="headers.some((h) => h.value === 'responsible')"
+              v-if="headers.some((h) => h.value.includes('responsible'))"
               :cols="flexs.cols"
               :xl="flexs.xl"
               :lg="flexs.lg"
               :md="flexs.md"
               :xs="flexs.xs"
             >
-              <v-select
+              <v-autocomplete
                 v-model="query.responsible"
                 label="Responsable"
                 :items="responsibles"
@@ -346,8 +346,8 @@ export default {
         { text: 'Pendiente', value: 'tramitacion_pendiente' },
       ],
       facturacionEstados: [
-        { text: 'OK', value: 'facturacion_ok' },
-        { text: 'Pendiente', value: 'facturacion_pendiente' },
+        { text: 'Pagado', value: 'facturacion_ok' },
+        { text: 'Pendiente pago', value: 'facturacion_pendiente' },
       ],
       flexs: { cols: 12, xl: 3, lg: 3, md: 3, sm: 3, xs: 12 },
       dateJoinedFilter,
@@ -380,7 +380,7 @@ export default {
     ...mapState({ responsibles: (state) => state.responsibles }),
   },
   async created() {
-    if (this.headers.some((header) => header.value === 'responsible') && !this.responsibles.length) {
+    if (this.headers.some((header) => header.value.includes('responsible')) && !this.responsibles.length) {
       await this.$store.dispatch('fetchResponsibles')
     }
     if (!this.clientRoles.length && this.role) this.query.role = this.role
