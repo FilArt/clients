@@ -22,8 +22,9 @@ class BidSerializer(BidListSerializer):
     puntos = serializers.ListSerializer(child=PuntoSerializer())
     responsible = serializers.CharField(source="user.responsible", read_only=True)
     agent_type = serializers.CharField(source="user.agent_type", read_only=True)
-    message = serializers.CharField(write_only=True, allow_blank=True)
     status = serializers.SerializerMethodField()
+    message = serializers.CharField(write_only=True, allow_blank=True, allow_null=True)
+    internal_message = serializers.CharField(write_only=True, allow_blank=True, allow_null=True)
 
     class Meta:
         model = Bid
@@ -41,16 +42,13 @@ class BidSerializer(BidListSerializer):
             "scoring",
             "call",
             "message",
+            "internal_message",
         ]
 
     def get_status(self, bid: Bid) -> str:
         return bid.get_status(by=self.context["request"].user)
 
     def save(self, **kwargs):
-        message = None
-        if "message" in kwargs:
-            message = kwargs.pop("message")
-
         user = self.context["request"].user
         with transaction.atomic():
             bid: Bid = super().save(**kwargs)
@@ -81,7 +79,8 @@ class BidSerializer(BidListSerializer):
                 user=user,
                 bid=bid,
                 status=bid.get_status(by=user),
-                message=message,
+                message=self.validated_data.get("message"),
+                internal_message=self.validated_data.get("internal_message"),
             )
 
         return bid

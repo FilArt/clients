@@ -2,6 +2,30 @@
   <div v-if="bid">
     <snack-bar-it :noty-key="notificationKey" />
 
+    <v-dialog v-model="tramitateDialog" max-width="500">
+      <v-card>
+        <v-card-title>Agregar mensajes (opcional) y enviar</v-card-title>
+
+        <v-card-text>
+          <v-form @submit.prevent="tramitate">
+            <v-row>
+              <v-col>
+                <v-textarea v-model="message" label="Mensaje para cliente" />
+              </v-col>
+            </v-row>
+
+            <v-row>
+              <v-col>
+                <v-textarea v-model="internalMessage" label="Mensaje para agente" />
+              </v-col>
+            </v-row>
+
+            <v-btn block type="submit" :loading="loading" color="success">Enviar</v-btn>
+          </v-form>
+        </v-card-text>
+      </v-card>
+    </v-dialog>
+
     <div>
       <v-divider />
 
@@ -74,12 +98,12 @@
         <v-container v-else>
           <v-row>
             <v-col v-for="group in groups" :key="group.label" cols="12" md="4">
-              <v-radio-group v-model="bid[group.value]" :label="group.label" @change="tramitate">
+              <v-radio-group v-model="bid[group.value]" :label="group.label" @change="tramitateDialog = true">
                 <v-radio v-for="state in states" :key="state.label" :label="state.label" :value="state.value" />
                 <v-btn
                   @click="
                     bid[group.value] = null
-                    tramitate()
+                    tramitateDialog = true
                   "
                 >
                   Resetar?
@@ -144,6 +168,7 @@ export default {
   },
   data() {
     return {
+      loading: false,
       bid: null,
       history: [],
       historyDialog: false,
@@ -173,6 +198,9 @@ export default {
       ],
       notificationKey: 0,
       bidErrors: {},
+      tramitateDialog: false,
+      message: '',
+      internalMessage: '',
     }
   },
   computed: {
@@ -225,25 +253,27 @@ export default {
       }
     },
     async tramitate() {
-      const message = await this.$swal({
-        title: 'Anadir mensaje',
-        content: 'input',
-      })
+      this.loading = true
       try {
         const bid = await this.$axios.$patch(`bids/bids/${this.bid.id}/`, {
           doc: this.bid.doc,
           call: this.bid.call,
           scoring: this.bid.scoring,
-          message,
+          message: this.message,
+          internal_message: this.internalMessage,
         })
         this.bid = bid
         this.$emit('tramitate')
         this.notificationKey += 1
+        this.tramitateDialog = false
+        this.message = this.internalMessage = null
       } catch (e) {
         await this.$swal({
           title: 'Error!',
           text: JSON.stringify(e.response.data),
         })
+      } finally {
+        this.loading = false
       }
     },
     async pagar(field, value) {

@@ -64,4 +64,5 @@ class BidStory(models.Model):
     bid = models.ForeignKey(Bid, on_delete=models.CASCADE, related_name="stories")
     status = models.CharField(max_length=50, default=Bid.DEFAULT_STATUS)
     message = models.TextField(null=True, blank=True)
+    internal_message = models.TextField(null=True, blank=True)
     dt = models.DateTimeField(auto_now_add=True)

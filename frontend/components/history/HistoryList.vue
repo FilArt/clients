@@ -16,7 +16,18 @@
         <v-card-title class="headline">
           <span>{{ story.status }}</span>
         </v-card-title>
-        <v-card-text>{{ story.message }}</v-card-text>
+        <v-card-text>
+          <p>
+            {{ story.message }}
+          </p>
+          <div v-if="story.internal_message">
+            <v-divider />
+            <small>Mensaje para agente: </small>
+            <p>
+              {{ story.internal_message }}
+            </p>
+          </div>
+        </v-card-text>
       </v-card>
     </v-timeline-item>
   </v-timeline>
