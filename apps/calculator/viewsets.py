@@ -59,3 +59,4 @@ class PaginatedOfferViewSet(viewsets.ModelViewSet):
     ordering_fields = "__all__"
     pagination_class = OffersPagination
     serializer_class = AdminOfferListSerializer
+    search_fields = ["name", "tarif", "company__name"]

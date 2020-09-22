@@ -44,6 +44,7 @@ export default {
     { src: '~/plugins/vue-beautiful-chat', mode: 'client' },
     { src: '~/plugins/localStorage', ssr: false, mode: 'client' },
     { src: '~/plugins/range-date-picker', mode: 'client' },
+    { src: '~/plugins/vue-good-table', ssr: false },
   ],
   /*
    ** Nuxt.js dev-modules

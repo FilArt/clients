@@ -168,15 +168,6 @@ class AdminOfferListSerializer(DynamicFieldsMixin, serializers.ModelSerializer):
         model = Offer
         fields = "__all__"
 
-    def to_representation(self, value):
-        rep = super().to_representation(value)
-        required_fields = rep.get("required_fields")
-        if required_fields:
-            rep["required_fields"] = [
-                {"text": f[1], "value": f[0]} for f in Offer.REQUIRED_FIELD_CHOICES if f[0] in required_fields
-            ]
-        return rep
-
 
 class DetailOfferSerializer(OfferListSerializer):
     class Meta:

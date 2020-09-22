@@ -109,25 +109,26 @@ class Offer(models.Model):
         ("Indexado", _("Indexado")),
     )
     REQUIRED_FIELD_CHOICES = (
-        ("photo_cif1", _("Photo CIF")),
-        ("photo_dni1", _("Photo DNI")),
-        ("photo_dni2", _("Photo DNI reverse side")),
+        ("photo_cif", _("Photo CIF")),
+        ("photo_dni", _("Photo DNI")),
+        ("photo_dni_repr_legal", _("Photo DNI representante legal")),
         ("photo_factura", _("Photo factura")),
-        ("photo_factura_1", _("Photo factura reverse side")),
-        ("photo_recibo1", _("Photo Recibo de Autónomo")),
-        ("recibo1", _("Recibo de Autónomo")),
+        ("photo_recibo", _("Photo Recibo de Autónomo")),
         ("cif", _("CIF")),
         ("dni", _("DNI")),
+        ("dni_repr", _("DNI representante legal")),
         ("phone", _("Phone")),
+        ("name_changed_doc", _("DOCUMENTO CAMBIO DE NOMBRE")),
+        ("contrato_arredamiento", _("CONTRATO ARREDAMIENTO/COMPRAVENTA")),
     )
     objects = WithoutOtraManager()
     default = Manager()
 
     uuid = models.UUIDField(unique=True)
     company = models.ForeignKey(Company, on_delete=models.CASCADE)
-    name = NameField(max_length=255)
+    name = NameField(max_length=255, db_index=True)
     description = models.TextField()
-    tarif = models.CharField(max_length=10, choices=Tarif.choices())
+    tarif = models.CharField(max_length=10, choices=Tarif.choices(), db_index=True)
     power_min = models.FloatField(blank=True, null=True)
     power_max = models.FloatField(blank=True, null=True)
     consumption_min = models.FloatField(blank=True, null=True)
@@ -153,6 +154,19 @@ class Offer(models.Model):
 
     @staticmethod
     def sync():
+        permissions_helper = {
+            "FOTO CIF": "photo_cif",
+            "FOTO DNI": "photo_dni",
+            "FOTO DNI REPRE LEGAL": "photo_dni_repr_legal",
+            "FACTURA": "photo_factura",
+            "NUMERO CIF": "cif",
+            "NUMERO DNI REPRE LEGAL": "dni_repr",
+            "NUMERO DNI": "dni",
+            "FOTO RECIBO AUTONOMO": "photo_recibo",
+            "DOCUMENTO CAMBIO DE NOMBRE": "name_changed_doc",
+            "CONTRATO ARREDAMIENTO/COMPRAVENTA": "contrato_arredamiento",
+            "TELEFONO MOBIL": "phone",
+        }
         client = gspread.service_account(settings.GOOGLE_SERVICE_ACCOUNT_CREDS)
         spread_sheet = client.open_by_url(settings.OFFERS_SHEET_URL)
         work_sheet = spread_sheet.get_worksheet(0)
@@ -183,6 +197,13 @@ class Offer(models.Model):
                         is_price_permanent=item["MODO"].capitalize(),
                         agent_commission=Decimal(item["COMISIONES COMERCIAL"]),
                         canal_commission=Decimal(item["COMISIONES CANAL"]),
+                        required_fields=[
+                            permissions_helper[x]
+                            for x in [
+                                w.strip() for w in (f'{item["DOCUMENTACION"]},{item["CAMBIO DE NOMBRE"]}').split(",")
+                            ]
+                            if x in permissions_helper
+                        ],
                     ),
                 )
             except Exception as e:

@@ -1,191 +1,199 @@
 <template>
-  <v-data-table
-    :headers="headers"
-    :items="items"
-    :options.sync="options"
-    :server-items-length="total"
-    :loading="loading"
-    :footer-props="{
-      itemsPerPageOptions: [10, 50, 100, 1000],
-      showFirstLastPage: true,
-      firstIcon: 'mdi-arrow-collapse-left',
-      lastIcon: 'mdi-arrow-collapse-right',
-      prevIcon: 'mdi-minus',
-      nextIcon: 'mdi-plus',
-    }"
-    class="elevation-1"
-  >
-    <template v-slot:top>
-      <v-alert color="warning"> Tipo de cliente: 0 - Fisico, 1 - Negocio </v-alert>
-    </template>
-
-    <template v-slot:item="{ item }">
-      <tr>
-        <td v-for="header in headers" :key="header.value">
-          <v-edit-dialog
-            :return-value-sync="item[header.value]"
-            @save="save(item.id, { [header.value]: item[header.value] })"
+  <v-card>
+    <v-card-text>
+      <v-dialog v-model="editDialog" max-width="290">
+        <v-card>
+          <v-form
+            @submit.prevent="
+              save(rowToEdit.id, { [fieldToEdit.field]: newValue })
+              editDialog = false
+            "
           >
-            <div v-if="header.value === 'company'">
-              {{ item[header.value].name }}
-            </div>
-            <div v-else-if="header.value === 'required_fields'" class="truncate">
-              <small v-for="(rf, idx) in item[header.value] || []" :key="idx">{{ rf.text }},</small>
-            </div>
-            <div v-else class="truncate">
-              {{ item[header.value] }}
-            </div>
-            <template v-slot:input>
-              <v-select
-                v-if="header.value === 'required_fields'"
-                v-model="item[header.value]"
-                :items="[
-                  { value: 'photo_cif1', text: 'Foto CIF' },
-                  { value: 'photo_dni1', text: 'Foto DNI' },
-                  { value: 'photo_dni2', text: 'Foto DNI reverso' },
-                  { value: 'photo_factura', text: 'Foto factura' },
-                  { value: 'photo_factura_1', text: 'Foto factura reverso' },
-                  { value: 'photo_recibo1', text: 'Foto Recibo de Autónomo' },
-                  { value: 'recibo1', text: 'Recibo de Autónomo' },
-                  { value: 'cif', text: 'CIF' },
-                  { value: 'dni', text: 'DNI' },
-                  { value: 'phone', text: 'Telefono' },
-                ]"
-                multiple
-                @change="save(item.id, { required_fields: item[header.value] })"
-              ></v-select>
+            <v-card-title class="headline">Editar {{ fieldToEdit.field }}</v-card-title>
 
-              <v-text-field v-else v-model="item[header.value]" single-line counter />
-            </template>
-          </v-edit-dialog>
-        </td>
-      </tr>
-    </template>
-  </v-data-table>
+            <v-card-text>
+              <v-text-field v-model="newValue" autofocus />
+            </v-card-text>
+
+            <v-card-actions>
+              <v-spacer></v-spacer>
+
+              <v-btn color="green darken-1" icon text @click="editDialog = false">
+                <v-icon>mdi-cancel</v-icon>
+              </v-btn>
+
+              <v-btn color="green darken-1" icon text type="submit">
+                <v-icon>mdi-content-save</v-icon>
+              </v-btn>
+            </v-card-actions>
+          </v-form>
+        </v-card>
+      </v-dialog>
+      <vue-good-table
+        mode="remote"
+        :theme="$vuetify.theme.isDark ? 'nocturnal' : 'black-rhino'"
+        :pagination-options="{
+          enabled: true,
+          mode: 'pages',
+          perPage: query.itemsPerPage,
+          position: 'top',
+          perPageDropdown: [10, 50, 100],
+          dropdownAllowAll: true,
+          setCurrentPage: query.page,
+        }"
+        :total-rows="total"
+        :is-loading.sync="loading"
+        :rows="rows"
+        :columns="columns"
+        :search-options="{ enabled: true }"
+        @on-page-change="onPageChange"
+        @on-column-filter="onColumnFilter"
+        @on-sort-change="onSortChange"
+        @on-per-page-change="onPerPageChange"
+        @on-search="onSearch"
+        @on-cell-click="onCellClick"
+      >
+        <template slot="table-row" slot-scope="props">
+          <span v-if="props.column.field === 'description'">
+            <div style="max-width: 100px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">
+              {{ props.formattedRow[props.column.field] }}
+            </div>
+          </span>
+          <span v-else-if="props.column.field === 'company'">
+            {{ props.row.company.name }}
+          </span>
+          <span v-else-if="props.column.field === 'required_fields'">
+            <v-select
+              v-model="props.row.required_fields"
+              :items="requiredFieldsItems"
+              multiple
+              @change="save(props.row.id, { required_fields: $event })"
+            />
+          </span>
+          <span v-else>
+            {{ props.formattedRow[props.column.field] }}
+          </span>
+        </template>
+      </vue-good-table>
+    </v-card-text>
+  </v-card>
 </template>
 
 <script>
 export default {
-  components: {
-    // CompanySelect: () => import('~/components/selects/CompanySelect'),
-  },
   data() {
-    const headers = [
-      {
-        text: 'ID',
-        value: 'id',
-      },
-      {
-        text: 'Comers',
-        value: 'company',
-      },
-      {
-        text: 'Nombre',
-        value: 'name',
-      },
-      {
-        text: 'Descripcion',
-        value: 'description',
-      },
-      {
-        text: 'P1',
-        value: 'p1',
-      },
-      {
-        text: 'P2',
-        value: 'p2',
-      },
-      {
-        text: 'P3',
-        value: 'p3',
-      },
-      {
-        text: 'C1',
-        value: 'c1',
-      },
-      {
-        text: 'C2',
-        value: 'c2',
-      },
-      {
-        text: 'C3',
-        value: 'c3',
-      },
-      {
-        text: 'Tarifa',
-        value: 'tarif',
-      },
-      {
-        text: 'Potencia min',
-        value: 'power_min',
-      },
-      {
-        text: 'Potencia max',
-        value: 'power_max',
-      },
-      {
-        text: 'Consumo min',
-        value: 'consumption_min',
-      },
-      {
-        text: 'Consumo max',
-        value: 'consumption_max',
-      },
-      {
-        text: 'Tipo de cliente',
-        value: 'client_type',
-      },
-      {
-        text: 'Tipo de precio',
-        value: 'is_price_permanent',
-      },
-      {
-        text: 'Canal comisiones',
-        value: 'canal_commission',
-      },
-      {
-        text: 'Agente comisiones',
-        value: 'agent_commission',
-      },
-      {
-        text: 'Campos obligatorio',
-        value: 'required_fields',
-      },
-    ]
     const q = this.$route.query
     return {
-      loading: false,
-      items: [],
-      headers,
+      editDialog: false,
+      fieldToEdit: '',
+      newValue: null,
+      rowToEdit: null,
+
       total: 0,
-      options: {
+      timeout: null,
+      loading: false,
+      rows: [],
+      query: {
         ...q,
         page: q.page ? parseInt(q.page) : 1,
         itemsPerPage: q.itemsPerPage ? parseInt(q.itemsPerPage) : 10,
       },
+      requiredFieldsItems: [
+        { value: 'photo_dni_repr_legal', text: 'FOTO DNI REPRE LEGAL' },
+        { value: 'photo_cif', text: 'Foto CIF' },
+        { value: 'photo_dni', text: 'Foto DNI' },
+        { value: 'photo_factura', text: 'Foto factura' },
+        { value: 'photo_recibo', text: 'FOTO RECIBO AUTONOMO' },
+        { value: 'cif', text: 'Numero CIF' },
+        { value: 'dni', text: 'Numero DNI' },
+        { value: 'dni_repr', text: 'Numero DNI representante legal' },
+        { value: 'phone', text: 'Telefono' },
+        { value: 'contrato_arredamiento', text: 'CONTRATO ARREDAMIENTO/COMPRAVENTA' },
+        { value: 'name_changed_doc', text: 'DOCUMENTO CAMBIO DE NOMBRE' },
+      ],
+      columns: [
+        { label: 'ID', field: 'id' },
+        { label: 'Comers', field: 'company' },
+        { label: 'Nombre', field: 'name' },
+        { label: 'Descripcion', field: 'description', sortable: false },
+        { label: 'P1', field: 'p1' },
+        { label: 'P2', field: 'p2' },
+        { label: 'P3', field: 'p3' },
+        { label: 'C1', field: 'c1' },
+        { label: 'C2', field: 'c2' },
+        { label: 'C3', field: 'c3' },
+        { label: 'Tarifa', field: 'tarif' },
+        { label: 'Potencia min', field: 'power_min' },
+        { label: 'Potencia max', field: 'power_max' },
+        { label: 'Consumo min', field: 'consumption_min' },
+        { label: 'Consumo max', field: 'consumption_max' },
+        { label: 'Tipo de cliente', field: 'client_type', sortable: false },
+        { label: 'Tipo de precio', field: 'is_price_permanent', sortable: false },
+        { label: 'Canal comisiones', field: 'canal_commission' },
+        { label: 'Agente comisiones', field: 'agent_commission' },
+        { label: 'Campos obligatorio', field: 'required_fields', sortable: false },
+      ],
     }
   },
-  watch: {
-    options: {
-      async handler() {
-        try {
-          const ordering = this.options.sortDesc[0] ? this.options.sortBy : `-${this.options.sortBy}`
-          const query = {
-            ...this.options,
-            ordering: ordering.length > 3 ? ordering : null,
-          }
-          await this.$router.replace({
-            query: Object.entries(query).reduce((a, [k, v]) => (v ? ((a[k] = v), a) : a), {}),
-          })
-        } catch (e) {
-          console.warn(e)
-        }
-        await this.refresh()
-      },
-      deep: true,
-    },
+  mounted() {
+    this.refresh()
   },
   methods: {
+    updateParams(newProps) {
+      if (this.loading) return
+      this.loading = true
+      const query = Object.entries(Object.assign({}, this.query, newProps)).reduce(
+        (a, [k, v]) => (v ? ((a[k] = v), a) : a),
+        {},
+      )
+      this.query = query
+      this.$router
+        .replace({ query })
+        .then(() => this.refresh())
+        .catch(() => (this.loading = false))
+    },
+    onSearch(opts) {
+      this.updateParams({ search: opts.searchTerm })
+    },
+    onPageChange(params) {
+      this.updateParams({ page: params.currentPage })
+    },
+    onSortChange(params) {
+      let ordering = params[0]
+      ordering = ordering.type === 'asc' ? `-${ordering.field}` : ordering.field
+      this.updateParams({ ordering })
+    },
+    onPerPageChange(params) {
+      this.updateParams({ itemsPerPage: params.currentPerPage })
+    },
+    onColumnFilter(params) {
+      this.updateParams(params)
+    },
+    refresh() {
+      let getParamsString = this.$route.fullPath.split('?')[1] || '?page=1&itemsPerPage=10'
+      this.$axios
+        .$get(`calculator/admin_offers/?${getParamsString}`)
+        .then((data) => {
+          this.total = data.count
+          this.rows = data.results
+        })
+        .catch((e) => console.error(e))
+        .finally(() => (this.loading = false))
+    },
+
+    // hueta
+    getRequiredFieldText(values) {
+      return this.requiredFieldsItems
+        .filter((i) => values.includes(i.value))
+        .map((i) => i.text)
+        .join(', ')
+    },
+    onCellClick({ row, column }) {
+      this.fieldToEdit = column
+      this.rowToEdit = row
+      this.newValue = row[column.field]
+      this.editDialog = true
+    },
     async save(id, data) {
       try {
         await this.$axios.$patch(`calculator/admin_offers/${id}/`, data)
@@ -196,28 +204,6 @@ export default {
         await this.refresh()
       }
     },
-    async refresh() {
-      this.loading = true
-      try {
-        const getParamsString = this.$route.fullPath.split('?')[1]
-        const data = await this.$axios.$get(`calculator/admin_offers/?${getParamsString}`)
-        this.total = data.count
-        this.items = data.results
-      } catch (e) {
-        console.error(e)
-      } finally {
-        this.loading = false
-      }
-    },
   },
 }
 </script>
-
-<style scoped>
-.truncate {
-  max-width: 100px;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-</style>

@@ -12,7 +12,8 @@ def is_positive(value):
 def validate_uppercase(value: str):
     if value != value.upper():
         raise ValidationError(
-            _("%(value)s is not in upper case"), params={"value": value},
+            _("%(value)s is not in upper case"),
+            params={"value": value},
         )
 
 
