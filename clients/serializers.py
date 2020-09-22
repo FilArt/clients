@@ -328,10 +328,16 @@ class FastContractSerializer(serializers.ModelSerializer):
             "offer",
             "iban",
             "from_user",
+            "cif",
+            "dni",
+            "legal_representative",
         ]
         extra_kwargs = {
             "last_name": {"required": False},
             "phone": {"required": False},
+            "cif": {"required": False},
+            "dni": {"required": False},
+            "legal_representative": {"required": False},
         }
 
     def __init__(self, *args, **kwargs):

@@ -315,6 +315,7 @@ class Punto(models.Model):
 
     legal_representative = models.CharField(max_length=200, blank=True, null=True)
     dni = models.CharField(max_length=200, blank=True, null=True)
+    cif = models.CharField(max_length=200, blank=True, null=True)
 
     class Meta:
         db_table = "puntos"
@@ -337,8 +338,11 @@ class Attachment(models.Model):
         ("cif1", _("CIF")),
         ("cif2", _("CIF reverse side")),
         ("recibo1", _("Recibo de Autónomo")),
+        ("repr_legal", _("Foto DNI Representante Legal")),
+        ("name_changed", _("Cambio de nombre")),
+        ("arredamiento", _("Contrato arredamiento")),
     )
 
     punto = models.ForeignKey(Punto, on_delete=models.CASCADE, related_name="attachments")
-    attachment_type = models.CharField(max_length=10, choices=ATTACHMENT_TYPE_CHOICES)
+    attachment_type = models.CharField(max_length=20, choices=ATTACHMENT_TYPE_CHOICES)
     attachment = models.FileField()
