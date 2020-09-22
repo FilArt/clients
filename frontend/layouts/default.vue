@@ -125,7 +125,7 @@ export default {
           },
         ]
         if (user.permissions.includes('leeds_access')) {
-          items.push({
+          items.splice(2, 0, {
             icon: 'mdi-account-multiple',
             title: 'LEEDS',
             to: '/agente/leeds',
