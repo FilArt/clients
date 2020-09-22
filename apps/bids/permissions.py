@@ -5,7 +5,7 @@ from apps.bids.models import Bid
 
 class BidsPermission(BasePermission):
     def has_permission(self, request, view):
-        return "bids" in request.user.permissions or request.user.role == "admin"
+        return "bids" in request.user.permissions or request.user.role in ("admin", "tramitacion", "agent")
 
     def has_object_permission(self, request, view, obj: Bid):
         requester = request.user
