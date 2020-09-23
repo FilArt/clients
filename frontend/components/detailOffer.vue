@@ -16,7 +16,7 @@
 
     <v-row align="center">
       <v-col>
-        <v-img class="mx-auto" max-height="250" max-width="500" :src="offer.company_logo || '/no-image.svg'" />
+        <v-img class="mx-auto" max-height="250" max-width="150" :src="offer.company_logo || '/no-image.svg'" />
       </v-col>
       <v-col>
         <v-simple-table style="max-width: 750px" class="pa-3">
