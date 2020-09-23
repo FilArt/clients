@@ -34,10 +34,10 @@ export default Object.freeze({
       text: 'Affiliados',
       value: 'affiliate',
     },
-    tramitacion: {
-      text: 'Tramitacion',
-      value: 'support',
-    },
+    // tramitacion: {
+    //   text: 'Tramitacion',
+    //   value: 'support',
+    // },
   },
   puntoFields: {
     province: {

@@ -36,10 +36,6 @@ export default {
           value: 'fullname',
         },
         {
-          text: 'Origin',
-          value: 'affiliate',
-        },
-        {
           text: 'Ultima entrada',
           value: 'last_login',
         },

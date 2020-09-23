@@ -36,10 +36,6 @@ export default {
           value: 'fullname',
         },
         {
-          text: 'Origin',
-          value: 'affiliate',
-        },
-        {
           text: 'Responsable',
           value: 'responsible_fn',
         },
