@@ -27,7 +27,7 @@
     </v-dialog>
 
     <v-row class="text-center">
-      <v-col style="max-width: 300px">
+      <v-col :style="hidePuntos ? null : 'max-width: 300px'">
         <v-row>
           <v-col>
             <v-dialog v-model="offerDetailDialog" max-width="750">
@@ -151,7 +151,7 @@
 
       <v-divider vertical />
 
-      <v-col>
+      <v-col v-if="!hidePuntos">
         <v-alert v-if="bid.puntos.length === 0" type="warning">No puntos!</v-alert>
         <puntos-list v-else :puntos="bid.puntos" />
       </v-col>
@@ -183,6 +183,10 @@ export default {
       default: false,
     },
     showPushToKo: {
+      type: Boolean,
+      default: false,
+    },
+    hidePuntos: {
       type: Boolean,
       default: false,
     },
