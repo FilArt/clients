@@ -153,7 +153,7 @@
 
       <v-col v-if="!hidePuntos">
         <v-alert v-if="bid.puntos.length === 0" type="warning">No puntos!</v-alert>
-        <puntos-list v-else :puntos="bid.puntos" />
+        <puntos-list v-else :puntos="bid.puntos" @punto-updated="fetchBid" />
       </v-col>
     </v-row>
   </div>
