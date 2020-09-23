@@ -29,7 +29,7 @@ export default {
         },
         {
           text: 'Fecha de registro',
-          value: 'date_joined_date',
+          value: 'date_joined',
         },
         {
           text: 'Nombre/Razon social',

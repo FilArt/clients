@@ -24,7 +24,7 @@ export default {
       clientRoles: [constants.clientRoles.facturacion.value],
       headers: [
         { text: 'ID', value: 'id' },
-        { text: 'Fecha de registro', value: 'date_joined_date' },
+        { text: 'Fecha de registro', value: 'date_joined' },
         { text: 'Fecha firma', value: 'fecha_firma' },
         { text: 'Nombre/Razon social', value: 'fullname' },
         { text: 'Solicitud', value: 'bids_count' },

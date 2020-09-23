@@ -25,7 +25,7 @@ export default {
       clientRoles: [constants.clientRoles.ko.value],
       headers: [
         { text: 'ID', value: 'id' },
-        { text: 'Fecha de registro', value: 'date_joined_date' },
+        { text: 'Fecha de registro', value: 'date_joined' },
         { text: 'Nombre/Razon social', value: 'fullname' },
         { text: 'Responsable', value: 'responsible_fn' },
         { text: 'Solicitud', value: 'bids_count' },

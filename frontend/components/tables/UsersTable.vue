@@ -114,7 +114,7 @@
             </v-col>
 
             <v-col
-              v-if="showDateFilters || headers.some((h) => h.value === 'date_joined_date')"
+              v-if="showDateFilters || headers.some((h) => h.value.includes('date_joined'))"
               :cols="flexs.cols"
               :xl="flexs.xl"
               :lg="flexs.lg"
