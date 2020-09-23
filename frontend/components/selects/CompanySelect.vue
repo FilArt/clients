@@ -9,6 +9,7 @@
     item-value="id"
     chips
     deletable-chips
+    dense
     style="min-width: 150px"
     @input="$emit('input', company)"
   >
@@ -73,7 +74,7 @@ export default {
   },
   data() {
     return {
-      loading: true,
+      loading: false,
       company: this.value,
     }
   },
@@ -104,9 +105,7 @@ export default {
       this.$axios
         .$get('/calculator/companies/')
         .then((companies) => this.$store.commit('setCompanies', companies))
-        .finally(() => {
-          this.loading = false
-        })
+        .finally(() => (this.loading = false))
     },
   },
 }

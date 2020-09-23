@@ -1,79 +1,74 @@
 <template>
-  <v-row class="flex-wrap">
+  <v-row justify="space-around">
     <snack-bar-it :noty-key="notificationKey" />
 
-    <v-col md="6" cols="12">
-      <v-toolbar elevation="10" short dense>
+    <v-col cols="12" lg="5" class="pa-0 ma-0">
+      <v-toolbar short dense>
         <v-spacer />
         <v-toolbar-title>Datos de contacto</v-toolbar-title>
         <v-spacer />
       </v-toolbar>
-      <v-card elevation="10" class="pa-3">
-        <v-row>
-          <v-col v-for="(item, idx) in contactInfo" :key="idx" xl="4" md="6" cols="12">
-            <v-text-field
-              v-model="contactInfo[idx].value"
-              :prepend-icon="item.icon"
-              :label="item.text"
-              filled
-              :append-icon="item.field ? 'mdi-content-save' : ''"
-              @click:append="updateUser(item.field, contactInfo[idx].value)"
-            />
-          </v-col>
-        </v-row>
-      </v-card>
+      <v-card-text class="d-flex flex-row flex-wrap">
+        <v-text-field
+          v-for="(item, idx) in contactInfo"
+          :key="idx"
+          v-model="contactInfo[idx].value"
+          dense
+          :prepend-icon="item.icon"
+          :label="item.text"
+          :append-icon="item.field ? 'mdi-content-save' : ''"
+          @click:append="updateUser(item.field, contactInfo[idx].value)"
+        />
+      </v-card-text>
     </v-col>
 
-    <v-col>
-      <v-toolbar short dense elevation="10">
+    <v-col cols="12" lg="5" class="pa-0 ma-0">
+      <v-toolbar short dense>
         <v-spacer />
         <v-toolbar-title> Otro </v-toolbar-title>
         <v-spacer />
       </v-toolbar>
-      <v-card elevation="10" class="pa-3">
-        <v-row class="flex-wrap">
-          <v-col v-for="date in datesInfo" :key="date.text" xl="4" md="6" cols="12">
-            <v-text-field :prepend-icon="date.icon" :label="date.text" :value="date.value" outlined shaped />
-          </v-col>
+      <v-card-text class="d-flex flex-row flex-wrap">
+        <v-text-field
+          v-for="date in datesInfo"
+          :key="date.text"
+          dense
+          :prepend-icon="date.icon"
+          :label="date.text"
+          :value="date.value"
+        />
 
-          <v-col xl="4" md="6" cols="12">
-            <v-select
-              v-model="source"
-              prepend-icon="mdi-target"
-              label="Origin"
-              outlined
-              shaped
-              :items="[
-                {
-                  text: 'Online',
-                  value: 'default',
-                },
-                {
-                  text: 'Call&Visit',
-                  value: 'call_n_visit',
-                },
-              ]"
-              :append-icon="source !== user.source ? 'mdi-content-save' : null"
-              @click:append="updateUser('source', source)"
-            />
-          </v-col>
+        <v-select
+          v-model="source"
+          dense
+          prepend-icon="mdi-target"
+          label="Origin"
+          :items="[
+            {
+              text: 'Online',
+              value: 'default',
+            },
+            {
+              text: 'Call&Visit',
+              value: 'call_n_visit',
+            },
+          ]"
+          :append-icon="source !== user.source ? 'mdi-content-save' : null"
+          @click:append="updateUser('source', source)"
+        />
 
-          <v-col xl="4" md="6" cols="12">
-            <v-autocomplete
-              v-model="responsible"
-              prepend-icon="mdi-account"
-              label="Responsable"
-              item-text="fullname"
-              item-value="id"
-              outlined
-              shaped
-              :items="responsibles"
-              :append-icon="responsible !== user.responsible ? 'mdi-content-save' : null"
-              @click:append="updateUser('responsible', responsible)"
-            />
-          </v-col>
-        </v-row>
-      </v-card>
+        <v-autocomplete
+          v-model="responsible"
+          dense
+          prepend-icon="mdi-account"
+          label="Responsable"
+          item-text="fullname"
+          item-value="id"
+          :items="responsibles"
+          :append-icon="responsible !== user.responsible ? 'mdi-content-save' : null"
+          @click:append="updateUser('responsible', responsible)"
+        />
+      </v-card-text>
     </v-col>
   </v-row>
 </template>

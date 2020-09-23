@@ -1,12 +1,14 @@
 <template>
-  <v-list>
+  <v-list nav dense>
     <v-list-group v-for="punto in puntos" :key="punto.id">
       <template v-slot:activator>
-        <v-list-item-title>Punto suministro {{ punto.name || `(id: ${punto.id})` }}</v-list-item-title>
+        <v-toolbar dense>
+          <v-toolbar-title> Punto suministro {{ punto.name || `(id: ${punto.id})` }} </v-toolbar-title>
+        </v-toolbar>
       </template>
 
-      <div class="d-flex flex-wrap">
-        <v-card v-for="group in groups" :key="group.text" class="pa-3 mx-auto">
+      <v-card class="d-flex flex-wrap">
+        <v-card v-for="group in groups" :key="group.text" flat class="pa-3 mx-auto">
           <v-card-title>{{ group.text }}</v-card-title>
 
           <div v-for="header in group.headers" :key="header.value">
@@ -24,6 +26,7 @@
 
             <v-text-field
               v-else
+              dense
               :label="header.text"
               :value="punto[header.value]"
               append-icon="mdi-content-save"
@@ -45,7 +48,7 @@
             </v-chip>
           </v-flex>
         </v-card>
-      </div>
+      </v-card>
     </v-list-group>
   </v-list>
 </template>

@@ -1,8 +1,17 @@
 <template>
   <div class="mx-auto d-flex flex-column justify-center pa-3" style="max-width: 1000px">
-    <p class="text-center headline">
-      {{ hideName ? `Oferta ${offer.id}` : offer.name }}
-    </p>
+    <v-row>
+      <v-col>
+        <p class="text-center headline">
+          {{ hideName ? `Oferta ${offer.id}` : offer.name }}
+        </p>
+      </v-col>
+      <v-col v-if="closeable" class="flex-grow-0">
+        <v-btn icon color="error" @click="$emit('close')">
+          <v-icon>mdi-close</v-icon>
+        </v-btn>
+      </v-col>
+    </v-row>
     <v-divider />
 
     <v-row align="center">
@@ -41,7 +50,7 @@
               <td :rowspan="powers.length + 1">Precio por potencia:</td>
             </tr>
 
-            <tr v-for="power in powers" :key="power.value">
+            <tr v-for="(power, pIdx) in powers" :key="pIdx">
               <td>{{ power.text }}: {{ power.value }} €</td>
             </tr>
 
@@ -50,7 +59,7 @@
             <tr>
               <td :rowspan="consumptions.length + 1">Precio por consumo:</td>
             </tr>
-            <tr v-for="consumption in consumptions" :key="consumption.value">
+            <tr v-for="(consumption, cIdx) in consumptions" :key="cIdx">
               <td>{{ consumption.text }}: {{ consumption.value }} €</td>
             </tr>
           </template>
@@ -76,6 +85,10 @@ export default {
     CalculatorDetails: () => import('~/components/CalculatorDetails'),
   },
   props: {
+    closeable: {
+      type: Boolean,
+      default: false,
+    },
     showAddBtn: {
       type: Boolean,
       default: false,

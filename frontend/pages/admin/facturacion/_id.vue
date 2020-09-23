@@ -1,38 +1,49 @@
 <template>
-  <v-card>
+  <v-card flat>
+    <v-toolbar dense>
+      <v-toolbar-title>
+        {{ user.fullname }}
+      </v-toolbar-title>
+    </v-toolbar>
+
     <v-card-text>
-      <v-toolbar>
-        <v-toolbar-title>
-          {{ user.fullname }}
-        </v-toolbar-title>
-      </v-toolbar>
       <user-detail-data :user-id="$route.params.id" />
     </v-card-text>
 
     <v-divider />
 
-    <v-card-title>Solicitudes</v-card-title>
-    <v-card-text>
-      <v-list>
-        <v-list-group v-for="bid in user.bids" :key="bid.id" v-model="bid.active" no-action>
-          <template v-slot:activator>
-            <v-list-item-content>
-              ID: {{ bid.id }}
-
-              <v-chip :color="bidStatusColor(bid.status)">
-                {{ bid.status }}
-              </v-chip>
-            </v-list-item-content>
-          </template>
-
+    <v-row>
+      <v-col class="flex-grow-0">
+        <v-navigation-drawer permanent>
           <v-list-item>
             <v-list-item-content>
-              <tramitacion :bid-id="bid.id" facturacion @tramitate="onTramitate" />
+              <v-list-item-title class="title"> Solicitudes </v-list-item-title>
             </v-list-item-content>
           </v-list-item>
-        </v-list-group>
-      </v-list>
-    </v-card-text>
+
+          <v-divider></v-divider>
+
+          <v-list dense nav>
+            <v-list-item
+              v-for="bid in user.bids"
+              :key="bid.id"
+              :color="bidStatusColor(bid.status)"
+              @click="chosenBid = bid.id"
+            >
+              <v-list-item-subtitle> ID: {{ bid.id }} </v-list-item-subtitle>
+
+              <v-list-item-title>
+                {{ bid.status }}
+              </v-list-item-title>
+            </v-list-item>
+          </v-list>
+        </v-navigation-drawer>
+      </v-col>
+
+      <div v-if="chosenBid" class="flex-grow-1">
+        <tramitacion :bid-id="chosenBid" facturacion @tramitate="onTramitate" />
+      </div>
+    </v-row>
   </v-card>
 </template>
 
@@ -55,6 +66,7 @@ export default {
   },
   data() {
     return {
+      chosenBid: null,
       cols: 3,
       errorMessages: { status: null, message: null },
     }

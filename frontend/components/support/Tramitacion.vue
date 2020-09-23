@@ -26,15 +26,13 @@
       </v-card>
     </v-dialog>
 
-    <div>
-      <v-divider />
-
-      <v-card-text>
-        <v-list>
-          <v-list-group>
-            <template v-slot:activator>
-              <v-list-item-content>
-                <v-chip style="cursor: pointer">
+    <v-row class="text-center">
+      <v-col style="max-width: 300px">
+        <v-row>
+          <v-col>
+            <v-dialog v-model="offerDetailDialog" max-width="750">
+              <template v-slot:activator="{ on }">
+                <v-chip style="cursor: pointer" v-on="on">
                   <v-col>
                     <small>id {{ bid.offer.id }}</small>
                   </v-col>
@@ -45,100 +43,119 @@
                   <v-divider vertical />
                   <v-spacer />
                   <v-col>{{ bid.offer.name }}</v-col>
+                  <v-col><v-icon>mdi-information</v-icon></v-col>
                 </v-chip>
-              </v-list-item-content>
-            </template>
+              </template>
 
-            <v-list-item>
-              <detail-offer :offer="bid.offer" />
-            </v-list-item>
-          </v-list-group>
-        </v-list>
-      </v-card-text>
-
-      <v-divider />
-
-      <v-alert v-if="bid.puntos.length === 0" type="warning">No puntos!</v-alert>
-      <puntos-list v-else :puntos="bid.puntos" />
-
-      <v-divider />
-
-      <div v-if="['admin', 'tramitacion'].includes($auth.user.role)">
-        <v-row v-if="facturacion" align="center">
-          <v-col>
-            <v-toolbar>Responsable: {{ bid.responsible || '...' }}</v-toolbar>
-
-            {{ bid.agent_type }}
-            <v-radio-group
-              :value="commissions.map((c) => c.value).indexOf(bid.commission)"
-              label="Comisiones"
-              @change="pagar('commission', commissions[$event].value)"
-            >
-              <v-radio v-for="(commission, idx) in commissions" :key="idx" :value="idx" :label="commission.text" />
-              <v-text-field
-                v-model="bid.commission"
-                label="Variable"
-                append-icon="mdi-content-save"
-                prepend-icon="mdi-currency-eur"
-                @click:append="pagar('commission', bid.commission)"
-              />
-            </v-radio-group>
-          </v-col>
-
-          <v-spacer />
-
-          <v-col>
-            <v-radio-group v-model="bid.paid" :error-messages="bidErrors.paid" @change="pagar('paid', bid.paid)">
-              <v-radio label="Pagado" :value="true" color="success" />
-              <v-radio label="Pendiente" :value="false" color="error" />
-            </v-radio-group>
+              <v-card>
+                <detail-offer :offer="bid.offer" closeable @close="offerDetailDialog = false" />
+              </v-card>
+            </v-dialog>
           </v-col>
         </v-row>
 
-        <v-container v-else>
-          <v-row>
-            <v-col v-for="group in groups" :key="group.label" cols="12" md="4">
-              <v-radio-group v-model="bid[group.value]" :label="group.label" @change="tramitateDialog = true">
-                <v-radio v-for="state in states" :key="state.label" :label="state.label" :value="state.value" />
-                <v-btn
-                  @click="
-                    bid[group.value] = null
-                    tramitateDialog = true
-                  "
-                >
-                  Resetar?
-                </v-btn>
+        <div v-if="['admin', 'tramitacion'].includes($auth.user.role)">
+          <v-row v-if="facturacion" align="center">
+            <v-col>
+              <v-toolbar>Responsable: {{ bid.responsible || '...' }}</v-toolbar>
+
+              {{ bid.agent_type }}
+              <v-radio-group
+                :value="commissions.map((c) => c.value).indexOf(bid.commission)"
+                label="Comisiones"
+                @change="pagar('commission', commissions[$event].value)"
+              >
+                <v-radio v-for="(commission, idx) in commissions" :key="idx" :value="idx" :label="commission.text" />
+                <v-text-field
+                  v-model="bid.commission"
+                  label="Variable"
+                  append-icon="mdi-content-save"
+                  prepend-icon="mdi-currency-eur"
+                  @click:append="pagar('commission', bid.commission)"
+                />
+              </v-radio-group>
+            </v-col>
+
+            <v-spacer />
+
+            <v-col>
+              <v-radio-group v-model="bid.paid" :error-messages="bidErrors.paid" @change="pagar('paid', bid.paid)">
+                <v-radio label="Pagado" :value="true" color="success" />
+                <v-radio label="Pendiente" :value="false" color="error" />
               </v-radio-group>
             </v-col>
           </v-row>
-          <v-btn v-if="pushToTitle" block color="error" @click="$emit('push-to')">Mover a la {{ pushToTitle }}?</v-btn>
-        </v-container>
-      </div>
 
-      <v-divider />
+          <v-row v-else>
+            <v-col>
+              <div v-for="group in groups" :key="group.label">
+                <v-radio-group v-model="bid[group.value]" :label="group.label" @change="tramitateDialog = true">
+                  <v-row>
+                    <v-col v-for="state in states" :key="state.label">
+                      <v-radio
+                        :label="state.label"
+                        :value="state.value"
+                        @click="newStatus = `${state.label} ${group.label}`"
+                      />
+                    </v-col>
+                    <v-col>
+                      <v-btn
+                        icon
+                        @click="
+                          bid[group.value] = null
+                          tramitateDialog = true
+                        "
+                      >
+                        <v-icon>mdi-eraser-variant</v-icon>
+                      </v-btn>
+                    </v-col>
+                  </v-row>
+                </v-radio-group>
+              </div>
+            </v-col>
+          </v-row>
+        </div>
 
-      <v-dialog v-model="historyDialog" max-width="1000">
-        <template v-slot:activator="{ on }">
-          <v-btn color="pink" block outlined v-on="on" @click="fetchHistory">
-            Show history?
-            <v-icon right>mdi-history</v-icon>
-          </v-btn>
-        </template>
-        <v-card>
-          <v-card-title>
-            <v-row>
-              <v-col>History</v-col>
-              <v-col class="flex-grow-0">
-                <close-button @click="historyDialog = false" />
-              </v-col>
-            </v-row>
-          </v-card-title>
-          <v-card-text v-if="history.length">
-            <history-list :history="history" />
-          </v-card-text>
-        </v-card>
-      </v-dialog>
-    </div>
+        <v-row>
+          <v-col>
+            <v-dialog v-model="historyDialog" max-width="1000">
+              <template v-slot:activator="{ on }">
+                <v-btn color="pink" outlined v-on="on" @click="fetchHistory">
+                  Ver historial
+                  <v-icon right>mdi-history</v-icon>
+                </v-btn>
+              </template>
+              <v-card>
+                <v-card-title>
+                  <v-row>
+                    <v-col>History</v-col>
+                    <v-col class="flex-grow-0">
+                      <close-button @click="historyDialog = false" />
+                    </v-col>
+                  </v-row>
+                </v-card-title>
+                <v-card-text v-if="history.length">
+                  <history-list :history="history" />
+                </v-card-text>
+              </v-card>
+            </v-dialog>
+          </v-col>
+        </v-row>
+
+        <v-row v-if="pushToTitle">
+          <v-col>
+            <v-btn color="error" @click="$emit('push-to')"> Mover a la {{ pushToTitle }}? </v-btn>
+          </v-col>
+        </v-row>
+      </v-col>
+
+      <v-divider vertical />
+
+      <v-col>
+        <v-alert v-if="bid.puntos.length === 0" type="warning">No puntos!</v-alert>
+        <puntos-list v-else :puntos="bid.puntos" />
+      </v-col>
+    </v-row>
   </div>
 </template>
 
@@ -155,7 +172,7 @@ export default {
   props: {
     pushToTitle: {
       type: String,
-      default: 'PAPELERA',
+      default: null,
     },
     bidId: {
       type: Number,
@@ -165,11 +182,17 @@ export default {
       type: Boolean,
       default: false,
     },
+    showPushToKo: {
+      type: Boolean,
+      default: false,
+    },
   },
   data() {
     return {
+      offerDetailDialog: false,
       loading: false,
       bid: null,
+      newStatus: null,
       history: [],
       historyDialog: false,
       groups: [
@@ -259,6 +282,7 @@ export default {
           doc: this.bid.doc,
           call: this.bid.call,
           scoring: this.bid.scoring,
+          new_status: this.newStatus,
           message: this.message,
           internal_message: this.internalMessage,
         })

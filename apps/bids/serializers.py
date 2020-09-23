@@ -6,6 +6,8 @@ from django.db import transaction
 from django.utils import timezone
 from rest_framework import serializers
 
+from apps.users.models import CustomUser
+
 from .models import Bid, BidStory
 
 
@@ -25,6 +27,7 @@ class BidSerializer(BidListSerializer):
     status = serializers.SerializerMethodField()
     message = serializers.CharField(write_only=True, allow_blank=True, allow_null=True)
     internal_message = serializers.CharField(write_only=True, allow_blank=True, allow_null=True)
+    new_status = serializers.CharField(write_only=True)
 
     class Meta:
         model = Bid
@@ -33,6 +36,7 @@ class BidSerializer(BidListSerializer):
             "offer",
             "puntos_count",
             "status",
+            "new_status",
             "puntos",
             "commission",
             "responsible",
@@ -52,6 +56,14 @@ class BidSerializer(BidListSerializer):
         user = self.context["request"].user
         with transaction.atomic():
             bid: Bid = super().save(**kwargs)
+
+            BidStory.objects.create(
+                user=user,
+                bid=bid,
+                status=self.validated_data["new_status"],
+                message=self.validated_data.get("message"),
+                internal_message=self.validated_data.get("internal_message"),
+            )
 
             bid_user = bid.user
             bid_user_client_role = bid_user.client_role
@@ -74,14 +86,6 @@ class BidSerializer(BidListSerializer):
 
             elif bid_user_client_role == "client":
                 ...
-
-            BidStory.objects.create(
-                user=user,
-                bid=bid,
-                status=bid.get_status(by=user),
-                message=self.validated_data.get("message"),
-                internal_message=self.validated_data.get("internal_message"),
-            )
 
         return bid
 
@@ -110,3 +114,9 @@ class BidStorySerializer(serializers.ModelSerializer):
         if instance.user == self.context["request"].user:
             return "me"
         return instance.user.fullname
+
+    def to_representation(self, bid_story: BidStory):
+        ret = super().to_representation(bid_story)
+        if self.context["request"].user.is_client:
+            del ret["internal_message"]
+        return ret
