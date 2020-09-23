@@ -42,11 +42,11 @@ class Bid(models.Model):
         if False in (self.doc, self.call, self.scoring):
             return "KO"
         elif self.success:
-            if self.paid is False and by.role in ("admin", "tramitacion"):
+            if self.paid is False and by.role in ("admin", "tramitacion", "agent"):
                 return "Pendiente pagado"
-            if by.role in ("admin", "tramitacion"):
+            elif by.role in ("admin", "tramitacion"):
                 return "Firmado"
-            return "OK"
+            return "Pagado" if by.role == "agent" else "OK"
 
         return self.DEFAULT_STATUS
 

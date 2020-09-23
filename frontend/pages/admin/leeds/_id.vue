@@ -8,7 +8,12 @@
 
     <v-card-text>
       <v-tabs v-model="tabs" centered>
-        <v-tab :disabled="!user.bids.length">Solicitud ({{ user.bids.length }})</v-tab>
+        <v-tab :disabled="!user.bids.length">
+          > Solicitud ({{ user.bids.length }})
+          <v-btn icon>
+            <v-icon>mdi-file</v-icon>
+          </v-btn>
+        </v-tab>
         <v-tab :disabled="!calls.length"> Llamadas ({{ calls.length }}) </v-tab>
         <v-tab :disabled="!history.length">Historia ({{ history.length }})</v-tab>
         <v-tab :disabled="!puntos.length"> Puntos suministros ({{ puntos.length }}) </v-tab>

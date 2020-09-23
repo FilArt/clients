@@ -6,8 +6,6 @@ from django.db import transaction
 from django.utils import timezone
 from rest_framework import serializers
 
-from apps.users.models import CustomUser
-
 from .models import Bid, BidStory
 
 
@@ -27,7 +25,7 @@ class BidSerializer(BidListSerializer):
     status = serializers.SerializerMethodField()
     message = serializers.CharField(write_only=True, allow_blank=True, allow_null=True)
     internal_message = serializers.CharField(write_only=True, allow_blank=True, allow_null=True)
-    new_status = serializers.CharField(write_only=True)
+    new_status = serializers.CharField(write_only=True, required=False, allow_blank=True, allow_null=True)
 
     class Meta:
         model = Bid
@@ -57,13 +55,15 @@ class BidSerializer(BidListSerializer):
         with transaction.atomic():
             bid: Bid = super().save(**kwargs)
 
-            BidStory.objects.create(
-                user=user,
-                bid=bid,
-                status=self.validated_data["new_status"],
-                message=self.validated_data.get("message"),
-                internal_message=self.validated_data.get("internal_message"),
-            )
+            new_status = self.validated_data.get("new_status")
+            if new_status:
+                BidStory.objects.create(
+                    user=user,
+                    bid=bid,
+                    status=new_status,
+                    message=self.validated_data.get("message"),
+                    internal_message=self.validated_data.get("internal_message"),
+                )
 
             bid_user = bid.user
             bid_user_client_role = bid_user.client_role
