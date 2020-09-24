@@ -80,6 +80,7 @@
                 @input="errorMessages2.email = null"
               />
               <v-text-field
+                v-if="showLogin"
                 id="new-password"
                 v-model="form.password"
                 prepend-icon="mdi-lock"
