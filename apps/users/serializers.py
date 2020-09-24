@@ -124,6 +124,7 @@ class UserListSerializer(DynamicFieldsMixin, serializers.ModelSerializer):
             "scorings",
             "calls",
             "paid_count",
+            "canal_paid_count",
             "fixed_salary",
             "agent_type",
         )
@@ -150,6 +151,8 @@ class UserListSerializer(DynamicFieldsMixin, serializers.ModelSerializer):
         rep = super(UserListSerializer, self).to_representation(instance)
         if instance.responsible:
             rep["responsible_fn"] = instance.responsible.fullname
+            if instance.responsible.canal:
+                rep["canal_fn"] = instance.responsible.canal.fullname
         return rep
 
 

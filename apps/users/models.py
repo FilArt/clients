@@ -167,6 +167,11 @@ class CustomUser(AbstractUser):
         return f"{money} €"
 
     @property
+    def canal_paid_count(self) -> str:
+        money = self.bids.aggregate(paid_sum=Sum("canal_commission"))["paid_sum"] or 0
+        return f"{money} €"
+
+    @property
     def is_client(self) -> bool:
         return self.role is None
 

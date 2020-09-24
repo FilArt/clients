@@ -20,7 +20,9 @@ class Bid(models.Model):
     offer = models.ForeignKey("calculator.Offer", on_delete=models.CASCADE)
     created_at = models.DateTimeField(auto_now_add=True)
     commission = models.DecimalField(max_digits=6, decimal_places=2, default=0)
+    canal_commission = models.DecimalField(max_digits=6, decimal_places=2, default=0)
     paid = models.BooleanField(default=False)
+    canal_paid = models.BooleanField(default=False)
     doc = models.BooleanField(verbose_name=_("Is docs ok?"), blank=True, null=True)
     scoring = models.BooleanField(verbose_name=_("Is scoring ok?"), blank=True, null=True)
     call = models.BooleanField(verbose_name=_("Is call ok?"), blank=True, null=True)
@@ -45,6 +47,8 @@ class Bid(models.Model):
             if self.paid is False and by.role in ("admin", "tramitacion", "agent"):
                 return "Pendiente pagado"
             elif by.role in ("admin", "tramitacion"):
+                if self.user.responsible.canal and (not self.canal_paid or self.canal_commission <= 0):
+                    return "Firmado (canal no se paga)"
                 return "Firmado"
             return "Pagado" if by.role == "agent" else "OK"
 

@@ -55,36 +55,74 @@
         </v-row>
 
         <div v-if="['admin', 'tramitacion'].includes($auth.user.role)">
-          <v-row v-if="facturacion" align="center">
-            <v-col>
-              <v-toolbar>Responsable: {{ bid.responsible || '...' }}</v-toolbar>
+          <div v-if="facturacion">
+            <v-row align="center">
+              <v-col>
+                <v-toolbar>Responsable: {{ bid.responsible || '...' }}</v-toolbar>
 
-              {{ bid.agent_type }}
-              <v-radio-group
-                :value="commissions.map((c) => c.value).indexOf(bid.commission)"
-                label="Comisiones"
-                @change="pagar('commission', commissions[$event].value)"
-              >
-                <v-radio v-for="(commission, idx) in commissions" :key="idx" :value="idx" :label="commission.text" />
-                <v-text-field
-                  v-model="bid.commission"
-                  label="Variable"
-                  append-icon="mdi-content-save"
-                  prepend-icon="mdi-currency-eur"
-                  @click:append="pagar('commission', bid.commission)"
-                />
-              </v-radio-group>
-            </v-col>
+                <v-radio-group
+                  :value="commissions.map((c) => c.value).indexOf(bid.commission)"
+                  label="Comisiones"
+                  @change="pagar('commission', commissions[$event].value)"
+                >
+                  <v-radio v-for="(commission, idx) in commissions" :key="idx" :value="idx" :label="commission.text" />
+                  <v-text-field
+                    v-model="bid.commission"
+                    label="Variable"
+                    append-icon="mdi-content-save"
+                    prepend-icon="mdi-currency-eur"
+                    @click:append="pagar('commission', bid.commission)"
+                  />
+                </v-radio-group>
+              </v-col>
 
-            <v-spacer />
+              <v-spacer />
 
-            <v-col>
-              <v-radio-group v-model="bid.paid" :error-messages="bidErrors.paid" @change="pagar('paid', bid.paid)">
-                <v-radio label="Pagado" :value="true" color="success" />
-                <v-radio label="Pendiente" :value="false" color="error" />
-              </v-radio-group>
-            </v-col>
-          </v-row>
+              <v-col>
+                <v-radio-group v-model="bid.paid" :error-messages="bidErrors.paid" @change="pagar('paid', bid.paid)">
+                  <v-radio label="Pagado" :value="true" color="success" />
+                  <v-radio label="Pendiente" :value="false" color="error" />
+                </v-radio-group>
+              </v-col>
+            </v-row>
+
+            <v-row v-if="bid.canal" align="center">
+              <v-col>
+                <v-toolbar>Canal: {{ bid.canal || '...' }}</v-toolbar>
+
+                <v-radio-group
+                  :value="bid.canal_commission"
+                  label="Canal comisiones"
+                  @change="pagar('canal_commission', bid.offer.canal_commission)"
+                >
+                  <v-radio
+                    :value="bid.offer.canal_commission"
+                    :label="`Canal comisiones: ${bid.offer.canal_commission} €`"
+                  />
+                  <v-text-field
+                    v-model="bid.canal_commission"
+                    label="Variable"
+                    append-icon="mdi-content-save"
+                    prepend-icon="mdi-currency-eur"
+                    @click:append="pagar('canal_commission', bid.canal_commission)"
+                  />
+                </v-radio-group>
+              </v-col>
+
+              <v-spacer />
+
+              <v-col>
+                <v-radio-group
+                  v-model="bid.canal_paid"
+                  :error-messages="bidErrors.canal_paid"
+                  @change="pagar('canal_paid', bid.canal_paid)"
+                >
+                  <v-radio label="Pagado" :value="true" color="success" />
+                  <v-radio label="Pendiente" :value="false" color="error" />
+                </v-radio-group>
+              </v-col>
+            </v-row>
+          </div>
 
           <v-row v-else>
             <v-col>
@@ -257,22 +295,8 @@ export default {
       this.history = await this.$axios.$get(`bids/bids/${this.bidId}/history/`)
     },
     async fetchBid() {
-      const fields = [
-        'id',
-        'offer',
-        'status',
-        'offer',
-        'puntos',
-        'responsible',
-        'paid',
-        'doc',
-        'scoring',
-        'call',
-        'commission',
-        'agent_type',
-      ].join()
       try {
-        this.bid = await this.$axios.$get(`bids/bids/${this.bidId}/?fields=${fields}`)
+        this.bid = await this.$axios.$get(`bids/bids/${this.bidId}/`)
       } catch (e) {
         if (e.response.status === 403) {
           await this.$swal({ title: 'Permission denied', icon: 'error' })

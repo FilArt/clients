@@ -43,7 +43,7 @@ export default {
     Tramitacion: () => import('~/components/support/Tramitacion'),
   },
   async asyncData({ $axios, params }) {
-    const user = await $axios.$get(`users/users/${params.id}`)
+    const user = await $axios.$get(`users/users/${params.id}/`)
 
     return {
       user,

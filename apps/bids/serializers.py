@@ -21,6 +21,7 @@ class BidSerializer(BidListSerializer):
     offer = DetailOfferSerializer()
     puntos = serializers.ListSerializer(child=PuntoSerializer())
     responsible = serializers.CharField(source="user.responsible", read_only=True)
+    canal = serializers.CharField(source="user.responsible.canal", read_only=True)
     agent_type = serializers.CharField(source="user.agent_type", read_only=True)
     status = serializers.SerializerMethodField()
     message = serializers.CharField(write_only=True, allow_blank=True, allow_null=True)
@@ -36,15 +37,18 @@ class BidSerializer(BidListSerializer):
             "status",
             "new_status",
             "puntos",
-            "commission",
-            "responsible",
             "agent_type",
-            "paid",
             "doc",
             "scoring",
             "call",
             "message",
             "internal_message",
+            "commission",
+            "canal_commission",
+            "responsible",
+            "canal",
+            "paid",
+            "canal_paid",
         ]
 
     def get_status(self, bid: Bid) -> str:

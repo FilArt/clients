@@ -1,22 +1,21 @@
 <template>
   <v-card>
     <v-card-text>
-      <v-row>
+      <v-row align="top">
         <v-col>
-          <vue-ctk-date-time-picker
+          <date-time-filter
             v-model="datesFilter"
-            label="Fechas"
             format="YYYY-MM-DD HH:mm"
             formatted="DD/MM/YYYY HH:mm"
             range
-            color="indigo"
-            :dark="$vuetify.theme.isDark"
+            @input="refresh"
           />
         </v-col>
 
         <v-col>
           <v-autocomplete
             v-model="agentsFilter"
+            dense
             label="Agentes"
             :items="$store.state.responsibles"
             outlined
@@ -24,6 +23,7 @@
             item-value="id"
             multiple
             clearable
+            @change="refresh"
           />
         </v-col>
       </v-row>
@@ -52,6 +52,9 @@ import { eachDayOfInterval, addDays, format } from 'date-fns'
 import constants from '@/lib/constants'
 
 export default {
+  components: {
+    DateTimeFilter: () => import('~/components/DateTimeFilter'),
+  },
   data() {
     const fdates = [addDays(new Date(), -30), new Date()].map((d) => format(d, 'yyyy-MM-dd HH:mm'))
     return {
@@ -156,14 +159,6 @@ export default {
       usersLoaded: false,
     }
   },
-  watch: {
-    async datesFilter() {
-      await this.refresh()
-    },
-    async agentsFilter() {
-      await this.refresh()
-    },
-  },
 
   async created() {
     await this.$store.dispatch('fetchResponsibles')
@@ -175,12 +170,20 @@ export default {
 
   methods: {
     async refresh() {
-      const { start, end } = this.datesFilter
-      const clients = await this.$axios.$get(
-        `users/users/?fields=responsible,date_joined_date,status&ordering=date_joined&date_joined__range=${start},${end}&responsible__in=${this.agentsFilter.join(
-          ',',
-        )}&role__isnull=true`,
-      )
+      const params = {
+        responsible__in: this.agentsFilter.join(','),
+        role__isnull: true,
+        ordering: 'date_joined',
+        fields: 'status',
+      }
+      if (this.datesFilter && this.datesFilter.end) {
+        const { start, end } = this.datesFilter
+        params.date_joined__range = `${start},${end}`
+      }
+      const paramsStr = Object.keys(params)
+        .map((k) => k + '=' + params[k])
+        .join('&')
+      const clients = await this.$axios.$get(`users/users/?${paramsStr}`)
       this.chartOptions.xAxis.categories = clients.map((c) => c.status).filter(constants.onlyUnique)
       this.chartOptions.series[0].data = this.chartOptions.xAxis.categories.map(
         (status) => clients.filter((c) => c.status === status).length,
