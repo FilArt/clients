@@ -38,8 +38,6 @@ class PhoneNumberField(models.CharField):
 
 
 PERMISSIONS_CHOICES = (
-    ("profile", _("Profile")),
-    ("bids", _("Bids")),
     ("offers", _("Offers")),
     ("calculator", _("Calculator")),
     ("leeds_access", _("Leeds")),
@@ -47,7 +45,7 @@ PERMISSIONS_CHOICES = (
 
 
 def get_default_user_permissions():
-    return ["profile", "bids", "offers", "calculator"]
+    return []
 
 
 class CustomUser(AbstractUser):
@@ -74,7 +72,6 @@ class CustomUser(AbstractUser):
     AGENT_TYPE_CHOICES = (
         ("agent", _("Agent")),
         ("canal", _("Canal")),
-        ("fixed", _("Agent with fixed salary")),
     )
 
     source = models.CharField(max_length=30, choices=SOURCES_CHOICES, default="default")
@@ -108,6 +105,10 @@ class CustomUser(AbstractUser):
         ),
     )
     agent_type = models.CharField(max_length=20, choices=AGENT_TYPE_CHOICES, blank=True, null=True)
+    fixed_salary = models.BooleanField(blank=True, null=True)
+    canal = models.ForeignKey(
+        "users.CustomUser", null=True, blank=True, on_delete=models.SET_NULL, related_name="agents"
+    )
 
     invited_by = models.ForeignKey(
         "users.CustomUser", blank=True, null=True, related_name="invites", on_delete=models.SET_NULL

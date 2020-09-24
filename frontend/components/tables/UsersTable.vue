@@ -2,7 +2,7 @@
   <div>
     <v-data-table
       :loading="loading"
-      :headers="headers"
+      :headers="role && role !== 'agent' ? headers.filter((h) => h.value !== 'agent_type') : headers"
       :items="users"
       :options.sync="query"
       :server-items-length="total"
@@ -426,7 +426,7 @@ export default {
               const value = query[k]
               return value instanceof Array ? `${k}=${value.join()}` : `${k}=${value}`
             })
-            .join('&')}&fields=${this.headers.map((h) => h.value).join(',')}`,
+            .join('&')}`,
         )
         this.users = data.results
         this.total = data.count

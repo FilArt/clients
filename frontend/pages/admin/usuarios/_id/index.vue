@@ -52,10 +52,27 @@
             :items="[
               { text: 'Agente', value: 'agent' },
               { text: 'Canal', value: 'canal' },
-              { text: 'Sueldo fijo', value: 'fixed' },
             ]"
             :append-icon="user.agent_type !== settings.agent_type ? 'mdi-content-save' : null"
             @click:append="update({ agent_type: settings.agent_type })"
+          />
+
+          <agents-list
+            v-if="settings.agent_type === 'canal'"
+            v-model="settings.agents"
+            label="Agentes de canal"
+            multiple
+            :error-messages="errorMessages.agents"
+            :append-icon="JSON.stringify(user.agents) !== JSON.stringify(settings.agents) ? 'mdi-content-save' : ''"
+            @click:append="update({ agents: settings.agents })"
+          />
+
+          <v-switch
+            v-model="settings.fixed_salary"
+            label="Sueldo fijo?"
+            :error-messages="errorMessages.fixed_salary"
+            :append-icon="user.fixed_salary !== settings.fixed_salary ? 'mdi-content-save' : null"
+            @click:append="update({ fixed_salary: settings.fixed_salary })"
           />
 
           <v-select
@@ -121,6 +138,7 @@
 export default {
   components: {
     SnackBarIt: () => import('@/components/snackbar/SnackBarIt'),
+    AgentsList: () => import('@/components/selects/AgentsList'),
   },
   async asyncData({ params, $axios }) {
     const user = await $axios.$get(`/users/manage_users/${params.id}/`)
@@ -154,11 +172,15 @@ export default {
   },
   methods: {
     update(data) {
-      this.$axios.$patch(this.apiUrl, data).then((user) => {
-        this.user = user
-        this.settings = { ...user }
-        this.notificationKey += 1
-      })
+      this.errorMessages = {}
+      this.$axios
+        .$patch(this.apiUrl, data)
+        .then((user) => {
+          this.user = user
+          this.settings = { ...user }
+          this.notificationKey += 1
+        })
+        .catch((e) => (this.errorMessages = e.response.data))
     },
     deleteUser() {
       this.$swal({

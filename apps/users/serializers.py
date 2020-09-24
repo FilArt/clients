@@ -124,6 +124,8 @@ class UserListSerializer(DynamicFieldsMixin, serializers.ModelSerializer):
             "scorings",
             "calls",
             "paid_count",
+            "fixed_salary",
+            "agent_type",
         )
 
     def get_status(self, user: CustomUser) -> str:
@@ -144,6 +146,7 @@ class UserListSerializer(DynamicFieldsMixin, serializers.ModelSerializer):
         return self.context["request"].user.unread_messages.filter(message__author=instance).count()
 
     def to_representation(self, instance: CustomUser):
+        # todo переделать
         rep = super(UserListSerializer, self).to_representation(instance)
         if instance.responsible:
             rep["responsible_fn"] = instance.responsible.fullname
@@ -175,7 +178,9 @@ class ManageUserSerializer(UserListSerializer):
             "password",
             "email",
             "agent_type",
+            "fixed_salary",
             "permissions",
+            "agents",
         ]
         extra_kwargs = {"password": {"write_only": True}, "agent_type": {"allow_null": True}}
 
@@ -187,7 +192,28 @@ class ManageUserSerializer(UserListSerializer):
                 user.set_password(password)
             except DjangoValidationError as e:
                 raise ValidationError({"password": e.messages})
-        return super().update(user, validated_data)
+
+        if "agents" in validated_data:
+            agents = validated_data.pop("agents")
+            for agent in agents:
+                if agent.id == user.id:
+                    raise ValidationError(
+                        {"agents": ["El canal y el agente no pueden ser la misma persona! (%s = %s)" % (agent, user)]}
+                    )
+                elif agent.agent_type != "agent":
+                    raise ValidationError({"agents": ["%s - ¡No es un agente, sino un canal!" % agent]})
+
+                agent.canal = user
+                agent.save(update_fields=["canal"])
+
+        ret = super().update(user, validated_data)
+
+        # reset agents for canal
+        user.refresh_from_db()
+        if user.agent_type == "agent" and user.agents.exists():
+            user.agents.update(canal=None)
+
+        return ret
 
 
 class PhoneSerializer(serializers.ModelSerializer):
@@ -199,6 +225,7 @@ class PhoneSerializer(serializers.ModelSerializer):
 class UserSerializer(UserListSerializer):
     bids = BidListSerializer(many=True)
     phones = serializers.ListSerializer(child=PhoneSerializer())
+    agents = UserListSerializer(many=True)
 
     class Meta:
         model = CustomUser
