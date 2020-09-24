@@ -225,7 +225,6 @@ class PhoneSerializer(serializers.ModelSerializer):
 class UserSerializer(UserListSerializer):
     bids = BidListSerializer(many=True)
     phones = serializers.ListSerializer(child=PhoneSerializer())
-    agents = UserListSerializer(many=True)
 
     class Meta:
         model = CustomUser
