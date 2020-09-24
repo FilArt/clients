@@ -81,20 +81,6 @@
             label="Permissions"
             :items="[
               {
-                text: 'Perfil',
-                value: 'profile',
-              },
-
-              {
-                text: 'Bids',
-                value: 'bids',
-              },
-
-              {
-                text: 'Cartera',
-                value: 'bids',
-              },
-              {
                 text: 'Ofertas',
                 value: 'offers',
               },
