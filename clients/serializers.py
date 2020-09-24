@@ -328,7 +328,6 @@ class FastContractSerializer(serializers.ModelSerializer):
             "offer",
             "iban",
             "from_user",
-            "cif",
             "dni",
             "legal_representative",
         ]
