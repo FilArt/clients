@@ -5,7 +5,6 @@
       v-show="showResults && offers.length"
       :headers="headers"
       :items="offers"
-      sort-by="profit"
       @click:row="$auth.loggedIn ? $router.push(getDetailUrl($event)) : $emit('offer-choosed', $event)"
     >
       <template v-slot:[`item.company_logo`]="{ item }">
@@ -13,6 +12,10 @@
           <v-img :src="item.company_logo || '/no-image.svg'" />
         </v-avatar>
       </template>
+
+      <template v-slot:[`item.profit_num`]="{ item }"> {{ item.profit_num }} € </template>
+      <template v-slot:[`item.annual_total_num`]="{ item }"> {{ item.annual_total_num }} € </template>
+
       <template v-if="$auth.loggedIn" v-slot:[`item.actions`]="{ item }">
         <v-btn icon nuxt :to="getDetailUrl(item)">
           <v-icon>mdi-eye</v-icon>
@@ -187,11 +190,11 @@ export default {
         },
         {
           text: 'Ahorro en factura',
-          value: 'profit',
+          value: 'profit_num',
         },
         {
           text: 'Ahorro anual',
-          value: 'annual_total',
+          value: 'annual_total_num',
         },
         {
           value: 'actions',

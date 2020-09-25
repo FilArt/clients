@@ -50,7 +50,7 @@
               <td :rowspan="powers.length + 1">Precio por potencia:</td>
             </tr>
 
-            <tr v-for="(power, pIdx) in powers" :key="pIdx">
+            <tr v-for="(power, pIdx) in powers" :key="'p' + pIdx">
               <td>{{ power.text }}: {{ power.value }} €</td>
             </tr>
 
@@ -59,7 +59,7 @@
             <tr>
               <td :rowspan="consumptions.length + 1">Precio por consumo:</td>
             </tr>
-            <tr v-for="(consumption, cIdx) in consumptions" :key="cIdx">
+            <tr v-for="(consumption, cIdx) in consumptions" :key="'c' + cIdx">
               <td>{{ consumption.text }}: {{ consumption.value }} €</td>
             </tr>
           </template>

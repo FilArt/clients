@@ -121,9 +121,11 @@ class CalculatorSerializer(serializers.ModelSerializer):
 
     rental = BeautyFloatField(show_euro=True)
     profit = BeautyFloatField(show_euro=True)
+    profit_num = serializers.DecimalField(read_only=True, max_digits=10, decimal_places=2, source="profit")
     profit_percent = serializers.IntegerField(read_only=True)
     total = BeautyFloatField(show_euro=True)
     annual_total = BeautyFloatField(show_euro=True)
+    annual_total_num = serializers.DecimalField(read_only=True, max_digits=10, decimal_places=2, source="annual_total")
 
     class Meta:
         model = Offer
@@ -156,8 +158,10 @@ class CalculatorSerializer(serializers.ModelSerializer):
             "total",
             "current_price",
             "profit",
+            "profit_num",
             "profit_percent",
             "annual_total",
+            "annual_total_num",
             "with_calculations",
         ]
         extra_kwargs = {
@@ -202,10 +206,13 @@ class CalculatorSerializer(serializers.ModelSerializer):
                 st_p2=F("p2") * Value(data["p2"]) * Value(data["period"]),
                 st_p3=F("p3") * Value(data["p3"]) * Value(data["period"]),
             )
-            .annotate(subtotal=F("st_c1") + F("st_c2") + F("st_c3") + F("st_p1") + F("st_p2") + F("st_p3"),)
+            .annotate(
+                subtotal=F("st_c1") + F("st_c2") + F("st_c3") + F("st_p1") + F("st_p2") + F("st_p3"),
+            )
             .annotate(after_rental=F("subtotal") + Value(rental))
             .annotate(
-                tax=F("subtotal") * Value(calculator_settings.tax), iva=F("after_rental") * calculator_settings.iva,
+                tax=F("subtotal") * Value(calculator_settings.tax),
+                iva=F("after_rental") * calculator_settings.iva,
             )
             .annotate(total=F("after_rental") + F("iva") + F("tax"))
             .annotate(profit=-F("total") + current_price)
@@ -234,8 +241,8 @@ class CalculatorSerializer(serializers.ModelSerializer):
 
 class CalculateApiView(LoggingMixin, APIView):
     permission_classes = []
-    http_method_names = ['post']
-    logging_methods = ['POST']
+    http_method_names = ["post"]
+    logging_methods = ["POST"]
 
     def post(self, request: Request):
         serializer = CalculatorSerializer(data=request.data)

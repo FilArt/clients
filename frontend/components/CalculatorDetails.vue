@@ -1,31 +1,22 @@
 <template>
   <div v-if="calculations.tax">
     <v-card min-width="45%" class="mx-auto" max-width="500px">
-      <v-card-title style="padding-bottom: 0"> Termino de potencia </v-card-title>
+      <template v-for="item in terminos">
+        <div :key="item.text">
+          <v-card-title style="padding-bottom: 0"> {{ item.text }} </v-card-title>
 
-      <v-card-text style="line-height: 2px">
-        <v-row v-for="number in [1, 2, 3]" :key="number" align="center">
-          <div v-if="calculations[`c_st_p${number}`]" class="d-flex">
-            <div class="popusk"></div>
-            <v-col class="font-weight-bold flex-grow-0">P{{ number }}</v-col>
-            <div class="popusk"></div>
-            <v-col style="font-size: 12px">{{ calculations[`c_st_p${number}`] }}</v-col>
-          </div>
-        </v-row>
-      </v-card-text>
-
-      <v-card-title style="padding-bottom: 0"> Termino de energia </v-card-title>
-
-      <v-card-text style="line-height: 2px">
-        <v-row v-for="number in [1, 2, 3]" :key="number" align="center">
-          <div v-if="calculations[`c_st_p${number}`]" class="d-flex">
-            <div class="popusk"></div>
-            <v-col class="font-weight-bold flex-grow-0 text-no-wrap">P{{ number }}</v-col>
-            <div class="popusk"></div>
-            <v-col class="text-no-wrap" style="font-size: 12px">{{ calculations[`c_st_c${number}`] }}</v-col>
-          </div>
-        </v-row>
-      </v-card-text>
+          <v-card-text style="line-height: 2px">
+            <v-row v-for="(piece, idx) in item.items" :key="idx" align="center">
+              <div class="d-flex">
+                <div class="popusk"></div>
+                <v-col class="font-weight-bold flex-grow-0">P{{ idx + 1 }}</v-col>
+                <div class="popusk"></div>
+                <v-col style="font-size: 12px">{{ piece }}</v-col>
+              </div>
+            </v-row>
+          </v-card-text>
+        </div>
+      </template>
 
       <v-card-title style="padding-bottom: 0"> Otros conceptos </v-card-title>
 
@@ -110,6 +101,17 @@ export default {
       form: (state) => state.calculatorForm,
       tarif: (state) => state.tarif,
     }),
+    terminos() {
+      return [
+        { text: 'Termino de potencia', items: 'c' },
+        { text: 'Termino de energia', items: 'p' },
+      ].map((termino) => {
+        return {
+          ...termino,
+          items: [1, 2, 3].map((number) => this.calculations[`c_st_${termino.items}${number}`]).filter((x) => x),
+        }
+      })
+    },
   },
   async mounted() {
     await this.getDetails()

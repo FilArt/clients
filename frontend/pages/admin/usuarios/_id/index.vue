@@ -79,6 +79,7 @@
             v-model="permissions"
             multiple
             label="Permissions"
+            chips
             :items="[
               {
                 text: 'Ofertas',

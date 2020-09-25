@@ -60,7 +60,7 @@ export default {
       const user = this.$auth.user
       const { permissions, role } = user
       if (role === 'admin') {
-        items = [
+        items = items.concat([
           {
             icon: 'mdi-monitor-dashboard',
             title: 'DASHBOARD',
@@ -101,9 +101,9 @@ export default {
             title: 'OFERTAS',
             to: '/admin/ofertas',
           },
-        ]
+        ])
       } else if (role === 'agent') {
-        items = [
+        items = items.concat([
           {
             icon: 'mdi-file-document-edit',
             title: 'TRAMITACIÓN',
@@ -124,8 +124,8 @@ export default {
             title: 'Call&Visit',
             href: 'https://app.call-visit.com',
           },
-        ]
-        if (user.permissions.includes('leeds_access')) {
+        ])
+        if (permissions.includes('leeds_access')) {
           items.splice(2, 0, {
             icon: 'mdi-account-multiple',
             title: 'LEEDS',
@@ -133,7 +133,7 @@ export default {
           })
         }
       } else {
-        items = [
+        items = items.concat([
           {
             icon: 'mdi-briefcase',
             title: 'Cartera',
@@ -144,7 +144,7 @@ export default {
             title: 'Asistente personal',
             to: '/assistant',
           },
-        ]
+        ])
       }
 
       if (permissions.includes('offers')) {
@@ -154,7 +154,9 @@ export default {
           to: '/ofertas',
         })
       }
-      // if (permissions.includes('calculator')) {items.push({icon:'mdi-calculator',title:'Comparador',to:'/calculator',})}
+      if (permissions.includes('calculator')) {
+        items.push({ icon: 'mdi-calculator', title: 'COMPARADOR', to: '/comparador' })
+      }
 
       if (role === 'support') {
         items.push({
