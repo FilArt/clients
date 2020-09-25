@@ -9,9 +9,9 @@
             <v-row v-for="(piece, idx) in item.items" :key="idx" align="center">
               <div class="d-flex">
                 <div class="popusk"></div>
-                <v-col class="font-weight-bold flex-grow-0">P{{ idx + 1 }}</v-col>
+                <v-col class="font-weight-bold flex-grow-0">{{ piece.text }}</v-col>
                 <div class="popusk"></div>
-                <v-col style="font-size: 12px">{{ piece }}</v-col>
+                <v-col style="font-size: 12px">{{ piece.value }}</v-col>
               </div>
             </v-row>
           </v-card-text>
@@ -103,12 +103,17 @@ export default {
     }),
     terminos() {
       return [
-        { text: 'Termino de potencia', items: 'c' },
-        { text: 'Termino de energia', items: 'p' },
+        { text: 'Termino de potencia', items: 'p' },
+        { text: 'Termino de energia', items: 'c' },
       ].map((termino) => {
         return {
           ...termino,
-          items: [1, 2, 3].map((number) => this.calculations[`c_st_${termino.items}${number}`]).filter((x) => x),
+          items: [1, 2, 3]
+            .map((number) => ({
+              text: `${termino.items.toUpperCase()}${number}`,
+              value: this.calculations[`c_st_${termino.items}${number}`],
+            }))
+            .filter((t) => t.value),
         }
       })
     },
