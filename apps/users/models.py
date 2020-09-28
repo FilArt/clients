@@ -1,3 +1,4 @@
+import math
 from functools import cached_property
 
 from django.contrib.auth.models import AbstractUser
@@ -360,8 +361,14 @@ class Attachment(models.Model):
         return self.attachment.name
 
     @property
-    def size(self) -> int:
-        return self.attachment.size
+    def size(self) -> str:
+        size_bytes = self.attachment.size
+        if size_bytes == 0:
+            return "0B"
+        size_name = ("B", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB")
+        i = int(math.floor(math.log(size_bytes, 1024)))
+        p = math.pow(1024, i)
+        return f"{round(size_bytes / p, 2)} {size_name[i]}"
 
     def __str__(self) -> str:
         return f"{self.attachment.type} - {self.attachment} of punto {self.punto}"

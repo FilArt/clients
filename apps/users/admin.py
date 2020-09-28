@@ -56,7 +56,7 @@ class CustomUserAdmin(UserAdmin):
 
 
 class AttachmentAdmin(admin.ModelAdmin):
-    list_display = ("name", "ext", "size")
+    list_display = ("filename", "size")
 
 
 admin.site.register(CustomUser, CustomUserAdmin)
