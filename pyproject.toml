@@ -39,3 +39,27 @@ django-stubs = "^1.5.0"
 djangorestframework-stubs = "^1.2.0"
 lxml = "^4.5.2"
 black = {version = "^20.8b1", allow-prereleases = true}
+
+[tool.black]
+line-length = 120
+target-version = ['py38']
+include = '\.pyi?$'
+exclude = '''
+
+(
+  /(
+      \.eggs         # exclude a few common directories in the
+    | \.git          # root of the project
+    | \.hg
+    | \.mypy_cache
+    | \.tox
+    | \.venv
+    | _build
+    | buck-out
+    | build
+    | dist
+  )/
+  | foo.py           # also separately exclude a file named foo.py in
+                     # the root of the project
+)
+'''

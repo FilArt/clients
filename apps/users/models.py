@@ -3,8 +3,7 @@ from functools import cached_property
 
 from django.contrib.auth.models import AbstractUser
 from django.contrib.postgres.fields import ArrayField
-from django.core.exceptions import ValidationError
-from django.core.validators import MinLengthValidator
+from django.core.validators import MinLengthValidator, RegexValidator
 from django.db import models
 from django.db.models.aggregates import Sum
 from django.utils.translation import pgettext_lazy
@@ -22,20 +21,9 @@ class MyCharField(models.CharField):
         super().__init__(*args, **kwargs)
 
 
-def phone_number_validator(value):
-    if not isinstance(value, str):
-        raise Exception("Must be STRING")
-    if not value.isdigit():
-        raise ValidationError(_("Numbers only"))
-    if len(value) != 9:
-        raise ValidationError(_("Should contain 9 digits"))
-
-
-class PhoneNumberField(models.CharField):
-    def __init__(self, *args, **kwargs):
-        kwargs["max_length"] = 9
-        super().__init__(*args, **kwargs)
-        self.validators.append(phone_number_validator)
+phone_number_validator = RegexValidator(
+    regex=r"^[1-9]\d{8}$", message="Utilice este formato para su número de teléfono: 999999999"
+)
 
 
 PERMISSIONS_CHOICES = (
@@ -81,7 +69,9 @@ class CustomUser(AbstractUser):
     avatar = models.ImageField(blank=True, null=True)
     username = models.CharField(blank=True, null=True, max_length=30)
     email = models.EmailField(_("Email address"), unique=True)
-    phone = PhoneNumberField(_("Phone number"), null=True, blank=True, validators=[phone_number_validator])
+    phone = models.CharField(
+        _("Phone number"), max_length=9, null=True, blank=True, validators=[phone_number_validator]
+    )
 
     company_changed_at = models.DateTimeField(verbose_name=_("Company changed at"), null=True, blank=True)
 

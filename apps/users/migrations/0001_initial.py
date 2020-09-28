@@ -72,9 +72,7 @@ class Migration(migrations.Migration):
                 ("password", models.CharField(max_length=128, verbose_name="password")),
                 (
                     "last_login",
-                    models.DateTimeField(
-                        blank=True, null=True, verbose_name="last login"
-                    ),
+                    models.DateTimeField(blank=True, null=True, verbose_name="last login"),
                 ),
                 (
                     "is_superuser",
@@ -86,15 +84,11 @@ class Migration(migrations.Migration):
                 ),
                 (
                     "first_name",
-                    models.CharField(
-                        blank=True, max_length=30, verbose_name="first name"
-                    ),
+                    models.CharField(blank=True, max_length=30, verbose_name="first name"),
                 ),
                 (
                     "last_name",
-                    models.CharField(
-                        blank=True, max_length=150, verbose_name="last name"
-                    ),
+                    models.CharField(blank=True, max_length=150, verbose_name="last name"),
                 ),
                 (
                     "is_staff",
@@ -115,9 +109,7 @@ class Migration(migrations.Migration):
                 ),
                 (
                     "date_joined",
-                    models.DateTimeField(
-                        default=django.utils.timezone.now, verbose_name="date joined"
-                    ),
+                    models.DateTimeField(default=django.utils.timezone.now, verbose_name="date joined"),
                 ),
                 (
                     "source",
@@ -144,13 +136,11 @@ class Migration(migrations.Migration):
                 ("username", models.CharField(blank=True, max_length=30, null=True)),
                 (
                     "email",
-                    models.EmailField(
-                        max_length=254, unique=True, verbose_name="Email address"
-                    ),
+                    models.EmailField(max_length=254, unique=True, verbose_name="Email address"),
                 ),
                 (
                     "phone",
-                    apps.users.models.PhoneNumberField(
+                    models.CharField(
                         blank=True,
                         max_length=9,
                         null=True,
@@ -160,21 +150,15 @@ class Migration(migrations.Migration):
                 ),
                 (
                     "company_changed_at",
-                    models.DateTimeField(
-                        blank=True, null=True, verbose_name="Company changed at"
-                    ),
+                    models.DateTimeField(blank=True, null=True, verbose_name="Company changed at"),
                 ),
                 (
                     "dni",
-                    models.CharField(
-                        blank=True, max_length=255, null=True, verbose_name="DNI"
-                    ),
+                    models.CharField(blank=True, max_length=255, null=True, verbose_name="DNI"),
                 ),
                 (
                     "cif_dni",
-                    models.CharField(
-                        blank=True, max_length=255, null=True, verbose_name="CIF/DNI"
-                    ),
+                    models.CharField(blank=True, max_length=255, null=True, verbose_name="CIF/DNI"),
                 ),
                 (
                     "legal_representative",
@@ -268,9 +252,7 @@ class Migration(migrations.Migration):
                 ),
                 (
                     "name",
-                    apps.users.models.MyCharField(
-                        blank=True, max_length=100, null=True, verbose_name="Name"
-                    ),
+                    apps.users.models.MyCharField(blank=True, max_length=100, null=True, verbose_name="Name"),
                 ),
                 (
                     "province",
@@ -360,27 +342,19 @@ class Migration(migrations.Migration):
                 ),
                 (
                     "cups_luz",
-                    apps.users.models.MyCharField(
-                        blank=True, max_length=100, null=True, verbose_name="CUPS"
-                    ),
+                    apps.users.models.MyCharField(blank=True, max_length=100, null=True, verbose_name="CUPS"),
                 ),
                 (
                     "cups_gas",
-                    apps.users.models.MyCharField(
-                        blank=True, max_length=100, null=True, verbose_name="CUPS gas"
-                    ),
+                    apps.users.models.MyCharField(blank=True, max_length=100, null=True, verbose_name="CUPS gas"),
                 ),
                 (
                     "tarif_luz",
-                    apps.users.models.MyCharField(
-                        blank=True, max_length=100, null=True, verbose_name="Tarif"
-                    ),
+                    apps.users.models.MyCharField(blank=True, max_length=100, null=True, verbose_name="Tarif"),
                 ),
                 (
                     "tarif_gas",
-                    apps.users.models.MyCharField(
-                        blank=True, max_length=100, null=True, verbose_name="Tarif gas"
-                    ),
+                    apps.users.models.MyCharField(blank=True, max_length=100, null=True, verbose_name="Tarif gas"),
                 ),
                 ("p1", models.FloatField(blank=True, help_text="Power 1", null=True)),
                 ("p2", models.FloatField(blank=True, null=True)),
@@ -390,15 +364,11 @@ class Migration(migrations.Migration):
                 ("c3", models.FloatField(blank=True, null=True)),
                 (
                     "consumo_annual_luz",
-                    models.FloatField(
-                        blank=True, null=True, verbose_name="Annual consumption"
-                    ),
+                    models.FloatField(blank=True, null=True, verbose_name="Annual consumption"),
                 ),
                 (
                     "consumo_annual_gas",
-                    models.FloatField(
-                        blank=True, null=True, verbose_name="Annual consumption (gas)"
-                    ),
+                    models.FloatField(blank=True, null=True, verbose_name="Annual consumption (gas)"),
                 ),
                 (
                     "category",
@@ -506,9 +476,7 @@ class Migration(migrations.Migration):
                 ),
                 (
                     "phone_type",
-                    models.CharField(
-                        choices=[("mobile", "Mobile"), ("city", "City")], max_length=6
-                    ),
+                    models.CharField(choices=[("mobile", "Mobile"), ("city", "City")], max_length=6),
                 ),
                 (
                     "number",

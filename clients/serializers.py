@@ -1,14 +1,19 @@
 import logging
 
 import arrow
-from apps.bids.models import Bid
-from apps.calculator.models import Company, Offer
-from apps.users.models import Attachment, CustomUser, Punto, UserSettings, phone_number_validator
 from django.contrib.auth.base_user import BaseUserManager
 from django.db import transaction
 from drf_dynamic_fields import DynamicFieldsMixin
 from rest_framework import serializers
 
+from apps.bids.models import Bid
+from apps.calculator.models import Company, Offer
+from apps.users.models import (
+    Attachment,
+    CustomUser,
+    Punto,
+    UserSettings,
+)
 from clients.utils import notify_telegram
 
 logger = logging.getLogger(__name__)
@@ -75,9 +80,6 @@ class AccountSerializer(serializers.ModelSerializer):
     settings = UserSettingsSerializer(required=False)
     first_name = serializers.CharField(min_length=1, allow_null=False, required=True)
     last_name = serializers.CharField(min_length=1, allow_null=False, required=True)
-    phone = serializers.CharField(
-        min_length=9, max_length=9, allow_null=False, required=True, validators=[phone_number_validator]
-    )
 
     class Meta:
         model = CustomUser
@@ -230,7 +232,7 @@ class ContractOnlineSerializer(serializers.ModelSerializer):
             try:
                 notify_telegram(
                     "Nuevo usuario - contactar con asistente personal",
-                    **{str(k): str(v) for k, v in data_for_telegam.items()}
+                    **{str(k): str(v) for k, v in data_for_telegam.items()},
                 )
             except Exception as e:
                 logger.exception(e)
@@ -247,7 +249,14 @@ class AdditionalContractOnlineSerializer(ContractOnlineSerializer):
 
     class Meta:
         model = CustomUser
-        fields = (*ContractOnlineSerializer.Meta.fields, "factura", "factura_1", "dni1", "dni2", "iban")
+        fields = (
+            *ContractOnlineSerializer.Meta.fields,
+            "factura",
+            "factura_1",
+            "dni1",
+            "dni2",
+            "iban",
+        )
 
     def create(self, validated_data):
         password = BaseUserManager().make_random_password()
@@ -350,16 +359,8 @@ class FastContractSerializer(serializers.ModelSerializer):
         from_user = validated_data.pop("from_user")
         offer = validated_data.pop("offer")
 
-        company_name = " ".join(
-            [
-                name
-                for name in [
-                    validated_data.get("first_name"),
-                    validated_data.get("last_name"),
-                ]
-                if name
-            ]
-        ).strip()
+        names = [validated_data.get("first_name"), validated_data.get("last_name")]
+        company_name = " ".join([str(name) for name in names if name]).strip()
         user_data = {**validated_data, "company_name": company_name}
         user_ser = SimpleAccountSerializer(data=user_data)
         user_ser.is_valid(raise_exception=True)
@@ -426,7 +427,7 @@ class FastContractAttachmentsSerializer(serializers.ModelSerializer):
         factura_gas_1 = validated_data.get("factura_gas_1")
         factura_gas_2 = validated_data.get("factura_gas_2")
 
-        punto_fields = [f.name for f in Punto._meta.fields]
+        punto_fields = [f.name for f in getattr(Punto, "_meta").fields]
         punto = super().create({k: v for k, v in validated_data.items() if k in punto_fields})
 
         if factura:
