@@ -371,4 +371,4 @@ class Attachment(models.Model):
         return f"{round(size_bytes / p, 2)} {size_name[i]}"
 
     def __str__(self) -> str:
-        return f"{self.attachment.type} - {self.attachment} of punto {self.punto}"
+        return f"{self.attachment} of punto {self.punto}"

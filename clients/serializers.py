@@ -403,12 +403,14 @@ class FastContractSerializer(serializers.ModelSerializer):
 
 
 class FastContractAttachmentsSerializer(serializers.ModelSerializer):
-    factura = serializers.ImageField(write_only=True, required=False, allow_null=True)
-    factura_1 = serializers.ImageField(write_only=True, required=False, allow_null=True)
-    dni1 = serializers.ImageField(write_only=True, required=False, allow_null=True)
-    dni2 = serializers.ImageField(write_only=True, required=False, allow_null=True)
-    cif1 = serializers.ImageField(write_only=True, required=False, allow_null=True)
-    cif2 = serializers.ImageField(write_only=True, required=False, allow_null=True)
+    factura = serializers.FileField(write_only=True, required=False, allow_null=True)
+    factura_1 = serializers.FileField(write_only=True, required=False, allow_null=True)
+    dni1 = serializers.FileField(write_only=True, required=False, allow_null=True)
+    dni2 = serializers.FileField(write_only=True, required=False, allow_null=True)
+    cif1 = serializers.FileField(write_only=True, required=False, allow_null=True)
+    cif2 = serializers.FileField(write_only=True, required=False, allow_null=True)
+    factura_gas_1 = serializers.FileField(write_only=True, required=False, allow_null=True)
+    factura_gas_2 = serializers.FileField(write_only=True, required=False, allow_null=True)
 
     class Meta:
         model = Punto
