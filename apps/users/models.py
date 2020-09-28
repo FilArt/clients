@@ -347,6 +347,8 @@ class Attachment(models.Model):
         ("repr_legal", _("Foto DNI Representante Legal")),
         ("name_changed", _("Cambio de nombre")),
         ("arredamiento", _("Contrato arredamiento")),
+        ("factura_gas_1", _("Factura GAS")),
+        ("factura_gas_2", _("Factura GAS reverso")),
     )
 
     punto = models.ForeignKey(Punto, on_delete=models.CASCADE, related_name="attachments")
