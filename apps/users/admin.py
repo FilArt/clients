@@ -1,7 +1,6 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
 from django.utils.translation import gettext_lazy as _
-
 from .models import CustomUser, Attachment, Punto
 
 
@@ -56,6 +55,10 @@ class CustomUserAdmin(UserAdmin):
     ordering = ("-date_joined",)
 
 
+class AttachmentAdmin(admin.ModelAdmin):
+    list_display = ("name", "ext", "size")
+
+
 admin.site.register(CustomUser, CustomUserAdmin)
-admin.site.register(Attachment)
+admin.site.register(Attachment, AttachmentAdmin)
 admin.site.register(Punto)

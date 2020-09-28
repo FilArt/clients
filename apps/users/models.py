@@ -355,5 +355,13 @@ class Attachment(models.Model):
     attachment_type = models.CharField(max_length=20, choices=ATTACHMENT_TYPE_CHOICES)
     attachment = models.FileField()
 
+    @property
+    def filename(self) -> str:
+        return self.attachment.name
+
+    @property
+    def size(self) -> int:
+        return self.attachment.size
+
     def __str__(self) -> str:
-        return f"{self.attachment} - {self.attachment} of punto {self.punto}"
+        return f"{self.attachment.type} - {self.attachment} of punto {self.punto}"
