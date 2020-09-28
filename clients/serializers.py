@@ -421,6 +421,8 @@ class FastContractAttachmentsSerializer(serializers.ModelSerializer):
         dni2 = validated_data.get("dni2")
         cif1 = validated_data.get("cif1")
         cif2 = validated_data.get("cif2")
+        factura_gas_1 = validated_data.get("factura_gas_1")
+        factura_gas_2 = validated_data.get("factura_gas_2")
 
         punto_fields = [f.name for f in Punto._meta.fields]
         punto = super().create({k: v for k, v in validated_data.items() if k in punto_fields})
@@ -437,5 +439,9 @@ class FastContractAttachmentsSerializer(serializers.ModelSerializer):
             Attachment.objects.create(punto=punto, attachment_type="dni1", attachment=dni1)
         if dni2:
             Attachment.objects.create(punto=punto, attachment_type="dni2", attachment=dni2)
+        if factura_gas_1:
+            Attachment.objects.create(punto=punto, attachment_type="factura_gas_1", attachment=factura_gas_1)
+        if factura_gas_2:
+            Attachment.objects.create(punto=punto, attachment_type="factura_gas_2", attachment=factura_gas_2)
 
         return punto
