@@ -354,3 +354,6 @@ class Attachment(models.Model):
     punto = models.ForeignKey(Punto, on_delete=models.CASCADE, related_name="attachments")
     attachment_type = models.CharField(max_length=20, choices=ATTACHMENT_TYPE_CHOICES)
     attachment = models.FileField()
+
+    def __str__(self) -> str:
+        return f"{self.attachment} - {self.attachment} of punto {self.punto}"
