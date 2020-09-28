@@ -197,7 +197,12 @@ class ManageUserSerializer(UserListSerializer):
                 raise ValidationError({"password": e.messages})
 
         if "agents" in validated_data:
+            if user.agent_type != "canal":
+                raise ValidationError({"agents": ["¡No es un canal!"]})
             agents = validated_data.pop("agents")
+            if not agents:
+                user.agents.all().update(canal=None)
+
             for agent in agents:
                 if agent.id == user.id:
                     raise ValidationError(
