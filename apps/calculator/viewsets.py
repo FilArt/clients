@@ -36,7 +36,16 @@ class TarifViewSet(viewsets.GenericViewSet, mixins.ListModelMixin):
 
 class OfferViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = Offer.objects.all()
-    filterset_fields = ["tarif", "is_price_permanent", "company", "name", "id", "client_type"]
+    filterset_fields = {
+        "tarif": ("exact",),
+        "is_price_permanent": ("exact",),
+        "company": ("exact",),
+        "name": ("exact",),
+        "id": ("exact",),
+        "client_type": ("exact",),
+        "consumption_min": ("gt", "lt"),
+        "consumption_max": ("gt", "lt"),
+    }
     permission_classes: Tuple = tuple()
     ordering = ("name",)
 
