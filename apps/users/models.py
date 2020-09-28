@@ -179,10 +179,14 @@ class CustomUser(AbstractUser):
     @property
     def fullname(self):
         if self.company_name:
-            return self.company_name
+            name = self.company_name
         elif self.first_name and self.last_name:
-            return f"{self.first_name} {self.last_name}"
-        return self.email
+            name = f"{self.first_name} {self.last_name}"
+        else:
+            name = self.email
+        if self.agent_type == "canal":
+            name = f"{name} 💎"
+        return name
 
     @property
     def affiliate(self):
