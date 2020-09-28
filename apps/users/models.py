@@ -128,6 +128,10 @@ class CustomUser(AbstractUser):
     def bids_count(self) -> int:
         return self.bids.count()
 
+    @cached_property
+    def clients_count(self) -> int:
+        return self.under_responsibility.count()
+
     @property
     def docs(self) -> str:
         if self.bids.filter(doc=False).exists():

@@ -24,7 +24,7 @@ from clients.serializers import (
 )
 from .models import Attachment, CustomUser, Phone, Punto
 from .pagination import UsersPagination
-from .permissions import AdminPermission, UsersPermission, AdminAgentPermission
+from .permissions import UsersPermission, AdminAgentPermission, ManageUserPermission, AgentClientsPermissions
 from .serializers import (
     LoadFacturasSerializer,
     ManageUserListSerializer,
@@ -35,6 +35,8 @@ from .serializers import (
     UserSerializer,
     RequestLogSerializer,
     RegisterByAdminSerializer,
+    AgentClientsSerializer,
+    CanalAgentesSerializer,
 )
 
 
@@ -105,22 +107,8 @@ class UserViewSet(
         queryset = super(UserViewSet, self).filter_queryset(queryset)
         if self.request.user.role == "agent":
             agent_id = self.request.user.id
-            queryset = queryset.filter(Q(responsible_id=agent_id) | Q(invited_by_id=agent_id))
-        status = self.request.query_params.get("status")
-        if status:
-            if "tramitacion" in status:
-                queryset = queryset.filter(client_role="tramitacion")
-            elif "facturacion" in status:
-                queryset = queryset.filter(client_role="facturacion")
-            if status.lower() == "tramitacion_ko":
-                queryset = queryset.filter(bids__doc=False, bids__call=False, bids__scoring=False)
-            elif status.lower() == "tramitacion_pendiente":
-                queryset = queryset.exclude(bids__doc=False, bids__call=False, bids__scoring=False)
-            if status.lower() == "facturacion_ok":
-                queryset = queryset.filter(bids__paid=True)
-            elif status.lower() == "facturacion_pendiente":
-                queryset = queryset.filter(bids__paid=False)
-
+            queryset = queryset.filter(Q(responsible_id=agent_id) | Q(invited_by_id=agent_id) | Q(canal_id=agent_id))
+        queryset = self._filter_by_status(queryset)
         return queryset
 
     def get_serializer_class(self):
@@ -152,10 +140,27 @@ class UserViewSet(
             attachments = Attachment.objects.filter(punto__user=request.user)
         return Response(AttachmentSerializer(attachments, many=True).data)
 
+    def _filter_by_status(self, queryset):
+        status = self.request.query_params.get("status")
+        if status:
+            if "tramitacion" in status:
+                queryset = queryset.filter(client_role="tramitacion")
+            elif "facturacion" in status:
+                queryset = queryset.filter(client_role="facturacion")
+            if status.lower() == "tramitacion_ko":
+                queryset = queryset.filter(bids__doc=False, bids__call=False, bids__scoring=False)
+            elif status.lower() == "tramitacion_pendiente":
+                queryset = queryset.exclude(bids__doc=False, bids__call=False, bids__scoring=False)
+            if status.lower() == "facturacion_ok":
+                queryset = queryset.filter(bids__paid=True)
+            elif status.lower() == "facturacion_pendiente":
+                queryset = queryset.filter(bids__paid=False)
+        return queryset
+
 
 class ManageUsersViewSet(viewsets.ModelViewSet):
     queryset = CustomUser.objects.all()
-    permission_classes = (IsAuthenticated, AdminPermission)
+    permission_classes = (IsAuthenticated, ManageUserPermission)
 
     def get_serializer_class(self):
         if self.action == "create":
@@ -283,4 +288,45 @@ class RequestLogViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
             if distinct not in self.serializer_class.Meta.fields:
                 raise ValidationError({"distinct": ["Invalid option"]})
             queryset = queryset.distinct(distinct)
+        return queryset
+
+
+class CanalAgents(viewsets.ReadOnlyModelViewSet):
+    queryset = CustomUser.objects.filter(role="agent", agent_type="agent")
+    permission_classes = (IsAuthenticated, AgentClientsPermissions)
+    serializer_class = CanalAgentesSerializer
+    ordering_fields = UserViewSet.ordering_fields
+    search_fields = UserViewSet.search_fields
+    pagination_class = UserViewSet.pagination_class
+
+    def filter_queryset(self, queryset):
+        return super().filter_queryset(queryset).filter(canal=self.request.user)
+
+
+class AgentClients(viewsets.ReadOnlyModelViewSet):
+    queryset = CustomUser.objects.filter(role__isnull=True)
+    permission_classes = (IsAuthenticated, AgentClientsPermissions)
+    serializer_class = AgentClientsSerializer
+    filterset_fields = ["responsible"]
+    pagination_class = UserViewSet.pagination_class
+
+    def filter_queryset(self, queryset):
+        queryset = self._filter_by_status(queryset)
+        return super().filter_queryset(queryset).filter(responsible__canal=self.request.user)
+
+    def _filter_by_status(self, queryset):
+        status = self.request.query_params.get("status")
+        if status:
+            if "tramitacion" in status:
+                queryset = queryset.filter(client_role="tramitacion")
+            elif "facturacion" in status:
+                queryset = queryset.filter(client_role="facturacion")
+            if status.lower() == "tramitacion_ko":
+                queryset = queryset.filter(bids__doc=False, bids__call=False, bids__scoring=False)
+            elif status.lower() == "tramitacion_pendiente":
+                queryset = queryset.exclude(bids__doc=False, bids__call=False, bids__scoring=False)
+            if status.lower() == "facturacion_ok":
+                queryset = queryset.filter(bids__paid=True)
+            elif status.lower() == "facturacion_pendiente":
+                queryset = queryset.filter(bids__paid=False)
         return queryset

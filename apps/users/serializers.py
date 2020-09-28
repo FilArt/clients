@@ -208,7 +208,7 @@ class ManageUserSerializer(UserListSerializer):
                     raise ValidationError(
                         {"agents": ["El canal y el agente no pueden ser la misma persona! (%s = %s)" % (agent, user)]}
                     )
-                elif agent.agent_type != "agent":
+                elif agent.agent_type == "canal":
                     raise ValidationError({"agents": ["%s - ¡No es un agente, sino un canal!" % agent]})
 
                 agent.canal = user
@@ -286,3 +286,15 @@ class RequestLogSerializer(DynamicFieldsMixin, serializers.ModelSerializer):
     class Meta:
         model = APIRequestLog
         fields = ["requested_at", "remote_addr"]
+
+
+class CanalAgentesSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = CustomUser
+        fields = ["id", "fullname", "clients_count", "phone", "last_login"]
+
+
+class AgentClientsSerializer(UserListSerializer):
+    class Meta:
+        model = CustomUser
+        fields = ["id", "fullname", "status", "bids_count"]
