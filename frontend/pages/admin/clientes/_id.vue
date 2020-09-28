@@ -97,7 +97,7 @@ export default {
   },
   methods: {
     async fetchPuntos() {
-      this.puntos = await this.$axios.$get(`/users/puntos/?user=${this.user.id}`)
+      this.puntos = await this.$axios.$get(`/users/puntos/?user=${this.$route.params.id}`)
     },
   },
 }
