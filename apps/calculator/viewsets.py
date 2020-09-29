@@ -1,12 +1,12 @@
 from typing import Tuple
 
-from clients.serializers import AdminOfferListSerializer, DetailOfferSerializer, OfferListSerializer
 from rest_framework import mixins, viewsets
-from rest_framework.permissions import IsAdminUser
 from rest_framework.response import Response
-from apps.calculator.pagination import OffersPagination
 
+from apps.calculator.pagination import OffersPagination
+from clients.serializers import AdminOfferListSerializer, DetailOfferSerializer, OfferListSerializer
 from .models import Company, Offer
+from .permissions import OffersPermission
 from .serializers import CompanySerializer
 
 
@@ -63,7 +63,7 @@ class OfferViewSet(viewsets.ReadOnlyModelViewSet):
 
 class PaginatedOfferViewSet(viewsets.ModelViewSet):
     queryset = Offer.objects.all()
-    permission_classes: Tuple = (IsAdminUser,)
+    permission_classes: Tuple = (OffersPermission,)
     ordering = ("id",)
     ordering_fields = "__all__"
     pagination_class = OffersPagination
