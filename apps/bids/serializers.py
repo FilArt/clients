@@ -1,11 +1,12 @@
 from decimal import Decimal
 
 import arrow
-from clients.serializers import BidListSerializer, DetailOfferSerializer, PuntoSerializer
 from django.db import transaction
 from django.utils import timezone
 from rest_framework import serializers
+from rest_framework.exceptions import PermissionDenied
 
+from clients.serializers import BidListSerializer, DetailOfferSerializer, PuntoSerializer
 from .models import Bid, BidStory
 
 
@@ -53,6 +54,16 @@ class BidSerializer(BidListSerializer):
 
     def get_status(self, bid: Bid) -> str:
         return bid.get_status(by=self.context["request"].user)
+
+    def update(self, bid: Bid, validated_data):
+        if "offer" in validated_data:
+            requester = self.context["request"].user
+            if requester.role is None and (bid.doc or bid.scoring or bid.call):
+                raise PermissionDenied
+            offer = validated_data.pop("offer")
+            bid.offer = offer
+            bid.save(update_fields=["offer"])
+        return super().update(bid, validated_data)
 
     def save(self, **kwargs):
         user = self.context["request"].user

@@ -197,6 +197,9 @@ class DetailOfferSerializer(OfferListSerializer):
             "canal_commission",
         ]
 
+    def to_internal_value(self, data):
+        return Offer.objects.get(id=data)
+
 
 class SimpleAccountSerializer(AccountSerializer):
     last_name = serializers.CharField(required=False, allow_blank=True)

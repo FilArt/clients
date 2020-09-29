@@ -15,6 +15,7 @@ def more_than_zero(value):
 
 class Bid(models.Model):
     DEFAULT_STATUS = "Pendiente tramitacion"
+    IN_TRAMITACION = "Tramitacion en processo"
 
     user = models.ForeignKey(get_user_model(), on_delete=models.CASCADE, related_name="bids")
     offer = models.ForeignKey("calculator.Offer", on_delete=models.CASCADE)
@@ -52,7 +53,7 @@ class Bid(models.Model):
                 return "Firmado"
             return "Pagado" if by.role == "agent" else "OK"
 
-        return self.DEFAULT_STATUS
+        return self.IN_TRAMITACION if (self.doc or self.call or self.scoring) else self.DEFAULT_STATUS
 
     @property
     def success(self) -> bool:

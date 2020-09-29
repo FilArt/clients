@@ -3,6 +3,8 @@ import logging
 import arrow
 from django.conf import settings
 from django.contrib.auth.base_user import BaseUserManager
+from django.contrib.auth.password_validation import validate_password
+from django.core.exceptions import ValidationError as DjangoValidationError
 from django.template.loader import render_to_string
 from django.utils.html import strip_tags
 from django.utils.translation import gettext_lazy as _
@@ -10,12 +12,11 @@ from drf_dynamic_fields import DynamicFieldsMixin
 from rest_framework import serializers
 from rest_framework.exceptions import ValidationError
 from rest_framework_tracking.models import APIRequestLog
-from django.core.exceptions import ValidationError as DjangoValidationError
+
 from apps.bids.models import Bid
 from clients.serializers import BidListSerializer
 from clients.utils import notify_telegram
 from .models import Attachment, CustomUser, Phone, Punto
-from django.contrib.auth.password_validation import validate_password
 
 logger = logging.getLogger(__name__)
 
@@ -297,4 +298,11 @@ class CanalAgentesSerializer(serializers.ModelSerializer):
 class AgentClientsSerializer(UserListSerializer):
     class Meta:
         model = CustomUser
-        fields = ["id", "fullname", "status", "bids_count"]
+        fields = [
+            "id",
+            "fullname",
+            "status",
+            "bids_count",
+            "paid_count",
+            "canal_paid_count",
+        ]
