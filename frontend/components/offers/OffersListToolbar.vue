@@ -47,7 +47,7 @@ export default {
   },
   data() {
     return {
-      filters: this.defaultFilters,
+      filters: this.defaultFilters || {},
     }
   },
 }

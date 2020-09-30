@@ -25,7 +25,7 @@
 <script>
 const clientTypes = [
   {
-    text: 'Particular',
+    text: 'Fisico',
     value: '0',
   },
   {

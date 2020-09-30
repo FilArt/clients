@@ -2,21 +2,34 @@
   "telemetry.enableTelemetry": false,
   "editor.tabCompletion": "on",
   "editor.snippetSuggestions": "bottom",
-
   "python.languageServer": "Pylance",
   "python.linting.flake8Enabled": true,
   "python.linting.pylintEnabled": false,
   "python.linting.mypyEnabled": true,
+  "python.linting.mypyPath": "/usr/bin/dmypy",
+  "python.linting.mypyArgs": [
+    "run",
+    "--",
+    "--ignore-missing-imports",
+    "--follow-imports=skip"
+  ],
   "python.linting.enabled": true,
   "python.formatting.provider": "black",
-  "python.formatting.blackArgs": ["--line-length=119"],
-  "python.linting.flake8Args": ["--max-line-length=119"],
+  "python.formatting.blackArgs": [
+    "--line-length=119"
+  ],
+  "python.linting.flake8Args": [
+    "--max-line-length=119"
+  ],
   "[python]": {
     "editor.formatOnSave": true,
   },
-
   "prettier.configPath": "frontend/.prettierrc",
-  "eslint.validate": ["vue", "javascript", "javascriptreact"],
+  "eslint.validate": [
+    "vue",
+    "javascript",
+    "javascriptreact"
+  ],
   "editor.codeActionsOnSave": {
     "source.fixAll.eslint": true
   },

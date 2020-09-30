@@ -13,10 +13,10 @@
 
             <v-card-text>
               <v-select
-                v-if="fieldToEdit.field === 'required_fields'"
+                v-if="fieldToEdit.selectable"
                 v-model="newValue"
-                :items="requiredFieldsItems"
-                multiple
+                :items="getItemsToSelect"
+                :multiple="fieldToEdit.multiple"
               />
 
               <v-text-field v-else v-model="newValue" autofocus />
@@ -129,13 +129,34 @@ export default {
         { label: 'Potencia max', field: 'power_max' },
         { label: 'Consumo min', field: 'consumption_min' },
         { label: 'Consumo max', field: 'consumption_max' },
-        { label: 'Tipo de cliente', field: 'client_type', sortable: false },
-        { label: 'Tipo de precio', field: 'is_price_permanent', sortable: false },
+        { label: 'Tipo de cliente', field: 'client_type', formatFn: this.formatClientType, selectable: true },
+        { label: 'Tipo de precio', field: 'is_price_permanent' },
         { label: 'Canal comisiones', field: 'canal_commission' },
         { label: 'Agente comisiones', field: 'agent_commission' },
-        { label: 'Campos obligatorio', field: 'required_fields', sortable: false, width: '200px' },
+        {
+          label: 'Campos obligatorio',
+          field: 'required_fields',
+          sortable: false,
+          width: '200px',
+          selectable: true,
+          multiple: true,
+        },
       ],
     }
+  },
+  computed: {
+    getItemsToSelect() {
+      const field = this.fieldToEdit.field
+      if (field === 'required_fields') {
+        return this.requiredFieldsItems
+      } else if (field === 'client_type') {
+        return [
+          { text: 'Fisico', value: 0 },
+          { text: 'Juridico', value: 1 },
+        ]
+      }
+      return []
+    },
   },
   mounted() {
     this.refresh()
@@ -155,7 +176,7 @@ export default {
         .catch(() => (this.loading = false))
     },
     onSearch(opts) {
-      this.updateParams({ search: opts.searchTerm })
+      this.updateParams({ search: opts.searchTerm, page: 1 })
     },
     onPageChange(params) {
       this.updateParams({ page: params.currentPage })
@@ -166,7 +187,7 @@ export default {
       this.updateParams({ ordering })
     },
     onPerPageChange(params) {
-      this.updateParams({ itemsPerPage: params.currentPerPage })
+      this.updateParams({ itemsPerPage: params.currentPerPage, page: 1 })
     },
     onColumnFilter(params) {
       this.updateParams(params)
@@ -201,13 +222,14 @@ export default {
     async save(id, data) {
       try {
         await this.$axios.$patch(`calculator/admin_offers/${id}/`, data)
+        await this.refresh()
       } catch (e) {
+        console.log(e)
         const err = Object.values(e.response.data)[0].join('; ')
         await this.$swal({ title: 'Error', text: err, icon: 'error' })
-      } finally {
-        await this.refresh()
       }
     },
+    formatClientType: (val) => (val === 0 ? 'F' : 'J'),
   },
 }
 </script>
