@@ -43,8 +43,8 @@ class OfferViewSet(viewsets.ReadOnlyModelViewSet):
         "name": ("exact",),
         "id": ("exact",),
         "client_type": ("exact",),
-        "consumption_min": ("gt", "lt"),
-        "consumption_max": ("gt", "lt"),
+        "consumption_min": ("gt", "lt", "gte", "lte"),
+        "consumption_max": ("gt", "lt", "gte", "lte"),
     }
     permission_classes: Tuple = tuple()
     ordering = ("name",)
