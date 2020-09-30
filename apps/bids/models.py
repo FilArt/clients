@@ -5,6 +5,8 @@ from django.core.exceptions import ValidationError
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 
+from apps.users.models import CustomUser
+
 logger = logging.getLogger(__name__)
 
 
@@ -41,17 +43,16 @@ class Bid(models.Model):
         if save_bid_story:
             BidStory.objects.create(bid=self, user=self.user)
 
-    def get_status(self, by) -> str:
+    def get_status(self, by: CustomUser) -> str:
         if False in (self.doc, self.call, self.scoring):
             return "KO"
         elif self.success:
-            if self.paid is False and by.role in ("admin", "tramitacion", "agent"):
-                return "Pendiente pagado"
-            elif by.role in ("admin", "tramitacion"):
-                if self.user.responsible.canal and (not self.canal_paid or self.canal_commission <= 0):
-                    return "Firmado (canal no se paga)"
-                return "Firmado"
-            return "Pagado" if by.role == "agent" else "OK"
+            if not by.is_client:
+                if not self.paid:
+                    return "Pendiente pagado (agente)"
+                elif self.user.responsible.canal and not self.canal_paid:
+                    return "Pendiente pagado (canal)"
+            return "OK" if by.is_client else "Pagado"
 
         return self.IN_TRAMITACION if (self.doc or self.call or self.scoring) else self.DEFAULT_STATUS
 
