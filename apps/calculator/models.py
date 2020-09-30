@@ -147,6 +147,9 @@ class Offer(models.Model):
         null=True,
     )
 
+    class Meta:
+        unique_together = [["company", "tarif", "consumption_min", "consumption_max"]]
+
     def __str__(self) -> str:
         return self.name
 
