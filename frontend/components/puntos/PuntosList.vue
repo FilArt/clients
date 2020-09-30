@@ -3,7 +3,7 @@
     <v-list-group v-for="punto in puntos" :key="punto.id">
       <template v-slot:activator>
         <v-toolbar dense>
-          <v-toolbar-title> Punto suministro {{ punto.name || `(id: ${punto.id})` }} </v-toolbar-title>
+          <v-toolbar-title>Punto suministro (id: {{ punto.id }})</v-toolbar-title>
         </v-toolbar>
       </template>
 
@@ -24,11 +24,21 @@
               "
             />
 
-            <v-text-field
-              v-else
+            <v-switch
+              v-else-if="header.type === 'switch'"
+              v-model="punto[header.value]"
               dense
               :label="header.text"
-              :value="punto[header.value]"
+              append-icon="mdi-content-save"
+              @change="values[header.value] = $event"
+              @click:append="save({ id: punto.id, field: header.value })"
+            />
+
+            <v-text-field
+              v-else
+              v-model="punto[header.value]"
+              dense
+              :label="header.text"
               append-icon="mdi-content-save"
               @input="values[header.value] = $event"
               @click:append="save({ id: punto.id, field: header.value })"
@@ -125,14 +135,7 @@ export default {
         .map((groupText) => {
           return {
             text: groupText,
-            headers: puntoValues
-              .filter((field) => field.group.text === groupText)
-              .map((field) => {
-                return {
-                  text: field.text,
-                  value: field.value,
-                }
-              }),
+            headers: puntoValues.filter((field) => field.group.text === groupText),
           }
         }),
     }
