@@ -1,4 +1,16 @@
+const cleanEmpty = (obj) => {
+  if (Array.isArray(obj)) {
+    return obj.length
+      ? obj.map((v) => (v && typeof v === 'object' ? cleanEmpty(v) : v)).filter((v) => !(v == null))
+      : null
+  } else {
+    return Object.entries(obj)
+      .map(([k, v]) => [k, v && typeof v === 'object' ? cleanEmpty(v) : v])
+      .reduce((a, [k, v]) => (v == null ? a : ((a[k] = v), a)), {})
+  }
+}
 export default Object.freeze({
+  cleanEmpty,
   clientRoles: {
     clients: {
       text: 'Clientes',
@@ -40,6 +52,23 @@ export default Object.freeze({
     // },
   },
   puntoFields: {
+    name: {
+      text: 'Nuevo nombre',
+      value: 'name',
+      group: {
+        text: 'Documentacion',
+        value: 'doc',
+      },
+    },
+    is_name_changed: {
+      type: 'switch',
+      text: 'Cambio de nombre',
+      value: 'is_name_changed',
+      group: {
+        text: 'Documentacion',
+        value: 'doc',
+      },
+    },
     province: {
       text: 'Provincia',
       value: 'province',
