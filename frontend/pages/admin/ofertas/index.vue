@@ -38,6 +38,7 @@
       </v-dialog>
       <vue-good-table
         mode="remote"
+        line-numbers
         :theme="$vuetify.theme.isDark ? 'nocturnal' : 'black-rhino'"
         :pagination-options="{
           enabled: true,
