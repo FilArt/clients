@@ -21,6 +21,7 @@ from clients.serializers import (
     WithFacturaContractOnlineSerializer,
     FastContractSerializer,
     FastContractAttachmentsSerializer,
+    AgentContractSerializer,
 )
 from .models import Attachment, CustomUser, Phone, Punto
 from .pagination import UsersPagination
@@ -268,6 +269,12 @@ class FastContractViewSet(WithFacturaContractOnlineViewSet):
                 pass
 
         return super().create(request, *args, **kwargs)
+
+
+class AgentContractViewSet(viewsets.ModelViewSet):
+    serializer_class = AgentContractSerializer
+    queryset = CustomUser.objects.all()
+    permission_classes = tuple()
 
 
 class FastContractImagesViewSet(viewsets.ModelViewSet):

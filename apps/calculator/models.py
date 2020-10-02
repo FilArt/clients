@@ -37,6 +37,10 @@ class Tarif(Enum):
     T21DHS = "2.1DHS"
     T30A = "3.0A"
     T31A = "3.1A"
+    G31 = "3.1"
+    G32 = "3.2"
+    G33 = "3.3"
+    G34 = "3.4"
 
     @staticmethod
     def all():
@@ -119,9 +123,27 @@ class Offer(models.Model):
         ("name_changed_doc", _("DOCUMENTO CAMBIO DE NOMBRE")),
         ("contrato_arredamiento", _("CONTRATO ARREDAMIENTO/COMPRAVENTA")),
     )
+    OFFER_KIND_CHOICES = (
+        ("luz", _("Luz")),
+        ("gas", _("gas")),
+    )
+    PERMISSIONS_HELPER = {
+        "FOTO CIF": "photo_cif",
+        "FOTO DNI": "photo_dni",
+        "FOTO DNI REPRE LEGAL": "photo_dni",
+        "FACTURA": "photo_factura",
+        "NUMERO CIF": "cif",
+        "NUMERO DNI REPRE LEGAL": "dni",
+        "NUMERO DNI": "dni",
+        "FOTO RECIBO AUTONOMO": "photo_recibo",
+        "DOCUMENTO CAMBIO DE NOMBRE": "name_changed_doc",
+        "CONTRATO ARREDAMIENTO/COMPRAVENTA": "contrato_arredamiento",
+        "TELEFONO MOBIL": "phone",
+    }
     objects = WithoutOtraManager()
     default = Manager()
 
+    kind = models.CharField(default="luz", choices=OFFER_KIND_CHOICES, max_length=3)
     uuid = models.UUIDField(unique=True)
     company = models.ForeignKey(Company, on_delete=models.CASCADE)
     name = NameField(max_length=255, db_index=True)
@@ -152,24 +174,9 @@ class Offer(models.Model):
 
     @staticmethod
     def sync():
-        permissions_helper = {
-            "FOTO CIF": "photo_cif",
-            "FOTO DNI": "photo_dni",
-            "FOTO DNI REPRE LEGAL": "photo_dni",
-            "FACTURA": "photo_factura",
-            "NUMERO CIF": "cif",
-            "NUMERO DNI REPRE LEGAL": "dni",
-            "NUMERO DNI": "dni",
-            "FOTO RECIBO AUTONOMO": "photo_recibo",
-            "DOCUMENTO CAMBIO DE NOMBRE": "name_changed_doc",
-            "CONTRATO ARREDAMIENTO/COMPRAVENTA": "contrato_arredamiento",
-            "TELEFONO MOBIL": "phone",
-        }
-        client = gspread.service_account(settings.GOOGLE_SERVICE_ACCOUNT_CREDS)
-        spread_sheet = client.open_by_url(settings.OFFERS_SHEET_URL)
-        work_sheet = spread_sheet.get_worksheet(0)
+        work_sheet = Offer._get_sheet()
         records = [row for row in work_sheet.get_all_records() if row["TYPO"]]
-        logger.info("before: %i", Offer.objects.count())
+        logger.info("before: %i", Offer.objects.filter(kind="luz").count())
         for item in records:
             try:
                 Offer.objects.update_or_create(
@@ -196,11 +203,11 @@ class Offer(models.Model):
                         agent_commission=Decimal(item["COMISIONES COMERCIAL"]),
                         canal_commission=Decimal(item["COMISIONES CANAL"]),
                         required_fields=[
-                            permissions_helper[x]
+                            Offer.PERMISSIONS_HELPER[x]
                             for x in [
                                 w.strip() for w in (f'{item["DOCUMENTACION"]},{item["CAMBIO DE NOMBRE"]}').split(",")
                             ]
-                            if x in permissions_helper
+                            if x in Offer.PERMISSIONS_HELPER
                         ],
                     ),
                 )
@@ -209,9 +216,59 @@ class Offer(models.Model):
                 raise
 
         uuids = [r["UUID"] for r in records]
-        Offer.objects.exclude(uuid__in=uuids).delete()
-        logger.info("after: %i", Offer.objects.count())
+        Offer.objects.filter(kind="luz").exclude(uuid__in=uuids).delete()
+        logger.info("after: %i", Offer.objects.filter(kind="luz").count())
         logger.info("all: %i", len(uuids))
+
+    @staticmethod
+    def sync_gas():
+        work_sheet = Offer._get_sheet("gas")
+        records = [row for row in work_sheet.get_all_records() if row["TYPO"]]
+        logger.info("before: %i", Offer.objects.filter(kind="gas").count())
+        for item in records:
+            try:
+                Offer.objects.update_or_create(
+                    uuid=item["UUID"],
+                    defaults=dict(
+                        kind="gas",
+                        company=Company.objects.get_or_create(
+                            name=item["COMERCIALIZADORA"].strip().upper(),
+                        )[0],
+                        name=item["NOMBRE"],
+                        tarif=item["TARIFA"],
+                        description=item["DESCRIPCION"],
+                        consumption_min=str_to_float(item["CONSUMO MIN"]),
+                        consumption_max=str_to_float(item["CONSUMO MAX"]),
+                        client_type=0 if item["TYPO"] == "F" else 1 if item["TYPO"] == "J" else 2,
+                        p1=str_to_float(item["P1"]),
+                        c1=str_to_float(item["C1"]),
+                        is_price_permanent=item["MODO"].capitalize(),
+                        agent_commission=Decimal(item["COMISIONES COMERCIAL"]),
+                        canal_commission=Decimal(item["COMISIONES CANAL"]),
+                        required_fields=[
+                            Offer.PERMISSIONS_HELPER[x]
+                            for x in [
+                                w.strip() for w in (f'{item["DOCUMENTACION"]},{item["CAMBIO DE NOMBRE"]}').split(",")
+                            ]
+                            if x in Offer.PERMISSIONS_HELPER
+                        ],
+                    ),
+                )
+            except Exception as e:
+                logger.info(item)
+                logger.exception(e)
+                raise
+
+        uuids = [r["UUID"] for r in records]
+        Offer.objects.filter(kind="gas").exclude(uuid__in=uuids).delete()
+        logger.info("after: %i", Offer.objects.filter(kind="gas").count())
+        logger.info("all: %i", len(uuids))
+
+    @staticmethod
+    def _get_sheet(kind: str = "luz"):
+        client = gspread.service_account(settings.GOOGLE_SERVICE_ACCOUNT_CREDS)
+        spread_sheet = client.open_by_url(settings.OFFERS_SHEET_URL)
+        return spread_sheet.get_worksheet(0 if kind == "luz" else 1)
 
     @staticmethod
     def get_blank_offer():
