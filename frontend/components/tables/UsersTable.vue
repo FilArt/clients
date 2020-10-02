@@ -103,13 +103,14 @@
               :xs="flexs.xs"
             >
               <v-autocomplete
-                v-model="query.responsible"
+                v-model="query.responsible__in"
                 label="Responsable"
                 :items="responsibles"
+                multiple
                 item-text="fullname"
                 item-value="id"
                 clearable
-                @change="updateQuery({ responsible: $event })"
+                @change="updateQuery({ responsible__in: $event })"
               />
             </v-col>
 
