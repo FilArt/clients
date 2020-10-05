@@ -13,9 +13,16 @@
 
             <v-card-text>
               <v-select
-                v-if="fieldToEdit.selectable"
+                v-if="
+                  fieldToEdit.field === 'required_fields' ||
+                  (fieldToEdit.filterOptions && fieldToEdit.filterOptions.filterDropdownItems)
+                "
                 v-model="newValue"
-                :items="getItemsToSelect"
+                :items="
+                  fieldToEdit.field === 'required_fields'
+                    ? this.requiredFieldsItems
+                    : fieldToEdit.filterOptions.filterDropdownItems
+                "
                 :multiple="fieldToEdit.multiple"
               />
 
@@ -83,6 +90,8 @@
 </template>
 
 <script>
+import { mapState } from 'vuex'
+
 export default {
   data() {
     const q = this.$route.query
@@ -102,64 +111,104 @@ export default {
         itemsPerPage: q.itemsPerPage ? parseInt(q.itemsPerPage) : 10,
       },
       requiredFieldsItems: [
-        { value: 'photo_dni_repr_legal', text: 'FOTO DNI REPRE LEGAL' },
         { value: 'photo_cif', text: 'Foto CIF' },
         { value: 'photo_dni', text: 'Foto DNI' },
         { value: 'photo_factura', text: 'Foto factura' },
         { value: 'photo_recibo', text: 'FOTO RECIBO AUTONOMO' },
         { value: 'cif', text: 'Numero CIF' },
         { value: 'dni', text: 'Numero DNI' },
-        { value: 'dni_repr', text: 'Numero DNI representante legal' },
         { value: 'phone', text: 'Telefono' },
         { value: 'contrato_arredamiento', text: 'CONTRATO ARREDAMIENTO/COMPRAVENTA' },
         { value: 'name_changed_doc', text: 'DOCUMENTO CAMBIO DE NOMBRE' },
       ],
       columns: [
-        { label: 'ID', field: 'id' },
-        { label: 'Comers', field: 'company' },
-        { label: 'Nombre', field: 'name', width: '200px' },
+        { label: 'ID', field: 'id', filterOptions: { enabled: true } },
+        {
+          label: 'Tipo',
+          field: 'kind',
+          filterOptions: {
+            enabled: true,
+            filterDropdownItems: [
+              { text: 'Luz', value: 'luz' },
+              { text: 'Gas', value: 'gas' },
+            ],
+          },
+        },
+        {
+          label: 'Comers',
+          field: 'company',
+          formatFn: this.formatCompany,
+          filterOptions: { enabled: true, filterDropdownItems: undefined },
+        },
+        {
+          label: 'Nombre',
+          field: 'name',
+          width: '200px',
+          filterOptions: { enabled: true, filterDropdownItems: this.names },
+        },
         { label: 'Descripcion', field: 'description', sortable: false, width: '50px' },
-        { label: 'P1', field: 'p1' },
-        { label: 'P2', field: 'p2' },
-        { label: 'P3', field: 'p3' },
-        { label: 'C1', field: 'c1' },
-        { label: 'C2', field: 'c2' },
-        { label: 'C3', field: 'c3' },
-        { label: 'Tarifa', field: 'tarif' },
-        { label: 'Potencia min', field: 'power_min' },
-        { label: 'Potencia max', field: 'power_max' },
-        { label: 'Consumo min', field: 'consumption_min' },
-        { label: 'Consumo max', field: 'consumption_max' },
-        { label: 'Tipo de cliente', field: 'client_type', formatFn: this.formatClientType, selectable: true },
-        { label: 'Tipo de precio', field: 'is_price_permanent' },
-        { label: 'Canal comisiones', field: 'canal_commission' },
-        { label: 'Agente comisiones', field: 'agent_commission' },
+        { label: 'P1', field: 'p1', filterOptions: { enabled: true } },
+        { label: 'P2', field: 'p2', filterOptions: { enabled: true } },
+        { label: 'P3', field: 'p3', filterOptions: { enabled: true } },
+        { label: 'C1', field: 'c1', filterOptions: { enabled: true } },
+        { label: 'C2', field: 'c2', filterOptions: { enabled: true } },
+        { label: 'C3', field: 'c3', filterOptions: { enabled: true } },
+        { label: 'Tarifa', field: 'tarif', filterOptions: { enabled: true, filterDropdownItems: this.tarifs } },
+        { label: 'Potencia min', field: 'power_min', filterOptions: { enabled: true } },
+        { label: 'Potencia max', field: 'power_max', filterOptions: { enabled: true } },
+        { label: 'Consumo min', field: 'consumption_min', filterOptions: { enabled: true } },
+        { label: 'Consumo max', field: 'consumption_max', filterOptions: { enabled: true } },
+        {
+          label: 'Tipo de cliente',
+          field: 'client_type',
+          formatFn: this.formatClientType,
+          filterOptions: {
+            enabled: true,
+            filterDropdownItems: [
+              { text: 'J', value: 1 },
+              { text: 'F', value: 0 },
+            ],
+          },
+        },
+        {
+          label: 'Tipo de precio',
+          field: 'is_price_permanent',
+          filterOptions: { enabled: true, filterDropdownItems: ['Fijo', 'Indexado'] },
+        },
+        { label: 'Canal comisiones', field: 'canal_commission', filterOptions: { enabled: true } },
+        { label: 'Agente comisiones', field: 'agent_commission', filterOptions: { enabled: true } },
         {
           label: 'Campos obligatorio',
           field: 'required_fields',
           sortable: false,
           width: '200px',
-          selectable: true,
           multiple: true,
+          filterOptions: { filterDropdownItems: this.requiredFieldsItems },
         },
       ],
     }
   },
   computed: {
-    getItemsToSelect() {
-      const field = this.fieldToEdit.field
-      if (field === 'required_fields') {
-        return this.requiredFieldsItems
-      } else if (field === 'client_type') {
-        return [
-          { text: 'Fisico', value: 0 },
-          { text: 'Juridico', value: 1 },
-        ]
-      }
-      return []
-    },
+    ...mapState({
+      companies: (state) => state.companies.map((c) => ({ text: c.name, value: c.id })),
+      tarifs: (state) => state.tarifs,
+      names: (state) => state.names,
+    }),
   },
-  mounted() {
+  async mounted() {
+    if (!this.companies.length) await this.$store.dispatch('fetchCompanies')
+    if (!this.tarifs.length) await this.$store.dispatch('fetchTarifs')
+    if (!this.names.length) await this.$store.dispatch('fetchNames')
+    this.columns = this.columns.map((column) => {
+      if (column.field === 'company') {
+        column.filterOptions.filterDropdownItems = this.companies
+      } else if (column.field === 'tarif') {
+        column.filterOptions.filterDropdownItems = this.tarifs
+      } else if (column.field === 'name') {
+        column.filterOptions.filterDropdownItems = this.names
+      }
+      return column
+    })
     this.refresh()
   },
   methods: {
@@ -191,10 +240,11 @@ export default {
       this.updateParams({ itemsPerPage: params.currentPerPage, page: 1 })
     },
     onColumnFilter(params) {
-      this.updateParams(params)
+      this.updateParams({ ...params.columnFilters, page: 1 })
     },
     refresh() {
-      let getParamsString = this.$route.fullPath.split('?')[1] || '?page=1&itemsPerPage=10'
+      const fullPath = this.$route.fullPath
+      let getParamsString = fullPath.includes('?') ? fullPath.split('?')[1] : 'page=1&itemsPerPage=10'
       this.$axios
         .$get(`calculator/admin_offers/?${getParamsString}`)
         .then((data) => {
@@ -225,12 +275,14 @@ export default {
         await this.$axios.$patch(`calculator/admin_offers/${id}/`, data)
         await this.refresh()
       } catch (e) {
-        console.log(e)
-        const err = Object.values(e.response.data)[0].join('; ')
+        const err = JSON.stringify(e.response.data)
         await this.$swal({ title: 'Error', text: err, icon: 'error' })
       }
     },
     formatClientType: (val) => (val === 0 ? 'F' : 'J'),
+    formatCompany(id) {
+      return this.companies.find((company) => company.value === id).text
+    },
   },
 }
 </script>
