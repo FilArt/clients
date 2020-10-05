@@ -47,6 +47,7 @@ class OfferViewSet(viewsets.ReadOnlyModelViewSet):
         "consumption_max": ("gt", "lt", "gte", "lte"),
         "power_min": ("gt", "lt", "gte", "lte"),
         "power_max": ("gt", "lt", "gte", "lte"),
+        "kind": ("exact",),
     }
     permission_classes: Tuple = tuple()
     ordering = ("name",)

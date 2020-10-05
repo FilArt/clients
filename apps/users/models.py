@@ -7,7 +7,7 @@ from django.core.validators import MinLengthValidator, RegexValidator
 from django.db import models
 from django.db.models.aggregates import Sum
 from django.utils.translation import pgettext_lazy
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import gettext_lazy as _
 from rest_framework.exceptions import ValidationError as DRFValError
 
 from .managers import CustomUserManager

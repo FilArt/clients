@@ -1,8 +1,9 @@
+import re
 from typing import Tuple
 
 from django.db.models import Q
 from drf_dynamic_fields import DynamicFieldsMixin
-from rest_framework import mixins, viewsets
+from rest_framework import mixins, viewsets, status
 from rest_framework.decorators import action
 from rest_framework.exceptions import PermissionDenied, ValidationError
 from rest_framework.generics import get_object_or_404
@@ -106,9 +107,13 @@ class UserViewSet(
 
     def filter_queryset(self, queryset):
         queryset = super(UserViewSet, self).filter_queryset(queryset)
-        if self.request.user.role == "agent":
-            agent_id = self.request.user.id
-            queryset = queryset.filter(Q(responsible_id=agent_id) | Q(invited_by_id=agent_id) | Q(canal_id=agent_id))
+        user: CustomUser = self.request.user
+        if user.role == "agent":
+            if user.agent_type == "canal":
+                queryset = queryset.filter(Q(responsible_id=user.id) | Q(invited_by_id=user.id) | Q(canal_id=user.id))
+            else:
+                queryset = queryset.filter(Q(responsible_id=user.id) | Q(invited_by_id=user.id))
+
         queryset = self._filter_by_status(queryset)
         return queryset
 
@@ -275,6 +280,56 @@ class AgentContractViewSet(viewsets.ModelViewSet):
     serializer_class = AgentContractSerializer
     queryset = CustomUser.objects.all()
     permission_classes = tuple()
+
+    def create(self, request, *args, **kwargs):
+        data = self._parse_data(request)
+        serializer = self.get_serializer(data=data)
+        serializer.is_valid(raise_exception=True)
+        self.perform_create(serializer)
+        headers = self.get_success_headers(serializer.data)
+        return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
+
+    @staticmethod
+    def _parse_data(request):
+        initial_data = {k: v for k, v in request.data.items()}
+        regex = re.compile(r"^puntos\[(?P<pkey>\d{1,3})\]\[(?P<pfield>[a-z0-9_]*)\].*$")
+        file_regex = re.compile(
+            r"^puntos\[(?P<pkey>\d{1,3})\]\[attachments\]\[(?P<akey>\d{1,3})\]\[(?P<afield>[a-z0-9_]*)\].*$"
+        )
+        puntos_by_idx = {}
+        attachments_by_idx = {}
+        for key in {**initial_data}:
+            parsed_keys = re.search(regex, key)
+            if not parsed_keys:
+                continue
+
+            value, pkey, pfield = initial_data.get(key), parsed_keys["pkey"], parsed_keys["pfield"]
+            if pfield == "attachments":
+                parsed_keys = re.search(file_regex, key)
+                akey, afield = parsed_keys["akey"], parsed_keys["afield"]
+                if pkey in attachments_by_idx:
+                    if akey in attachments_by_idx[pkey]:
+                        attachments_by_idx[pkey][akey][afield] = value
+                    else:
+                        attachments_by_idx[pkey][akey] = {afield: value}
+                else:
+                    if value:
+                        attachments_by_idx[pkey] = {akey: {afield: value}}
+
+            elif pkey in puntos_by_idx:
+                if value:
+                    puntos_by_idx[pkey][pfield] = value
+            else:
+                if value:
+                    puntos_by_idx[pkey] = {pfield: value}
+
+            del initial_data[key]
+
+        for key, punto_attachments in attachments_by_idx.items():
+            puntos_by_idx[key]["attachments"] = list(punto_attachments.values())
+
+        initial_data["puntos"] = list(puntos_by_idx.values())
+        return initial_data
 
 
 class FastContractImagesViewSet(viewsets.ModelViewSet):

@@ -65,7 +65,7 @@ class ChatConsumer(AsyncJsonWebsocketConsumer):
 
         await self.channel_layer.group_add(self.room_group_name, self.channel_name)
 
-    async def disconnect(self, code):
+    async def disconnect(self, _):
         if self.room_group_name is not None:
             await self.channel_layer.group_discard(self.room_group_name, self.channel_name)
         # await self.websocket_disconnect({"code": code or 200})

@@ -1,4 +1,5 @@
 import logging
+from typing import List
 
 import arrow
 from django.contrib.auth.base_user import BaseUserManager
@@ -155,6 +156,7 @@ class OfferListSerializer(DynamicFieldsMixin, serializers.ModelSerializer):
             "client_type",
             "is_price_permanent",
             "required_fields",
+            "kind",
         ]
 
 
@@ -453,17 +455,20 @@ class ResponsibleField(serializers.EmailField):
         except CustomUser.DoesNotExist:
             from apps.users.serializers import RegisterSerializer
 
-            ser = RegisterSerializer()
-            return ser.save(email=data, role="agent").email
+            ser = RegisterSerializer(data={"email": data, "role": "agent"})
+            ser.is_valid(raise_exception=True)
+            return ser.save().email
 
 
 class ContractFileSerialzier(serializers.ModelSerializer):
     class Meta:
         model = Attachment
-        fields = "__all__"
+        exclude = ["punto"]  # fields = "__all__"  # fields = ["attachment", "attachment_type"]
 
 
 class ContractPuntoSerializer(serializers.ModelSerializer):
+    attachments = ContractFileSerialzier(many=True)
+
     class Meta:
         model = Punto
         exclude = ["bid", "user"]
@@ -472,6 +477,7 @@ class ContractPuntoSerializer(serializers.ModelSerializer):
 class AgentContractSerializer(serializers.ModelSerializer):
     offer = serializers.PrimaryKeyRelatedField(queryset=Offer.objects.all(), write_only=True)
     responsible = ResponsibleField()
+    puntos = ContractPuntoSerializer(many=True)
 
     class Meta:
         model = CustomUser
@@ -482,75 +488,36 @@ class AgentContractSerializer(serializers.ModelSerializer):
             "offer",
             "responsible",
             "legal_representative",
+            "client_role",
+            "puntos",
         ]
         extra_kwargs = {
             "phone": {"required": False},
             "legal_representative": {"required": False},
+            "client_role": {"default": "tramitacion", "write_only": True},
         }
 
     def create(self, validated_data):
         offer = validated_data.pop("offer")
-
+        if "phone" in offer.required_fields and not self.validated_data.get("phone"):
+            raise ValidationError({"phone": "Requiredo."})
+        puntos = validated_data.pop("puntos")
         with transaction.atomic():
             validated_data["responsible"] = CustomUser.objects.get(email=validated_data["responsible"])
             created_client = super().create(validated_data)
             bid = Bid.objects.create(user=created_client, offer=offer)
-            self._handle_puntos(user=created_client, bid=bid)
+            for pkey, punto_data in enumerate(puntos):
+                attachments = punto_data.pop("attachments")
+                given_types = [a["attachment_type"] for a in attachments]
+                punto = Punto.objects.create(**punto_data, bid=bid, user=created_client)
+                self._handle_required_fields(offer, punto, pkey, given_types)
+                for attachment_data in attachments:
+                    Attachment.objects.create(**attachment_data, punto=punto)
+
         return created_client
 
-    def validate(self, attrs):
-        if "phone" in attrs["offer"].required_fields and not attrs.get("phone"):
-            raise ValidationError({"phone": "Requiredo."})
-        return attrs
-
-    def _handle_puntos(self, user: CustomUser, bid: Bid):
-        data = self.initial_data
-        puntos_keys = [key for key in data if "punto" in key]
-        if not puntos_keys:
-            raise ValidationError({"puntos": ["Requiredo."]})
-
-        for key in puntos_keys:
-            if "attach" in key:
-                continue
-
-            parts = key.split("_")
-            pkey = parts[1]
-            punto_key = f"{parts[0]}_{pkey}"
-
-            punto_data = {k[len(punto_key) + 1 :]: v for k, v in data.items() if k.startswith(punto_key)}
-            punto_ser = ContractPuntoSerializer(data=punto_data)
-            try:
-                punto_ser.is_valid(raise_exception=True)
-            except ValidationError as exc:
-                exc = {err_key: [str(err_val) for err_val in err_vals] for err_key, err_vals in exc.detail.items()}
-                raise ValidationError({"puntosErrors": [{} for _ in range(int(pkey))] + [exc]})
-
-            punto = punto_ser.save(user=user, bid=bid)
-            self._handle_attachments(punto=punto, pkey=pkey)
-
-    def _handle_attachments(self, punto: Punto, pkey: str):
-        data = self.initial_data
-        file_keys_pattern = f"punto_{pkey}_"
-        files_fields = [f[0] for f in Attachment.ATTACHMENT_TYPE_CHOICES]
-        files_keys = [k for k in [key[len(file_keys_pattern) :] for key in data] if k in files_fields]
-
-        if not files_keys:
-            raise ValidationError({f"punto_{pkey}": "files not provided"})
-        self._handle_required_fields(punto, int(pkey), file_keys_pattern)
-
-        attachments = [
-            {"attachment_type": key, "attachment": data[f"{file_keys_pattern}{key}"], "punto": punto.id}
-            for key in files_keys
-        ]
-        ser = ContractFileSerialzier(data=attachments, many=True)
-        try:
-            ser.is_valid(raise_exception=True)
-            ser.save()
-        except ValidationError as exc:
-            raise ValidationError({f"punto_{pkey}": exc})
-
-    def _handle_required_fields(self, punto: Punto, pkey: int, predict: str):
-        data = self.initial_data
+    @staticmethod
+    def _handle_required_fields(offer: Offer, punto: Punto, pkey: int, given_fields: List[str]):
         rf_map = {
             "photo_cif": ["cif1", "cif2"],
             "photo_dni": ["dni1", "dni2"],
@@ -562,14 +529,15 @@ class AgentContractSerializer(serializers.ModelSerializer):
             "dni": ["dni"],
             "phone": ["phone"],
         }
-        required_fields = punto.bid.offer.required_fields
-        for rf in required_fields:
-            if rf == "name_changed_doc" and not punto.is_name_changed:
-                continue
+        required_fields = [xf for fields in [rf_map[f] for f in offer.required_fields] for xf in fields]
+        not_provided_fields = set(required_fields) - set(given_fields)
 
-            fields_to_check = rf_map[rf]
-            for field in fields_to_check:
-                full_field_name = f"{predict}{field}"
-                if full_field_name not in data:
-                    exc = {field: "Requierido"}
-                    raise ValidationError({"puntosErrors": [{} for _ in range(pkey)] + [exc]})
+        if "name_changed" in not_provided_fields:
+            if punto.is_name_changed:
+                raise ValidationError({"puntos": [{} for _ in range(pkey)] + [{"name_changed_doc": "Requiredo."}]})
+            not_provided_fields.remove("name_changed")
+
+        if not_provided_fields:
+            raise ValidationError(
+                {"puntos": [{} for _ in range(pkey)] + [{f: "Requiredo."} for f in not_provided_fields]}
+            )
