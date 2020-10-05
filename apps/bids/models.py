@@ -49,9 +49,9 @@ class Bid(models.Model):
         elif self.success:
             if not by.is_client:
                 if not self.paid:
-                    return "Pendiente pagado (agente)"
+                    return "Pendiente Pago (agente)"
                 elif self.user.responsible.canal and not self.canal_paid:
-                    return "Pendiente pagado (canal)"
+                    return "Pendiente Pago (canal)"
             return "OK" if by.is_client else "Pagado"
 
         return self.IN_TRAMITACION if (self.doc or self.call or self.scoring) else self.DEFAULT_STATUS
