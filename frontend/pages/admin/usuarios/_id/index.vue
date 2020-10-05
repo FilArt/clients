@@ -78,7 +78,7 @@
           <v-select
             v-model="permissions"
             multiple
-            label="Permissions"
+            label="Permisos"
             chips
             :items="[
               {
