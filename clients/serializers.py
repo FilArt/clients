@@ -455,7 +455,7 @@ class ResponsibleField(serializers.EmailField):
         except CustomUser.DoesNotExist:
             from apps.users.serializers import RegisterSerializer
 
-            ser = RegisterSerializer(data={"email": data, "role": "agent"})
+            ser = RegisterSerializer(data={"email": data, "role": "agent"}, tg_msg=None)
             ser.is_valid(raise_exception=True)
             return ser.save().email
 
@@ -497,13 +497,14 @@ class AgentContractSerializer(serializers.ModelSerializer):
             "client_role": {"default": "tramitacion", "write_only": True},
         }
 
+    @transaction.atomic
     def create(self, validated_data):
         offer = validated_data.pop("offer")
         if "phone" in offer.required_fields and not self.validated_data.get("phone"):
             raise ValidationError({"phone": "Requiredo."})
         puntos = validated_data.pop("puntos")
-        with transaction.atomic():
-            validated_data["responsible"] = CustomUser.objects.get(email=validated_data["responsible"])
+        validated_data["responsible"] = CustomUser.objects.get(email=validated_data["responsible"])
+        try:
             created_client = super().create(validated_data)
             bid = Bid.objects.create(user=created_client, offer=offer)
             for pkey, punto_data in enumerate(puntos):
@@ -513,6 +514,9 @@ class AgentContractSerializer(serializers.ModelSerializer):
                 self._handle_required_fields(offer, punto, pkey, given_types)
                 for attachment_data in attachments:
                     Attachment.objects.create(**attachment_data, punto=punto)
+        except ValidationError:
+            transaction.rollback()
+            raise
 
         return created_client
 
