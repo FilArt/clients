@@ -504,19 +504,15 @@ class AgentContractSerializer(serializers.ModelSerializer):
             raise ValidationError({"phone": "Requiredo."})
         puntos = validated_data.pop("puntos")
         validated_data["responsible"] = CustomUser.objects.get(email=validated_data["responsible"])
-        try:
-            created_client = super().create(validated_data)
-            bid = Bid.objects.create(user=created_client, offer=offer)
-            for pkey, punto_data in enumerate(puntos):
-                attachments = punto_data.pop("attachments")
-                given_types = [a["attachment_type"] for a in attachments]
-                punto = Punto.objects.create(**punto_data, bid=bid, user=created_client)
-                self._handle_required_fields(offer, punto, pkey, given_types)
-                for attachment_data in attachments:
-                    Attachment.objects.create(**attachment_data, punto=punto)
-        except ValidationError:
-            transaction.rollback()
-            raise
+        created_client = super().create(validated_data)
+        bid = Bid.objects.create(user=created_client, offer=offer)
+        for pkey, punto_data in enumerate(puntos):
+            attachments = punto_data.pop("attachments")
+            given_types = [a["attachment_type"] for a in attachments]
+            punto = Punto.objects.create(**punto_data, bid=bid, user=created_client)
+            self._handle_required_fields(offer, punto, pkey, given_types)
+            for attachment_data in attachments:
+                Attachment.objects.create(**attachment_data, punto=punto)
 
         return created_client
 
