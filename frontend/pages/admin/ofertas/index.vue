@@ -1,5 +1,17 @@
 <template>
   <v-card>
+    <v-toolbar>
+      <v-toolbar-title> Ofertas </v-toolbar-title>
+
+      <v-spacer />
+
+      <v-toolbar-items>
+        <v-btn nuxt to="/admin/ofertas/nuevo_oferta" color="success">
+          <v-icon>mdi-plus</v-icon>
+        </v-btn>
+      </v-toolbar-items>
+    </v-toolbar>
+
     <v-card-text>
       <v-dialog v-model="editDialog" max-width="290">
         <v-card>
@@ -12,15 +24,14 @@
             <v-card-title class="headline">Editar {{ fieldToEdit.field }}</v-card-title>
 
             <v-card-text>
+              <offer-required-fields v-if="fieldToEdit.field === 'required_fields'" v-model="newValue" />
+
               <v-select
-                v-if="
-                  fieldToEdit.field === 'required_fields' ||
-                  (fieldToEdit.filterOptions && fieldToEdit.filterOptions.filterDropdownItems)
-                "
+                v-else-if="fieldToEdit.filterOptions && fieldToEdit.filterOptions.filterDropdownItems"
                 v-model="newValue"
                 :items="
                   fieldToEdit.field === 'required_fields'
-                    ? this.requiredFieldsItems
+                    ? requiredFieldsItems
                     : fieldToEdit.filterOptions.filterDropdownItems
                 "
                 :multiple="fieldToEdit.multiple"
@@ -91,8 +102,10 @@
 
 <script>
 import { mapState } from 'vuex'
+import OfferRequiredFields from '@/components/selects/OfferRequiredFields'
 
 export default {
+  components: { OfferRequiredFields },
   data() {
     const q = this.$route.query
     return {

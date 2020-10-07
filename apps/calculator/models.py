@@ -1,16 +1,13 @@
 import logging
-from decimal import Decimal
 from enum import Enum, unique
 
-import gspread
-from clients.utils import PositiveNullableFloatField
-from django.conf import settings
+from django.contrib.postgres.fields import ArrayField
 from django.db import models
 from django.db.models import Manager
 from django.utils.translation import gettext_lazy as _
-from django.contrib.postgres.fields import ArrayField
-from apps.calculator.fields import NameField
 
+from apps.calculator.fields import NameField
+from clients.utils import PositiveNullableFloatField
 from .fields import is_positive
 from .managers import WithoutOtraManager
 
@@ -144,7 +141,6 @@ class Offer(models.Model):
     default = Manager()
 
     kind = models.CharField(default="luz", choices=OFFER_KIND_CHOICES, max_length=3)
-    uuid = models.UUIDField(unique=True)
     company = models.ForeignKey(Company, on_delete=models.CASCADE)
     name = NameField(max_length=255, db_index=True)
     description = models.TextField()
@@ -173,110 +169,7 @@ class Offer(models.Model):
         return self.name
 
     @staticmethod
-    def sync():
-        work_sheet = Offer._get_sheet()
-        records = [row for row in work_sheet.get_all_records() if row["TYPO"]]
-        logger.info("before: %i", Offer.objects.filter(kind="luz").count())
-        for item in records:
-            try:
-                Offer.objects.update_or_create(
-                    uuid=item["UUID"],
-                    defaults=dict(
-                        company=Company.objects.get_or_create(
-                            name=item["COMERCIALIZADORA"].strip().upper(),
-                        )[0],
-                        name=item["NOMBRE"],
-                        tarif=item["TARIFA"],
-                        description=item["DESCRIPCION"],
-                        power_min=str_to_float(item["POTENCIA MIN"]),
-                        power_max=str_to_float(item["POTENCIA MAX"]),
-                        consumption_min=str_to_float(item["CONSUMO MIN"]),
-                        consumption_max=str_to_float(item["CONSUMO MAX"]),
-                        client_type=0 if item["TYPO"] == "F" else 1 if item["TYPO"] == "J" else 2,
-                        p1=str_to_float(item["P1"]),
-                        p2=str_to_float(item["P2"]),
-                        p3=str_to_float(item["P3"]),
-                        c1=str_to_float(item["C1"]),
-                        c2=str_to_float(item["C2"]),
-                        c3=str_to_float(item["C3"]),
-                        is_price_permanent=item["MODO"].capitalize(),
-                        agent_commission=Decimal(item["COMISIONES COMERCIAL"]),
-                        canal_commission=Decimal(item["COMISIONES CANAL"]),
-                        required_fields=[
-                            Offer.PERMISSIONS_HELPER[x]
-                            for x in [
-                                w.strip() for w in (f'{item["DOCUMENTACION"]},{item["CAMBIO DE NOMBRE"]}').split(",")
-                            ]
-                            if x in Offer.PERMISSIONS_HELPER
-                        ],
-                    ),
-                )
-            except Exception as e:
-                logger.exception(e)
-                raise
-
-        uuids = [r["UUID"] for r in records]
-        Offer.objects.filter(kind="luz").exclude(uuid__in=uuids).delete()
-        logger.info("after: %i", Offer.objects.filter(kind="luz").count())
-        logger.info("all: %i", len(uuids))
-
-    @staticmethod
-    def sync_gas():
-        work_sheet = Offer._get_sheet("gas")
-        records = [row for row in work_sheet.get_all_records() if row["TYPO"]]
-        logger.info("before: %i", Offer.objects.filter(kind="gas").count())
-        for item in records:
-            try:
-                Offer.objects.update_or_create(
-                    uuid=item["UUID"],
-                    defaults=dict(
-                        kind="gas",
-                        company=Company.objects.get_or_create(
-                            name=item["COMERCIALIZADORA"].strip().upper(),
-                        )[0],
-                        name=item["NOMBRE"],
-                        tarif=item["TARIFA"],
-                        description=item["DESCRIPCION"],
-                        consumption_min=str_to_float(item["CONSUMO MIN"]),
-                        consumption_max=str_to_float(item["CONSUMO MAX"]),
-                        client_type=0 if item["TYPO"] == "F" else 1 if item["TYPO"] == "J" else 2,
-                        p1=str_to_float(item["P1"]),
-                        c1=str_to_float(item["C1"]),
-                        is_price_permanent=item["MODO"].capitalize(),
-                        agent_commission=Decimal(item["COMISIONES COMERCIAL"]),
-                        canal_commission=Decimal(item["COMISIONES CANAL"]),
-                        required_fields=[
-                            Offer.PERMISSIONS_HELPER[x]
-                            for x in [
-                                w.strip() for w in (f'{item["DOCUMENTACION"]},{item["CAMBIO DE NOMBRE"]}').split(",")
-                            ]
-                            if x in Offer.PERMISSIONS_HELPER
-                        ],
-                    ),
-                )
-            except Exception as e:
-                logger.info(item)
-                logger.exception(e)
-                raise
-
-        uuids = [r["UUID"] for r in records]
-        Offer.objects.filter(kind="gas").exclude(uuid__in=uuids).delete()
-        logger.info("after: %i", Offer.objects.filter(kind="gas").count())
-        logger.info("all: %i", len(uuids))
-
-    @staticmethod
-    def _get_sheet(kind: str = "luz"):
-        client = gspread.service_account(settings.GOOGLE_SERVICE_ACCOUNT_CREDS)
-        spread_sheet = client.open_by_url(settings.OFFERS_SHEET_URL)
-        return spread_sheet.get_worksheet(0 if kind == "luz" else 1)
-
-    @staticmethod
     def get_blank_offer():
         company, _ = Company.objects.get_or_create(name="OTRA")
-        offer, _ = Offer.default.get_or_create(
-            uuid="ad768f47-1e5f-4074-bc08-7078ef881f32",
-            name=Offer.OTRA_OFFER_NAME,
-            company=company,
-            client_type=0,
-        )
+        offer, _ = Offer.default.get_or_create(name=Offer.OTRA_OFFER_NAME, company=company, client_type=0)
         return offer

@@ -8,7 +8,6 @@ class OfferAdminModel(admin.ModelAdmin):
     list_filter = ("company", "tarif")
     search_fields = ("name",)
     list_display_links = ("name",)
-    exclude = ("uuid",)
 
 
 admin.site.register(Company)
