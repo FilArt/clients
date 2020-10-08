@@ -120,7 +120,7 @@ export default {
             to: '/agente/clientes',
           },
           {
-            icon: 'C&V',
+            icon: 'mdi-call-merge',
             title: 'Call&Visit',
             href: 'https://app.call-visit.com',
           },
@@ -130,6 +130,13 @@ export default {
             icon: 'mdi-account-multiple',
             title: 'LEEDS',
             to: '/agente/leeds',
+          })
+        }
+        if (user.agent_type === 'canal') {
+          items.splice(3, 0, {
+            icon: 'mdi-account-multiple',
+            title: 'AGENTES',
+            to: '/agente/agentes',
           })
         }
       } else {
@@ -146,8 +153,7 @@ export default {
           },
         ])
       }
-
-      if (permissions.includes('offers')) {
+      if (permissions.includes('offers') || !role) {
         items.push({
           icon: 'mdi-offer',
           title: 'Ofertas',

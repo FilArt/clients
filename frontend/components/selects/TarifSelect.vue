@@ -25,6 +25,7 @@
 </template>
 
 <script>
+import { mapState } from 'vuex'
 export default {
   name: 'TarifSelect',
   props: {
@@ -43,26 +44,22 @@ export default {
   },
   data() {
     return {
-      loading: true,
-
+      loading: false,
       tarif: this.value,
-      tarifs: [],
     }
   },
+  computed: mapState({ tarifs: (state) => state.tarifs }),
   watch: {
     value(val) {
       this.tarif = val
     },
   },
   async mounted() {
-    await this.refresh()
-  },
-  methods: {
-    async refresh() {
+    if (!this.tarifs.length) {
       this.loading = true
-      this.tarifs = await this.$axios.$get('/calculator/tarifs/')
+      await this.$store.dispatch('fetchTarifs')
       this.loading = false
-    },
+    }
   },
 }
 </script>

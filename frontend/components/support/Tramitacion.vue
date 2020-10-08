@@ -27,7 +27,7 @@
     </v-dialog>
 
     <v-row class="text-center">
-      <v-col :style="hidePuntos ? null : 'max-width: 300px'">
+      <v-col :style="hidePuntos ? null : 'max-width: 500px'">
         <v-row>
           <v-col>
             <v-dialog v-model="offerDetailDialog" max-width="750">
@@ -48,81 +48,39 @@
               </template>
 
               <v-card>
-                <detail-offer :offer="bid.offer" closeable @close="offerDetailDialog = false" />
+                <v-card-text>
+                  <detail-offer
+                    :offer="bid.offer"
+                    closeable
+                    changeable
+                    :bid-id="bidId"
+                    @close="offerDetailDialog = false"
+                    @offer-changed="fetchBid"
+                  />
+                </v-card-text>
               </v-card>
             </v-dialog>
           </v-col>
         </v-row>
 
         <div v-if="['admin', 'tramitacion'].includes($auth.user.role)">
-          <div v-if="facturacion">
-            <v-row align="center">
-              <v-col>
-                <v-toolbar>Responsable: {{ bid.responsible || '...' }}</v-toolbar>
-
-                <v-radio-group
-                  :value="commissions.map((c) => c.value).indexOf(bid.commission)"
-                  label="Comisiones"
-                  @change="pagar('commission', commissions[$event].value)"
-                >
-                  <v-radio v-for="(commission, idx) in commissions" :key="idx" :value="idx" :label="commission.text" />
-                  <v-text-field
-                    v-model="bid.commission"
-                    label="Variable"
-                    append-icon="mdi-content-save"
-                    prepend-icon="mdi-currency-eur"
-                    @click:append="pagar('commission', bid.commission)"
-                  />
-                </v-radio-group>
-              </v-col>
-
-              <v-spacer />
-
-              <v-col>
-                <v-radio-group v-model="bid.paid" :error-messages="bidErrors.paid" @change="pagar('paid', bid.paid)">
-                  <v-radio label="Pagado" :value="true" color="success" />
-                  <v-radio label="Pendiente" :value="false" color="error" />
-                </v-radio-group>
-              </v-col>
-            </v-row>
-
-            <v-row v-if="bid.canal" align="center">
-              <v-col>
-                <v-toolbar>Canal: {{ bid.canal || '...' }}</v-toolbar>
-
-                <v-radio-group
-                  :value="bid.canal_commission"
-                  label="Canal comisiones"
-                  @change="pagar('canal_commission', bid.offer.canal_commission)"
-                >
-                  <v-radio
-                    :value="bid.offer.canal_commission"
-                    :label="`Canal comisiones: ${bid.offer.canal_commission} €`"
-                  />
-                  <v-text-field
-                    v-model="bid.canal_commission"
-                    label="Variable"
-                    append-icon="mdi-content-save"
-                    prepend-icon="mdi-currency-eur"
-                    @click:append="pagar('canal_commission', bid.canal_commission)"
-                  />
-                </v-radio-group>
-              </v-col>
-
-              <v-spacer />
-
-              <v-col>
-                <v-radio-group
-                  v-model="bid.canal_paid"
-                  :error-messages="bidErrors.canal_paid"
-                  @change="pagar('canal_paid', bid.canal_paid)"
-                >
-                  <v-radio label="Pagado" :value="true" color="success" />
-                  <v-radio label="Pendiente" :value="false" color="error" />
-                </v-radio-group>
-              </v-col>
-            </v-row>
-          </div>
+          <facturacion
+            v-if="facturacion && bid"
+            :bid-id="bid.id"
+            :responsible="bid.responsible"
+            :canal="bid.canal"
+            :puntos-count="bid.puntos_count"
+            :default-canal-commission="parseFloat(bid.offer.canal_commission)"
+            :default-responsible-commission="parseFloat(bid.offer.agent_commission)"
+            :current-responsible-commission="parseFloat(bid.commission)"
+            :current-canal-commission="parseFloat(bid.canal_commission)"
+            :is-canal-paid="bid.canal_paid"
+            :is-responsible-paid="bid.paid"
+            @paid="
+              notificationKey += 1
+              $emit('tramitate')
+            "
+          />
 
           <v-row v-else>
             <v-col>
@@ -201,6 +159,7 @@
 export default {
   name: 'Tramitacion',
   components: {
+    Facturacion: () => import('@/components/support/Facturacion'),
     CloseButton: () => import('~/components/buttons/closeButton'),
     PuntosList: () => import('~/components/puntos/PuntosList'),
     detailOffer: () => import('~/components/detailOffer'),
@@ -231,6 +190,8 @@ export default {
   },
   data() {
     return {
+      canalVariable: 0,
+      agentVariable: 0,
       offerDetailDialog: false,
       loading: false,
       bid: null,
@@ -269,19 +230,28 @@ export default {
     }
   },
   computed: {
+    puntosCount() {
+      return this.bid.puntos_count
+    },
+    canalCommission() {
+      return parseFloat(this.bid.canal_commission) * this.puntosCount
+    },
+    agentCommission() {
+      return parseFloat(this.bid.commission) * this.puntosCount
+    },
     commissions() {
       const { agent_commission, canal_commission } = this.bid.offer
       const result = []
       const agentType = this.bid.agent_type
       if (agentType === 'agent' || agentType === null) {
         result.push({
-          text: `Agente comisiones: ${agent_commission} €`,
-          value: agent_commission,
+          text: `Agente comisiones: ${agent_commission} € * ${this.puntosCount} puntos = ${this.agentCommission} €`,
+          value: agent_commission * this.puntosCount,
         })
       } else if (agentType === 'canal') {
         result.push({
-          text: `Canal comisiones: ${canal_commission} €`,
-          value: canal_commission,
+          text: `Canal comisiones: ${canal_commission} € * ${this.puntosCount} puntos = ${this.canalCommission} €`,
+          value: canal_commission * this.puntosCount,
         })
       }
       return result
@@ -306,7 +276,7 @@ export default {
     async tramitate() {
       this.loading = true
       try {
-        const bid = await this.$axios.$patch(`bids/bids/${this.bid.id}/`, {
+        this.bid = await this.$axios.$patch(`bids/bids/${this.bid.id}/`, {
           doc: this.bid.doc,
           call: this.bid.call,
           scoring: this.bid.scoring,
@@ -314,7 +284,6 @@ export default {
           message: this.message,
           internal_message: this.internalMessage,
         })
-        this.bid = bid
         this.$emit('tramitate')
         this.notificationKey += 1
         this.tramitateDialog = false
@@ -326,20 +295,6 @@ export default {
         })
       } finally {
         this.loading = false
-      }
-    },
-    async pagar(field, value) {
-      this.bidErrors[field] = null
-      try {
-        this.bid = await this.$axios.$patch(`bids/bids/${this.bid.id}/`, { [field]: value })
-        this.$emit('tramitate')
-        this.notificationKey += 1
-      } catch (e) {
-        const err = e.response.data
-        if (err.detail) {
-          await this.$swal({ title: 'Error', text: err.detail, icon: 'error' })
-        }
-        this.bidErrors = err
       }
     },
   },

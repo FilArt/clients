@@ -1,49 +1,45 @@
 <template>
-  <v-card>
+  <v-card flat>
+    <v-toolbar dense>
+      <v-toolbar-title>
+        {{ user.fullname }}
+      </v-toolbar-title>
+    </v-toolbar>
+
     <v-card-text>
-      <v-toolbar>
-        <v-toolbar-title>
-          {{ user.fullname }}
-        </v-toolbar-title>
-      </v-toolbar>
       <user-detail-data :user-id="$route.params.id" />
     </v-card-text>
 
     <v-divider />
 
-    <v-card-title>Solicitudes</v-card-title>
-    <v-card-text>
-      <v-list>
-        <v-list-group v-for="bid in user.bids" :key="bid.id" v-model="bid.active" no-action>
-          <template v-slot:activator>
-            <v-list-item-content>
-              ID: {{ bid.id }}
+    <v-row>
+      <v-col class="flex-grow-0">
+        <solicitudes-bar
+          :bids="user.bids"
+          @chosen="
+            chosenBid = $event
+            x += 1
+          "
+        />
+      </v-col>
 
-              <v-chip :color="bidStatusColor(bid.status)">
-                {{ bid.status }}
-              </v-chip>
-            </v-list-item-content>
-          </template>
-
-          <v-list-item>
-            <v-list-item-content>
-              <tramitacion
-                :bid-id="bid.id"
-                push-to-title="Tramitacion"
-                @tramitate="onTramitate"
-                @push-to="pushToTramitacion(bid.id)"
-              />
-            </v-list-item-content>
-          </v-list-item>
-        </v-list-group>
-      </v-list>
-    </v-card-text>
+      <div v-if="chosenBid" class="flex-grow-1">
+        <tramitacion
+          :key="x"
+          :bid-id="chosenBid"
+          push-to-title="Tramitacion"
+          @tramitate="onTramitate"
+          @push-to="pushToTramitacion(chosenBid)"
+        />
+      </div>
+    </v-row>
   </v-card>
 </template>
 
 <script>
 export default {
   components: {
+    SolicitudesBar: () => import('@/components/support/SolicitudesBar'),
     UserDetailData: () => import('@/components/forms/UserDetailData'),
     Tramitacion: () => import('~/components/support/Tramitacion'),
   },
@@ -60,6 +56,7 @@ export default {
   },
   data() {
     return {
+      key: 0,
       cols: 3,
       errorMessages: { status: null, message: null },
     }

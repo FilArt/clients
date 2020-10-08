@@ -57,12 +57,13 @@ class DetailPuntoSerializer(serializers.ModelSerializer):
 
 class BidListSerializer(DynamicFieldsMixin, serializers.ModelSerializer):
     offer_name = serializers.CharField(read_only=True, source="offer.name")
+    offer_kind = serializers.CharField(read_only=True, source="offer.kind")
     pretty_created_at = serializers.SerializerMethodField()
     status = serializers.SerializerMethodField()
 
     class Meta:
         model = Bid
-        fields = ["id", "pretty_created_at", "created_at", "offer_name", "status"]
+        fields = ["id", "pretty_created_at", "created_at", "offer_name", "status", "offer_kind"]
 
     # noinspection PyMethodMayBeStatic
     def get_pretty_created_at(self, instance: Bid):
@@ -407,7 +408,6 @@ class FastContractAttachmentsSerializer(serializers.ModelSerializer):
     dni1 = serializers.FileField(write_only=True, required=False, allow_null=True)
     dni2 = serializers.FileField(write_only=True, required=False, allow_null=True)
     cif1 = serializers.FileField(write_only=True, required=False, allow_null=True)
-    cif2 = serializers.FileField(write_only=True, required=False, allow_null=True)
     factura_gas_1 = serializers.FileField(write_only=True, required=False, allow_null=True)
     factura_gas_2 = serializers.FileField(write_only=True, required=False, allow_null=True)
 
@@ -421,7 +421,6 @@ class FastContractAttachmentsSerializer(serializers.ModelSerializer):
         dni1 = validated_data.get("dni1")
         dni2 = validated_data.get("dni2")
         cif1 = validated_data.get("cif1")
-        cif2 = validated_data.get("cif2")
         factura_gas_1 = validated_data.get("factura_gas_1")
         factura_gas_2 = validated_data.get("factura_gas_2")
 
@@ -434,8 +433,6 @@ class FastContractAttachmentsSerializer(serializers.ModelSerializer):
             Attachment.objects.create(punto=punto, attachment_type="factura_1", attachment=factura_1)
         if cif1:
             Attachment.objects.create(punto=punto, attachment_type="cif1", attachment=cif1)
-        if cif2:
-            Attachment.objects.create(punto=punto, attachment_type="cif2", attachment=cif2)
         if dni1:
             Attachment.objects.create(punto=punto, attachment_type="dni1", attachment=dni1)
         if dni2:
@@ -467,6 +464,12 @@ class ContractFileSerialzier(serializers.ModelSerializer):
 
 
 class ContractPuntoSerializer(serializers.ModelSerializer):
+    offer = serializers.PrimaryKeyRelatedField(
+        queryset=Offer.objects.filter(kind="luz"), write_only=True, required=False
+    )
+    offer_gas = serializers.PrimaryKeyRelatedField(
+        queryset=Offer.objects.filter(kind="gas"), write_only=True, required=False
+    )
     attachments = ContractFileSerialzier(many=True)
 
     class Meta:
@@ -475,7 +478,6 @@ class ContractPuntoSerializer(serializers.ModelSerializer):
 
 
 class AgentContractSerializer(serializers.ModelSerializer):
-    offer = serializers.PrimaryKeyRelatedField(queryset=Offer.objects.all(), write_only=True)
     responsible = ResponsibleField()
     puntos = ContractPuntoSerializer(many=True)
 
@@ -485,7 +487,6 @@ class AgentContractSerializer(serializers.ModelSerializer):
             "company_name",
             "email",
             "phone",
-            "offer",
             "responsible",
             "legal_representative",
             "client_role",
@@ -499,17 +500,26 @@ class AgentContractSerializer(serializers.ModelSerializer):
 
     @transaction.atomic
     def create(self, validated_data):
-        offer = validated_data.pop("offer")
-        if "phone" in offer.required_fields and not self.validated_data.get("phone"):
-            raise ValidationError({"phone": "Requiredo."})
         puntos = validated_data.pop("puntos")
         validated_data["responsible"] = CustomUser.objects.get(email=validated_data["responsible"])
         created_client = super().create(validated_data)
-        bid = Bid.objects.create(user=created_client, offer=offer)
+        # 1 bid - 1 offer - 1 punto
         for pkey, punto_data in enumerate(puntos):
+            offer = punto_data.pop("offer") if "offer" in punto_data else None
+            offer_gas = punto_data.pop("offer_gas") if "offer_gas" in punto_data else None
+            if "phone" in offer.required_fields and not self.validated_data.get("phone"):
+                raise ValidationError({"phone": "Requiredo."})
+
             attachments = punto_data.pop("attachments")
+            punto = Punto.objects.create(**punto_data, user=created_client)
+            if offer:
+                bid = Bid.objects.create(user=created_client, offer=offer)
+                bid.puntos.add(punto)
+            if offer_gas:
+                bid_gas = Bid.objects.create(user=created_client, offer=offer_gas)
+                bid_gas.puntos.add(punto)
+
             given_types = [a["attachment_type"] for a in attachments]
-            punto = Punto.objects.create(**punto_data, bid=bid, user=created_client)
             self._handle_required_fields(offer, punto, pkey, given_types)
             for attachment_data in attachments:
                 Attachment.objects.create(**attachment_data, punto=punto)
@@ -519,7 +529,7 @@ class AgentContractSerializer(serializers.ModelSerializer):
     @staticmethod
     def _handle_required_fields(offer: Offer, punto: Punto, pkey: int, given_fields: List[str]):
         rf_map = {
-            "photo_cif": ["cif1", "cif2"],
+            "photo_cif": ["cif1"],
             "photo_dni": ["dni1", "dni2"],
             "photo_factura": ["factura", "factura_1"],
             "photo_recibo": ["recibo1"],

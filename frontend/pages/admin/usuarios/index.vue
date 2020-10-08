@@ -1,7 +1,15 @@
 <template>
   <v-card>
     <v-card-text>
-      <users-table show-filters allow-delete hide-chat :headers="headers" detail-url="/admin/usuarios" use-full-name />
+      <users-table
+        default-role="agent"
+        show-filters
+        allow-delete
+        hide-chat
+        :headers="headers"
+        detail-url="/admin/usuarios"
+        use-full-name
+      />
     </v-card-text>
   </v-card>
 </template>

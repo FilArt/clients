@@ -9,16 +9,26 @@
     </v-card-text>
 
     <v-card-actions>
-      <v-row class="text-center">
-        <v-col>
+      <v-row justify="center">
+        <v-col class="flex-grow-0">
           <v-btn nuxt :to="`/bids/${bid.id}/purchase`" color="success">
-            {{ bid.puntos_count ? 'Editar' : 'Contratar' }}
-            <v-icon right>
-              {{ bid.puntos_count ? 'mdi-pencil' : 'mdi-plus' }}
-            </v-icon>
+            Editar puntos
+            <v-icon right>mdi-pencil</v-icon>
           </v-btn>
         </v-col>
-        <v-col>
+        <v-col class="flex-grow-0">
+          <v-btn
+            nuxt
+            :disabled="bid.status !== 'Pendiente tramitacion'"
+            :to="`/ofertas/search/?bid_for_change=${bid.id}`"
+            color="warning"
+          >
+            Editar oferta
+            <v-icon right>mdi-pencil</v-icon>
+          </v-btn>
+        </v-col>
+
+        <v-col class="flex-grow-0">
           <delete-button @click="deleteBid" />
         </v-col>
       </v-row>

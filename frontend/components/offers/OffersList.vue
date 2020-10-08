@@ -13,6 +13,10 @@
 export default {
   name: 'OffersList',
   props: {
+    detailUrl: {
+      type: String,
+      default: null,
+    },
     offers: {
       type: Array,
       default: () => [],
@@ -28,18 +32,21 @@ export default {
   },
   methods: {
     detailOfferUrl(offer) {
+      const detailUrl = this.detailUrl || `/ofertas/${this.filters.client_type === 0 ? 'hogar' : 'pyme'}`
+      const bid = this.$route.query.bid_for_change
+      if (bid) this.$store.commit('setBidToChange', bid)
+
       const params = {
         ...this.filters,
         name: offer.name,
         is_price_permanent: offer.is_price_permanent,
+        selectable: detailUrl === this.detailUrl,
       }
-
       const query = Object.keys(params)
         .filter((k) => params[k] || params[k] === 0)
         .map((k) => `${encodeURIComponent(k)}=${encodeURIComponent(params[k])}`)
         .join('&')
-
-      return `/ofertas/${this.filters.client_type === 0 ? 'hogar' : 'pyme'}/${offer.id}/?${query}`
+      return `${detailUrl}/${offer.id}/?${query}`
     },
   },
 }

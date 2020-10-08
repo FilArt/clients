@@ -1,7 +1,11 @@
 <template>
-  <div>
-    <detail-offer v-for="offer in offers" :key="offer.id" :offer="offer" show-add-btn />
-  </div>
+  <v-row>
+    <v-col v-for="offer in offers" :key="offer.id" xl="4" lg="6" md="12">
+      <v-sheet>
+        <detail-offer :offer="offer" show-add-btn />
+      </v-sheet>
+    </v-col>
+  </v-row>
 </template>
 
 <script>

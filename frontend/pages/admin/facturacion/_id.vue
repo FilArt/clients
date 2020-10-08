@@ -14,33 +14,16 @@
 
     <v-row>
       <v-col class="flex-grow-0">
-        <v-navigation-drawer permanent>
-          <v-list-item>
-            <v-list-item-content>
-              <v-list-item-title class="title"> Solicitudes </v-list-item-title>
-            </v-list-item-content>
-          </v-list-item>
-
-          <v-divider></v-divider>
-
-          <v-list dense nav>
-            <v-list-item
-              v-for="bid in user.bids"
-              :key="bid.id"
-              :color="bidStatusColor(bid.status)"
-              @click="chosenBid = bid.id"
-            >
-              <v-list-item-subtitle> ID: {{ bid.id }} </v-list-item-subtitle>
-
-              <v-list-item-title>
-                {{ bid.status }}
-              </v-list-item-title>
-            </v-list-item>
-          </v-list>
-        </v-navigation-drawer>
+        <solicitudes-bar
+          :bids="user.bids"
+          @chosen="
+            chosenBid = $event
+            x += 1
+          "
+        />
       </v-col>
 
-      <div v-if="chosenBid" class="flex-grow-1">
+      <div v-if="chosenBid" :key="x" class="flex-grow-1">
         <tramitacion :bid-id="chosenBid" facturacion hide-puntos @tramitate="onTramitate" />
       </div>
     </v-row>
@@ -48,8 +31,10 @@
 </template>
 
 <script>
+import SolicitudesBar from '@/components/support/SolicitudesBar'
 export default {
   components: {
+    SolicitudesBar,
     UserDetailData: () => import('@/components/forms/UserDetailData'),
     Tramitacion: () => import('~/components/support/Tramitacion'),
   },
@@ -66,6 +51,7 @@ export default {
   },
   data() {
     return {
+      x: 0,
       chosenBid: null,
       cols: 3,
       errorMessages: { status: null, message: null },

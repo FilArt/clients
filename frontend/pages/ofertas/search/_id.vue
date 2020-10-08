@@ -1,9 +1,11 @@
 <template>
-  <div>
-    <v-card v-for="offer in offers" :key="offer.id" style="margin-bottom: 1em">
-      <detail-offer :offer="offer" show-add-btn />
-    </v-card>
-  </div>
+  <v-row>
+    <v-col v-for="offer in offers" :key="offer.id" xl="4" lg="6" md="12">
+      <v-sheet>
+        <detail-offer :offer="offer" show-add-btn :selectable="selectable" />
+      </v-sheet>
+    </v-col>
+  </v-row>
 </template>
 
 <script>
@@ -16,20 +18,14 @@ export default {
   async asyncData({ $axios, query }) {
     const params = {
       name: query.name,
-      client_type: query.client_type,
+      client_type: 1,
       id: query.id,
     }
     if (query.tarif) {
       params.tarif = query.tarif
     }
     const offers = await $axios.$get('calculator/offers/', { params })
-    return { offers }
-  },
-  data() {
-    return {
-      isBottomIntersecting: false,
-      isTopIntersecting: true,
-    }
+    return { offers, selectable: query.selectable }
   },
 }
 </script>

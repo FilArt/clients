@@ -271,7 +271,7 @@ class Punto(models.Model):
     CATEGORY_CHOICES = (("physical", _("Physical")), ("autonomous", _("Autonomous")), ("business", _("Business")))
     PROVINCE_CHOICES = [(c, c) for c in CITIES]
 
-    bid = models.ForeignKey("bids.Bid", on_delete=models.SET_NULL, related_name="puntos", null=True)
+    bid = models.ManyToManyField("bids.Bid", related_name="puntos")
     user = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name="puntos")
     name = MyCharField(verbose_name=_("Name"))
     is_name_changed = models.BooleanField(blank=True, null=True)
@@ -326,14 +326,6 @@ class Punto(models.Model):
     class Meta:
         db_table = "puntos"
 
-    def save(self, *args, **kwargs) -> None:
-        if self.category == "physical" and self.bid and self.bid.offer and self.bid.offer.client_type == 1:
-            raise DRFValError({"category": [_("Business offer is not available for individuals")]})
-        super().save(*args, **kwargs)
-
-    def __str__(self):
-        return f"{self.id}. {self.user} - {self.bid}"
-
 
 class Attachment(models.Model):
     ATTACHMENT_TYPE_CHOICES = (
@@ -342,7 +334,6 @@ class Attachment(models.Model):
         ("dni1", _("DNI")),
         ("dni2", _("DNI reverse side")),
         ("cif1", _("CIF")),
-        ("cif2", _("CIF reverse side")),
         ("recibo1", _("Recibo de Autónomo")),
         ("repr_legal", _("Foto DNI Representante Legal")),
         ("name_changed", _("Cambio de nombre")),

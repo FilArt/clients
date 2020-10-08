@@ -11,7 +11,7 @@
       />
     </v-card-text>
     <v-card-text>
-      <offers-list :offers="offers" :filters="filters" />
+      <offers-list :offers="offers" :filters="filters" :detail-url="detailUrl" />
     </v-card-text>
   </v-card>
 </template>
@@ -24,6 +24,10 @@ export default {
     OffersList: () => import('~/components/offers/OffersList'),
   },
   props: {
+    detailUrl: {
+      type: String,
+      default: null,
+    },
     defaultFilters: {
       type: Object,
       default: () => {},

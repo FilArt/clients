@@ -92,20 +92,13 @@ export default {
       deep: false,
     },
   },
-  mounted() {
-    if (!this.companies.length) this.refresh()
+  async mounted() {
+    if (!this.companies.length) await this.$store.dispatch('fetchCompanies')
   },
   methods: {
     closeItem() {
       this.company = null
       this.$emit('input', null)
-    },
-    refresh() {
-      this.loading = true
-      this.$axios
-        .$get('/calculator/companies/')
-        .then((companies) => this.$store.commit('setCompanies', companies))
-        .finally(() => (this.loading = false))
     },
   },
 }

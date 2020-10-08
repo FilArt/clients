@@ -122,6 +122,8 @@ export default {
     },
   },
   data() {
+    const newPunto = this.punto || {}
+    if (!newPunto.category) newPunto.category = 'physical'
     return {
       puntoFields: Object.values(constants.puntoFields)
         .filter((field) => this.admin || !field.onlyAdmin)
@@ -132,7 +134,7 @@ export default {
             icon: field.icon,
           }
         }),
-      newPunto: this.punto || {},
+      newPunto,
       errors: {},
       attachments: (this.punto || {}).attachments || [],
       fileFields: [

@@ -1,5 +1,5 @@
 <template>
-  <div class="mx-auto d-flex flex-column justify-center pa-3" style="max-width: 1000px">
+  <div class="d-flex flex-column justify-center">
     <v-row>
       <v-col>
         <p class="text-center headline">
@@ -12,13 +12,15 @@
         </v-btn>
       </v-col>
     </v-row>
+
     <v-divider />
 
     <v-row align="center">
       <v-col>
-        <v-img class="mx-auto" max-height="250" max-width="150" :src="offer.company_logo || '/no-image.svg'" />
+        <v-img class="mx-auto" max-width="150" :src="'/no-image.svg'" />
       </v-col>
-      <v-col>
+
+      <v-col class="flex-grow-1">
         <v-simple-table style="max-width: 750px" class="pa-3">
           <template v-slot:default>
             <tr>
@@ -35,7 +37,7 @@
             <tr>
               <td>Tipo de oferta:</td>
               <td>
-                {{ offer.client_type === 0 ? 'Particular' : 'Juridico' }}
+                {{ offer.client_type === 0 ? 'Fisico' : 'Juridico' }}
               </td>
             </tr>
 
@@ -67,7 +69,36 @@
       </v-col>
     </v-row>
 
-    <v-card-actions v-if="showAddBtn && $auth.loggedIn && !showCalcDetails">
+    <v-card-text v-if="changeable">
+      Editar oferta
+      <v-row align="center">
+        <v-col>
+          <company-select v-model="company" />
+        </v-col>
+        <v-col>
+          <tarif-select v-model="tarif" />
+        </v-col>
+        <v-col>
+          <client-type-select v-model="clientType" />
+        </v-col>
+        <v-col v-if="company && tarif && clientType">
+          <offer-select v-model="newOffer" :company="company" :tarif="tarif" :client-type="clientType" />
+        </v-col>
+      </v-row>
+
+      <v-btn :disabled="!newOffer || newOffer.id === offer.id" block color="success" @click="changeOffer">
+        Salvar
+      </v-btn>
+    </v-card-text>
+
+    <v-card-actions v-else-if="selectable">
+      <v-btn rounded block outlined color="primary" @click="replaceBid">
+        Elejir
+        <v-icon right> mdi-briefcase </v-icon>
+      </v-btn>
+    </v-card-actions>
+
+    <v-card-actions v-else-if="showAddBtn && $auth.loggedIn && !showCalcDetails">
       <v-btn rounded block outlined color="primary" @click="addBid">
         Añadir a cartera
         <v-icon right> mdi-briefcase </v-icon>
@@ -82,9 +113,25 @@
 export default {
   name: 'DetailOffer',
   components: {
-    CalculatorDetails: () => import('~/components/CalculatorDetails'),
+    CompanySelect: () => import('@/components/selects/CompanySelect'),
+    TarifSelect: () => import('@/components/selects/TarifSelect'),
+    ClientTypeSelect: () => import('@/components/selects/ClientTypeSelect'),
+    OfferSelect: () => import('@/components/selects/OfferSelect'),
+    CalculatorDetails: () => import('@/components/CalculatorDetails'),
   },
   props: {
+    bidId: {
+      type: [String, Number],
+      default: 0,
+    },
+    changeable: {
+      type: [Boolean, String],
+      default: false,
+    },
+    selectable: {
+      type: [Boolean, String],
+      default: false,
+    },
     closeable: {
       type: Boolean,
       default: false,
@@ -105,6 +152,14 @@ export default {
       type: Object,
       default: () => null,
     },
+  },
+  data() {
+    return {
+      company: null,
+      tarif: null,
+      clientType: null,
+      newOffer: null,
+    }
   },
   computed: {
     showCalcDetails() {
@@ -132,6 +187,23 @@ export default {
     },
   },
   methods: {
+    changeOffer() {
+      if (!this.bidId) {
+        alert('Error. ' + 'Bid undefined')
+        return
+      }
+      this.$axios.patch(`bids/bids/${this.bidId}/`, { offer: this.newOffer.id }).then(() => {
+        this.newOffer = null
+        this.$emit('offer-changed')
+      })
+    },
+    replaceBid() {
+      const data = { offer: this.offer.id }
+      const bidId = this.$store.state.bidToChange
+      this.$axios.patch(`bids/bids/${bidId}/`, data).then(() => {
+        this.$router.push(`/bids/${bidId}`)
+      })
+    },
     addBid() {
       if (!this.offer) return
       let data = { offer: this.offer.id }

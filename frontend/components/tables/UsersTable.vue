@@ -20,7 +20,7 @@
       <template v-slot:top>
         <div class="pa-3">
           <v-row align="center" class="elevation-1 pa-3 flex-wrap" justify="space-around">
-            <v-col :cols="showFilters ? 8 : !hideChat && !isSupport ? 11 : 12">
+            <v-col :cols="showFilters ? 8 : showChat && !isSupport ? 11 : 12">
               <v-text-field
                 v-model="search"
                 :disabled="loading"
@@ -51,7 +51,7 @@
               </v-overflow-btn>
             </v-col>
 
-            <v-col v-if="!hideChat && !isSupport" cols="1" lg="1" xl="1" md="1" sm="1">
+            <v-col v-if="showChat && !isSupport" cols="1" lg="1" xl="1" md="1" sm="1">
               <v-tooltip bottom>
                 <template v-slot:activator="{ on }">
                   <v-simple-checkbox
@@ -160,7 +160,7 @@
               <v-select
                 v-model="query.status"
                 label="Estado"
-                :items="isSupport ? tramitacionEstados : facturacionEstados"
+                :items="statuses ? statuses : isSupport ? tramitacionEstados : facturacionEstados"
                 clearable
                 @change="updateQuery({ status: $event })"
               />
@@ -193,18 +193,22 @@
       </template>
 
       <template v-if="useFullName" v-slot:[`item.fullname`]="{ item }">
-        <nuxt-link :to="getDetailUrl(item.id)">
+        <nuxt-link v-if="detailUrl" :to="getDetailUrl(item.id)">
           {{ item.fullname }}
         </nuxt-link>
+        <span v-else>{{ item.fullname }}</span>
       </template>
 
       <template v-else v-slot:[`item.email`]="{ item }">
-        <nuxt-link :to="getDetailUrl(item.id)">
+        <nuxt-link v-if="detailUrl" :to="getDetailUrl(item.id)">
           {{ item.email }}
         </nuxt-link>
+        <span v-else>
+          {{ item.email }}
+        </span>
       </template>
 
-      <template v-if="!hideChat" v-slot:[`item.new_messages_count`]="{ item }">
+      <template v-if="showChat" v-slot:[`item.new_messages_count`]="{ item }">
         <v-badge :content="item.new_messages_count" :value="item.new_messages_count" color="error" overlap>
           <v-btn icon @click="openChat(item)">
             <v-icon>mdi-email</v-icon>
@@ -266,15 +270,19 @@ export default {
     DateTimeFilter: () => import('~/components/DateTimeFilter'),
   },
   props: {
+    statuses: {
+      type: Array,
+      default: () => null,
+    },
+    listUrl: {
+      type: String,
+      default: 'users/users',
+    },
     detailUrl: {
       type: String,
       default: '/admin/tramitacion',
     },
     useFullName: {
-      type: Boolean,
-      default: false,
-    },
-    hideChat: {
       type: Boolean,
       default: false,
     },
@@ -294,6 +302,10 @@ export default {
       type: Boolean,
       default: false,
     },
+    defaultRole: {
+      type: String,
+      default: null,
+    },
     clientRoles: {
       type: Array,
       default: () => [],
@@ -301,6 +313,10 @@ export default {
     headers: {
       type: Array,
       default: () => [],
+    },
+    responsible: {
+      type: [String, Number],
+      default: 0,
     },
   },
   data() {
@@ -350,7 +366,7 @@ export default {
       dateJoinedFilter,
       fechaFirmaFilter,
       userRoles: Object.values(constants.userRoles),
-      role: 'admin',
+      role: this.defaultRole,
       users: [],
       loading: false,
       total: 0,
@@ -366,15 +382,17 @@ export default {
         bids__call: null,
         bids__doc: null,
         bids__scoring: null,
-        responsible: query.responsible ? parseInt(query.responsible) : null,
+        responsible: this.responsible ? this.responsible : query.responsible ? parseInt(query.responsible) : null,
         page: query.page ? parseInt(query.page) : 1,
         itemsPerPage: query.itemsPerPage ? parseInt(query.itemsPerPage) : 10,
-        is_support: query.is_support || this.isSupport,
       },
     }
   },
   computed: {
     ...mapState({ responsibles: (state) => state.responsibles }),
+    showChat() {
+      return this.headers.some((h) => h.value === 'new_messages_count')
+    },
   },
   async created() {
     if (this.headers.some((header) => header.value.includes('responsible')) && !this.responsibles.length) {
@@ -389,7 +407,6 @@ export default {
       })
       await this.fetchUsers()
     },
-
     getDetailUrl(userId) {
       return `${this.detailUrl}/${userId}`
     },
@@ -406,29 +423,8 @@ export default {
             query: Object.entries(this.query).reduce((a, [k, v]) => (v ? ((a[k] = v), a) : a), {}),
           })
         }
-        const query = {
-          ...this.query,
-          ordering: this.query.sortBy
-            .map(
-              (sortBy, idx) =>
-                (this.query.sortDesc[idx] ? '+' : '-') + (sortBy === 'date_joined_date' ? 'date_joined' : sortBy),
-            )
-            .join(),
-          fields: this.headers.map((header) => header.value).join(),
-        }
-        if (this.clientRoles.length) {
-          query.client_role__in = this.clientRoles.join(',')
-          query.role__isnull = true
-        }
-        const data = await this.$axios.$get(
-          `users/users/?${Object.keys(query)
-            .filter((k) => query[k])
-            .map((k) => {
-              const value = query[k]
-              return value instanceof Array ? `${k}=${value.join()}` : `${k}=${value}`
-            })
-            .join('&')}`,
-        )
+        const query = this.getQuery()
+        const data = await this.$axios.$get(`${this.listUrl}/?${query}`)
         this.users = data.results
         this.total = data.count
       } catch (e) {
@@ -441,6 +437,28 @@ export default {
       } finally {
         this.loading = false
       }
+    },
+    getQuery() {
+      const query = constants.cleanEmpty({
+        ...this.query,
+        ordering: this.query.sortBy.length
+          ? this.query.sortBy
+              .map(
+                (sortBy, idx) =>
+                  (this.query.sortDesc[idx] ? '+' : '-') + (sortBy === 'date_joined_date' ? 'date_joined' : sortBy),
+              )
+              .join()
+          : null,
+        fields: this.headers.map((header) => header.value).join(),
+        role__isnull: this.clientRoles.length ? true : null,
+        client_role__in: this.clientRoles.length ? this.clientRoles.join(',') : null,
+      })
+      return Object.keys(query)
+        .map((k) => {
+          const value = query[k]
+          return value instanceof Array ? `${k}=${value.join()}` : `${k}=${value}`
+        })
+        .join('&')
     },
     updateDateJoinedFilter(dates) {
       if (dates && dates.start && dates.end) {

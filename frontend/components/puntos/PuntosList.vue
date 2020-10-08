@@ -118,7 +118,6 @@ export default {
         { value: 'dni1', text: 'DNI' },
         { value: 'dni2', text: 'DNI reverse side' },
         { value: 'cif1', text: 'CIF' },
-        { value: 'cif2', text: 'CIF reverse side' },
         { value: 'recibo1', text: 'Recibo de Autónomo' },
         { value: 'repr_legal', text: 'Foto DNI Representante Legal' },
         { value: 'name_changed', text: 'Cambio de nombre' },

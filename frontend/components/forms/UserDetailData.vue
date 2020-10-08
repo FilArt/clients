@@ -16,7 +16,7 @@
           dense
           :prepend-icon="item.icon"
           :label="item.text"
-          :append-icon="item.field ? 'mdi-content-save' : ''"
+          :append-icon="readonly ? null : item.field ? 'mdi-content-save' : ''"
           @click:append="updateUser(item.field, contactInfo[idx].value)"
         />
       </v-card-text>
@@ -32,10 +32,11 @@
         <v-text-field
           v-for="date in datesInfo"
           :key="date.text"
-          dense
           :prepend-icon="date.icon"
           :label="date.text"
           :value="date.value"
+          dense
+          readonly
         />
 
         <v-select
@@ -53,6 +54,7 @@
               value: 'call_n_visit',
             },
           ]"
+          :readonly="readonly"
           :append-icon="source !== user.source ? 'mdi-content-save' : null"
           @click:append="updateUser('source', source)"
         />
@@ -60,6 +62,7 @@
         <v-autocomplete
           v-model="responsible"
           dense
+          :readonly="readonly"
           prepend-icon="mdi-account"
           label="Responsable"
           item-text="fullname"
@@ -84,6 +87,10 @@ export default {
     userId: {
       type: [Number, String],
       default: 0,
+    },
+    readonly: {
+      type: Boolean,
+      default: false,
     },
   },
   data() {

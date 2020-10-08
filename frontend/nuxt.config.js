@@ -2,7 +2,7 @@ import es from 'vuetify/es5/locale/es'
 import colors from 'vuetify/es5/util/colors'
 
 const DEV = process.env.NODE_ENV !== 'production'
-const BACKEND_HOST = `http://localhost:${process.env.BACKEND_PORT || '8000'}`
+const BACKEND_HOST = `http://localhost:${process.env.BACKEND_PORT || '8001'}`
 
 export default {
   ssr: false,
