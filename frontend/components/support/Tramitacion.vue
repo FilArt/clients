@@ -229,7 +229,7 @@ export default {
       tramitateDialog: false,
       message: '',
       internalMessage: '',
-      modeTramitacion: true,
+      modeTramitacion: !this.facturacion,
     }
   },
   computed: {
