@@ -1,5 +1,21 @@
 <template>
   <v-card>
+    <v-dialog v-model="addNewNameDialog">
+      <v-card>
+        <v-card-title> Anadir nombre </v-card-title>
+        <v-card-text>
+          <v-form
+            @submit.prevent="
+              $store.commit('setNames', [newName, ...names])
+              addNewNameDialog = false
+            "
+          >
+            <v-text-field label="Nuevo nombre" v-model="newName" @input="newName = $event.toUpperCase()" />
+            <v-btn color="success" type="submit"> Anadir </v-btn>
+          </v-form>
+        </v-card-text>
+      </v-card>
+    </v-dialog>
     <v-toolbar>
       <v-toolbar-title> Ofertas </v-toolbar-title>
 
@@ -25,6 +41,16 @@
 
             <v-card-text>
               <offer-required-fields v-if="fieldToEdit.field === 'required_fields'" v-model="newValue" />
+
+              <v-overflow-btn
+                v-else-if="fieldToEdit.field === 'name'"
+                v-model="newValue"
+                editable
+                segmented
+                :items="names"
+                append-outer-icon="mdi-plus"
+                @click:append-outer="addNewNameDialog = true"
+              />
 
               <v-select
                 v-else-if="fieldToEdit.filterOptions && fieldToEdit.filterOptions.filterDropdownItems"
@@ -109,6 +135,8 @@ export default {
   data() {
     const q = this.$route.query
     return {
+      newName: '',
+      addNewNameDialog: false,
       editDialog: false,
       fieldToEdit: '',
       newValue: null,
