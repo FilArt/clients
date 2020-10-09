@@ -124,19 +124,6 @@ class Offer(models.Model):
         ("luz", _("Luz")),
         ("gas", _("gas")),
     )
-    PERMISSIONS_HELPER = {
-        "FOTO CIF": "photo_cif",
-        "FOTO DNI": "photo_dni",
-        "FOTO DNI REPRE LEGAL": "photo_dni",
-        "FACTURA": "photo_factura",
-        "NUMERO CIF": "cif",
-        "NUMERO DNI REPRE LEGAL": "dni",
-        "NUMERO DNI": "dni",
-        "FOTO RECIBO AUTONOMO": "photo_recibo",
-        "DOCUMENTO CAMBIO DE NOMBRE": "name_changed_doc",
-        "CONTRATO ARREDAMIENTO/COMPRAVENTA": "contrato_arredamiento",
-        "TELEFONO MOBIL": "phone",
-    }
     objects = WithoutOtraManager()
     default = Manager()
 
