@@ -546,6 +546,8 @@ class AgentContractSerializer(serializers.ModelSerializer):
             if punto.is_name_changed:
                 raise ValidationError({"puntos": [{} for _ in range(pkey)] + [{"name_changed_doc": "Requiredo."}]})
             not_provided_fields.remove("name_changed")
+        if "recibo1" in not_provided_fields and punto.category != "autonomous":
+            not_provided_fields.remove("recibo1")
 
         if not_provided_fields:
             raise ValidationError(
