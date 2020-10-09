@@ -54,7 +54,7 @@
         </v-col>
       </v-row>
 
-      <v-row>
+      <v-row v-if="canal">
         <v-col>
           <v-radio-group
             v-model="canalPaid"
