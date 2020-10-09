@@ -229,7 +229,7 @@ export default {
       tramitateDialog: false,
       message: '',
       internalMessage: '',
-      modeTramitacion: false,
+      modeTramitacion: true,
     }
   },
   computed: {
