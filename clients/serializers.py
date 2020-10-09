@@ -548,6 +548,8 @@ class AgentContractSerializer(serializers.ModelSerializer):
             not_provided_fields.remove("name_changed")
         if "recibo1" in not_provided_fields and punto.category != "autonomous":
             not_provided_fields.remove("recibo1")
+        if "cif" in not_provided_fields and punto.category != "business":
+            not_provided_fields.remove("cif")
 
         if not_provided_fields:
             raise ValidationError(
