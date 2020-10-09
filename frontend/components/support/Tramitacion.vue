@@ -64,25 +64,9 @@
         </v-row>
 
         <div v-if="['admin', 'tramitacion'].includes($auth.user.role)">
-          <facturacion
-            v-if="facturacion && bid"
-            :bid-id="bid.id"
-            :responsible="bid.responsible"
-            :canal="bid.canal"
-            :puntos-count="bid.puntos_count"
-            :default-canal-commission="parseFloat(bid.offer.canal_commission)"
-            :default-responsible-commission="parseFloat(bid.offer.agent_commission)"
-            :current-responsible-commission="parseFloat(bid.commission)"
-            :current-canal-commission="parseFloat(bid.canal_commission)"
-            :is-canal-paid="bid.canal_paid"
-            :is-responsible-paid="bid.paid"
-            @paid="
-              notificationKey += 1
-              $emit('tramitate')
-            "
-          />
+          <v-switch v-if="facturacion && bid" v-model="modeTramitacion" label="Modo tramitacion" />
 
-          <v-row v-else>
+          <v-row v-if="modeTramitacion">
             <v-col>
               <div v-for="group in groups" :key="group.label">
                 <v-radio-group v-model="bid[group.value]" :label="group.label" @change="tramitateDialog = true">
@@ -110,6 +94,24 @@
               </div>
             </v-col>
           </v-row>
+
+          <facturacion
+            v-else
+            :bid-id="bid.id"
+            :responsible="bid.responsible"
+            :canal="bid.canal"
+            :puntos-count="bid.puntos_count"
+            :default-canal-commission="parseFloat(bid.offer.canal_commission)"
+            :default-responsible-commission="parseFloat(bid.offer.agent_commission)"
+            :current-responsible-commission="parseFloat(bid.commission)"
+            :current-canal-commission="parseFloat(bid.canal_commission)"
+            :is-canal-paid="bid.canal_paid"
+            :is-responsible-paid="bid.paid"
+            @paid="
+              notificationKey += 1
+              $emit('tramitate')
+            "
+          />
         </div>
 
         <v-row>
@@ -227,6 +229,7 @@ export default {
       tramitateDialog: false,
       message: '',
       internalMessage: '',
+      modeTramitacion: false,
     }
   },
   computed: {
