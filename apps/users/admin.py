@@ -46,11 +46,12 @@ class CustomUserAdmin(UserAdmin):
         "last_name",
         "phone",
         "role",
+        "client_role",
         "is_staff",
         "is_active",
         "date_joined",
     )
-    list_filter = ("is_staff", "is_superuser", "is_active", "groups", "role")
+    list_filter = ("is_staff", "is_superuser", "is_active", "groups", "role", "client_role")
     search_fields = ("company_name", "first_name", "last_name", "email", "phone")
     ordering = ("-date_joined",)
 
