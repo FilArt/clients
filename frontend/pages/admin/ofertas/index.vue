@@ -10,7 +10,7 @@
               addNewNameDialog = false
             "
           >
-            <v-text-field label="Nuevo nombre" v-model="newName" @input="newName = $event.toUpperCase()" />
+            <v-text-field v-model="newName" label="Nuevo nombre" @input="newName = $event.toUpperCase()" />
             <v-btn color="success" type="submit"> Anadir </v-btn>
           </v-form>
         </v-card-text>

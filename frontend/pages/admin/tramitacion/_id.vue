@@ -23,7 +23,7 @@
         />
       </v-col>
 
-      <div v-if="chosenBid" class="flex-grow-1" :key="x">
+      <div v-if="chosenBid" :key="x" class="flex-grow-1">
         <tramitacion
           :bid-id="chosenBid"
           push-to-title="Papelera"
