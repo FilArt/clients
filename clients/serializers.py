@@ -553,6 +553,7 @@ class AgentContractSerializer(serializers.ModelSerializer):
             not_provided_fields -= {"cif", "cif1"}
 
         if not_provided_fields:
+            logger.info("not provided fields: %s", not_provided_fields)
             raise ValidationError(
                 {"puntos": [{} for _ in range(pkey)] + [{f: "Requiredo."} for f in not_provided_fields]}
             )
