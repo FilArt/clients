@@ -1,5 +1,6 @@
 from typing import Tuple
 
+from django.db.models import Q
 from rest_framework import mixins, viewsets
 from rest_framework.response import Response
 
@@ -22,6 +23,7 @@ class TarifViewSet(viewsets.GenericViewSet, mixins.ListModelMixin):
     def list(self, request, *args, **kwargs):
         qs = (
             Offer.objects.filter(
+                kind="gas" if "gas" in request.query_params else "luz",
                 tarif__isnull=False,
             )
             .exclude(
@@ -57,6 +59,19 @@ class OfferViewSet(viewsets.ReadOnlyModelViewSet):
         if "name" in self.request.query_params:
             return qs
         return qs.distinct("name")
+
+    def filter_queryset(self, queryset):
+        power_values = [val for val in [self.request.query_params.get(key) for key in ("p1", "p2", "p3")] if val]
+        if power_values:
+            power_min = min(filter((lambda n: n != 0), power_values))
+            power_max = max(filter((lambda n: n != 0), power_values))
+            queryset = queryset.filter(
+                Q(
+                    Q(power_max__isnull=True) | Q(power_max__gte=power_min),
+                    Q(power_min__isnull=True) | Q(power_min__lte=power_max),
+                )
+            )
+        return queryset
 
     def get_serializer_class(self):
         if self.detail:
