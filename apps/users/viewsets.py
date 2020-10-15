@@ -84,6 +84,18 @@ class AccountViewSet(
         return account
 
 
+def _filter_by_status(status: str, queryset):
+    if status.lower() == "tramitacion_ko":
+        queryset = queryset.filter(bids__doc=False, bids__call=False, bids__scoring=False)
+    elif status.lower() == "tramitacion_pendiente":
+        queryset = queryset.exclude(bids__doc=False, bids__call=False, bids__scoring=False)
+    if status.lower() == "facturacion_ok":
+        queryset = queryset.filter(bids__paid=True)
+    elif status.lower() == "facturacion_pendiente":
+        queryset = queryset.filter(bids__paid=False)
+    return queryset
+
+
 class UserViewSet(
     DynamicFieldsMixin,
     mixins.UpdateModelMixin,
@@ -118,7 +130,9 @@ class UserViewSet(
             else:
                 queryset = queryset.filter(Q(responsible_id=user.id) | Q(invited_by_id=user.id))
 
-        queryset = self._filter_by_status(queryset)
+        status = self.request.query_params.get("status")
+        if status:
+            queryset = _filter_by_status(status, queryset)
         return queryset
 
     def get_serializer_class(self):
@@ -149,23 +163,6 @@ class UserViewSet(
         if not attachments:
             attachments = Attachment.objects.filter(punto__user=request.user)
         return Response(AttachmentSerializer(attachments, many=True).data)
-
-    def _filter_by_status(self, queryset):
-        status = self.request.query_params.get("status")
-        if status:
-            if "tramitacion" in status:
-                queryset = queryset.filter(client_role="tramitacion")
-            elif "facturacion" in status:
-                queryset = queryset.filter(client_role="facturacion")
-            if status.lower() == "tramitacion_ko":
-                queryset = queryset.filter(bids__doc=False, bids__call=False, bids__scoring=False)
-            elif status.lower() == "tramitacion_pendiente":
-                queryset = queryset.exclude(bids__doc=False, bids__call=False, bids__scoring=False)
-            if status.lower() == "facturacion_ok":
-                queryset = queryset.filter(bids__paid=True)
-            elif status.lower() == "facturacion_pendiente":
-                queryset = queryset.filter(bids__paid=False)
-        return queryset
 
 
 class ManageUsersViewSet(viewsets.ModelViewSet):
@@ -383,7 +380,9 @@ class AgentClients(viewsets.ReadOnlyModelViewSet):
     pagination_class = UserViewSet.pagination_class
 
     def filter_queryset(self, queryset):
-        queryset = self._filter_by_status(queryset)
+        status = self.request.query_params.get("status")
+        if status:
+            queryset = _filter_by_status(status, queryset)
         return super().filter_queryset(queryset).filter(responsible__canal=self.request.user)
 
     def _filter_by_status(self, queryset):
