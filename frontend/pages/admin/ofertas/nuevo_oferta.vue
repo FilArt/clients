@@ -31,7 +31,11 @@
               label="Description"
               :error-messages="errorMessages.description"
             />
-            <tarif-select v-model="newOffer.tarif" :error-messages="errorMessages.tarif" />
+            <tarif-select
+              v-model="newOffer.tarif"
+              :error-messages="errorMessages.tarif"
+              :gas="newOffer.kind === 'gas'"
+            />
             <client-type-select v-model="newOffer.client_type" :error-messages="errorMessages.client_type" />
             <v-text-field
               v-model="newOffer.power_min"

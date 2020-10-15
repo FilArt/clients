@@ -1,7 +1,7 @@
 <template>
   <v-autocomplete
     v-model="tarif"
-    :items="tarifs"
+    :items="gas ? tarifsGas : tarifs"
     :loading="loading"
     :error-messages="errorMessages"
     label="Tarifa"
@@ -29,6 +29,10 @@ import { mapState } from 'vuex'
 export default {
   name: 'TarifSelect',
   props: {
+    gas: {
+      type: Boolean,
+      default: false,
+    },
     hint: {
       type: Boolean,
       default: false,
@@ -48,18 +52,24 @@ export default {
       tarif: this.value,
     }
   },
-  computed: mapState({ tarifs: (state) => state.tarifs }),
+  computed: mapState({ tarifs: (state) => state.tarifs, tarifsGas: (state) => state.tarifsGas }),
   watch: {
     value(val) {
       this.tarif = val
     },
+    gas() {
+      this.refresh()
+    },
   },
   async mounted() {
-    if (!this.tarifs.length) {
-      this.loading = true
-      await this.$store.dispatch('fetchTarifs')
-      this.loading = false
-    }
+    this.loading = true
+    await this.refresh()
+    this.loading = false
+  },
+  methods: {
+    async refresh() {
+      this.gas ? await this.$store.dispatch('fetchTarifsGas') : await this.$store.dispatch('fetchTarifs')
+    },
   },
 }
 </script>
