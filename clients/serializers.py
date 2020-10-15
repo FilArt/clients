@@ -519,8 +519,9 @@ class AgentContractSerializer(serializers.ModelSerializer):
                 bid_gas = Bid.objects.create(user=created_client, offer=offer_gas)
                 bid_gas.puntos.add(punto)
 
-            given_types = [a["attachment_type"] for a in attachments]
+            given_types = [a["attachment_type"] for a in attachments] + [*validated_data]
             self._handle_required_fields(offer, punto, pkey, given_types)
+
             for attachment_data in attachments:
                 Attachment.objects.create(**attachment_data, punto=punto)
 
