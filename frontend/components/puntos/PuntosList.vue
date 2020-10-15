@@ -70,7 +70,7 @@
                   <v-card-title>
                     <v-row>
                       <v-col>
-                        <span class="title headline"> Upload file </span>
+                        <span class="title headline">AÑADIR ARCHIVO</span>
                       </v-col>
                       <v-col class="flex-grow-0">
                         <v-btn icon color="error" @click="uploadFileDialog = false">
