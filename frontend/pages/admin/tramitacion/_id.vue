@@ -27,12 +27,7 @@
       </v-col>
 
       <div v-if="chosenBid" :key="x" class="flex-grow-1">
-        <tramitacion
-          :bid-id="chosenBid"
-          push-to-title="Papelera"
-          @tramitate="onTramitate"
-          @push-to="pushToKo(chosenBid)"
-        />
+        <tramitacion :bid-id="chosenBid" @tramitate="onTramitate" />
       </div>
     </v-row>
   </v-card>
@@ -46,7 +41,7 @@ export default {
     Tramitacion: () => import('~/components/support/Tramitacion'),
   },
   async asyncData({ $axios, params }) {
-    const user = await $axios.$get(`users/users/${params.id}/?client_role=tramitacion`)
+    const user = await $axios.$get(`users/users/${params.id}/`)
 
     return {
       user,
@@ -65,25 +60,10 @@ export default {
     }
   },
   methods: {
-    pushToKo(bidId) {
-      this.$swal({
-        title: 'Mover a la Papelera?',
-        icon: 'warning',
-        buttons: true,
-        dangerMode: true,
-      }).then((willDelete) => {
-        if (willDelete) {
-          this.$axios.$post(`bids/bids/${bidId}/push_to_ko/`).then(() => this.$router.back())
-        }
-      })
-    },
     async onTramitate() {
       const user = await this.$axios.$get(`users/users/${this.$route.params.id}/`)
       this.user = user
       this.values = { phones: [user.phone], ...user }
-      if (user.client_role !== 'tramitacion') {
-        await this.$router.push(`/admin/facturacion/${this.user.id}`)
-      }
     },
     bidStatusColor(status) {
       let color

@@ -1,13 +1,7 @@
 <template>
   <v-card>
     <v-card-text>
-      <users-table
-        :client-roles="clientRoles"
-        allow-delete
-        :headers="headers"
-        detail-url="/agente/leeds"
-        use-full-name
-      />
+      <users-table :statuses="statuses" allow-delete :headers="headers" detail-url="/agente/leeds" use-full-name />
     </v-card-text>
   </v-card>
 </template>
@@ -21,7 +15,7 @@ export default {
   },
   data() {
     return {
-      clientRoles: [constants.clientRoles.leeds.value],
+      statuses: [constants.statuses.LEED],
       headers: [
         {
           text: 'ID',

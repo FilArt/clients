@@ -139,12 +139,6 @@
             </v-dialog>
           </v-col>
         </v-row>
-
-        <v-row v-if="pushToTitle">
-          <v-col>
-            <v-btn color="error" @click="$emit('push-to')"> Mover a la {{ pushToTitle }}? </v-btn>
-          </v-col>
-        </v-row>
       </v-col>
 
       <v-divider vertical />
@@ -169,19 +163,11 @@ export default {
     SnackBarIt: () => import('@/components/snackbar/SnackBarIt'),
   },
   props: {
-    pushToTitle: {
-      type: String,
-      default: null,
-    },
     bidId: {
       type: Number,
       default: null,
     },
     facturacion: {
-      type: Boolean,
-      default: false,
-    },
-    showPushToKo: {
       type: Boolean,
       default: false,
     },

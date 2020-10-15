@@ -173,6 +173,7 @@ export default {
       const params = {
         responsible__in: this.agentsFilter.join(','),
         role__isnull: true,
+        statuses_in: [...Object.values(constants.statuses)],
         ordering: 'date_joined',
         fields: 'status',
       }
@@ -213,8 +214,9 @@ export default {
       // this.options.subtitle.text = `Total: ${usersData.length} usuarios y ${logsData.length} calculos`
     },
     async fetchUsers() {
-      const clients = await this.$axios.$get('users/users/?client_role=client&page=1&itemsPerPage=1')
-      const leeds = await this.$axios.$get('users/users/?client_role=leed&page=1&itemsPerPage=1')
+      const clientsStatuses = [...Object.values(constants.statuses.client)].join(',')
+      const clients = await this.$axios.$get(`users/users/?statuses_in=${clientsStatuses}&page=1&itemsPerPage=1`)
+      const leeds = await this.$axios.$get(`users/users/?statuses_in=${constants.statuses.LEED}&page=1&itemsPerPage=1`)
       const visitorsCount = (await this.$axios.$get('users/logs/?fields=remote_addr&distinct=remote_addr'))
         .map((i) => i.remote_addr)
         .filter(constants.onlyUnique).length

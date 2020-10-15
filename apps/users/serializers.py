@@ -104,7 +104,6 @@ class UserListSerializer(DynamicFieldsMixin, serializers.ModelSerializer):
     last_login = PrettyDateTimeField()
     new_messages_count = serializers.SerializerMethodField()
     affiliate = serializers.CharField()
-    status = serializers.SerializerMethodField()
 
     class Meta:
         model = CustomUser
@@ -118,7 +117,6 @@ class UserListSerializer(DynamicFieldsMixin, serializers.ModelSerializer):
             "fecha_firma",
             "last_login",
             "bids_count",
-            "status",
             "new_messages_count",
             "affiliate",
             "docs",
@@ -130,20 +128,6 @@ class UserListSerializer(DynamicFieldsMixin, serializers.ModelSerializer):
             "agent_type",
         )
 
-    def get_status(self, user: CustomUser) -> str:
-        if user.client_role == "leed":
-            return "Leed"
-        by = self.context["request"].user
-        all_bids_statuses = {bid.get_status(by=by) for bid in user.bids.all()}
-        if not all_bids_statuses:
-            return "-"
-        if len(all_bids_statuses) == 1:
-            return list(all_bids_statuses)[0]
-        if "OK" in all_bids_statuses:
-            all_bids_statuses.remove("OK")
-        status = list(all_bids_statuses)[0]
-        return status
-
     def get_new_messages_count(self, instance: CustomUser) -> int:
         return self.context["request"].user.unread_messages.filter(message__author=instance).count()
 
@@ -154,6 +138,8 @@ class UserListSerializer(DynamicFieldsMixin, serializers.ModelSerializer):
             rep["responsible_fn"] = instance.responsible.fullname
             if instance.responsible.canal:
                 rep["canal_fn"] = instance.responsible.canal.fullname
+        if hasattr(instance, "status"):
+            rep["status"] = getattr(instance, "status")
         return rep
 
 

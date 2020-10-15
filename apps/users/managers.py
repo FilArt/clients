@@ -1,4 +1,7 @@
 from django.contrib.auth.base_user import BaseUserManager
+from django.db.models import QuerySet, Case, When, Q, Value
+from django.db.models.aggregates import Count
+from django.db.models.fields import CharField
 from django.utils.translation import gettext_lazy as _
 
 
@@ -33,3 +36,42 @@ class CustomUserManager(BaseUserManager):
         if extra_fields.get("is_superuser") is not True:
             raise ValueError(_("Superuser must have is_superuser=True."))
         return self.create_user(email, password, **extra_fields)
+
+    def with_statuses(self) -> QuerySet:
+        qs = self.get_queryset().filter(role__isnull=True)
+        qs = qs.annotate(
+            total_bids=Count("bids"),
+            ko_bids=Count("bids", filter=Q(bids__call=False) | Q(bids__scoring=False) | Q(bids__doc=False)),
+            ok_bids=Count("bids", filter=Q(bids__call=True) & Q(bids__scoring=True) & Q(bids__doc=True)),
+            touched_bids=Count(
+                "bids", filter=Q(bids__call__isnull=False) | Q(bids__scoring__isnull=False) | Q(bids__doc__isnull=False)
+            ),
+            unpaid_bids_for_agent=Count("bids", filter=Q(bids__paid=False)),
+            unpaid_bids_for_canal=Count("bids", filter=Q(bids__canal_paid=False)),
+        ).annotate(
+            status=Case(
+                When(client_role="leed", then=Value("Leed")),
+                When(total_bids=0, then=Value("Leed")),
+                When(ko_bids__gt=0, then=Value("KO")),
+                When(touched_bids=0, then=Value("Pendiente tramitacion")),
+                When(ok_bids=0, then=Value("Tramitacion en processo")),
+                When(
+                    Q(unpaid_bids_for_agent__gt=0) & Q(unpaid_bids_for_canal__gt=0),
+                    then=Value("Pendiente Pago"),
+                ),
+                When(
+                    unpaid_bids_for_agent__gt=0,
+                    then=Value("Pendiente Pago (agente)"),
+                ),
+                When(
+                    unpaid_bids_for_canal__gt=0,
+                    then=Value("Pendiente Pago (canal)"),
+                ),
+                When(
+                    Q(unpaid_bids_for_canal=0) & Q(unpaid_bids_for_agent=0),
+                    then=Value("Pagado"),
+                ),
+                output_field=CharField(),
+            ),
+        )
+        return qs

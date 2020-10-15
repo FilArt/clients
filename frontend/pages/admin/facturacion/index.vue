@@ -2,7 +2,7 @@
   <v-card>
     <v-card-text>
       <users-table
-        :client-roles="clientRoles"
+        :statuses="statuses"
         :headers="headers"
         detail-url="/admin/facturacion"
         show-date-filters
@@ -21,7 +21,11 @@ export default {
   },
   data() {
     return {
-      clientRoles: [constants.clientRoles.facturacion.value],
+      statuses: [
+        constants.statuses.PENDIENTE_PAGO_CANAL,
+        constants.statuses.PENDIENTE_PAGO_AGENTE,
+        constants.statuses.PENDIENTE_PAGO,
+      ],
       headers: [
         { text: 'ID', value: 'id' },
         { text: 'Fecha de registro', value: 'date_joined' },

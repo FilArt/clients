@@ -2,7 +2,7 @@
   <v-card>
     <v-card-text>
       <users-table
-        :client-roles="clientRoles"
+        :statuses="statuses"
         :headers="headers"
         detail-url="/admin/tramitacion"
         is-support
@@ -22,7 +22,7 @@ export default {
   },
   data() {
     return {
-      clientRoles: [constants.clientRoles.tramitacion.value],
+      statuses: [constants.statuses.PENDIENTE_TRAMITACION, constants.statuses.TRAMITACION_EN_PROCESSO],
       headers: [
         { text: 'ID', value: 'id' },
         { text: 'Fecha de registro', value: 'date_joined' },

@@ -65,11 +65,6 @@ export default {
       const user = await this.$axios.$get(`users/users/${this.$route.params.id}/`)
       this.user = user
       this.values = { phones: [user.phone], ...user }
-      if (user.client_role === 'tramitacion') {
-        await this.$router.push(`/admin/tramitacion/${this.user.id}`)
-      } else if (user.client_role === 'client') {
-        await this.$router.push(`/admin/clientes/${this.user.id}`)
-      }
     },
     bidStatusColor(status) {
       let color

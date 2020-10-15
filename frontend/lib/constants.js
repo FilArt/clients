@@ -9,30 +9,43 @@ const cleanEmpty = (obj) => {
       .reduce((a, [k, v]) => (v == null ? a : ((a[k] = v), a)), {})
   }
 }
-export default Object.freeze({
-  cleanEmpty,
-  clientRoles: {
-    clients: {
-      text: 'Clientes',
-      value: 'client',
-    },
-    leeds: {
-      text: 'Leeds',
-      value: 'leed',
-    },
-    tramitacion: {
-      text: 'Tramitacion',
-      value: 'tramitacion',
-    },
-    facturacion: {
-      text: 'Facturacion',
-      value: 'facturacion',
-    },
-    ko: {
-      text: 'KO',
-      value: 'ko',
-    },
+const LEED = 'Leed'
+const KO = 'KO'
+const PENDIENTE_TRAMITACION = 'Pendiente tramitacion'
+const TRAMITACION_EN_PROCESSO = 'Tramitacion en processo'
+const PENDIENTE_PAGO = 'Pendiente Pago'
+const PENDIENTE_PAGO_AGENTE = 'Pendiente Pago (agente)'
+const PENDIENTE_PAGO_CANAL = 'Pendiente Pago (canal)'
+const PAGADO = 'Pagado'
+
+const statuses = {
+  LEED,
+  KO,
+  PENDIENTE_TRAMITACION,
+  TRAMITACION_EN_PROCESSO,
+  PENDIENTE_PAGO,
+  PENDIENTE_PAGO_AGENTE,
+  PENDIENTE_PAGO_CANAL,
+  PAGADO,
+  tramitacion: {
+    PENDIENTE_TRAMITACION,
+    TRAMITACION_EN_PROCESSO,
   },
+  facturacion: {
+    PENDIENTE_PAGO,
+    PENDIENTE_PAGO_AGENTE,
+    PENDIENTE_PAGO_CANAL,
+  },
+  client: {
+    PENDIENTE_PAGO,
+    PENDIENTE_PAGO_AGENTE,
+    PENDIENTE_PAGO_CANAL,
+    PAGADO,
+  },
+}
+export default Object.freeze({
+  statuses,
+  cleanEmpty,
   userRoles: {
     admins: {
       text: 'Admins',

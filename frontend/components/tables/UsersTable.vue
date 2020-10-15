@@ -43,7 +43,7 @@
                 persistent-hint
                 class="text-center pa-3"
                 label="Tipo de usuario"
-                @change="clientRoles.length ? null : updateQuery({ role: role })"
+                @change="updateQuery({ role: role })"
               >
                 <template v-slot:append>
                   <add-new-employee @added="fetchUsers" />
@@ -158,11 +158,15 @@
               :xs="flexs.xs"
             >
               <v-select
-                v-model="query.status"
+                v-model="query.statuses_in"
                 label="Estado"
-                :items="statuses ? statuses : isSupport ? tramitacionEstados : facturacionEstados"
-                clearable
-                @change="updateQuery({ status: $event })"
+                :items="statuses"
+                multiple
+                @change="
+                  $event && $event.length
+                    ? updateQuery({ statuses_in: $event })
+                    : updateQuery({ statuses_in: statuses })
+                "
               />
             </v-col>
 
@@ -272,7 +276,7 @@ export default {
   props: {
     statuses: {
       type: Array,
-      default: () => null,
+      default: () => [],
     },
     listUrl: {
       type: String,
@@ -305,10 +309,6 @@ export default {
     defaultRole: {
       type: String,
       default: null,
-    },
-    clientRoles: {
-      type: Array,
-      default: () => [],
     },
     headers: {
       type: Array,
@@ -354,14 +354,6 @@ export default {
           value: 'None',
         },
       ],
-      tramitacionEstados: [
-        { text: 'KO', value: 'tramitacion_ko' },
-        { text: 'Pendiente', value: 'tramitacion_pendiente' },
-      ],
-      facturacionEstados: [
-        { text: 'Pagado', value: 'facturacion_ok' },
-        { text: 'Pendiente pago', value: 'facturacion_pendiente' },
-      ],
       flexs: { cols: 12, xl: 3, lg: 3, md: 3, sm: 3, xs: 12 },
       dateJoinedFilter,
       fechaFirmaFilter,
@@ -377,6 +369,7 @@ export default {
       search: query.search || '',
       query: {
         ...query,
+        statuses_in: this.statuses,
         mustSort: null,
         multiSort: null,
         bids__call: null,
@@ -398,7 +391,7 @@ export default {
     if (this.headers.some((header) => header.value.includes('responsible')) && !this.responsibles.length) {
       await this.$store.dispatch('fetchResponsibles')
     }
-    if (!this.clientRoles.length && this.role) this.query.role = this.role
+    if (this.role) this.query.role = this.role
   },
   methods: {
     async editResponsible() {
@@ -440,6 +433,7 @@ export default {
     },
     getQuery() {
       const query = constants.cleanEmpty({
+        statuses_in: this.statuses.join(','),
         ...this.query,
         ordering: this.query.sortBy.length
           ? this.query.sortBy
@@ -450,8 +444,7 @@ export default {
               .join()
           : null,
         fields: this.headers.map((header) => header.value).join(),
-        role__isnull: this.clientRoles.length ? true : null,
-        client_role__in: this.clientRoles.length ? this.clientRoles.join(',') : null,
+        role__isnull: this.role === 'null' ? true : null,
       })
       return Object.keys(query)
         .map((k) => {

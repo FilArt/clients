@@ -53,26 +53,6 @@ class BidViewSet(viewsets.ModelViewSet):
         serializer = BidStorySerializer(qs, many=True, context={"request": request})
         return Response(serializer.data)
 
-    @action(methods=["POST"], detail=True)
-    def push_to_ko(self, request: Request, pk: int):
-        bid = self.get_object()
-        bid.doc = bid.call = bid.scoring = False
-        bid.save(update_fields=["doc", "call", "scoring"])
-        client = bid.user
-        client.client_role = "ko"
-        client.save(update_fields=["client_role"])
-        return Response("OK")
-
-    @action(methods=["POST"], detail=True)
-    def push_to_tramitacion(self, request: Request, pk: int):
-        bid = self.get_object()
-        bid.doc = bid.call = bid.scoring = None
-        bid.save(update_fields=["doc", "call", "scoring"])
-        client = bid.user
-        client.client_role = "tramitacion"
-        client.save(update_fields=["client_role"])
-        return Response("OK")
-
 
 class BidStoryViewSet(viewsets.ModelViewSet):
     queryset = BidStory.objects.all()

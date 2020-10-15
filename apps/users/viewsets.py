@@ -84,18 +84,6 @@ class AccountViewSet(
         return account
 
 
-def _filter_by_status(status: str, queryset):
-    if status.lower() == "tramitacion_ko":
-        queryset = queryset.filter(bids__doc=False, bids__call=False, bids__scoring=False)
-    elif status.lower() == "tramitacion_pendiente":
-        queryset = queryset.exclude(bids__doc=False, bids__call=False, bids__scoring=False)
-    if status.lower() == "facturacion_ok":
-        queryset = queryset.filter(bids__paid=True)
-    elif status.lower() == "facturacion_pendiente":
-        queryset = queryset.filter(bids__paid=False)
-    return queryset
-
-
 class UserViewSet(
     DynamicFieldsMixin,
     mixins.UpdateModelMixin,
@@ -110,7 +98,6 @@ class UserViewSet(
     pagination_class = UsersPagination
     filterset_fields = {
         "role": ["exact", "isnull"],
-        "client_role": ["exact", "in"],
         "date_joined": ["range"],
         "fecha_firma": ["range"],
         "source": ["exact"],
@@ -122,7 +109,18 @@ class UserViewSet(
     ordering_fields = ["date_joined"]
 
     def filter_queryset(self, queryset):
-        queryset = super(UserViewSet, self).filter_queryset(queryset)
+        statuses = self.request.query_params.get("statuses_in")
+        if statuses:
+            queryset = CustomUser.objects.with_statuses().filter(status__in=statuses.split(","))
+        else:
+            queryset = super(UserViewSet, self).filter_queryset(queryset)
+
+        ordering = self.request.query_params.get("ordering", "") or ""
+        if "-status" in ordering:
+            queryset = queryset.order_by("-status")
+        elif "status" in ordering:
+            queryset = queryset.order_by("status")
+
         user: CustomUser = self.request.user
         if user.role == "agent":
             if user.agent_type == "canal":
@@ -130,9 +128,6 @@ class UserViewSet(
             else:
                 queryset = queryset.filter(Q(responsible_id=user.id) | Q(invited_by_id=user.id))
 
-        status = self.request.query_params.get("status")
-        if status:
-            queryset = _filter_by_status(status, queryset)
         return queryset
 
     def get_serializer_class(self):
@@ -373,31 +368,15 @@ class CanalAgents(viewsets.ReadOnlyModelViewSet):
 
 
 class AgentClients(viewsets.ReadOnlyModelViewSet):
-    queryset = CustomUser.objects.filter(role__isnull=True)
+    queryset = CustomUser.objects.all()
     permission_classes = (IsAuthenticated, AgentClientsPermissions)
     serializer_class = AgentClientsSerializer
     filterset_fields = ["responsible"]
     pagination_class = UserViewSet.pagination_class
 
     def filter_queryset(self, queryset):
-        status = self.request.query_params.get("status")
-        if status:
-            queryset = _filter_by_status(status, queryset)
-        return super().filter_queryset(queryset).filter(responsible__canal=self.request.user)
+        statuses = self.request.query_params.get("statuses_in")
+        if statuses:
+            queryset = CustomUser.objects.with_statuses().filter(status__in=statuses.split(","))
 
-    def _filter_by_status(self, queryset):
-        status = self.request.query_params.get("status")
-        if status:
-            if "tramitacion" in status:
-                queryset = queryset.filter(client_role="tramitacion")
-            elif "facturacion" in status:
-                queryset = queryset.filter(client_role="facturacion")
-            if status.lower() == "tramitacion_ko":
-                queryset = queryset.filter(bids__doc=False, bids__call=False, bids__scoring=False)
-            elif status.lower() == "tramitacion_pendiente":
-                queryset = queryset.exclude(bids__doc=False, bids__call=False, bids__scoring=False)
-            if status.lower() == "facturacion_ok":
-                queryset = queryset.filter(bids__paid=True)
-            elif status.lower() == "facturacion_pendiente":
-                queryset = queryset.filter(bids__paid=False)
-        return queryset
+        return super().filter_queryset(queryset).filter(responsible__canal=self.request.user, role__isnull=True)

@@ -2,7 +2,7 @@
   <v-card>
     <v-card-text>
       <users-table
-        :client-roles="clientRoles"
+        :statuses="statuses"
         :headers="headers"
         detail-url="/admin/ko"
         is-support
@@ -22,17 +22,13 @@ export default {
   },
   data() {
     return {
-      clientRoles: [constants.clientRoles.ko.value],
+      statuses: [constants.statuses.KO],
       headers: [
         { text: 'ID', value: 'id' },
         { text: 'Fecha de registro', value: 'date_joined' },
         { text: 'Nombre/Razon social', value: 'fullname' },
         { text: 'Responsable', value: 'responsible_fn' },
         { text: 'Solicitud', value: 'bids_count' },
-        { text: 'Estado', value: 'status' },
-        { text: 'Doc', value: 'docs' },
-        { text: 'Scoring', value: 'scorings' },
-        { text: 'Llamadas', value: 'calls' },
         { text: '', value: 'new_messages_count' },
       ],
     }
