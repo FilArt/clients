@@ -1,3 +1,5 @@
+import json
+import logging
 import re
 from typing import Tuple
 
@@ -40,6 +42,8 @@ from .serializers import (
     AgentClientsSerializer,
     CanalAgentesSerializer,
 )
+
+logger = logging.getLogger(__name__)
 
 
 class RegisterViewSet(viewsets.GenericViewSet, mixins.CreateModelMixin):
@@ -284,7 +288,13 @@ class AgentContractViewSet(viewsets.ModelViewSet):
     def create(self, request, *args, **kwargs):
         data = self._parse_data(request)
         serializer = self.get_serializer(data=data)
-        serializer.is_valid(raise_exception=True)
+        try:
+            serializer.is_valid(raise_exception=True)
+        except ValidationError as e:
+            logger.info(json.dumps(request.data))
+            logger.exception(e)
+            raise
+
         self.perform_create(serializer)
         headers = self.get_success_headers(serializer.data)
         return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
