@@ -1,6 +1,13 @@
 <template>
-  <v-card class="pa-3">
-    <v-card-title>{{ user.fullname }}</v-card-title>
+  <v-card flat>
+    <v-toolbar dense>
+      <v-toolbar-title>
+        <v-btn icon color="error" @click="$router.back()">
+          <v-icon>mdi-arrow-left</v-icon>
+        </v-btn>
+        {{ user.fullname }}
+      </v-toolbar-title>
+    </v-toolbar>
 
     <v-card-text>
       <user-detail-data :user-id="$route.params.id" @user-updated="user = $event" />

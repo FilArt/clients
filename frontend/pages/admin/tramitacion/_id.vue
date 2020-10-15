@@ -2,6 +2,9 @@
   <v-card flat>
     <v-toolbar dense>
       <v-toolbar-title>
+        <v-btn icon color="error" @click="$router.back()">
+          <v-icon>mdi-arrow-left</v-icon>
+        </v-btn>
         {{ user.fullname }}
       </v-toolbar-title>
     </v-toolbar>
