@@ -551,6 +551,8 @@ class AgentContractSerializer(serializers.ModelSerializer):
             not_provided_fields.remove("recibo1")
         if punto.category != "business":
             not_provided_fields -= {"cif", "cif1"}
+        if "dni" in not_provided_fields and punto.dni:
+            not_provided_fields.remove("dni")
 
         if not_provided_fields:
             logger.info("not provided fields: %s", not_provided_fields)
