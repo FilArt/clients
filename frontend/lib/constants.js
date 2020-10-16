@@ -250,9 +250,9 @@ export default Object.freeze({
         value: 'doc',
       },
     },
-    cif_dni: {
+    cif: {
       text: 'CIF/DNI',
-      value: 'cif_dni',
+      value: 'cif',
       onlyAdmin: true,
       group: {
         text: 'Documentacion',
