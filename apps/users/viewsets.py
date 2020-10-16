@@ -283,7 +283,7 @@ class AgentContractViewSet(viewsets.ModelViewSet):
         try:
             serializer.is_valid(raise_exception=True)
         except ValidationError as e:
-            logger.info(json.dumps(request.data))
+            logger.info(request.data)
             logger.exception(e)
             raise
 
