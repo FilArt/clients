@@ -39,6 +39,7 @@
             :items="[
               { text: 'Admin', value: 'admin' },
               { text: 'Agente', value: 'agent' },
+              { text: 'Tramitacion', value: 'support' },
             ]"
             :append-icon="user.role !== settings.role ? 'mdi-content-save' : null"
             @click:append="update({ role: settings.role })"

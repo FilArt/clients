@@ -81,11 +81,11 @@ export default {
             title: 'PAPELERA',
             to: '/admin/ko',
           },
-          {
-            icon: 'mdi-account-multiple',
-            title: 'LEEDS',
-            to: '/admin/leeds',
-          },
+          // {
+          //   icon: 'mdi-account-multiple',
+          //   title: 'LEEDS',
+          //   to: '/admin/leeds',
+          // },
           {
             icon: 'mdi-briefcase-account-outline',
             title: 'CLIENTES',
@@ -126,11 +126,11 @@ export default {
           },
         ])
         if (permissions.includes('leeds_access')) {
-          items.splice(2, 0, {
-            icon: 'mdi-account-multiple',
-            title: 'LEEDS',
-            to: '/agente/leeds',
-          })
+          // items.splice(2, 0, {
+          //   icon: 'mdi-account-multiple',
+          //   title: 'LEEDS',
+          //   to: '/agente/leeds',
+          // })
         }
         if (user.agent_type === 'canal') {
           items.splice(3, 0, {
@@ -166,13 +166,13 @@ export default {
           },
         ])
       }
-      if (permissions.includes('offers') || !role) {
-        items.push({
-          icon: 'mdi-offer',
-          title: 'Ofertas',
-          to: '/ofertas',
-        })
-      }
+      // if (permissions.includes('offers') || !role) {
+      //   items.push({
+      //     icon: 'mdi-offer',
+      //     title: 'Ofertas',
+      //     to: '/ofertas',
+      //   })
+      // }
       if (permissions.includes('calculator')) {
         items.push({ icon: 'mdi-calculator', title: 'COMPARADOR', to: '/comparador' })
       }

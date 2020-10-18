@@ -39,25 +39,25 @@
           readonly
         />
 
-        <v-select
-          v-model="source"
-          dense
-          prepend-icon="mdi-target"
-          label="Origin"
-          :items="[
-            {
-              text: 'Online',
-              value: 'default',
-            },
-            {
-              text: 'Call&Visit',
-              value: 'call_n_visit',
-            },
-          ]"
-          :readonly="readonly"
-          :append-icon="source !== user.source ? 'mdi-content-save' : null"
-          @click:append="updateUser('source', source)"
-        />
+        <!--        <v-select-->
+        <!--          v-model="source"-->
+        <!--          dense-->
+        <!--          prepend-icon="mdi-target"-->
+        <!--          label="Origin"-->
+        <!--          :items="[-->
+        <!--            {-->
+        <!--              text: 'Online',-->
+        <!--              value: 'default',-->
+        <!--            },-->
+        <!--            {-->
+        <!--              text: 'Call&Visit',-->
+        <!--              value: 'call_n_visit',-->
+        <!--            },-->
+        <!--          ]"-->
+        <!--          :readonly="readonly"-->
+        <!--          :append-icon="source !== user.source ? 'mdi-content-save' : null"-->
+        <!--          @click:append="updateUser('source', source)"-->
+        <!--        />-->
 
         <v-autocomplete
           v-model="responsible"

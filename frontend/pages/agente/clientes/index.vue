@@ -26,7 +26,7 @@ export default {
         { text: 'Fecha de registro', value: 'date_joined' },
         { text: 'Fecha firma', value: 'fecha_firma' },
         { text: 'Nombre/Razon social', value: 'fullname' },
-        { text: 'Origin', value: 'affiliate' },
+        // { text: 'Origin', value: 'affiliate' },
         { text: 'Solicitud', value: 'bids_count' },
         { text: 'Comisiones', value: 'paid_count' },
         { text: 'Ultima entrada', value: 'last_login' },

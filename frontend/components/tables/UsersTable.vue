@@ -68,31 +68,31 @@
               </v-tooltip>
             </v-col>
 
-            <v-col
-              v-if="headers.some((h) => h.value === 'affiliate')"
-              :cols="flexs.cols"
-              :xl="flexs.xl"
-              :lg="flexs.lg"
-              :md="flexs.md"
-              :xs="flexs.xs"
-            >
-              <v-select
-                v-model="query.source"
-                label="Origin"
-                :items="[
-                  {
-                    text: 'Online',
-                    value: 'default',
-                  },
-                  {
-                    text: 'Call&Visit',
-                    value: 'call_n_visit',
-                  },
-                ]"
-                clearable
-                @change="updateQuery({ source: $event })"
-              />
-            </v-col>
+            <!--            <v-col-->
+            <!--              v-if="headers.some((h) => h.value === 'affiliate')"-->
+            <!--              :cols="flexs.cols"-->
+            <!--              :xl="flexs.xl"-->
+            <!--              :lg="flexs.lg"-->
+            <!--              :md="flexs.md"-->
+            <!--              :xs="flexs.xs"-->
+            <!--            >-->
+            <!--              <v-select-->
+            <!--                v-model="query.source"-->
+            <!--                label="Origin"-->
+            <!--                :items="[-->
+            <!--                  {-->
+            <!--                    text: 'Online',-->
+            <!--                    value: 'default',-->
+            <!--                  },-->
+            <!--                  {-->
+            <!--                    text: 'Call&Visit',-->
+            <!--                    value: 'call_n_visit',-->
+            <!--                  },-->
+            <!--                ]"-->
+            <!--                clearable-->
+            <!--                @change="updateQuery({ source: $event })"-->
+            <!--              />-->
+            <!--            </v-col>-->
 
             <v-col
               v-if="headers.some((h) => h.value.includes('responsible'))"
