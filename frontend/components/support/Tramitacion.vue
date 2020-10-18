@@ -133,7 +133,7 @@
                   </v-row>
                 </v-card-title>
                 <v-card-text v-if="history.length">
-                  <history-list :history="history" />
+                  <history-list :history="history" @comment-deleted="fetchHistory" />
                 </v-card-text>
               </v-card>
             </v-dialog>

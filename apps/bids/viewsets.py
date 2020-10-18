@@ -65,8 +65,10 @@ class BidStoryViewSet(viewsets.ModelViewSet):
     serializer_class = BidStorySerializer
 
     def filter_queryset(self, queryset):
-        user = self.request.user
-        user_id = user.id
-        if user.role == "admin":
-            user_id = self.request.query_params.get("user")
-        return super().filter_queryset(queryset.filter(bid__user_id=user_id))
+        if self.action == "list":
+            user = self.request.user
+            user_id = user.id
+            if user.role == "admin":
+                user_id = self.request.query_params.get("user")
+            return super().filter_queryset(queryset.filter(bid__user_id=user_id))
+        return super().filter_queryset(queryset)

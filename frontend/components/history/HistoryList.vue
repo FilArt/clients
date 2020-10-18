@@ -28,17 +28,38 @@
             </p>
           </div>
         </v-card-text>
+
+        <v-card-actions v-if="$auth.user.role === 'admin'">
+          <delete-button @click="deleteComment(story.id)" />
+        </v-card-actions>
       </v-card>
     </v-timeline-item>
   </v-timeline>
 </template>
 <script>
+import DeleteButton from '~/components/buttons/deleteButton'
 export default {
   name: 'HistoryList',
+  components: { DeleteButton },
   props: {
     history: {
       type: Array,
       default: () => [],
+    },
+  },
+  methods: {
+    deleteComment(id) {
+      this.$swal({
+        title: `Eliminar comentario ${id}?`,
+        text: 'Una vez borrado, no podrás recuperar este comentario!',
+        icon: 'warning',
+        buttons: true,
+        dangerMode: true,
+      }).then((willDelete) => {
+        if (willDelete) {
+          this.$axios.$delete(`bids/history/${id}/`).then(() => this.$emit('comment-deleted'))
+        }
+      })
     },
   },
 }
