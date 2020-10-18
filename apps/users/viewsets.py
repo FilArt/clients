@@ -1,4 +1,3 @@
-import json
 import logging
 import re
 from typing import Tuple
@@ -27,8 +26,14 @@ from clients.serializers import (
     AgentContractSerializer,
 )
 from .models import Attachment, CustomUser, Phone, Punto
-from .pagination import UsersPagination
-from .permissions import UsersPermission, AdminAgentPermission, ManageUserPermission, AgentClientsPermissions
+from .pagination import UsersPagination, AttachmentsPagination
+from .permissions import (
+    UsersPermission,
+    AdminAgentPermission,
+    ManageUserPermission,
+    AgentClientsPermissions,
+    AdminPermission,
+)
 from .serializers import (
     LoadFacturasSerializer,
     ManageUserListSerializer,
@@ -235,6 +240,14 @@ class AttachmentsViewSet(viewsets.ModelViewSet):
                 del filter_kwargs["punto__user"]
                 filter_kwargs["punto__user_id"] = user_id
         return super().filter_queryset(queryset.filter(**filter_kwargs))
+
+
+class PaginatedAttachmentsViewSet(viewsets.ModelViewSet):
+    queryset = Attachment.objects.all()
+    serializer_class = AttachmentSerializer
+    permission_classes = (AdminPermission,)
+    pagination_class = AttachmentsPagination
+    ordering = ("id",)
 
 
 class ContractOnlineViewSet(viewsets.ModelViewSet):

@@ -17,6 +17,7 @@
     "@nuxtjs/axios": "^5.12.1",
     "@nuxtjs/webpackmonitor": "^0.1.0",
     "@nuxtjs/yandex-metrika": "^1.2.0",
+    "is-image": "^3.0.0",
     "nuxt": "^2.14.3",
     "nuxt-highcharts": "^1.0.2",
     "reconnecting-websocket": "^4.4.0",

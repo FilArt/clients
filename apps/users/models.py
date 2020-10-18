@@ -344,6 +344,7 @@ class Attachment(models.Model):
     punto = models.ForeignKey(Punto, on_delete=models.CASCADE, related_name="attachments")
     attachment_type = models.CharField(max_length=20, choices=ATTACHMENT_TYPE_CHOICES)
     attachment = models.FileField()
+    description = models.TextField(null=True, blank=True)
 
     @property
     def filename(self) -> str:
