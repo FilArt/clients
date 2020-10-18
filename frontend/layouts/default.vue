@@ -139,6 +139,19 @@ export default {
             to: '/agente/agentes',
           })
         }
+      } else if (role === 'support') {
+        items = [
+          {
+            icon: 'mdi-lifebuoy',
+            title: 'Tramitacion',
+            to: '/admin/tramitacion',
+          },
+          {
+            icon: 'mdi-file-cancel-outline',
+            title: 'PAPELERA',
+            to: '/admin/ko',
+          },
+        ]
       } else {
         items = items.concat([
           {
@@ -164,13 +177,6 @@ export default {
         items.push({ icon: 'mdi-calculator', title: 'COMPARADOR', to: '/comparador' })
       }
 
-      if (role === 'support') {
-        items.push({
-          icon: 'mdi-lifebuoy',
-          title: 'Tramitacion',
-          to: '/admin/tramitacion',
-        })
-      }
       return items
     },
     showChat() {

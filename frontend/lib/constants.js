@@ -55,14 +55,14 @@ export default Object.freeze({
       text: 'Agentes',
       value: 'agent',
     },
-    affiliates: {
-      text: 'Affiliados',
-      value: 'affiliate',
-    },
-    // tramitacion: {
-    //   text: 'Tramitacion',
-    //   value: 'support',
+    // affiliates: {
+    //   text: 'Affiliados',
+    //   value: 'affiliate',
     // },
+    tramitacion: {
+      text: 'Tramitacion',
+      value: 'support',
+    },
   },
   puntoFields: {
     name: {
