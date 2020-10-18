@@ -5,4 +5,4 @@ from apps.bids.models import Bid
 
 class OffersPermission(BasePermission):
     def has_object_permission(self, request, view, obj: Bid):
-        return request.user.role in ("support", "admin")
+        return request.user.role == "admin"

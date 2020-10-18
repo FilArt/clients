@@ -1,7 +1,10 @@
 from typing import Tuple
 
 from django.db.models import Q
-from rest_framework import mixins, viewsets
+from rest_framework import mixins, viewsets, status
+from rest_framework.decorators import action
+from rest_framework.exceptions import ValidationError
+from rest_framework.request import Request
 from rest_framework.response import Response
 
 from apps.calculator.pagination import OffersPagination
@@ -113,3 +116,11 @@ class PaginatedOfferViewSet(viewsets.ModelViewSet):
         "consumption_min",
         "consumption_max",
     ]
+
+    @action(methods=["POST"], detail=False, permission_classes=(OffersPermission,))
+    def bulk_delete(self, request: Request):
+        offers_ids = request.data.get("ids")
+        if not offers_ids or not all(map((lambda x: isinstance(x, int)), offers_ids)):
+            raise ValidationError({"ids": ["Invalid data"]})
+        Offer.objects.filter(id__in=offers_ids).delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)

@@ -16,6 +16,38 @@
         </v-card-text>
       </v-card>
     </v-dialog>
+
+    <v-snackbar v-model="actionsSnackbar" :timeout="-1" :value="true" color="deep-purple accent-4" elevation="24">
+      <v-row align="center">
+        <v-col class="flex-grow-1"> Acciones con ofertas </v-col>
+        <v-col class="flex-grow-0">
+          <close-button @click="actionsSnackbar = false" />
+        </v-col>
+      </v-row>
+
+      <v-divider />
+
+      <v-row>
+        <v-col>
+          <delete-button @click="deleteRowsDialog = !deleteRowsDialog" />
+        </v-col>
+      </v-row>
+    </v-snackbar>
+
+    <v-dialog v-model="deleteRowsDialog" max-width="500">
+      <v-card>
+        <v-card-title> Eleminar ofertas </v-card-title>
+
+        <v-card-text v-if="rowsToDelete.length">
+          {{ rowsToDelete.map((o) => o.id).join(', ') }}
+        </v-card-text>
+
+        <v-card-actions>
+          <v-btn color="error" block @click="deleteRows"> Enviar </v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
+
     <v-toolbar>
       <v-toolbar-title> Ofertas </v-toolbar-title>
 
@@ -98,12 +130,24 @@
         :rows="rows"
         :columns="columns"
         :search-options="{ enabled: true }"
+        :select-options="{
+          enabled: true,
+          selectOnCheckboxOnly: true, // only select when checkbox is clicked instead of the row
+          selectionText: 'rows selected',
+          clearSelectionText: 'clear',
+          disableSelectInfo: true, // disable the select info panel on top
+          selectAllByGroup: true, // when used in combination with a grouped table, add a checkbox in the header row to check/uncheck the entire group
+        }"
         @on-page-change="onPageChange"
         @on-column-filter="onColumnFilter"
         @on-sort-change="onSortChange"
         @on-per-page-change="onPerPageChange"
         @on-search="onSearch"
         @on-cell-click="onCellClick"
+        @on-selected-rows-change="
+          rowsToDelete = $event.selectedRows
+          actionsSnackbar = rowsToDelete.length > 0
+        "
       >
         <template slot="table-row" slot-scope="props">
           <span v-if="props.column.field === 'description'">
@@ -129,12 +173,17 @@
 <script>
 import { mapState } from 'vuex'
 import OfferRequiredFields from '@/components/selects/OfferRequiredFields'
+import DeleteButton from '@/components/buttons/deleteButton'
+import CloseButton from '@/components/buttons/closeButton'
 
 export default {
-  components: { OfferRequiredFields },
+  components: { CloseButton, DeleteButton, OfferRequiredFields },
   data() {
     const q = this.$route.query
     return {
+      actionsSnackbar: false,
+      deleteRowsDialog: false,
+      rowsToDelete: [],
       newName: '',
       addNewNameDialog: false,
       editDialog: false,
@@ -253,6 +302,17 @@ export default {
     this.refresh()
   },
   methods: {
+    async deleteRows() {
+      this.loading = true
+      try {
+        await this.$axios.$post('calculator/admin_offers/bulk_delete/', { ids: this.rowsToDelete.map((r) => r.id) })
+        this.deleteRowsDialog = false
+        this.updateParams({ page: 1 })
+        await this.refresh()
+      } finally {
+        this.loading = false
+      }
+    },
     updateParams(newProps) {
       if (this.loading) return
       this.loading = true
