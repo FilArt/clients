@@ -1,5 +1,6 @@
 from rest_framework import viewsets
 from rest_framework.decorators import action
+from rest_framework.generics import get_object_or_404
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.request import Request
 from rest_framework.response import Response
@@ -44,7 +45,12 @@ class BidViewSet(viewsets.ModelViewSet):
         return qs
 
     def perform_create(self, serializer):
-        serializer.save(user=self.request.user)
+        user_id = self.request.data.get("user")
+        if user_id:
+            user = get_object_or_404(self.request.user._meta.model, pk=user_id)
+        else:
+            user = self.request.user
+        serializer.save(user=user)
 
     @action(methods=["GET"], detail=True)
     def history(self, request: Request, pk: int):

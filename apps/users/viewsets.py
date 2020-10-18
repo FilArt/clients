@@ -178,7 +178,7 @@ class ManageUsersViewSet(viewsets.ModelViewSet):
 class PuntoViewSet(viewsets.ModelViewSet):
     queryset = Punto.objects.all()
     serializer_class = DetailPuntoSerializer
-    filterset_fields = ["bid"]
+    filterset_fields = ["bid", "user"]
     ordering = ["id"]
 
     def filter_queryset(self, queryset):
@@ -197,7 +197,8 @@ class PuntoViewSet(viewsets.ModelViewSet):
             raise ValidationError({"profileNotFilled": True})
         bid_id = self.request.data.get("bid")
         bid = get_object_or_404(Bid, id=bid_id)
-        serializer.save(user=bid.user, bid=bid)
+        punto = serializer.save(user=bid.user)
+        bid.puntos.add(punto)
 
     @action(methods=["GET"], detail=False)
     def get_categories(self, _):

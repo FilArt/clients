@@ -46,7 +46,7 @@ class DetailPuntoSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Punto
-        exclude = ["user"]
+        exclude = ["user", "bid"]
         extra_kwargs = {
             "province": {"required": True},
             "locality": {"required": True},

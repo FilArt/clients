@@ -144,8 +144,9 @@
       <v-divider vertical />
 
       <v-col v-if="!hidePuntos">
-        <v-alert v-if="bid.puntos.length === 0" type="warning">No puntos!</v-alert>
+        <v-alert v-if="bid.puntos.length === 0" type="warning">No hay puntos</v-alert>
         <puntos-list v-else :puntos="bid.puntos" @punto-updated="fetchBid" />
+        <add-punto-dialog closeable :bid-id="bid.id" @punto-added="fetchBid" />
       </v-col>
     </v-row>
   </div>
@@ -155,11 +156,12 @@
 export default {
   name: 'Tramitacion',
   components: {
+    AddPuntoDialog: () => import('@/components/puntos/AddPuntoDialog'),
     Facturacion: () => import('@/components/support/Facturacion'),
-    CloseButton: () => import('~/components/buttons/closeButton'),
-    PuntosList: () => import('~/components/puntos/PuntosList'),
-    detailOffer: () => import('~/components/detailOffer'),
-    HistoryList: () => import('~/components/history/HistoryList'),
+    CloseButton: () => import('@/components/buttons/closeButton'),
+    PuntosList: () => import('@/components/puntos/PuntosList'),
+    detailOffer: () => import('@/components/detailOffer'),
+    HistoryList: () => import('@/components/history/HistoryList'),
     SnackBarIt: () => import('@/components/snackbar/SnackBarIt'),
   },
   props: {
@@ -217,34 +219,6 @@ export default {
       internalMessage: '',
       modeTramitacion: !this.facturacion,
     }
-  },
-  computed: {
-    puntosCount() {
-      return this.bid.puntos_count
-    },
-    canalCommission() {
-      return parseFloat(this.bid.canal_commission) * this.puntosCount
-    },
-    agentCommission() {
-      return parseFloat(this.bid.commission) * this.puntosCount
-    },
-    commissions() {
-      const { agent_commission, canal_commission } = this.bid.offer
-      const result = []
-      const agentType = this.bid.agent_type
-      if (agentType === 'agent' || agentType === null) {
-        result.push({
-          text: `Agente comisiones: ${agent_commission} € * ${this.puntosCount} puntos = ${this.agentCommission} €`,
-          value: agent_commission * this.puntosCount,
-        })
-      } else if (agentType === 'canal') {
-        result.push({
-          text: `Canal comisiones: ${canal_commission} € * ${this.puntosCount} puntos = ${this.canalCommission} €`,
-          value: canal_commission * this.puntosCount,
-        })
-      }
-      return result
-    },
   },
   async created() {
     await this.fetchBid()

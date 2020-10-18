@@ -18,18 +18,49 @@
           <i> {{ bid.status }} </i>
         </v-list-item-title>
       </v-list-item>
+
+      <v-dialog v-model="addNewBidDialog" max-width="750">
+        <template v-slot:activator="{ on }">
+          <v-list-item v-on="on">
+            <v-list-item-avatar>
+              <v-icon color="success">mdi-plus</v-icon>
+            </v-list-item-avatar>
+            <v-list-item-title>Añadir nuevo solicitud</v-list-item-title>
+          </v-list-item>
+        </template>
+
+        <add-new-bid
+          :user-id="userId"
+          @close="addNewBidDialog = false"
+          @bid-added="
+            $emit('bid-added')
+            addNewBidDialog = false
+          "
+        />
+      </v-dialog>
     </v-list>
   </v-navigation-drawer>
 </template>
 
 <script>
+import AddNewBid from '@/components/forms/AddNewBid'
 export default {
   name: 'SolicitudesBar',
+  components: { AddNewBid },
   props: {
     bids: {
       type: Array,
       default: () => [],
     },
+    userId: {
+      type: Number,
+      default: null,
+    },
+  },
+  data() {
+    return {
+      addNewBidDialog: false,
+    }
   },
 }
 </script>

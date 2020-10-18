@@ -15,7 +15,9 @@
     <v-row>
       <v-col class="flex-grow-0">
         <solicitudes-bar
+          :user-id="user.id"
           :bids="user.bids"
+          @bid-added="refresh"
           @chosen="
             chosenBid = $event
             x += 1
