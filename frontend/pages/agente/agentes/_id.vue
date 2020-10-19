@@ -29,6 +29,7 @@
           {
             text: 'Nombre',
             value: 'fullname',
+            sortable: false,
           },
           {
             text: 'Estado',

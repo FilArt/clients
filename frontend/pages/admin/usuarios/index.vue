@@ -29,6 +29,7 @@ export default {
         {
           text: 'Nombre',
           value: 'fullname',
+          sortable: false,
         },
         {
           text: 'Tipo de agente',

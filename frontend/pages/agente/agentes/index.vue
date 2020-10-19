@@ -4,7 +4,7 @@
       <users-table
         :headers="[
           { text: 'ID', value: 'id' },
-          { text: 'Nombre', value: 'fullname' },
+          { text: 'Nombre', value: 'fullname', sortable: false },
           {
             text: 'Telefono',
             value: 'phone',

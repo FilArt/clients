@@ -26,9 +26,9 @@ export default {
       headers: [
         { text: 'ID', value: 'id' },
         { text: 'Fecha de registro', value: 'date_joined' },
-        { text: 'Nombre/Razon social', value: 'fullname' },
+        { text: 'Nombre/Razon social', value: 'fullname', sortable: false },
         { text: 'Responsable', value: 'responsible_fn' },
-        { text: 'Solicitud', value: 'bids_count' },
+        { text: 'Solicitud', value: 'bids_count', sortable: false },
         { text: '', value: 'new_messages_count' },
       ],
     }

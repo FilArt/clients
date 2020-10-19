@@ -26,12 +26,12 @@ export default {
       headers: [
         { text: 'ID', value: 'id' },
         { text: 'Fecha de registro', value: 'date_joined' },
-        { text: 'Nombre/Razon social', value: 'fullname' },
-        { text: 'Solicitud', value: 'bids_count' },
+        { text: 'Nombre/Razon social', value: 'fullname', sortable: false },
+        { text: 'Solicitud', value: 'bids_count', sortable: false },
         { text: 'Estado', value: 'status' },
-        { text: 'Doc', value: 'docs' },
-        { text: 'Scoring', value: 'scorings' },
-        { text: 'Llamadas', value: 'calls' },
+        { text: 'Doc', value: 'docs', sortable: false },
+        { text: 'Scoring', value: 'scorings', sortable: false },
+        { text: 'Llamadas', value: 'calls', sortable: false },
       ],
     }
   },

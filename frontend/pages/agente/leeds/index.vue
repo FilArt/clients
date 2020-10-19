@@ -28,6 +28,7 @@ export default {
         {
           text: 'Nombre/Razon social',
           value: 'fullname',
+          sortable: false,
         },
         {
           text: 'Ultima entrada',

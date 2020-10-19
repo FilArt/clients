@@ -98,7 +98,6 @@ class UserViewSet(
 ):
     queryset = CustomUser.objects.all()
     permission_classes = (IsAuthenticated, UsersPermission)
-    ordering = ("-id",)
     search_fields = ("company_name", "first_name", "last_name", "email", "phone")
     pagination_class = UsersPagination
     filterset_fields = {
@@ -111,14 +110,16 @@ class UserViewSet(
         "bids__scoring": ["exact", "isnull"],
         "bids__call": ["exact", "isnull"],
     }
-    ordering_fields = ["date_joined"]
+    ordering = ("-id",)
 
-    def filter_queryset(self, queryset):
+    def get_queryset(self):
         statuses = self.request.query_params.get("statuses_in")
         if statuses:
-            queryset = CustomUser.objects.with_statuses().filter(status__in=statuses.split(","))
-        else:
-            queryset = super(UserViewSet, self).filter_queryset(queryset)
+            return CustomUser.objects.with_statuses().filter(status__in=statuses.split(","))
+        return super().get_queryset()
+
+    def filter_queryset(self, queryset):
+        queryset = super(UserViewSet, self).filter_queryset(queryset)
 
         ordering = self.request.query_params.get("ordering", "") or ""
         if "-status" in ordering:
@@ -373,7 +374,6 @@ class CanalAgents(viewsets.ReadOnlyModelViewSet):
     queryset = CustomUser.objects.filter(role="agent", agent_type="agent")
     permission_classes = (IsAuthenticated, AgentClientsPermissions)
     serializer_class = CanalAgentesSerializer
-    ordering_fields = UserViewSet.ordering_fields
     search_fields = UserViewSet.search_fields
     pagination_class = UserViewSet.pagination_class
 

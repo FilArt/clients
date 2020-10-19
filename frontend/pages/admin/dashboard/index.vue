@@ -194,7 +194,7 @@ export default {
       const monthAgo = addDays(new Date(), -30)
       const monthAgoStr = format(monthAgo, 'yyyy-MM-dd 00:00')
       const usersData = await this.$axios.$get(
-        `users/users/?fields=date_joined_date&ordering=date_joined&date_joined__gte=${monthAgoStr}`,
+        `users/users/?fields=date_joined&ordering=date_joined&date_joined__gte=${monthAgoStr}`,
       )
       const logsData = await this.$axios.$get(`users/logs/?fields=requested_at&requested_at__gte=${monthAgoStr}`)
 
@@ -203,7 +203,7 @@ export default {
       this.options.series = [
         {
           name: `Nuevo usuarios (${usersData.length})`,
-          data: days.map((day) => usersData.filter((item) => item.date_joined_date === day).length),
+          data: days.map((day) => usersData.filter((item) => item.date_joined === day).length),
         },
         {
           name: `Calculos (${logsData.length})`,

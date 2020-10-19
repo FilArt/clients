@@ -436,12 +436,7 @@ export default {
         statuses_in: this.statuses.join(','),
         ...this.query,
         ordering: this.query.sortBy.length
-          ? this.query.sortBy
-              .map(
-                (sortBy, idx) =>
-                  (this.query.sortDesc[idx] ? '+' : '-') + (sortBy === 'date_joined_date' ? 'date_joined' : sortBy),
-              )
-              .join()
+          ? this.query.sortBy.map((sortBy, idx) => (this.query.sortDesc[idx] ? '+' : '-') + sortBy).join()
           : null,
         fields: this.headers.map((header) => header.value).join(),
         role__isnull: this.role === 'null' ? true : null,
