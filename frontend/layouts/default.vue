@@ -101,11 +101,11 @@ export default {
             title: 'OFERTAS',
             to: '/admin/ofertas',
           },
-          {
-            icon: 'mdi-file',
-            title: 'ARCHIVOS',
-            to: '/admin/archivos',
-          },
+          // {
+          //   icon: 'mdi-file',
+          //   title: 'ARCHIVOS',
+          //   to: '/admin/archivos',
+          // },
         ])
       } else if (role === 'agent') {
         items = items.concat([
