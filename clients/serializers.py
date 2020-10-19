@@ -550,7 +550,10 @@ class AgentContractSerializer(serializers.ModelSerializer):
         if "recibo1" in not_provided_fields and punto.category != "autonomous":
             not_provided_fields.remove("recibo1")
 
-        if punto.category != "business":
+        if punto.category == "business":
+            if punto.cif:
+                not_provided_fields -= {"cif"}
+        else:
             not_provided_fields -= {"cif", "cif1"}
 
         if "dni" in not_provided_fields and punto.dni:
