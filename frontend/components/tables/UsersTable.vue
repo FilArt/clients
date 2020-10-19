@@ -158,7 +158,7 @@
               :xs="flexs.xs"
             >
               <v-select
-                v-model="query.statuses_in"
+                v-model="statusesIn"
                 label="Estado"
                 :items="statuses"
                 multiple
@@ -357,6 +357,7 @@ export default {
       flexs: { cols: 12, xl: 3, lg: 3, md: 3, sm: 3, xs: 12 },
       dateJoinedFilter,
       fechaFirmaFilter,
+      statusesIn: [],
       userRoles: Object.values(constants.userRoles),
       role: this.defaultRole,
       users: [],
