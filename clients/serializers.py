@@ -552,9 +552,9 @@ class AgentContractSerializer(serializers.ModelSerializer):
 
         if punto.category == "business":
             if punto.cif:
-                not_provided_fields.remove("cif1")
+                not_provided_fields -= {"cif1"}
             if "cif1" in given_fields:
-                not_provided_fields.remove("cif")
+                not_provided_fields -= {"cif"}
         else:
             not_provided_fields -= {"cif", "cif1"}
 
