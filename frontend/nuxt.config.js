@@ -39,6 +39,7 @@ export default {
    ** Plugins to load before mounting the App
    */
   plugins: [
+    { src: '~/plugins/formdesigner', mode: 'client', ssr: false },
     { src: '~/plugins/vue-swal', mode: 'client' },
     { src: '~/plugins/vue-mask', mode: 'client' },
     { src: '~/plugins/vue-beautiful-chat', mode: 'client' },
