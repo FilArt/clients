@@ -15,7 +15,10 @@
 
     <v-card-text>
       <v-tabs v-model="tabs" centered>
-        <v-tab :disabled="!user.bids.length">Solicitud ({{ user.bids.length }})</v-tab>
+        <v-tab :disabled="!user.bids.length"> Solicitud ({{ user.bids.length }}) </v-tab>
+
+        <add-new-bid-dialog :user-id="user.id" @bid-added="fetchUser" />
+
         <v-tab :disabled="!calls.length"> Llamadas ({{ calls.length }}) </v-tab>
         <v-tab :disabled="!history.length">Historia ({{ history.length }})</v-tab>
         <v-tab :disabled="!puntos.length"> Puntos suministros ({{ puntos.length }}) </v-tab>
@@ -65,8 +68,10 @@
 </template>
 
 <script>
+import AddNewBidDialog from '@/components/dialogs/AddNewBidDialog'
 export default {
   components: {
+    AddNewBidDialog,
     Chat: () => import('~/components/chat/Chat'),
     PuntosList: () => import('~/components/puntos/PuntosList'),
     HistoryList: () => import('~/components/history/HistoryList'),
@@ -98,6 +103,9 @@ export default {
   methods: {
     async fetchPuntos() {
       this.puntos = await this.$axios.$get(`/users/puntos/?user=${this.user.id}`)
+    },
+    async fetchUser() {
+      this.user = await this.$axios.$get(`/users/users/${this.$route.params.id}/`)
     },
   },
 }

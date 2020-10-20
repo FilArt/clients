@@ -81,11 +81,11 @@ export default {
             title: 'PAPELERA',
             to: '/admin/ko',
           },
-          // {
-          //   icon: 'mdi-account-multiple',
-          //   title: 'LEEDS',
-          //   to: '/admin/leeds',
-          // },
+          {
+            icon: 'mdi-account-multiple',
+            title: 'LEEDS',
+            to: '/admin/leeds',
+          },
           {
             icon: 'mdi-briefcase-account-outline',
             title: 'CLIENTES',
@@ -130,13 +130,13 @@ export default {
             href: 'https://app.call-visit.com',
           },
         ])
-        if (permissions.includes('leeds_access')) {
-          // items.splice(2, 0, {
-          //   icon: 'mdi-account-multiple',
-          //   title: 'LEEDS',
-          //   to: '/agente/leeds',
-          // })
-        }
+        // if (permissions.includes('leeds_access')) {
+        //   items.splice(2, 0, {
+        //     icon: 'mdi-account-multiple',
+        //     title: 'LEEDS',
+        //     to: '/agente/leeds',
+        //   })
+        // }
         if (user.agent_type === 'canal') {
           items.splice(3, 0, {
             icon: 'mdi-account-multiple',

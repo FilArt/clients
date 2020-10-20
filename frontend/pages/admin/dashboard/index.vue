@@ -1,6 +1,10 @@
 <template>
   <v-card>
     <v-card-text>
+      <add-new-client />
+    </v-card-text>
+
+    <v-card-text>
       <v-row align="top">
         <v-col>
           <date-time-filter
@@ -50,9 +54,11 @@
 <script>
 import { eachDayOfInterval, addDays, format } from 'date-fns'
 import constants from '@/lib/constants'
+import AddNewClient from '@/components/forms/AddNewUser'
 
 export default {
   components: {
+    AddNewClient,
     DateTimeFilter: () => import('~/components/DateTimeFilter'),
   },
   data() {
