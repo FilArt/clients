@@ -63,7 +63,7 @@
           </v-col>
         </v-row>
 
-        <div v-if="['admin', 'tramitacion'].includes($auth.user.role)">
+        <div v-if="['admin', 'support'].includes($auth.user.role)">
           <v-switch v-if="facturacion && bid" v-model="modeTramitacion" label="Modo tramitacion" />
 
           <v-row v-if="modeTramitacion">
