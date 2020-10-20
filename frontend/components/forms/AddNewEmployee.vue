@@ -1,5 +1,5 @@
 <template>
-  <v-dialog v-model="dialog">
+  <v-dialog v-model="dialog" max-width="750">
     <template v-slot:activator="{ on }">
       <v-btn icon v-on="on">
         <v-icon>mdi-plus</v-icon>
@@ -7,7 +7,7 @@
     </template>
     <v-card>
       <v-card-title>
-        Anadir nuevo employee
+        Añadir nuevo employee
         <v-spacer />
         <close-button @click="dialog = false" />
       </v-card-title>
