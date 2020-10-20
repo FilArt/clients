@@ -1,8 +1,30 @@
 <template>
   <v-card>
+    <v-snackbar v-model="actionsSnackbar" :timeout="-1" :value="true" color="deep-purple accent-4" elevation="24">
+      <v-row align="center">
+        <v-col class="flex-grow-1"> Acciones con ofertas </v-col>
+        <v-col class="flex-grow-0">
+          <close-button @click="actionsSnackbar = false" />
+        </v-col>
+      </v-row>
+
+      <v-divider />
+
+      <v-row>
+        <v-col>
+          <v-btn icon color="primary" @click="editDialog = true">
+            <v-icon>mdi-pencil</v-icon>
+          </v-btn>
+        </v-col>
+        <v-col>
+          <delete-button @click="deleteRowsDialog = !deleteRowsDialog" />
+        </v-col>
+      </v-row>
+    </v-snackbar>
+
     <v-dialog v-model="addNewNameDialog">
       <v-card>
-        <v-card-title> Anadir nombre </v-card-title>
+        <v-card-title>Anadir nombre</v-card-title>
         <v-card-text>
           <v-form
             @submit.prevent="
@@ -17,34 +39,81 @@
       </v-card>
     </v-dialog>
 
-    <v-snackbar v-model="actionsSnackbar" :timeout="-1" :value="true" color="deep-purple accent-4" elevation="24">
-      <v-row align="center">
-        <v-col class="flex-grow-1"> Acciones con ofertas </v-col>
-        <v-col class="flex-grow-0">
-          <close-button @click="actionsSnackbar = false" />
-        </v-col>
-      </v-row>
-
-      <v-divider />
-
-      <v-row>
-        <v-col>
-          <delete-button @click="deleteRowsDialog = !deleteRowsDialog" />
-        </v-col>
-      </v-row>
-    </v-snackbar>
-
     <v-dialog v-model="deleteRowsDialog" max-width="500">
       <v-card>
-        <v-card-title> Eleminar ofertas </v-card-title>
+        <v-card-title>Eliminar ofertas</v-card-title>
 
-        <v-card-text v-if="rowsToDelete.length">
-          {{ rowsToDelete.map((o) => o.id).join(', ') }}
+        <v-card-text v-if="selectedRows.length">
+          {{ selectedRows.map((o) => o.id).join(', ') }}
         </v-card-text>
 
         <v-card-actions>
           <v-btn color="error" block @click="deleteRows"> Enviar </v-btn>
         </v-card-actions>
+      </v-card>
+    </v-dialog>
+
+    <v-dialog v-model="editDialog" max-width="290">
+      <v-card>
+        <v-form
+          @submit.prevent="
+            save({ [fieldToEdit.field]: newValue })
+            editDialog = false
+          "
+        >
+          <v-card-title class="headline">Editar {{ fieldToEdit ? fieldToEdit.label : 'ofertas' }}</v-card-title>
+
+          <v-card-text v-if="!fieldToEdit">
+            <v-select
+              v-model="fieldToEdit"
+              :items="columns.filter((c) => c.field !== 'id')"
+              item-text="label"
+              label="Eligir campo"
+              return-object
+            />
+          </v-card-text>
+
+          <v-card-text v-if="fieldToEdit">
+            <offer-required-fields v-if="fieldToEdit.field === 'required_fields'" v-model="newValue" />
+
+            <v-overflow-btn
+              v-else-if="fieldToEdit.field === 'name'"
+              v-model="newValue"
+              label="Nuevo valor"
+              editable
+              segmented
+              :items="names"
+              append-outer-icon="mdi-plus"
+              @click:append-outer="addNewNameDialog = true"
+            />
+
+            <v-select
+              v-else-if="fieldToEdit.filterOptions && fieldToEdit.filterOptions.filterDropdownItems"
+              v-model="newValue"
+              label="Nuevo valor"
+              :items="
+                fieldToEdit.field === 'required_fields'
+                  ? requiredFieldsItems
+                  : fieldToEdit.filterOptions.filterDropdownItems
+              "
+              :multiple="fieldToEdit.multiple"
+            />
+
+            <v-text-field v-else v-model="newValue" autofocus label="Nuevo valor" />
+          </v-card-text>
+
+          <v-card-actions>
+            <v-spacer></v-spacer>
+
+            <v-btn color="green darken-1" icon text @click="editDialog = false">
+              <v-icon>mdi-cancel</v-icon>
+            </v-btn>
+
+            <v-btn color="green darken-1" icon text type="submit">
+              <v-icon>mdi-content-save</v-icon>
+            </v-btn>
+          </v-card-actions>
+        </v-form>
       </v-card>
     </v-dialog>
 
@@ -61,57 +130,6 @@
     </v-toolbar>
 
     <v-card-text>
-      <v-dialog v-model="editDialog" max-width="290">
-        <v-card>
-          <v-form
-            @submit.prevent="
-              save(rowToEdit.id, { [fieldToEdit.field]: newValue })
-              editDialog = false
-            "
-          >
-            <v-card-title class="headline">Editar {{ fieldToEdit.field }}</v-card-title>
-
-            <v-card-text>
-              <offer-required-fields v-if="fieldToEdit.field === 'required_fields'" v-model="newValue" />
-
-              <v-overflow-btn
-                v-else-if="fieldToEdit.field === 'name'"
-                v-model="newValue"
-                editable
-                segmented
-                :items="names"
-                append-outer-icon="mdi-plus"
-                @click:append-outer="addNewNameDialog = true"
-              />
-
-              <v-select
-                v-else-if="fieldToEdit.filterOptions && fieldToEdit.filterOptions.filterDropdownItems"
-                v-model="newValue"
-                :items="
-                  fieldToEdit.field === 'required_fields'
-                    ? requiredFieldsItems
-                    : fieldToEdit.filterOptions.filterDropdownItems
-                "
-                :multiple="fieldToEdit.multiple"
-              />
-
-              <v-text-field v-else v-model="newValue" autofocus />
-            </v-card-text>
-
-            <v-card-actions>
-              <v-spacer></v-spacer>
-
-              <v-btn color="green darken-1" icon text @click="editDialog = false">
-                <v-icon>mdi-cancel</v-icon>
-              </v-btn>
-
-              <v-btn color="green darken-1" icon text type="submit">
-                <v-icon>mdi-content-save</v-icon>
-              </v-btn>
-            </v-card-actions>
-          </v-form>
-        </v-card>
-      </v-dialog>
       <vue-good-table
         mode="remote"
         line-numbers
@@ -145,8 +163,8 @@
         @on-search="onSearch"
         @on-cell-click="onCellClick"
         @on-selected-rows-change="
-          rowsToDelete = $event.selectedRows
-          actionsSnackbar = rowsToDelete.length > 0
+          selectedRows = $event.selectedRows
+          actionsSnackbar = selectedRows.length > 0
         "
       >
         <template slot="table-row" slot-scope="props">
@@ -156,7 +174,7 @@
             </div>
           </span>
           <span v-else-if="props.column.field === 'company'">
-            {{ props.row.company.name }}
+            {{ companies.find((c) => c.value === props.row.company).text }}
           </span>
           <span v-else-if="props.column.field === 'required_fields'">
             {{ getRequiredFieldText(props.row[props.column.field]) }}
@@ -183,13 +201,12 @@ export default {
     return {
       actionsSnackbar: false,
       deleteRowsDialog: false,
-      rowsToDelete: [],
+      selectedRows: [],
       newName: '',
       addNewNameDialog: false,
       editDialog: false,
       fieldToEdit: '',
       newValue: null,
-      rowToEdit: null,
 
       total: 0,
       timeout: null,
@@ -305,7 +322,7 @@ export default {
     async deleteRows() {
       this.loading = true
       try {
-        await this.$axios.$post('calculator/admin_offers/bulk_delete/', { ids: this.rowsToDelete.map((r) => r.id) })
+        await this.$axios.$post('calculator/admin_offers/bulk_delete/', { ids: this.selectedRows.map((r) => r.id) })
         this.deleteRowsDialog = false
         this.updateParams({ page: 1 })
         await this.refresh()
@@ -367,18 +384,21 @@ export default {
     },
     onCellClick({ row, column }) {
       this.fieldToEdit = column
-      this.rowToEdit = row
       this.newValue = row[column.field]
       this.editDialog = true
     },
-    async save(id, data) {
-      try {
-        await this.$axios.$patch(`calculator/admin_offers/${id}/`, data)
-        await this.refresh()
-      } catch (e) {
-        const err = JSON.stringify(e.response.data)
-        await this.$swal({ title: 'Error', text: err, icon: 'error' })
+    async save(data) {
+      for await (const row of this.selectedRows) {
+        const id = row.id
+        try {
+          await this.$axios.$patch(`calculator/admin_offers/${id}/`, data)
+        } catch (e) {
+          const err = JSON.stringify(e.response.data)
+          await this.$swal({ title: 'Error', text: err, icon: 'error' })
+        }
       }
+      await this.refresh()
+      this.fieldToEdit = this.newValue = null
     },
     formatClientType: (val) => (val === 0 ? 'F' : 'J'),
     formatCompany(id) {
