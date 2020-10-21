@@ -46,6 +46,7 @@ INSTALLED_APPS = [
     "apps.calculator",
     "apps.bids",
     "apps.chat",
+    "apps.info",
     "rest_framework_tracking",
 ]
 
