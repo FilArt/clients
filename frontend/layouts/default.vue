@@ -81,11 +81,11 @@ export default {
             title: 'PAPELERA',
             to: '/admin/ko',
           },
-          {
-            icon: 'mdi-account-multiple',
-            title: 'LEEDS',
-            to: '/admin/leeds',
-          },
+          // {
+          //   icon: 'mdi-account-multiple',
+          //   title: 'LEEDS',
+          //   to: '/admin/leeds',
+          // },
           {
             icon: 'mdi-briefcase-account-outline',
             title: 'CLIENTES',
