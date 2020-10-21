@@ -1,9 +1,12 @@
 <template>
-  <v-card class="pa-3">
+  <v-card flat>
     <snack-bar-it :noty-key="notificationKey" />
 
-    <v-toolbar>
+    <v-toolbar dense>
       <v-toolbar-title>
+        <v-btn icon color="error" @click="$router.back()">
+          <v-icon>mdi-arrow-left</v-icon>
+        </v-btn>
         {{ user.fullname }}
       </v-toolbar-title>
     </v-toolbar>
@@ -31,6 +34,13 @@
             :error-messages="errorMessages.email"
             :append-icon="user.email !== settings.email ? 'mdi-content-save' : null"
             @click:append="update({ email: settings.email })"
+          />
+          <phone-field
+            v-model="settings.phone"
+            label="Telefono"
+            :error-messages="errorMessages.phone"
+            :append-icon="user.phone !== settings.phone ? 'mdi-content-save' : null"
+            @click:append="update({ phone: settings.phone })"
           />
           <v-select
             v-model="settings.role"
@@ -123,8 +133,10 @@
 </template>
 
 <script>
+import PhoneField from '@/components/fields/phoneField'
 export default {
   components: {
+    PhoneField,
     SnackBarIt: () => import('@/components/snackbar/SnackBarIt'),
     AgentsList: () => import('@/components/selects/AgentsList'),
   },

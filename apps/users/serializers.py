@@ -160,6 +160,7 @@ class ManageUserSerializer(UserListSerializer):
             "fullname",
             "first_name",
             "last_name",
+            "phone",
             "role",
             "password",
             "email",
