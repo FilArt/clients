@@ -250,6 +250,10 @@
           </template>
         </v-edit-dialog>
       </template>
+
+      <template v-slot:[`item.date_joined`]="{ item }">
+        {{ $dateFns.format(new Date(item.date_joined), 'yyyy-MM-dd HH:mm') }}
+      </template>
     </v-data-table>
 
     <chat
