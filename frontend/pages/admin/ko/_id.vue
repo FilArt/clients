@@ -2,8 +2,17 @@
   <v-card flat>
     <v-toolbar dense>
       <v-toolbar-title>
+        <v-btn icon color="error" @click="$router.back()">
+          <v-icon>mdi-arrow-left</v-icon>
+        </v-btn>
         {{ user.fullname }}
       </v-toolbar-title>
+
+      <v-spacer />
+
+      <v-toolbar-items>
+        <v-btn color="error" @click="moveToTramitacion">Mover a tramitacion</v-btn>
+      </v-toolbar-items>
     </v-toolbar>
 
     <v-card-text>
@@ -79,6 +88,10 @@ export default {
           break
       }
       return color
+    },
+    async moveToTramitacion() {
+      await this.$axios.$patch(`users/users/${this.user.id}/`, { ko: false })
+      await this.$router.push(`/admin/tramitacion/${this.user.id}`)
     },
     async refresh() {
       this.user = await this.$axios.$get(`users/users/${this.user.id}/`)

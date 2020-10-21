@@ -7,6 +7,12 @@
         </v-btn>
         {{ user.fullname }}
       </v-toolbar-title>
+
+      <v-spacer />
+
+      <v-toolbar-items>
+        <v-btn color="error" @click="moveToKo">Mover a papellera</v-btn>
+      </v-toolbar-items>
     </v-toolbar>
 
     <v-card-text>
@@ -81,6 +87,10 @@ export default {
           break
       }
       return color
+    },
+    async moveToKo() {
+      await this.$axios.$patch(`users/users/${this.user.id}/`, { ko: true })
+      await this.$router.push(`/admin/ko/${this.user.id}`)
     },
     async refresh() {
       this.user = await this.$axios.$get(`users/users/${this.user.id}/`)

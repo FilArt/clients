@@ -240,7 +240,9 @@ class UserSerializer(UserListSerializer):
             "source",
             "client_role",
             "fecha_firma",
+            "ko",
         ]
+        extra_kwargs = {"ko": {"write_only": True, "required": False}}
 
 
 class LoadFacturasSerializer(serializers.Serializer):
