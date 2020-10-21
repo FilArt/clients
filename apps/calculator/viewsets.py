@@ -1,6 +1,5 @@
 from typing import Tuple
 
-from django.db.models import Q
 from rest_framework import mixins, viewsets, status
 from rest_framework.decorators import action
 from rest_framework.exceptions import ValidationError
@@ -71,14 +70,9 @@ class OfferViewSet(viewsets.ReadOnlyModelViewSet):
             if val and isinstance(val, (int, float))
         ]
         if power_values:
-            power_min = min(filter((lambda n: n != 0), power_values))
             power_max = max(filter((lambda n: n != 0), power_values))
-            queryset = queryset.filter(
-                Q(
-                    Q(power_max__isnull=True) | Q(power_max__gte=power_min),
-                    Q(power_min__isnull=True) | Q(power_min__lte=power_max),
-                )
-            )
+            if power_max:
+                queryset = queryset.filter(power_min__lte=power_max, power_max__gte=power_max)
         return queryset
 
     def get_serializer_class(self):
