@@ -64,13 +64,13 @@ class OfferViewSet(viewsets.ReadOnlyModelViewSet):
 
     def filter_queryset(self, queryset):
         queryset = super(OfferViewSet, self).filter_queryset(queryset)
-        power_values = [
-            val
-            for val in [self.request.query_params.get(key) for key in ("p1", "p2", "p3")]
-            if val and isinstance(val, (int, float))
-        ]
+        power_values = [val for val in [self.request.query_params.get(key) for key in ("p1", "p2", "p3")] if val]
         if power_values:
-            power_max = max(filter((lambda n: n != 0), power_values))
+            try:
+                power_max = max(filter((lambda n: n != 0), map(float, power_values)))
+            except (ValueError, TypeError) as e:
+                raise ValidationError({"p1": [e]})
+
             if power_max:
                 queryset = queryset.filter(power_min__lte=power_max, power_max__gte=power_max)
         return queryset
