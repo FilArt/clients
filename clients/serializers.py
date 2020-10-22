@@ -510,6 +510,8 @@ class AgentContractSerializer(serializers.ModelSerializer):
                 raise ValidationError({"phone": "Requiredo."})
 
             offer_gas = punto_data.pop("offer_gas") if "offer_gas" in punto_data else None
+            if not offer and not offer_gas:
+                raise ValidationError({"offer": ["Ofertas gas o oferta luz requiredo"]})
 
             attachments = punto_data.pop("attachments")
             punto = Punto.objects.create(**punto_data, user=created_client)
@@ -521,7 +523,7 @@ class AgentContractSerializer(serializers.ModelSerializer):
                 bid_gas.puntos.add(punto)
 
             given_types = [a["attachment_type"] for a in attachments] + [*validated_data]
-            self._handle_required_fields(offer, punto, pkey, given_types)
+            self._handle_required_fields(offer or offer_gas, punto, pkey, given_types)
 
             for attachment_data in attachments:
                 Attachment.objects.create(**attachment_data, punto=punto)
