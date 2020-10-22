@@ -77,7 +77,7 @@ class BidSerializer(BidListSerializer):
                     bid=bid,
                     status=new_status,
                     message=self.validated_data.get("message"),
-                    internal_message=self.validated_data.get("internal_message"),
+                    internal_message=self.validated_data.get("internal_message") or None,
                 )
 
             bid_user = bid.user

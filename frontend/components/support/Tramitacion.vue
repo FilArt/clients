@@ -90,6 +90,11 @@
                       </v-btn>
                     </v-col>
                   </v-row>
+                  <v-row>
+                    <v-col>
+                      {{ lastComments[group.value] }}
+                    </v-col>
+                  </v-row>
                 </v-radio-group>
               </div>
             </v-col>
@@ -180,6 +185,11 @@ export default {
   },
   data() {
     return {
+      lastComments: {
+        doc: '...',
+        scoring: '...',
+        call: '...',
+      },
       canalVariable: 0,
       agentVariable: 0,
       offerDetailDialog: false,
@@ -220,8 +230,9 @@ export default {
       modeTramitacion: !this.facturacion,
     }
   },
-  async created() {
+  async mounted() {
     await this.fetchBid()
+    await this.fetchLastComments()
   },
   methods: {
     async fetchHistory() {
@@ -236,6 +247,9 @@ export default {
         }
       }
     },
+    async fetchLastComments() {
+      this.lastComments = await this.$axios.$get(`bids/bids/${this.bidId}/last_comments/`)
+    },
     async tramitate() {
       this.loading = true
       try {
@@ -248,6 +262,7 @@ export default {
           internal_message: this.internalMessage,
         })
         this.$emit('tramitate')
+        this.fetchLastComments()
         this.notificationKey += 1
         this.tramitateDialog = false
         this.message = this.internalMessage = null

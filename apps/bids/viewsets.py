@@ -59,6 +59,36 @@ class BidViewSet(viewsets.ModelViewSet):
         serializer = BidStorySerializer(qs, many=True, context={"request": request})
         return Response(serializer.data)
 
+    @action(methods=["GET"], detail=True)
+    def last_comments(self, request: Request, pk: int):
+        bid = self.get_object()
+        qs = bid.stories.order_by("dt")
+        doc = qs.filter(status__icontains="doc")
+        if doc.exists():
+            doc = doc.last().internal_message
+        else:
+            doc = "..."
+
+        call = qs.filter(status__icontains="llamada")
+        if call.exists():
+            call = call.last().internal_message
+        else:
+            call = "..."
+
+        scoring = qs.filter(status__icontains="scoring")
+        if scoring.exists():
+            scoring = scoring.last().internal_message
+        else:
+            scoring = "..."
+
+        return Response(
+            {
+                "doc": doc,
+                "call": call,
+                "scoring": scoring,
+            }
+        )
+
 
 class BidStoryViewSet(viewsets.ModelViewSet):
     queryset = BidStory.objects.all()
