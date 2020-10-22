@@ -33,6 +33,7 @@ from .permissions import (
     ManageUserPermission,
     AgentClientsPermissions,
     AdminPermission,
+    AttachmentPermissions,
 )
 from .serializers import (
     LoadFacturasSerializer,
@@ -231,6 +232,7 @@ class PhoneViewSet(viewsets.ModelViewSet):
 class AttachmentsViewSet(viewsets.ModelViewSet):
     queryset = Attachment.objects.all()
     serializer_class = AttachmentSerializer
+    permission_classes = (AttachmentPermissions,)
 
     def filter_queryset(self, queryset):
         user = self.request.user
@@ -240,6 +242,8 @@ class AttachmentsViewSet(viewsets.ModelViewSet):
             if user_id:
                 del filter_kwargs["punto__user"]
                 filter_kwargs["punto__user_id"] = user_id
+            else:
+                filter_kwargs = dict()
         return super().filter_queryset(queryset.filter(**filter_kwargs))
 
 

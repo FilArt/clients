@@ -4,7 +4,7 @@ from django.views.generic.base import View
 from rest_framework.permissions import BasePermission
 from rest_framework.request import Request
 
-from .models import CustomUser
+from .models import CustomUser, Attachment
 
 
 class AdminPermission(BasePermission):
@@ -50,3 +50,11 @@ class AgentClientsPermissions(BasePermission):
 
     def has_object_permission(self, request: Request, view: View, obj: Any) -> bool:
         return obj.canal == request.user
+
+
+class AttachmentPermissions(BasePermission):
+    def has_object_permission(self, request, view, obj: Attachment) -> bool:
+        requester = request.user
+        if requester.role in ("support", "admin"):
+            return True
+        return obj.punto.user == requester

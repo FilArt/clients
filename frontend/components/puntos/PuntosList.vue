@@ -46,16 +46,21 @@
           </div>
 
           <v-flex v-if="group.text === 'Documentacion' && punto.attachments.length">
-            <v-chip
-              v-for="attachment in punto.attachments"
-              :key="attachment.id"
-              link
-              exact
-              target="_blank"
-              :href="attachment.attachment"
-            >
-              {{ attachment.type_verbose_name }}
-            </v-chip>
+            <v-menu v-for="attachment in punto.attachments" :key="attachment.id" offset-y>
+              <template v-slot:activator="{ on }">
+                <v-chip exact v-on="on">
+                  {{ attachment.type_verbose_name }}
+                </v-chip>
+              </template>
+              <v-list>
+                <v-list-item link target="_blank" :href="attachment.attachment">
+                  <v-list-item-title>Abrir archivo</v-list-item-title>
+                </v-list-item>
+                <v-list-item color="error" @click="deleteFile(attachment.id)">
+                  <v-list-item-title>Eliminar archivo</v-list-item-title>
+                </v-list-item>
+              </v-list>
+            </v-menu>
           </v-flex>
 
           <v-flex v-if="group.text === 'Documentacion'">
@@ -140,6 +145,19 @@ export default {
     }
   },
   methods: {
+    async deleteFile(fileId) {
+      const willDelete = await this.$swal({
+        title: `Borrar el archivo ${fileId}?`,
+        text: '¡Una vez borrado, no podrás recuperar esto!',
+        icon: 'warning',
+        buttons: true,
+        dangerMode: true,
+      })
+      if (!willDelete) return
+      await this.$axios.$delete(`users/attachments/${fileId}/`)
+      await this.$emit('punto-updated')
+      await this.$swal({ title: 'Listo', icon: 'success' })
+    },
     async save({ id, field, value }) {
       const data = {}
       value = value === undefined ? null : value
