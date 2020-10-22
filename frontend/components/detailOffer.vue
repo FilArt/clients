@@ -73,10 +73,13 @@
       Editar oferta
       <v-row align="center">
         <v-col>
+          <v-select v-model="kind" :items="['luz', 'gas']" label="Luz o gas?" />
+        </v-col>
+        <v-col>
           <company-select v-model="company" />
         </v-col>
         <v-col>
-          <tarif-select v-model="tarif" :gas="newOffer && newOffer.kind === 'gas'" />
+          <tarif-select v-model="tarif" :gas="kind === 'gas'" />
         </v-col>
         <v-col>
           <client-type-select v-model="clientType" />
@@ -158,6 +161,7 @@ export default {
       company: null,
       tarif: null,
       clientType: null,
+      kind: null,
       newOffer: null,
     }
   },
