@@ -69,7 +69,6 @@ export default {
         accurateTrackBounce: true,
       },
     ],
-    '@nuxtjs/webpackmonitor',
     'nuxt-compress',
     ['nuxt-highcharts', { exporting: true }],
   ],
