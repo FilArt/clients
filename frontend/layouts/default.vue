@@ -1,6 +1,6 @@
 <template>
   <v-app>
-    <v-navigation-drawer v-if="$auth.loggedIn" v-model="drawer" :mini-variant="mini" fixed app clipped>
+    <v-navigation-drawer v-if="$auth.loggedIn" v-model="drawer" fixed app clipped>
       <v-list>
         <v-list-item v-for="(item, i) in items" :key="i" :href="item.href" :to="item.to" router exact>
           <v-list-item-action>
@@ -16,7 +16,7 @@
     </v-navigation-drawer>
 
     <v-app-bar v-if="$auth.loggedIn" fixed app clipped-left>
-      <v-app-bar-nav-icon color="primary" @click.stop="mini = !mini" />
+      <v-app-bar-nav-icon color="primary" @click.stop="drawer = !drawer" />
       <v-toolbar-title v-text="title" />
       <v-spacer />
 
@@ -50,7 +50,6 @@ export default {
   data() {
     return {
       drawer: true,
-      mini: true,
       title: 'Gestion Group',
     }
   },
