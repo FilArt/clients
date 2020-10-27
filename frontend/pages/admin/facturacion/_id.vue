@@ -29,7 +29,7 @@
       </v-col>
 
       <div v-if="chosenBid" :key="x" class="flex-grow-1">
-        <tramitacion :bid-id="chosenBid" facturacion hide-puntos @tramitate="onTramitate" />
+        <tramitacion :bid-id="chosenBid" facturacion @tramitate="onTramitate" />
       </div>
     </v-row>
   </v-card>

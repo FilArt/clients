@@ -27,7 +27,7 @@
     </v-dialog>
 
     <v-row class="text-center">
-      <v-col :style="hidePuntos ? null : 'max-width: 500px'">
+      <v-col style="max-width: 500px">
         <v-row>
           <v-col>
             <v-dialog v-model="offerDetailDialog" max-width="750">
@@ -148,7 +148,7 @@
 
       <v-divider vertical />
 
-      <v-col v-if="!hidePuntos">
+      <v-col>
         <v-alert v-if="bid.puntos.length === 0" type="warning">No hay puntos</v-alert>
         <puntos-list v-else :puntos="bid.puntos" @punto-updated="fetchBid" />
         <add-punto-dialog closeable :bid-id="bid.id" @punto-added="fetchBid" />
@@ -175,10 +175,6 @@ export default {
       default: null,
     },
     facturacion: {
-      type: Boolean,
-      default: false,
-    },
-    hidePuntos: {
       type: Boolean,
       default: false,
     },
