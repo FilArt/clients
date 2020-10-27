@@ -244,6 +244,8 @@ class AttachmentsViewSet(viewsets.ModelViewSet):
                 filter_kwargs["punto__user_id"] = user_id
             else:
                 filter_kwargs = dict()
+        elif user.role == 'support':
+            filter_kwargs = dict()
         return super().filter_queryset(queryset.filter(**filter_kwargs))
 
 
