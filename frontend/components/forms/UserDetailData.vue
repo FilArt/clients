@@ -78,6 +78,8 @@
 
 <script>
 import { mapState } from 'vuex'
+import { format, parseISO } from 'date-fns'
+const DATE_FORMAT = 'dd/MM/yyyy HH:mm'
 export default {
   name: 'UserDetailData',
   components: {
@@ -143,17 +145,17 @@ export default {
         {
           icon: 'mdi-calendar',
           text: 'Ultima entrada',
-          value: user.last_login,
+          value: this.formatDate(user.last_login),
         },
         {
           icon: 'mdi-calendar',
           text: 'Fecha de registro',
-          value: user.date_joined,
+          value: this.formatDate(user.date_joined),
         },
         {
           icon: 'mdi-calendar',
           text: 'Fecha firma',
-          value: user.fecha_firma,
+          value: this.formatDate(user.fecha_firma),
         },
       ]
     },
@@ -183,6 +185,15 @@ export default {
   methods: {
     notify() {
       this.notificationKey += 1
+    },
+    formatDate(dt) {
+      if (!dt) return
+      try {
+        console.log(format, parseISO, dt)
+        return format(parseISO(dt), DATE_FORMAT)
+      } catch (e) {
+        return null
+      }
     },
     async updateUser(field, value) {
       const user = await this.$axios.$patch(`users/users/${this.userId}/`, { [field]: value })
