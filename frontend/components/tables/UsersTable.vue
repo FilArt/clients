@@ -197,9 +197,19 @@
       </template>
 
       <template v-if="useFullName" v-slot:[`item.fullname`]="{ item }">
-        <nuxt-link v-if="detailUrl" :to="getDetailUrl(item.id)">
-          {{ item.fullname }}
-        </nuxt-link>
+        <v-row v-if="detailUrl" align="center">
+          <v-col>
+            <nuxt-link :to="getDetailUrl(item.id)">
+              {{ item.fullname }}
+            </nuxt-link>
+          </v-col>
+
+          <v-col>
+            <v-btn icon x-small link :to="getDetailUrl(item.id)" target="_blank">
+              <v-icon>mdi-open-in-new</v-icon>
+            </v-btn>
+          </v-col>
+        </v-row>
         <span v-else>{{ item.fullname }}</span>
       </template>
 
