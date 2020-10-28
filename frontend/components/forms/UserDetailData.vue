@@ -124,6 +124,12 @@ export default {
       const { user } = this
       return [
         {
+          icon: 'mdi-person',
+          text: 'Nombre',
+          value: user.company_name,
+          field: 'company_name',
+        },
+        {
           icon: 'mdi-account',
           text: 'Persona de contacto',
           value: user.legal_representative,
@@ -150,12 +156,6 @@ export default {
           text: 'Email',
           value: user.email,
           field: 'email',
-        },
-        {
-          icon: 'mdi-person',
-          text: 'Nombre',
-          value: user.company_name,
-          field: 'company_name',
         },
       ]
     },
