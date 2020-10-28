@@ -27,7 +27,7 @@
     </v-dialog>
 
     <v-row class="text-center">
-      <v-col style="max-width: 500px">
+      <v-col style="max-width: 750px">
         <v-row>
           <v-col>
             <v-dialog v-model="offerDetailDialog" max-width="750">
@@ -63,61 +63,65 @@
           </v-col>
         </v-row>
 
-        <div v-if="['admin', 'support'].includes($auth.user.role)">
-          <v-switch v-if="facturacion && bid" v-model="modeTramitacion" label="Modo tramitacion" />
+        <v-row v-if="['admin', 'support'].includes($auth.user.role)">
+          <v-col>
+            <v-switch v-if="facturacion && bid" v-model="modeTramitacion" label="Modo tramitacion" />
 
-          <v-row v-if="modeTramitacion">
-            <v-col>
-              <div v-for="group in groups" :key="group.label">
-                <v-radio-group v-model="bid[group.value]" :label="group.label" @change="tramitateDialog = true">
-                  <v-row>
-                    <v-col v-for="state in states" :key="state.label">
-                      <v-radio
-                        :label="state.label"
-                        :value="state.value"
-                        @click="newStatus = `${state.label} ${group.label}`"
-                      />
-                    </v-col>
-                    <v-col>
-                      <v-btn
-                        icon
-                        @click="
-                          bid[group.value] = null
-                          tramitateDialog = true
-                        "
-                      >
-                        <v-icon>mdi-eraser-variant</v-icon>
-                      </v-btn>
-                    </v-col>
-                  </v-row>
-                  <v-row>
-                    <v-col>
-                      {{ lastComments[group.value] }}
-                    </v-col>
-                  </v-row>
-                </v-radio-group>
-              </div>
-            </v-col>
-          </v-row>
+            <v-row v-if="modeTramitacion">
+              <v-col>
+                <v-row v-for="group in groups" :key="group.label">
+                  <v-col>
+                    <v-radio-group v-model="bid[group.value]" :label="group.label" @change="tramitateDialog = true">
+                      <v-row>
+                        <v-col v-for="state in states" :key="state.label">
+                          <v-radio
+                            :label="state.label"
+                            :value="state.value"
+                            @click="newStatus = `${state.label} ${group.label}`"
+                          />
+                        </v-col>
+                        <v-col>
+                          <v-btn
+                            icon
+                            @click="
+                              bid[group.value] = null
+                              tramitateDialog = true
+                            "
+                          >
+                            <v-icon>mdi-eraser-variant</v-icon>
+                          </v-btn>
+                        </v-col>
+                      </v-row>
+                      <v-row>
+                        <v-col>
+                          {{ lastComments[group.value] }}
+                        </v-col>
+                      </v-row>
+                    </v-radio-group>
+                  </v-col>
+                </v-row>
+              </v-col>
+            </v-row>
 
-          <facturacion
-            v-else
-            :bid-id="bid.id"
-            :responsible="bid.responsible"
-            :canal="bid.canal"
-            :puntos-count="bid.puntos_count"
-            :default-canal-commission="parseFloat(bid.offer.canal_commission)"
-            :default-responsible-commission="parseFloat(bid.offer.agent_commission)"
-            :current-responsible-commission="parseFloat(bid.commission)"
-            :current-canal-commission="parseFloat(bid.canal_commission)"
-            :is-canal-paid="bid.canal_paid"
-            :is-responsible-paid="bid.paid"
-            @paid="
-              notificationKey += 1
-              $emit('tramitate')
-            "
-          />
-        </div>
+            <facturacion
+              v-else
+              :bid-id="bid.id"
+              :responsible="bid.responsible"
+              :canal="bid.canal"
+              :puntos-count="bid.puntos_count"
+              :default-canal-commission="parseFloat(bid.offer.canal_commission)"
+              :default-responsible-commission="parseFloat(bid.offer.agent_commission)"
+              :current-responsible-commission="parseFloat(bid.commission)"
+              :current-canal-commission="parseFloat(bid.canal_commission)"
+              :is-canal-paid="bid.canal_paid"
+              :is-responsible-paid="bid.paid"
+              @paid="
+                notificationKey += 1
+                $emit('tramitate')
+              "
+            />
+          </v-col>
+        </v-row>
 
         <v-row>
           <v-col>
