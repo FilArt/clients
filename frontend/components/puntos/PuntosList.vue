@@ -1,6 +1,6 @@
 <template>
   <v-list nav dense>
-    <v-list-item v-for="punto in puntos" :key="punto.id" @click="null">
+    <v-list-item v-for="punto in puntos" :key="punto.id">
       <v-dialog max-width="1500">
         <template v-slot:activator="{ on }">
           <v-list-item-title>
@@ -23,6 +23,14 @@
                     value: $event,
                   })
                 "
+              />
+
+              <v-select
+                v-else-if="header.value === 'category'"
+                :label="header.text"
+                :items="categories"
+                :value="punto.category"
+                @input="save({ id: punto.id, field: 'category', value: $event })"
               />
 
               <v-switch
@@ -126,6 +134,11 @@ export default {
     const puntoValues = Object.values(constants.puntoFields)
 
     return {
+      categories: [
+        { text: 'Fisico', value: 'physical' },
+        { text: 'Autonomous', value: 'autonomous' },
+        { text: 'Juridico', value: 'business' },
+      ],
       attachmentsItems: [
         { value: 'factura', text: 'Factura' },
         { value: 'factura_1', text: 'Factura reverso' },

@@ -241,6 +241,14 @@ export default Object.freeze({
         value: 'doc',
       },
     },
+    category: {
+      text: 'Tipo de cliente',
+      value: 'category',
+      group: {
+        text: 'Documentacion',
+        value: 'doc',
+      },
+    },
     dni: {
       text: 'DNI',
       value: 'dni',
