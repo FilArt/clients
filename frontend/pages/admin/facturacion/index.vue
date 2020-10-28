@@ -22,6 +22,7 @@ export default {
   data() {
     return {
       statuses: [
+        constants.statuses.KO,
         constants.statuses.PENDIENTE_PAGO_CANAL,
         constants.statuses.PENDIENTE_PAGO_AGENTE,
         constants.statuses.PENDIENTE_PAGO,

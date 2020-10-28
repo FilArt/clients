@@ -22,7 +22,11 @@ export default {
   },
   data() {
     return {
-      statuses: [constants.statuses.PENDIENTE_TRAMITACION, constants.statuses.TRAMITACION_EN_PROCESSO],
+      statuses: [
+        constants.statuses.KO,
+        constants.statuses.PENDIENTE_TRAMITACION,
+        constants.statuses.TRAMITACION_EN_PROCESSO,
+      ],
       headers: [
         { text: 'ID', value: 'id' },
         { text: 'Fecha de registro', value: 'date_joined' },
