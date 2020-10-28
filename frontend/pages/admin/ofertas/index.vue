@@ -383,6 +383,7 @@ export default {
       return str.length > len ? str.substr(0, len) + '...' : str
     },
     onCellClick({ row, column }) {
+      this.selectedRows = [row]
       this.fieldToEdit = column
       this.newValue = row[column.field]
       this.editDialog = true
