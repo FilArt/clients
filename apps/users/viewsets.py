@@ -2,8 +2,11 @@ import logging
 import re
 from typing import Tuple
 
+from django.contrib.auth.models import Group
 from django.db.models import Q
 from drf_dynamic_fields import DynamicFieldsMixin
+from notifications.models import Notification
+from notifications.signals import notify
 from rest_framework import mixins, viewsets, status
 from rest_framework.decorators import action
 from rest_framework.exceptions import PermissionDenied, ValidationError
@@ -34,7 +37,7 @@ from .permissions import (
     ManageUserPermission,
     AgentClientsPermissions,
     AdminPermission,
-    AttachmentPermissions,
+    AttachmentPermissions, NotyPermissions,
 )
 from .serializers import (
     LoadFacturasSerializer,
@@ -47,7 +50,7 @@ from .serializers import (
     RequestLogSerializer,
     RegisterByAdminSerializer,
     AgentClientsSerializer,
-    CanalAgentesSerializer,
+    CanalAgentesSerializer, NotificationSerializer,
 )
 
 logger = logging.getLogger(__name__)
@@ -251,6 +254,18 @@ class AttachmentsViewSet(LoggingMixin, viewsets.ModelViewSet):
             filter_kwargs = dict()
         return super().filter_queryset(queryset.filter(**filter_kwargs))
 
+    def perform_create(self, serializer):
+        super(AttachmentsViewSet, self).perform_create(serializer)
+        actor: Attachment = serializer.instance
+        recipient, _ = Group.objects.get_or_create(name='Attachment')
+        action_object = self.request.user
+        target = actor.punto.user
+        level = 'success'
+        public = False
+        description = None
+        notify.send(sender=actor, recipient=recipient, verb='new_attachment', action_object=action_object,
+                    target=target, level=level, description=description, public=public)
+
 
 class PaginatedAttachmentsViewSet(LoggingMixin, viewsets.ModelViewSet):
     queryset = Attachment.objects.all()
@@ -403,3 +418,27 @@ class AgentClients(viewsets.ReadOnlyModelViewSet):
             queryset = CustomUser.objects.with_statuses().filter(status__in=statuses.split(","))
 
         return super().filter_queryset(queryset).filter(responsible__canal=self.request.user, role__isnull=True)
+
+
+class NotificationViewSet(viewsets.ModelViewSet):
+    queryset = Notification.objects.all()
+    serializer_class = NotificationSerializer
+    permission_classes = (NotyPermissions,)
+    filterset_fields = {
+        'unread': ['exact'],
+    }
+
+    def get_queryset(self):
+        return super().get_queryset().filter(recipient=self.request.user)
+
+    @action(methods=['POST'], detail=True)
+    def mark_read(self, request: Request, pk: int):
+        noty: Notification = self.get_object()
+        noty.mark_as_read()
+        return Response('ok')
+
+    @action(methods=['POST'], detail=True)
+    def mark_unread(self, request: Request, pk: int):
+        noty: Notification = self.get_object()
+        noty.mark_as_unread()
+        return Response('ok')

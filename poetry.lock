@@ -331,6 +331,32 @@ python-versions = ">=3.5"
 django = ">=2"
 
 [[package]]
+name = "django-model-utils"
+version = "4.0.0"
+description = "Django model mixins and utilities"
+category = "main"
+optional = false
+python-versions = "*"
+
+[package.dependencies]
+Django = ">=2.0.1"
+
+[[package]]
+name = "django-notifications-hq"
+version = "1.6.0"
+description = "GitHub notifications alike app for Django."
+category = "main"
+optional = false
+python-versions = "*"
+
+[package.dependencies]
+django = ">=2.2"
+django-model-utils = ">=3.1.0"
+jsonfield = ">=2.1.0"
+pytz = "*"
+swapper = "*"
+
+[[package]]
 name = "django-stubs"
 version = "1.6.0"
 description = "Mypy stubs for Django"
@@ -557,6 +583,17 @@ testing = ["Django (<3.1)", "colorama", "docopt", "pytest (>=3.9.0,<5.0.0)"]
 
 [package.dependencies]
 parso = ">=0.7.0,<0.8.0"
+
+[[package]]
+name = "jsonfield"
+version = "3.1.0"
+description = "A reusable Django field that allows you to store validated JSON in your model."
+category = "main"
+optional = false
+python-versions = ">=3.6"
+
+[package.dependencies]
+Django = ">=2.2"
 
 [[package]]
 name = "lxml"
@@ -917,6 +954,14 @@ optional = false
 python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*"
 
 [[package]]
+name = "swapper"
+version = "1.1.2.post1"
+description = "The unofficial Django swappable models API."
+category = "main"
+optional = false
+python-versions = "*"
+
+[[package]]
 name = "toml"
 version = "0.10.1"
 description = "Python Library for Tom's Obvious, Minimal Language"
@@ -1074,7 +1119,7 @@ setuptools = "*"
 [metadata]
 lock-version = "1.0"
 python-versions = "3.8.5"
-content-hash = "e6df88a50dff497c88a35b30bf14a514f7fd1c80b13ff10c2751d15ec128f3f2"
+content-hash = "e5680e188f12a3a8b67dac9243c36bd3b827edb832ccd4a8b6f5578d9332312b"
 
 [metadata.files]
 aioredis = [
@@ -1238,6 +1283,14 @@ django-jazzmin = [
     {file = "django-jazzmin-2.2.10.tar.gz", hash = "sha256:f4d65b94138536645f251bfdcafed1690cde408e8bb954e5fe93af02d611068a"},
     {file = "django_jazzmin-2.2.10-py3-none-any.whl", hash = "sha256:f6a1041e3ea8a0196a839f5da17e8d565e1f261e0a72dc23b9482d6197ab929b"},
 ]
+django-model-utils = [
+    {file = "django-model-utils-4.0.0.tar.gz", hash = "sha256:adf09e5be15122a7f4e372cb5a6dd512bbf8d78a23a90770ad0983ee9d909061"},
+    {file = "django_model_utils-4.0.0-py2.py3-none-any.whl", hash = "sha256:9cf882e5b604421b62dbe57ad2b18464dc9c8f963fc3f9831badccae66c1139c"},
+]
+django-notifications-hq = [
+    {file = "django-notifications-hq-1.6.0.tar.gz", hash = "sha256:debeb71b7076b08487b40bf07664d1cc43b9977c4480bbc969b30236dda7a461"},
+    {file = "django_notifications_hq-1.6.0-py2.py3-none-any.whl", hash = "sha256:dfc6f8bd4034ceae91143bc3802ddfb6e276eaec90e63dd23e2584c052561576"},
+]
 django-stubs = [
     {file = "django-stubs-1.6.0.tar.gz", hash = "sha256:5257eaedf50e9a294d45618a878baaa1fc6f21b72ebb927c2a87d37a55ca6c50"},
     {file = "django_stubs-1.6.0-py3-none-any.whl", hash = "sha256:20759904040bd29783a5ff879b48ad965964b8a9ea9e405cc49a435423d0d5ba"},
@@ -1353,6 +1406,10 @@ jedi = [
     {file = "jedi-0.17.2-py2.py3-none-any.whl", hash = "sha256:98cc583fa0f2f8304968199b01b6b4b94f469a1f4a74c1560506ca2a211378b5"},
     {file = "jedi-0.17.2.tar.gz", hash = "sha256:86ed7d9b750603e4ba582ea8edc678657fb4007894a12bcf6f4bb97892f31d20"},
 ]
+jsonfield = [
+    {file = "jsonfield-3.1.0-py3-none-any.whl", hash = "sha256:df857811587f252b97bafba42e02805e70a398a7a47870bc6358a0308dd689ed"},
+    {file = "jsonfield-3.1.0.tar.gz", hash = "sha256:7e4e84597de21eeaeeaaa7cc5da08c61c48a9b64d0c446b2d71255d01812887a"},
+]
 lxml = [
     {file = "lxml-4.5.2-cp27-cp27m-macosx_10_9_x86_64.whl", hash = "sha256:74f48ec98430e06c1fa8949b49ebdd8d27ceb9df8d3d1c92e1fdc2773f003f20"},
     {file = "lxml-4.5.2-cp27-cp27m-manylinux1_i686.whl", hash = "sha256:e70d4e467e243455492f5de463b72151cc400710ac03a0678206a5f27e79ddef"},
@@ -1384,6 +1441,8 @@ lxml = [
     {file = "lxml-4.5.2-cp38-cp38-manylinux2014_aarch64.whl", hash = "sha256:8f0ec6b9b3832e0bd1d57af41f9238ea7709bbd7271f639024f2fc9d3bb01293"},
     {file = "lxml-4.5.2-cp38-cp38-win32.whl", hash = "sha256:107781b213cf7201ec3806555657ccda67b1fccc4261fb889ef7fc56976db81f"},
     {file = "lxml-4.5.2-cp38-cp38-win_amd64.whl", hash = "sha256:f161af26f596131b63b236372e4ce40f3167c1b5b5d459b29d2514bd8c9dc9ee"},
+    {file = "lxml-4.5.2-cp39-cp39-manylinux1_i686.whl", hash = "sha256:6f767d11803dbd1274e43c8c0b2ff0a8db941e6ed0f5d44f852fb61b9d544b54"},
+    {file = "lxml-4.5.2-cp39-cp39-manylinux1_x86_64.whl", hash = "sha256:d15a801d9037d7512edb2f1e196acebb16ab17bef4b25a91ea2e9a455ca353af"},
     {file = "lxml-4.5.2.tar.gz", hash = "sha256:cdc13a1682b2a6241080745b1953719e7fe0850b40a5c71ca574f090a1391df6"},
 ]
 mccabe = [
@@ -1519,6 +1578,7 @@ psycopg2-binary = [
     {file = "psycopg2_binary-2.8.6-cp38-cp38-manylinux1_x86_64.whl", hash = "sha256:2dac98e85565d5688e8ab7bdea5446674a83a3945a8f416ad0110018d1501b94"},
     {file = "psycopg2_binary-2.8.6-cp38-cp38-win32.whl", hash = "sha256:bd1be66dde2b82f80afb9459fc618216753f67109b859a361cf7def5c7968729"},
     {file = "psycopg2_binary-2.8.6-cp38-cp38-win_amd64.whl", hash = "sha256:8cd0fb36c7412996859cb4606a35969dd01f4ea34d9812a141cd920c3b18be77"},
+    {file = "psycopg2_binary-2.8.6-cp39-cp39-macosx_10_9_x86_64.macosx_10_9_intel.macosx_10_10_intel.macosx_10_10_x86_64.whl", hash = "sha256:89705f45ce07b2dfa806ee84439ec67c5d9a0ef20154e0e475e2b2ed392a5b83"},
     {file = "psycopg2_binary-2.8.6-cp39-cp39-manylinux1_i686.whl", hash = "sha256:42ec1035841b389e8cc3692277a0bd81cdfe0b65d575a2c8862cec7a80e62e52"},
     {file = "psycopg2_binary-2.8.6-cp39-cp39-manylinux1_x86_64.whl", hash = "sha256:7312e931b90fe14f925729cde58022f5d034241918a5c4f9797cac62f6b3a9dd"},
 ]
@@ -1654,6 +1714,10 @@ sqlparse = [
     {file = "sqlparse-0.3.1-py2.py3-none-any.whl", hash = "sha256:022fb9c87b524d1f7862b3037e541f68597a730a8843245c349fc93e1643dc4e"},
     {file = "sqlparse-0.3.1.tar.gz", hash = "sha256:e162203737712307dfe78860cc56c8da8a852ab2ee33750e33aeadf38d12c548"},
 ]
+swapper = [
+    {file = "swapper-1.1.2.post1-py3-none-any.whl", hash = "sha256:f3bc7b77b76daf46fcbd41fda9b2f599974ac8c564e129f2a9bae73871c4116e"},
+    {file = "swapper-1.1.2.post1.tar.gz", hash = "sha256:51651018fb027354dd27ff38d5eb47a225d3e642c99b04cff878ae65b1872f64"},
+]
 toml = [
     {file = "toml-0.10.1-py2.py3-none-any.whl", hash = "sha256:bda89d5935c2eac546d648028b9901107a595863cb36bae0c73ac804a9b4ce88"},
     {file = "toml-0.10.1.tar.gz", hash = "sha256:926b612be1e5ce0634a2ca03470f95169cf16f939018233a670519cb4ac58b0f"},
@@ -1723,6 +1787,12 @@ typed-ast = [
     {file = "typed_ast-1.4.1-cp38-cp38-win32.whl", hash = "sha256:715ff2f2df46121071622063fc7543d9b1fd19ebfc4f5c8895af64a77a8c852c"},
     {file = "typed_ast-1.4.1-cp38-cp38-win_amd64.whl", hash = "sha256:fc0fea399acb12edbf8a628ba8d2312f583bdbdb3335635db062fa98cf71fca4"},
     {file = "typed_ast-1.4.1-cp39-cp39-macosx_10_15_x86_64.whl", hash = "sha256:d43943ef777f9a1c42bf4e552ba23ac77a6351de620aa9acf64ad54933ad4d34"},
+    {file = "typed_ast-1.4.1-cp39-cp39-macosx_10_9_x86_64.whl", hash = "sha256:92c325624e304ebf0e025d1224b77dd4e6393f18aab8d829b5b7e04afe9b7a2c"},
+    {file = "typed_ast-1.4.1-cp39-cp39-manylinux1_i686.whl", hash = "sha256:d648b8e3bf2fe648745c8ffcee3db3ff903d0817a01a12dd6a6ea7a8f4889072"},
+    {file = "typed_ast-1.4.1-cp39-cp39-manylinux1_x86_64.whl", hash = "sha256:fac11badff8313e23717f3dada86a15389d0708275bddf766cca67a84ead3e91"},
+    {file = "typed_ast-1.4.1-cp39-cp39-manylinux2014_aarch64.whl", hash = "sha256:0d8110d78a5736e16e26213114a38ca35cb15b6515d535413b090bd50951556d"},
+    {file = "typed_ast-1.4.1-cp39-cp39-win32.whl", hash = "sha256:b52ccf7cfe4ce2a1064b18594381bccf4179c2ecf7f513134ec2f993dd4ab395"},
+    {file = "typed_ast-1.4.1-cp39-cp39-win_amd64.whl", hash = "sha256:3742b32cf1c6ef124d57f95be609c473d7ec4c14d0090e5a5e05a15269fb4d0c"},
     {file = "typed_ast-1.4.1.tar.gz", hash = "sha256:8c8aaad94455178e3187ab22c8b01a3837f8ee50e09cf31f1ba129eb293ec30b"},
 ]
 typing-extensions = [

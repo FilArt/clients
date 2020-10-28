@@ -1,3 +1,4 @@
+import notifications.urls
 from django.conf import settings
 from django.conf.urls.static import static
 from django.contrib import admin
@@ -11,6 +12,7 @@ urlpatterns = [
     path("api/chat/", include("apps.chat.urls")),
     path("api/info/", include("apps.info.urls")),
     path("api/logs/", include("apps.logs.urls")),
+    path('api/inbox/notifications/', include(notifications.urls, namespace='notifications')),
 ]
 
 if settings.DEBUG:

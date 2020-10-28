@@ -29,6 +29,7 @@ ipython = "^7.17.0"
 django-jazzmin = "^2.2.6"
 drf-api-tracking = "^1.7.5"
 flake8-mypy = "^17.8.0"
+django-notifications-hq = "^1.6.0"
 
 [tool.poetry.dev-dependencies]
 flake8 = "^3.8.3"

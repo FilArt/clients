@@ -9,6 +9,7 @@ from django.template.loader import render_to_string
 from django.utils.html import strip_tags
 from django.utils.translation import gettext_lazy as _
 from drf_dynamic_fields import DynamicFieldsMixin
+from notifications.models import Notification
 from rest_framework import serializers
 from rest_framework.exceptions import ValidationError
 from rest_framework_tracking.models import APIRequestLog
@@ -292,3 +293,14 @@ class AgentClientsSerializer(UserListSerializer):
             "paid_count",
             "canal_paid_count",
         ]
+
+
+class NotificationSerializer(serializers.ModelSerializer):
+    author = serializers.SerializerMethodField()
+
+    class Meta:
+        model = Notification
+        fields = '__all__'
+
+    def get_author(self, noty: Notification) -> str:
+        return noty.action_object.fullname if noty.action_object else 'Anonymous'

@@ -1,6 +1,7 @@
 from typing import Any
 
 from django.views.generic.base import View
+from notifications.models import Notification
 from rest_framework.permissions import BasePermission
 from rest_framework.request import Request
 
@@ -58,3 +59,9 @@ class AttachmentPermissions(BasePermission):
         if requester.role in ("support", "admin"):
             return True
         return obj.punto.user == requester
+
+
+class NotyPermissions(BasePermission):
+    def has_object_permission(self, request, view, obj: Notification) -> bool:
+        requester = request.user
+        return requester == obj.recipient

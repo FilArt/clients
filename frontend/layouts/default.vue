@@ -28,6 +28,8 @@
         <v-icon color="primary"> mdi-account </v-icon>
       </v-btn>
 
+      <notys v-if="$auth.user.role" />
+
       <theme-switcher />
       <v-btn v-if="$auth" icon @click.stop="$auth.logout">
         <v-icon color="primary"> mdi-logout </v-icon>
@@ -44,6 +46,7 @@
 export default {
   name: 'Default',
   components: {
+    Notys: () => import('@/components/notys'),
     ThemeSwitcher: () => import('~/components/ThemeSwitcher'),
     Chat: () => import('~/components/chat/Chat'),
   },

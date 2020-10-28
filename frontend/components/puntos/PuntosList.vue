@@ -45,23 +45,30 @@
             />
           </div>
 
-          <v-flex v-if="group.text === 'Documentacion' && punto.attachments.length">
-            <v-menu v-for="attachment in punto.attachments" :key="attachment.id" offset-y>
-              <template v-slot:activator="{ on }">
-                <v-chip exact v-on="on">
-                  {{ attachment.type_verbose_name }}
-                </v-chip>
-              </template>
-              <v-list>
-                <v-list-item link target="_blank" :href="attachment.attachment">
-                  <v-list-item-title>Abrir archivo</v-list-item-title>
-                </v-list-item>
-                <v-list-item color="error" @click="deleteFile(attachment.id)">
-                  <v-list-item-title>Eliminar archivo</v-list-item-title>
-                </v-list-item>
-              </v-list>
-            </v-menu>
-          </v-flex>
+          <v-row
+            v-if="group.text === 'Documentacion' && punto.attachments.length"
+            align="center"
+            class="flex-wrap"
+            style="max-width: 500px"
+          >
+            <v-col>
+              <v-menu v-for="attachment in punto.attachments" :key="attachment.id" offset-y>
+                <template v-slot:activator="{ on }">
+                  <v-chip exact :color="getColor(attachment.id)" v-on="on">
+                    {{ attachment.type_verbose_name }} - ({{ attachment.id }})
+                  </v-chip>
+                </template>
+                <v-list>
+                  <v-list-item link target="_blank" :href="attachment.attachment">
+                    <v-list-item-title>Abrir archivo</v-list-item-title>
+                  </v-list-item>
+                  <v-list-item color="error" @click="deleteFile(attachment.id)">
+                    <v-list-item-title>Eliminar archivo</v-list-item-title>
+                  </v-list-item>
+                </v-list>
+              </v-menu>
+            </v-col>
+          </v-row>
 
           <v-flex v-if="group.text === 'Documentacion'">
             <v-dialog v-model="uploadFileDialog" max-width="500">
@@ -145,6 +152,13 @@ export default {
     }
   },
   methods: {
+    getColor(attachmentId) {
+      const q = this.$route.query
+      if (q.highligh_item === 'attachment' && q.highligh_item_id === String(attachmentId)) {
+        return 'success'
+      }
+      return 'primary'
+    },
     async deleteFile(fileId) {
       const willDelete = await this.$swal({
         title: `Borrar el archivo ${fileId}?`,

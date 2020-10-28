@@ -49,6 +49,7 @@ INSTALLED_APPS = [
     "apps.info",
     "apps.logs",
     "rest_framework_tracking",
+    "notifications",
 ]
 
 MIDDLEWARE = [
