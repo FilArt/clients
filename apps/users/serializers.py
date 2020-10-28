@@ -243,6 +243,7 @@ class UserSerializer(UserListSerializer):
             "fecha_firma",
             "ko",
             "observations",
+            "company_name",
         ]
         extra_kwargs = {"ko": {"write_only": True, "required": False}}
 

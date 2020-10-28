@@ -10,7 +10,7 @@
     </v-toolbar>
 
     <v-card-text>
-      <user-detail-data :user-id="$route.params.id" />
+      <user-detail-data :user-id="$route.params.id" @user-updated="refresh" />
     </v-card-text>
 
     <v-divider />

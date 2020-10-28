@@ -151,6 +151,12 @@ export default {
           value: user.email,
           field: 'email',
         },
+        {
+          icon: 'mdi-person',
+          text: 'Nombre',
+          value: user.company_name,
+          field: 'company_name',
+        },
       ]
     },
     datesInfo() {
@@ -187,6 +193,7 @@ export default {
       'legal_representative',
       'last_modified',
       'fecha_firma',
+      'company_name',
     ]
     const user = await this.$axios.$get(`users/users/${this.userId}/?fields=${fields}`)
     this.user = user
