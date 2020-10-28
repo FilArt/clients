@@ -484,6 +484,7 @@ class AgentContractSerializer(serializers.ModelSerializer):
     class Meta:
         model = CustomUser
         fields = [
+            "observations",
             "company_name",
             "email",
             "phone",
@@ -493,6 +494,7 @@ class AgentContractSerializer(serializers.ModelSerializer):
             "puntos",
         ]
         extra_kwargs = {
+            "observations": {"required": False},
             "phone": {"required": False},
             "legal_representative": {"required": False},
             "client_role": {"default": "tramitacion", "write_only": True},

@@ -108,6 +108,7 @@ class CustomUser(AbstractUser):
         "users.CustomUser", blank=True, null=True, related_name="under_responsibility", on_delete=models.SET_NULL
     )
     ko = models.BooleanField(blank=True, null=True)
+    observations = models.TextField(blank=True, null=True)
 
     objects = CustomUserManager()
 
