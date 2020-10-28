@@ -5,6 +5,7 @@ from rest_framework.decorators import action
 from rest_framework.exceptions import ValidationError
 from rest_framework.request import Request
 from rest_framework.response import Response
+from rest_framework_tracking.mixins import LoggingMixin
 
 from apps.calculator.pagination import OffersPagination
 from clients.serializers import AdminOfferListSerializer, DetailOfferSerializer, OfferListSerializer
@@ -13,13 +14,13 @@ from .permissions import OffersPermission
 from .serializers import CompanySerializer
 
 
-class CompanyViewSet(viewsets.GenericViewSet, mixins.ListModelMixin):
+class CompanyViewSet(LoggingMixin, viewsets.GenericViewSet, mixins.ListModelMixin):
     queryset = Company.objects.all()
     serializer_class = CompanySerializer
     permission_classes: Tuple = tuple()
 
 
-class TarifViewSet(viewsets.GenericViewSet, mixins.ListModelMixin):
+class TarifViewSet(LoggingMixin, viewsets.GenericViewSet, mixins.ListModelMixin):
     permission_classes: Tuple = tuple()
 
     def list(self, request, *args, **kwargs):
@@ -81,7 +82,7 @@ class OfferViewSet(viewsets.ReadOnlyModelViewSet):
         return OfferListSerializer
 
 
-class PaginatedOfferViewSet(viewsets.ModelViewSet):
+class PaginatedOfferViewSet(LoggingMixin, viewsets.ModelViewSet):
     queryset = Offer.objects.all()
     permission_classes: Tuple = (OffersPermission,)
     ordering = ("id",)

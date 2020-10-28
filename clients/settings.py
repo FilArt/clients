@@ -47,6 +47,7 @@ INSTALLED_APPS = [
     "apps.bids",
     "apps.chat",
     "apps.info",
+    "apps.logs",
     "rest_framework_tracking",
 ]
 
@@ -190,6 +191,8 @@ DRF_TRACKING_ADMIN_LOG_READONLY = False
 
 # calls
 CALLS_STORAGE_PATH = "/freeswitch_recordings"
+
+DATA_UPLOAD_MAX_MEMORY_SIZE = 262144000
 
 try:
     from .local_settings import *  # noqa: F403, F401

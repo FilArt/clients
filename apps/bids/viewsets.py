@@ -4,15 +4,15 @@ from rest_framework.generics import get_object_or_404
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.request import Request
 from rest_framework.response import Response
+from rest_framework_tracking.mixins import LoggingMixin
 
 from clients.serializers import BidListSerializer
-
 from .models import Bid, BidStory
 from .permissions import BidsPermission
 from .serializers import BidSerializer, BidStorySerializer, CreateBidSerializer
 
 
-class BidViewSet(viewsets.ModelViewSet):
+class BidViewSet(LoggingMixin, viewsets.ModelViewSet):
     permission_classes = (IsAuthenticated, BidsPermission)
     ordering = ("-created_at",)
     search_fields = ("id", "puntos__cups_luz", "user__first_name", "user__last_name", "user__company_name")
@@ -90,7 +90,7 @@ class BidViewSet(viewsets.ModelViewSet):
         )
 
 
-class BidStoryViewSet(viewsets.ModelViewSet):
+class BidStoryViewSet(LoggingMixin, viewsets.ModelViewSet):
     queryset = BidStory.objects.all()
     serializer_class = BidStorySerializer
 

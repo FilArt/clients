@@ -11,6 +11,7 @@ from rest_framework.generics import get_object_or_404
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.request import Request
 from rest_framework.response import Response
+from rest_framework_tracking.mixins import LoggingMixin
 from rest_framework_tracking.models import APIRequestLog
 
 from apps.bids.models import Bid
@@ -52,7 +53,7 @@ from .serializers import (
 logger = logging.getLogger(__name__)
 
 
-class RegisterViewSet(viewsets.GenericViewSet, mixins.CreateModelMixin):
+class RegisterViewSet(LoggingMixin, viewsets.GenericViewSet, mixins.CreateModelMixin):
     queryset = CustomUser.objects.all()
     permission_classes: tuple = tuple()
     serializer_class = RegisterSerializer
@@ -72,6 +73,7 @@ class RegisterViewSet(viewsets.GenericViewSet, mixins.CreateModelMixin):
 
 
 class AccountViewSet(
+    LoggingMixin,
     viewsets.GenericViewSet,
     mixins.RetrieveModelMixin,
     mixins.UpdateModelMixin,
@@ -91,6 +93,7 @@ class AccountViewSet(
 
 
 class UserViewSet(
+    LoggingMixin,
     DynamicFieldsMixin,
     mixins.UpdateModelMixin,
     mixins.ListModelMixin,
@@ -167,7 +170,7 @@ class UserViewSet(
         return Response(AttachmentSerializer(attachments, many=True).data)
 
 
-class ManageUsersViewSet(viewsets.ModelViewSet):
+class ManageUsersViewSet(LoggingMixin, viewsets.ModelViewSet):
     queryset = CustomUser.objects.all()
     permission_classes = (IsAuthenticated, ManageUserPermission)
 
@@ -182,7 +185,7 @@ class ManageUsersViewSet(viewsets.ModelViewSet):
         serializer.save(invited_by=self.request.user)
 
 
-class PuntoViewSet(viewsets.ModelViewSet):
+class PuntoViewSet(LoggingMixin, viewsets.ModelViewSet):
     queryset = Punto.objects.all()
     serializer_class = DetailPuntoSerializer
     filterset_fields = ["bid", "user"]
@@ -216,7 +219,7 @@ class PuntoViewSet(viewsets.ModelViewSet):
         return Response(Punto.CITIES)
 
 
-class PhoneViewSet(viewsets.ModelViewSet):
+class PhoneViewSet(LoggingMixin, viewsets.ModelViewSet):
     queryset = Phone.objects.all()
     serializer_class = PhoneSerializer
 
@@ -229,7 +232,7 @@ class PhoneViewSet(viewsets.ModelViewSet):
         serializer.save(user=bid.user)
 
 
-class AttachmentsViewSet(viewsets.ModelViewSet):
+class AttachmentsViewSet(LoggingMixin, viewsets.ModelViewSet):
     queryset = Attachment.objects.all()
     serializer_class = AttachmentSerializer
     permission_classes = (AttachmentPermissions,)
@@ -249,7 +252,7 @@ class AttachmentsViewSet(viewsets.ModelViewSet):
         return super().filter_queryset(queryset.filter(**filter_kwargs))
 
 
-class PaginatedAttachmentsViewSet(viewsets.ModelViewSet):
+class PaginatedAttachmentsViewSet(LoggingMixin, viewsets.ModelViewSet):
     queryset = Attachment.objects.all()
     serializer_class = AttachmentSerializer
     permission_classes = (AdminPermission,)
@@ -257,19 +260,19 @@ class PaginatedAttachmentsViewSet(viewsets.ModelViewSet):
     ordering = ("id",)
 
 
-class ContractOnlineViewSet(viewsets.ModelViewSet):
+class ContractOnlineViewSet(LoggingMixin, viewsets.ModelViewSet):
     queryset = CustomUser.objects.all()
     serializer_class = ContractOnlineSerializer
     permission_classes: Tuple = tuple()
 
 
-class AdditionalContractOnlineViewSet(viewsets.ModelViewSet):
+class AdditionalContractOnlineViewSet(LoggingMixin, viewsets.ModelViewSet):
     queryset = CustomUser.objects.all()
     serializer_class = AdditionalContractOnlineSerializer
     permission_classes: Tuple = tuple()
 
 
-class WithFacturaContractOnlineViewSet(viewsets.ModelViewSet):
+class WithFacturaContractOnlineViewSet(LoggingMixin, viewsets.ModelViewSet):
     queryset = CustomUser.objects.all()
     serializer_class = WithFacturaContractOnlineSerializer
     permission_classes: Tuple = tuple()
@@ -293,7 +296,7 @@ class FastContractViewSet(WithFacturaContractOnlineViewSet):
         return super().create(request, *args, **kwargs)
 
 
-class AgentContractViewSet(viewsets.ModelViewSet):
+class AgentContractViewSet(LoggingMixin, viewsets.ModelViewSet):
     serializer_class = AgentContractSerializer
     queryset = CustomUser.objects.all()
     permission_classes = tuple()
@@ -355,7 +358,7 @@ class AgentContractViewSet(viewsets.ModelViewSet):
         return initial_data
 
 
-class FastContractImagesViewSet(viewsets.ModelViewSet):
+class FastContractImagesViewSet(LoggingMixin, viewsets.ModelViewSet):
     queryset = Attachment.objects.all()
     permission_classes: Tuple = tuple()
     serializer_class = FastContractAttachmentsSerializer

@@ -28,7 +28,6 @@ export const actions = {
   async fetchNames({ commit }) {
     const names = (await this.$axios.$get('/calculator/offers/?fields=name')).map((item) => item.name)
     commit('setNames', names)
-    console.log(names)
   },
 }
 

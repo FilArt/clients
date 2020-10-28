@@ -100,6 +100,11 @@ export default {
             title: 'OFERTAS',
             to: '/admin/ofertas',
           },
+          {
+            icon: 'mdi-math-log',
+            title: 'HISTORIAL',
+            to: '/admin/log',
+          },
           // {
           //   icon: 'mdi-file',
           //   title: 'ARCHIVOS',

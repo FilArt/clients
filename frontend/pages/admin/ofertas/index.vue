@@ -133,7 +133,7 @@
       <vue-good-table
         mode="remote"
         line-numbers
-        :theme="$vuetify.theme.isDark ? 'nocturnal' : 'black-rhino'"
+        :theme="$vuetify.theme['isDark'] ? 'nocturnal' : 'black-rhino'"
         :pagination-options="{
           enabled: true,
           mode: 'pages',
@@ -168,11 +168,11 @@
         "
       >
         <template slot="table-row" slot-scope="props">
-          <span v-if="props.column.field === 'description'">
+          <div v-if="props.column.field === 'description'">
             <div style="max-width: 100px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">
               {{ props.formattedRow[props.column.field] }}
             </div>
-          </span>
+          </div>
           <span v-else-if="props.column.field === 'company'">
             {{ companies.find((c) => c.value === props.row.company).text }}
           </span>

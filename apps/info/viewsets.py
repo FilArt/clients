@@ -1,11 +1,12 @@
 from rest_framework import viewsets
+from rest_framework_tracking.mixins import LoggingMixin
 
 from .models import Info
 from .permissions import InfoPermission
 from .serializers import InfoSerializer
 
 
-class InfoViewSet(viewsets.ModelViewSet):
+class InfoViewSet(LoggingMixin, viewsets.ModelViewSet):
     queryset = Info.objects.all()
     serializer_class = InfoSerializer
     permission_classes = (InfoPermission,)
