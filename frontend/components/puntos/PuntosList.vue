@@ -4,7 +4,7 @@
       <v-dialog max-width="1500">
         <template v-slot:activator="{ on }">
           <v-list-item-title>
-            <v-btn v-on="on"> (id: {{ punto.id }}) {{ punto.cups_luz }} </v-btn>
+            <v-btn v-on="on"> (id: {{ punto.id }}) {{ kind === 'luz' ? punto.cups_luz : punto.cups_gas }} </v-btn>
           </v-list-item-title>
         </template>
 
@@ -125,6 +125,10 @@ export default {
     CompanySelect: () => import('~/components/selects/CompanySelect'),
   },
   props: {
+    kind: {
+      type: String,
+      default: 'luz',
+    },
     puntos: {
       type: Array,
       default: () => [],

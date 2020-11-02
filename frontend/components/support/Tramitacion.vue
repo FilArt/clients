@@ -154,7 +154,7 @@
 
       <v-col>
         <v-alert v-if="bid.puntos.length === 0" type="warning">No hay puntos</v-alert>
-        <puntos-list v-else :puntos="bid.puntos" @punto-updated="fetchBid" />
+        <puntos-list v-else :puntos="bid.puntos" :kind="bid.offer.kind" @punto-updated="fetchBid" />
         <add-punto-dialog closeable :bid-id="bid.id" @punto-added="fetchBid" />
       </v-col>
     </v-row>

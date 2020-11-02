@@ -191,6 +191,7 @@ class DetailOfferSerializer(OfferListSerializer):
             "is_price_permanent",
             "agent_commission",
             "canal_commission",
+            "kind",
         ]
 
     def to_internal_value(self, data):
