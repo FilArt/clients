@@ -78,7 +78,7 @@ export default {
   },
   async mounted() {
     await this.refresh()
-    setInterval(this.refresh, 10000)
+    setInterval(this.refresh, 50000)
   },
   methods: {
     async deleteNoty(id) {
