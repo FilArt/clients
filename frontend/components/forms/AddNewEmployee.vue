@@ -24,7 +24,7 @@
             :items="[
               { text: 'Admin', value: 'admin' },
               { text: 'Agent', value: 'agent' },
-              { text: 'Tramitacion', value: 'tramitacion' },
+              { text: 'Tramitacion', value: 'support' },
             ]"
             :error-messages="errorMessages.role"
           />
