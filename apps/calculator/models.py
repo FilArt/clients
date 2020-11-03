@@ -86,6 +86,7 @@ class Company(models.Model):
     name = NameField(max_length=50, unique=True)
     logo = models.ImageField(blank=True, null=True)
     priority = models.IntegerField(blank=True, null=True, unique=True)
+    offer_status_used = models.BooleanField(default=False)
 
     def save(self, force_insert=False, force_update=False, using=None, update_fields=None):
         if not self.priority:

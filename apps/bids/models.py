@@ -18,6 +18,10 @@ def more_than_zero(value):
 class Bid(models.Model):
     DEFAULT_STATUS = "Pendiente tramitacion"
     IN_TRAMITACION = "Tramitacion en processo"
+    OFFER_STATUS_CHOICES = (
+        (0, 'FIRMADA'),
+        (1, 'PTE FIRMAR'),
+    )
 
     user = models.ForeignKey(get_user_model(), on_delete=models.CASCADE, related_name="bids")
     offer = models.ForeignKey("calculator.Offer", on_delete=models.CASCADE)
@@ -29,6 +33,7 @@ class Bid(models.Model):
     doc = models.BooleanField(verbose_name=_("Is docs ok?"), blank=True, null=True)
     scoring = models.BooleanField(verbose_name=_("Is scoring ok?"), blank=True, null=True)
     call = models.BooleanField(verbose_name=_("Is call ok?"), blank=True, null=True)
+    offer_status = models.CharField(max_length=1, choices=OFFER_STATUS_CHOICES, blank=True, null=True)
 
     class Meta:
         verbose_name = _("Bid")

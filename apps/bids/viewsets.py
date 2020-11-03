@@ -81,11 +81,18 @@ class BidViewSet(LoggingMixin, viewsets.ModelViewSet):
         else:
             scoring = "..."
 
+        offer_status = qs.filter(status__icontains="firma")
+        if offer_status.exists():
+            offer_status = offer_status.last().internal_message
+        else:
+            offer_status = "..."
+
         return Response(
             {
                 "doc": doc,
                 "call": call,
                 "scoring": scoring,
+                "offer_status": offer_status,
             }
         )
 

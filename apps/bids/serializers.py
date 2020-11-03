@@ -28,6 +28,7 @@ class BidSerializer(BidListSerializer):
     message = serializers.CharField(write_only=True, allow_blank=True, allow_null=True)
     internal_message = serializers.CharField(write_only=True, allow_blank=True, allow_null=True)
     new_status = serializers.CharField(write_only=True, required=False, allow_blank=True, allow_null=True)
+    offer_status_accesible = serializers.SerializerMethodField()
 
     class Meta:
         model = Bid
@@ -50,10 +51,15 @@ class BidSerializer(BidListSerializer):
             "canal",
             "paid",
             "canal_paid",
+            "offer_status",
+            "offer_status_accesible",
         ]
 
     def get_status(self, bid: Bid) -> str:
         return bid.get_status(by=self.context["request"].user)
+
+    def get_offer_status_accesible(self, bid: Bid) -> bool:
+        return bid.offer.company.offer_status_used
 
     def update(self, bid: Bid, validated_data):
         if "offer" in validated_data:

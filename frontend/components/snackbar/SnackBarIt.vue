@@ -35,9 +35,8 @@ export default {
     },
   },
   methods: {
-    snackbarit(title) {
+    snackbarit() {
       if (this.snackbar) this.snackbar = false
-      this.snackbarTitle = title || 'Listo!'
       this.snackbar = true
     },
   },

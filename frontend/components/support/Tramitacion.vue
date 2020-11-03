@@ -100,6 +100,39 @@
                     </v-radio-group>
                   </v-col>
                 </v-row>
+
+                <v-row v-if="bid.offer_status_accesible">
+                  <v-col>
+                    <v-radio-group
+                      v-model="bid.offer_status"
+                      label="Estado de oferta"
+                      @change="tramitateDialog = true"
+                    >
+                      <v-row>
+                        <v-col>
+                          <v-radio label="Firmada" :value="0" @click="newStatus = `Estado de oferta: Firmada`" />
+                          <v-radio label="PTE Firmar" :value="1" @click="newStatus = `Estado de oferta: PTE Firmar`" />
+                        </v-col>
+                        <v-col>
+                          <v-btn
+                            icon
+                            @click="
+                              bid.offer_status = null
+                              tramitateDialog = true
+                            "
+                          >
+                            <v-icon>mdi-eraser-variant</v-icon>
+                          </v-btn>
+                        </v-col>
+                      </v-row>
+                      <v-row>
+                        <v-col>
+                          {{ lastComments.offer_status }}
+                        </v-col>
+                      </v-row>
+                    </v-radio-group>
+                  </v-col>
+                </v-row>
               </v-col>
             </v-row>
 
@@ -189,6 +222,7 @@ export default {
         doc: '...',
         scoring: '...',
         call: '...',
+        offer_status: '...',
       },
       canalVariable: 0,
       agentVariable: 0,
@@ -257,12 +291,13 @@ export default {
           doc: this.bid.doc,
           call: this.bid.call,
           scoring: this.bid.scoring,
+          offer_status: this.bid.offer_status,
           new_status: this.newStatus,
           message: this.message,
           internal_message: this.internalMessage,
         })
         this.$emit('tramitate')
-        this.fetchLastComments()
+        await this.fetchLastComments()
         this.notificationKey += 1
         this.tramitateDialog = false
         this.message = this.internalMessage = null

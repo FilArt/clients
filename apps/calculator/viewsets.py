@@ -14,10 +14,11 @@ from .permissions import OffersPermission
 from .serializers import CompanySerializer
 
 
-class CompanyViewSet(LoggingMixin, viewsets.GenericViewSet, mixins.ListModelMixin):
+class CompanyViewSet(LoggingMixin, viewsets.ModelViewSet):
     queryset = Company.objects.all()
     serializer_class = CompanySerializer
     permission_classes: Tuple = tuple()
+    ordering = ('name',)
 
 
 class TarifViewSet(LoggingMixin, viewsets.GenericViewSet, mixins.ListModelMixin):

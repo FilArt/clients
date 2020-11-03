@@ -69,6 +69,7 @@ export default {
       loading: false,
       dialog: false,
       notys: [],
+      refreshInterval: null,
     }
   },
   computed: {
@@ -78,7 +79,11 @@ export default {
   },
   async mounted() {
     await this.refresh()
-    setInterval(this.refresh, 50000)
+    clearInterval(this.refreshInterval)
+    this.refreshInterval = setInterval(this.refresh, 50000)
+  },
+  async beforeDestroy() {
+    clearInterval(this.refreshInterval)
   },
   methods: {
     async deleteNoty(id) {

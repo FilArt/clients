@@ -123,6 +123,8 @@
       <v-spacer />
 
       <v-toolbar-items>
+        <v-btn nuxt to="/admin/comercializadoras" color="warning"> Comercializadoras </v-btn>
+
         <v-btn nuxt to="/admin/ofertas/nuevo_oferta" color="success">
           <v-icon>mdi-plus</v-icon>
         </v-btn>
