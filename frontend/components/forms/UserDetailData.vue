@@ -33,11 +33,13 @@
           <v-text-field
             v-for="date in datesInfo"
             :key="date.text"
+            v-model="date.value"
             :prepend-icon="date.icon"
             :label="date.text"
-            :value="date.value"
+            :append-icon="readonly ? null : 'mdi-content-save'"
+            :readonly="readonly"
             dense
-            readonly
+            @click:append="updateUser(date.field, unformatDate(date.value))"
           />
 
           <!--        <v-select-->
@@ -93,7 +95,7 @@
 
 <script>
 import { mapState } from 'vuex'
-import { format, parseISO } from 'date-fns'
+import { format, parseISO, parse } from 'date-fns'
 const DATE_FORMAT = 'dd/MM/yyyy HH:mm'
 export default {
   name: 'UserDetailData',
@@ -162,16 +164,19 @@ export default {
         {
           icon: 'mdi-calendar',
           text: 'Ultima entrada',
+          field: 'last_login',
           value: this.formatDate(user.last_login),
         },
         {
           icon: 'mdi-calendar',
           text: 'Fecha de registro',
+          field: 'date_joined',
           value: this.formatDate(user.date_joined),
         },
         {
           icon: 'mdi-calendar',
           text: 'Fecha firma',
+          field: 'fecha_firma',
           value: this.formatDate(user.fecha_firma),
         },
       ]
@@ -202,6 +207,9 @@ export default {
     }
   },
   methods: {
+    unformatDate(maybeDate) {
+      return maybeDate ? parse(maybeDate, DATE_FORMAT, new Date()).toISOString() : null
+    },
     notify() {
       this.notificationKey += 1
     },
