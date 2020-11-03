@@ -72,6 +72,9 @@ class CustomUser(AbstractUser):
     phone = models.CharField(
         _("Phone number"), max_length=9, null=True, blank=True, validators=[phone_number_validator]
     )
+    phone_city = models.CharField(
+        _("City phone number"), max_length=9, null=True, blank=True, validators=[phone_number_validator]
+    )
 
     company_changed_at = models.DateTimeField(verbose_name=_("Company changed at"), null=True, blank=True)
 
@@ -200,20 +203,6 @@ class UserSettings(models.Model):
         return {
             "dark_theme": self.dark_theme,
         }
-
-
-class Phone(models.Model):
-    PHONE_TYPES = (
-        ("mobile", _("Mobile")),
-        ("city", _("City")),
-    )
-    phone_type = models.CharField(choices=PHONE_TYPES, max_length=6)
-    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name="phones")
-    number = models.CharField(max_length=9, validators=[phone_number_validator])
-
-    class Meta:
-        db_table = "phones"
-        unique_together = ("phone_type", "user")
 
 
 class Punto(models.Model):

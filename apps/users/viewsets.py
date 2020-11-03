@@ -29,7 +29,7 @@ from clients.serializers import (
     FastContractAttachmentsSerializer,
     AgentContractSerializer,
 )
-from .models import Attachment, CustomUser, Phone, Punto
+from .models import Attachment, CustomUser, Punto
 from .pagination import UsersPagination, AttachmentsPagination
 from .permissions import (
     UsersPermission,
@@ -43,7 +43,6 @@ from .serializers import (
     LoadFacturasSerializer,
     ManageUserListSerializer,
     ManageUserSerializer,
-    PhoneSerializer,
     RegisterSerializer,
     UserListSerializer,
     UserSerializer,
@@ -220,19 +219,6 @@ class PuntoViewSet(LoggingMixin, viewsets.ModelViewSet):
     @action(methods=["GET"], detail=False, permission_classes=[])
     def get_cities(self, _):
         return Response(Punto.CITIES)
-
-
-class PhoneViewSet(LoggingMixin, viewsets.ModelViewSet):
-    queryset = Phone.objects.all()
-    serializer_class = PhoneSerializer
-
-    def filter_queryset(self, queryset):
-        return super().filter_queryset(queryset.filter(user=self.request.user))
-
-    def perform_create(self, serializer):
-        bid_id = self.request.data.pop("bid", None)
-        bid = get_object_or_404(Bid, id=bid_id or 0)
-        serializer.save(user=bid.user)
 
 
 class AttachmentsViewSet(LoggingMixin, viewsets.ModelViewSet):

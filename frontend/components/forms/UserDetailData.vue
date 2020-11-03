@@ -116,6 +116,7 @@ export default {
       responsible: null,
       source: null,
       notificationKey: 0,
+      phone: null,
     }
   },
   computed: {
@@ -141,16 +142,12 @@ export default {
           value: user.phone,
           field: 'phone',
         },
-        ...user.phones
-          .filter((n) => n)
-          .map((phone) => {
-            return {
-              icon: 'mdi-phone',
-              text: 'Telefono',
-              value: phone.number,
-              field: 'phone',
-            }
-          }),
+        {
+          icon: 'mdi-phone',
+          text: 'Telefono fijo',
+          value: user.phone_city,
+          field: 'phone_city',
+        },
         {
           icon: 'mdi-email',
           text: 'Email',
@@ -183,10 +180,10 @@ export default {
   async created() {
     const fields = [
       'observations',
-      'phones',
       'source',
       'responsible',
       'phone',
+      'phone_city',
       'date_joined',
       'last_login',
       'email',
@@ -217,9 +214,18 @@ export default {
       }
     },
     async updateUser(field, value) {
-      const user = await this.$axios.$patch(`users/users/${this.userId}/`, { [field]: value })
-      this.notify()
-      this.$emit('user-updated', user)
+      try {
+        const user = await this.$axios.$patch(`users/users/${this.userId}/`, { [field]: value })
+        this.notify()
+        this.$emit('user-updated', user)
+      } catch (e1) {
+        try {
+          const errText = e1.response.data[field][0]
+          await this.$swal({ title: 'Error', text: errText, icon: 'error' })
+        } catch (e2) {
+          console.log(e2)
+        }
+      }
     },
   },
 }

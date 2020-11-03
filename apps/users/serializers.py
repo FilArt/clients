@@ -17,7 +17,7 @@ from rest_framework_tracking.models import APIRequestLog
 from apps.bids.models import Bid
 from clients.serializers import BidListSerializer
 from clients.utils import notify_telegram
-from .models import Attachment, CustomUser, Phone, Punto
+from .models import Attachment, CustomUser, Punto
 
 logger = logging.getLogger(__name__)
 
@@ -209,26 +209,19 @@ class ManageUserSerializer(UserListSerializer):
         return ret
 
 
-class PhoneSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Phone
-        exclude = ["user"]
-
-
 class UserSerializer(UserListSerializer):
     bids = BidListSerializer(many=True)
-    phones = serializers.ListSerializer(child=PhoneSerializer())
 
     class Meta:
         model = CustomUser
         fields = [
             "id",
             "bids",
-            "phones",
             "fullname",
             "first_name",
             "last_name",
             "phone",
+            "phone_city",
             "email",
             "dni",
             "cif_dni",
