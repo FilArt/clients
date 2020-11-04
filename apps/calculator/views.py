@@ -92,6 +92,11 @@ def positive_number(value):
         raise serializers.ValidationError(_("This field must be a positive number."))
 
 
+def casi_positive_number(value):
+    if value < 0:
+        raise serializers.ValidationError(_("This field must be more than 0."))
+
+
 class CalculatorSerializer(serializers.ModelSerializer):
     id = serializers.IntegerField(required=False)
     company_name = serializers.CharField(source="company.name", read_only=True)
@@ -112,7 +117,7 @@ class CalculatorSerializer(serializers.ModelSerializer):
         write_only=True,
         allow_null=True,
         required=False,
-        validators=[positive_number],
+        validators=[casi_positive_number],
     )
     igic = serializers.BooleanField(write_only=True, default=False)
 
