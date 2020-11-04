@@ -25,46 +25,42 @@
     <v-card v-show="!showResults">
       <v-card-text>
         <v-form novalidate @submit.prevent="submit">
-          <v-toolbar>
-            <v-spacer />
-            <v-toolbar-title>
-              <v-btn-toggle
-                group
-                mandatory
-                :value="form.kind"
-                @change="
-                  updateForm('kind', $event)
-                  tarif = null
-                "
-              >
-                <v-btn value="luz">
-                  <v-card-title>Luz</v-card-title>
-                  <v-icon large color="blue" right>mdi-flash</v-icon>
-                </v-btn>
+          <v-card class="text-center flex-row flex-nowrap d-flex">
+            <v-btn
+              :color="form.kind === 'luz' ? ourColor : null"
+              :style="`width: 50%; ${form.kind === 'gas' ? 'opacity: 50%' : null}`"
+              @click="
+                updateForm('kind', 'luz')
+                tarif = null
+              "
+            >
+              <v-card-title>Luz</v-card-title>
+              <v-icon large color="blue" right>mdi-flash</v-icon>
+            </v-btn>
 
-                <v-spacer class="luz-gas" />
+            <v-btn
+              :style="`width: 50%; ${form.kind === 'luz' ? 'opacity: 50%' : null}`"
+              :color="form.kind === 'gas' ? ourColor : null"
+              @click="
+                updateForm('kind', 'gas')
+                tarif = null
+              "
+            >
+              <v-card-title>Gas</v-card-title><v-icon large color="red" right>mdi-fire</v-icon>
+            </v-btn>
+          </v-card>
 
-                <v-btn value="gas">
-                  <v-card-title>Gas</v-card-title><v-icon large color="red" right>mdi-fire</v-icon>
-                </v-btn>
-              </v-btn-toggle>
-            </v-toolbar-title>
-            <v-spacer />
-          </v-toolbar>
-
-          <v-row>
+          <v-row align="center" class="text-center">
             <v-col>
-              <v-row class="text-center switcher" align="center">
-                <v-col>Peninsula</v-col>
-
-                <v-col class="flex-grow-0">
-                  <v-switch dense :value="form.igic" @change="updateForm('igic', $event)" />
-                </v-col>
-
-                <v-col>Islas Canareas</v-col>
-              </v-row>
+              Impuestas
+              <v-btn-toggle :value="form.igic" :color="ourColor" @change="updateForm('igic', $event)">
+                <v-btn :value="false">Peninsula</v-btn>
+                <v-btn :value="true">Islas Canarias</v-btn>
+              </v-btn-toggle>
             </v-col>
             <v-col>
+              Tipo de cliente
+              <br />
               <client-type-select
                 :value="form.client_type"
                 :error-messages="errorMessages.client_type"
@@ -133,9 +129,8 @@
           <v-row v-if="form.kind === 'luz'">
             <v-col v-for="letter in ['p', 'c']" :key="letter">
               <v-row v-for="number in [1, 2, 3]" :key="number">
-                <v-col>
+                <v-col v-show="showInput(letter, number)">
                   <v-text-field
-                    v-show="showInput(letter, number)"
                     dense
                     :suffix="letter === 'p' ? 'kw' : 'kW/h'"
                     :value="form[letter + number]"
@@ -183,7 +178,7 @@
             <v-col>
               <v-text-field
                 suffix="kW"
-                label="Energía reactiva"
+                label="Energía reactiva (opcional)"
                 dense
                 :value="form.reactive"
                 :error-messages="errorMessages.reactive"
@@ -206,6 +201,8 @@
   </v-card>
 </template>
 <script>
+import constants from '@/lib/constants'
+
 export default {
   name: 'Calculator',
   components: {
@@ -223,6 +220,7 @@ export default {
   },
   data() {
     return {
+      ourColor: constants.ourColor,
       errorMessages: {},
       loading: false,
       showResults: false,

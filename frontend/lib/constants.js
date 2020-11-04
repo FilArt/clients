@@ -272,4 +272,5 @@ export default Object.freeze({
     },
   },
   onlyUnique: (value, index, self) => self.indexOf(value) === index,
+  ourColor: '#004680',
 })
