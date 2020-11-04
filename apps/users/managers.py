@@ -47,7 +47,7 @@ class CustomUserManager(BaseUserManager):
                 "bids", filter=Q(bids__call__isnull=False) | Q(bids__scoring__isnull=False) | Q(bids__doc__isnull=False)
             ),
             unpaid_bids_for_agent=Count("bids", filter=Q(bids__paid=False)),
-            unpaid_bids_for_canal=Count("bids", filter=Q(bids__canal_paid=False)),
+            unpaid_bids_for_canal=Count("bids", filter=Q(bids__canal_paid=False, bids__user__canal__isnull=False)),
         ).annotate(
             status=Case(
                 # When(client_role="leed", then=Value("Leed")),

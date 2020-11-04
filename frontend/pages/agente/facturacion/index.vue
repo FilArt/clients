@@ -22,10 +22,10 @@ export default {
   data() {
     return {
       statuses: [
-        constants.statuses.KO,
         constants.statuses.PENDIENTE_PAGO,
         constants.statuses.PENDIENTE_PAGO_AGENTE,
         constants.statuses.PENDIENTE_PAGO_CANAL,
+        constants.statuses.PAGADO,
       ],
       headers: [
         { text: 'ID', value: 'id' },
