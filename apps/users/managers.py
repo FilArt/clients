@@ -50,23 +50,14 @@ class CustomUserManager(BaseUserManager):
             unpaid_bids_for_canal=Count("bids", filter=Q(bids__canal_paid=False, bids__user__canal__isnull=False)),
         ).annotate(
             status=Case(
-                # When(client_role="leed", then=Value("Leed")),
-                # When(total_bids=0, then=Value("Leed")),
+                # When(client_role="leed", then=Value("Leed")), # When(total_bids=0, then=Value("Leed")),
                 When(ko=True, then=Value("KO (papellera)")),
                 When(ko_bids__gt=0, then=Value("KO")),
                 When(touched_bids=0, then=Value("Pendiente tramitacion")),
                 When(ok_bids=0, then=Value("Tramitacion en processo")),
                 When(
-                    Q(unpaid_bids_for_agent__gt=0) & Q(unpaid_bids_for_canal__gt=0),
+                    Q(unpaid_bids_for_agent__gt=0) | Q(unpaid_bids_for_canal__gt=0),
                     then=Value("Pendiente Pago"),
-                ),
-                When(
-                    unpaid_bids_for_agent__gt=0,
-                    then=Value("Pendiente Pago (agente)"),
-                ),
-                When(
-                    unpaid_bids_for_canal__gt=0,
-                    then=Value("Pendiente Pago (canal)"),
                 ),
                 When(
                     Q(unpaid_bids_for_canal=0) & Q(unpaid_bids_for_agent=0),

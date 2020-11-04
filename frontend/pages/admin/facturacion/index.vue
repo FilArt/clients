@@ -21,12 +21,7 @@ export default {
   },
   data() {
     return {
-      statuses: [
-        constants.statuses.PENDIENTE_PAGO_CANAL,
-        constants.statuses.PENDIENTE_PAGO_AGENTE,
-        constants.statuses.PENDIENTE_PAGO,
-        constants.statuses.PAGADO,
-      ],
+      statuses: [constants.statuses.PENDIENTE_PAGO, constants.statuses.PAGADO],
       headers: [
         { text: 'ID', value: 'id' },
         { text: 'Fecha de registro', value: 'date_joined' },

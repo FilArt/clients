@@ -15,8 +15,6 @@ const KO_PAPELLERA = 'KO (papellera)'
 const PENDIENTE_TRAMITACION = 'Pendiente tramitacion'
 const TRAMITACION_EN_PROCESSO = 'Tramitacion en processo'
 const PENDIENTE_PAGO = 'Pendiente Pago'
-const PENDIENTE_PAGO_AGENTE = 'Pendiente Pago (agente)'
-const PENDIENTE_PAGO_CANAL = 'Pendiente Pago (canal)'
 const PAGADO = 'Pagado'
 
 const statuses = {
@@ -26,8 +24,6 @@ const statuses = {
   PENDIENTE_TRAMITACION,
   TRAMITACION_EN_PROCESSO,
   PENDIENTE_PAGO,
-  PENDIENTE_PAGO_AGENTE,
-  PENDIENTE_PAGO_CANAL,
   PAGADO,
   tramitacion: {
     PENDIENTE_TRAMITACION,
@@ -35,13 +31,9 @@ const statuses = {
   },
   facturacion: {
     PENDIENTE_PAGO,
-    PENDIENTE_PAGO_AGENTE,
-    PENDIENTE_PAGO_CANAL,
   },
   client: {
     PENDIENTE_PAGO,
-    PENDIENTE_PAGO_AGENTE,
-    PENDIENTE_PAGO_CANAL,
     PAGADO,
   },
 }
