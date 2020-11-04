@@ -308,7 +308,7 @@ export default {
           this.showResults = true
         })
         .catch((e) => {
-          this.$swal({ title: 'Error', text: String(e), icon: 'error' })
+          if (e.response.status !== 400) this.$swal({ title: 'Error', text: String(e), icon: 'error' })
           this.errorMessages = e.response.data
         })
         .finally(() => (this.loading = false))
