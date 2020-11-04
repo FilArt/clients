@@ -52,7 +52,8 @@ class CustomUserManager(BaseUserManager):
             status=Case(
                 # When(client_role="leed", then=Value("Leed")),
                 # When(total_bids=0, then=Value("Leed")),
-                When(ko=True, then=Value("KO")),
+                When(ko=True, then=Value("KO (papellera)")),
+                When(ko_bids__gt=0, then=Value("KO")),
                 When(touched_bids=0, then=Value("Pendiente tramitacion")),
                 When(ok_bids=0, then=Value("Tramitacion en processo")),
                 When(

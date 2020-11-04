@@ -22,7 +22,7 @@ export default {
   },
   data() {
     return {
-      statuses: [constants.statuses.KO],
+      statuses: [constants.statuses.KO_PAPELLERA],
       headers: [
         { text: 'ID', value: 'id' },
         { text: 'Fecha de registro', value: 'date_joined' },
