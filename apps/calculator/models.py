@@ -53,7 +53,9 @@ assert [t for t in Tarif]
 
 class CalculatorSettings(models.Model):
     iva = models.FloatField(default=1)
+    igic = models.FloatField(default=0.03)
     tax = models.FloatField(default=1)
+    carbon_tax = models.FloatField(default=0.00234)
     equip_rent_t20 = models.FloatField(default=1, validators=[is_positive])
     equip_rent_t20dha = models.FloatField(default=1, validators=[is_positive])
     equip_rent_t20dhs = models.FloatField(default=1, validators=[is_positive])
@@ -62,6 +64,10 @@ class CalculatorSettings(models.Model):
     equip_rent_t21dhs = models.FloatField(default=1, validators=[is_positive])
     equip_rent_t30 = models.FloatField(default=1, validators=[is_positive])
     equip_rent_t31 = models.FloatField(default=1, validators=[is_positive])
+    equip_rent_g31 = models.FloatField(default=0.6, validators=[is_positive])
+    equip_rent_g32 = models.FloatField(default=1.1, validators=[is_positive])
+    equip_rent_g33 = models.FloatField(default=12.5, validators=[is_positive])
+    equip_rent_g34 = models.FloatField(default=12.5, validators=[is_positive])
 
     def get_iva(self):
         return self.iva + 1
@@ -78,6 +84,10 @@ class CalculatorSettings(models.Model):
                 Tarif.T21DHS: self.equip_rent_t21dhs,
                 Tarif.T30A: self.equip_rent_t30,
                 Tarif.T31A: self.equip_rent_t31,
+                Tarif.G31: self.equip_rent_g31,
+                Tarif.G32: self.equip_rent_g32,
+                Tarif.G33: self.equip_rent_g33,
+                Tarif.G34: self.equip_rent_g34,
             }.items()
         }[tarif]
 

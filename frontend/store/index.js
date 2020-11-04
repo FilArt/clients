@@ -6,7 +6,6 @@ export const state = () => ({
   cities: [],
   privacyAccepted: false,
   companies: [],
-  tarifs: [],
   responsibles: [],
   names: [],
   bidToChange: null,
@@ -21,10 +20,6 @@ export const actions = {
     const companies = await this.$axios.$get('/calculator/companies/')
     commit('setCompanies', companies)
   },
-  async fetchTarifs({ commit }) {
-    const tarifs = await this.$axios.$get('/calculator/tarifs/')
-    commit('setTarifs', tarifs)
-  },
   async fetchNames({ commit }) {
     const names = (await this.$axios.$get('/calculator/offers/?fields=name')).map((item) => item.name)
     commit('setNames', names)
@@ -34,9 +29,6 @@ export const actions = {
 export const mutations = {
   setNames(state, names) {
     state.names = names
-  },
-  setTarifs(state, tarifs) {
-    state.tarifs = tarifs
   },
   setBidToChange(state, bid) {
     state.bidToChange = bid

@@ -1,5 +1,5 @@
 <template>
-  <div class="d-flex flex-column justify-center">
+  <v-card>
     <v-row>
       <v-col>
         <p class="text-center headline">
@@ -109,7 +109,7 @@
     </v-card-actions>
 
     <calculator-details v-if="showCalcDetails" :offer="offer" />
-  </div>
+  </v-card>
 </template>
 
 <script>

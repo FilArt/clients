@@ -22,10 +22,57 @@
         </v-btn>
       </template>
     </v-data-table>
-    <div v-show="!showResults">
-      <v-form novalidate @submit.prevent="submit">
-        <v-card-text class="mx-auto" style="max-width: 1000px">
-          <v-row align="center" class="flex-wrap">
+    <v-card v-show="!showResults">
+      <v-card-text>
+        <v-form novalidate @submit.prevent="submit">
+          <v-toolbar>
+            <v-spacer />
+            <v-toolbar-title>
+              <v-btn-toggle
+                group
+                borderless
+                mandatory
+                :value="form.kind"
+                @change="
+                  updateForm('kind', $event)
+                  tarif = null
+                "
+              >
+                <v-btn value="luz">
+                  <v-card-title>Luz</v-card-title>
+                  <v-icon large color="blue" right>mdi-flash</v-icon></v-btn
+                >
+                <v-btn value="gas"
+                  ><v-card-title>Gas</v-card-title><v-icon large color="red" right>mdi-fire</v-icon></v-btn
+                >
+              </v-btn-toggle>
+            </v-toolbar-title>
+            <v-spacer />
+          </v-toolbar>
+
+          <v-row>
+            <v-col>
+              <v-row align="center" class="text-center">
+                <v-col>IVA</v-col>
+
+                <v-col class="flex-grow-0">
+                  <v-switch :value="form.igic" @change="updateForm('igic', $event)" />
+                </v-col>
+
+                <v-col>Islas Canareas</v-col>
+              </v-row>
+            </v-col>
+            <v-col>
+              <client-type-select
+                :value="form.client_type"
+                :error-messages="errorMessages.client_type"
+                hint
+                @input="updateForm('client_type', $event)"
+              />
+            </v-col>
+          </v-row>
+
+          <v-row>
             <v-col>
               <company-select
                 :value="form.company"
@@ -37,16 +84,7 @@
             </v-col>
 
             <v-col>
-              <tarif-select v-model="tarif" :error-messages="errorMessages.tarif" hint />
-            </v-col>
-
-            <v-col>
-              <client-type-select
-                :value="form.client_type"
-                :error-messages="errorMessages.client_type"
-                hint
-                @input="updateForm('client_type', $event)"
-              />
+              <tarif-select v-model="tarif" :error-messages="errorMessages.tarif" hint :gas="form.kind === 'gas'" />
             </v-col>
           </v-row>
 
@@ -88,7 +126,7 @@
             </v-col>
           </v-row>
 
-          <v-row>
+          <v-row v-if="form.kind === 'luz'">
             <v-col v-for="letter in ['p', 'c']" :key="letter">
               <v-row v-for="number in [1, 2, 3]" :key="number">
                 <v-col>
@@ -122,12 +160,37 @@
               </v-row>
             </v-col>
           </v-row>
+
+          <v-row v-else>
+            <v-col>
+              <v-text-field
+                label="Consumo"
+                suffix="kW/h"
+                :value="form.c1"
+                :error-messages="errorMessages.c1"
+                @input="updateForm('c1', $event)"
+              />
+            </v-col>
+          </v-row>
+
+          <v-row v-if="form.kind === 'luz'">
+            <v-col>
+              <v-text-field
+                suffix="kW"
+                label="Energía reactiva"
+                :value="form.reactive"
+                :error-messages="errorMessages.reactive"
+                @input="updateForm('reactive', $event)"
+              />
+            </v-col>
+          </v-row>
+
           <v-row>
             <submit-button block label="Comparar" />
           </v-row>
-        </v-card-text>
-      </v-form>
-    </div>
+        </v-form>
+      </v-card-text>
+    </v-card>
 
     <v-card-actions v-show="showResults">
       <v-spacer />
@@ -231,13 +294,16 @@ export default {
       this.$axios
         .$post('calculator/calculate', {
           tarif: this.tarif,
-          ...this.form,
+          ...Object.fromEntries(Object.entries(this.form).filter((i) => !!i[1])),
         })
         .then((data) => {
           this.$store.commit('setCalculatedOffers', data)
           this.showResults = true
         })
-        .catch((e) => (this.errorMessages = e.response.data))
+        .catch((e) => {
+          this.$swal({ title: 'Error', text: String(e), icon: 'error' })
+          this.errorMessages = e.response.data
+        })
         .finally(() => (this.loading = false))
     },
   },

@@ -21,7 +21,7 @@ class TaxField(serializers.CharField):
 
     def to_representation(self, value):
         return {
-            "percent": round(self.context["tax_percent"] * 100, 2),
+            "percent": self.context["tax_percent"],
             "value": "{:.2f} €".format(value.tax),
         }
 
@@ -29,7 +29,7 @@ class TaxField(serializers.CharField):
 class IvaField(TaxField):
     def to_representation(self, value):
         return {
-            "percent": round(self.context["iva_percent"] * 100, 2),
+            "percent": self.context["iva_percent"],
             "value": "{:.2f} €".format(value.iva),
         }
 
@@ -106,6 +106,15 @@ class CalculatorSerializer(serializers.ModelSerializer):
     p2 = PotenciaField()
     p3 = PotenciaField()
     current_price = serializers.FloatField(min_value=0, validators=[positive_number])
+    reactive = serializers.FloatField(
+        default=0,
+        min_value=0,
+        write_only=True,
+        allow_null=True,
+        required=False,
+        validators=[positive_number],
+    )
+    igic = serializers.BooleanField(write_only=True, default=False)
 
     c_st_c1 = ConsumoCalculationField()
     c_st_c2 = ConsumoCalculationField()
@@ -163,6 +172,9 @@ class CalculatorSerializer(serializers.ModelSerializer):
             "annual_total",
             "annual_total_num",
             "with_calculations",
+            "kind",
+            "reactive",
+            "igic",
         ]
         extra_kwargs = {
             "name": {"read_only": True},
@@ -173,13 +185,18 @@ class CalculatorSerializer(serializers.ModelSerializer):
 
     def get_calculated(self):
         data = self.validated_data
+        kind = data.pop("kind")
+        is_luz = kind == "luz"
         calculator_settings = CalculatorSettings.objects.first()
         epd = calculator_settings.get_equip(data["tarif"])
         rental = epd * data["period"]
+        use_igic = data["igic"]
+        nds = calculator_settings.igic if use_igic else calculator_settings.iva
+        zero = Value(0, output_field=models.FloatField())
 
         power_min = min(filter((lambda n: n != 0), (data["p1"], data["p2"], data["p3"])))
         power_max = max(filter((lambda n: n != 0), (data["p1"], data["p2"], data["p3"])))
-        annual_consumption = ((data["c1"] + data["c2"] + data["c3"]) / data["period"]) * 365
+        annual_consumption = ((data["c1"] + data["c2"] + data["c3"] + data["reactive"]) / data["period"]) * 365
         current_price = Value(data["current_price"], output_field=models.FloatField())
 
         offers = Offer.objects.all()
@@ -196,45 +213,59 @@ class CalculatorSerializer(serializers.ModelSerializer):
                     Q(consumption_min__isnull=True) | Q(consumption_min__lte=annual_consumption),
                     client_type=data["client_type"],
                     tarif=data["tarif"],
+                    kind=kind,
                 ),
             )
             .annotate(
                 st_c1=F("c1") * Value(data["c1"]),
-                st_c2=F("c2") * Value(data["c2"]),
-                st_c3=F("c3") * Value(data["c3"]),
-                st_p1=F("p1") * Value(data["p1"]) * Value(data["period"]),
-                st_p2=F("p2") * Value(data["p2"]) * Value(data["period"]),
-                st_p3=F("p3") * Value(data["p3"]) * Value(data["period"]),
+                st_c2=F("c2") * Value(data["c2"]) if is_luz else zero,
+                st_c3=F("c3") * Value(data["c3"]) if is_luz else zero,
+                st_p1=F("p1") * Value(data["p1"]) * Value(data["period"]) if is_luz else zero,
+                st_p2=F("p2") * Value(data["p2"]) * Value(data["period"]) if is_luz else zero,
+                st_p3=F("p3") * Value(data["p3"]) * Value(data["period"]) if is_luz else zero,
             )
             .annotate(
-                subtotal=F("st_c1") + F("st_c2") + F("st_c3") + F("st_p1") + F("st_p2") + F("st_p3"),
+                subtotal=F("st_c1") + F("st_c2") + F("st_c3") + F("st_p1") + F("st_p2") + F("st_p3")
+                if is_luz
+                else F("st_c1"),
             )
-            .annotate(after_rental=F("subtotal") + Value(rental))
             .annotate(
-                tax=F("subtotal") * Value(calculator_settings.tax),
-                iva=F("after_rental") * calculator_settings.iva,
+                after_rental=F("subtotal") + Value(rental),
             )
-            .annotate(total=F("after_rental") + F("iva") + F("tax"))
-            .annotate(profit=-F("total") + current_price)
-            .annotate(annual_total=F("profit") / Value(data["period"]) * Value(365))
+            .annotate(
+                tax=F("subtotal") * Value(calculator_settings.tax if is_luz else calculator_settings.carbon_tax),
+                iva=F("after_rental") * nds,
+            )
+            .annotate(
+                total=F("after_rental") + F("iva") + F("tax"),
+            )
+            .annotate(
+                profit=-F("total") + current_price,
+            )
+            .annotate(
+                annual_total=F("profit") / Value(data["period"]) * Value(365),
+            )
             .annotate(
                 profit_percent=F("profit") / F("total") * Value(100),
                 current_price=current_price,
                 rental=Value(rental, output_field=models.FloatField()),
             )
-        ).order_by("total")
+            .order_by("total")
+        )
 
         offers_count = qs.count()
         if offers_count == 0:
             return []
         many = offers_count > 1
+        tax_percent = calculator_settings.tax if is_luz else calculator_settings.carbon_tax
+        tax_percent = round(tax_percent * 100, 2)
         return CalculatorSerializer(
             qs if many else qs.first(),
             many=many,
             context={
                 "initial_data": self.initial_data,
-                "tax_percent": calculator_settings.tax,
-                "iva_percent": calculator_settings.iva,
+                "tax_percent": f'{"Imp. eléctrico" if is_luz else "Imp. hidrocarburos"} ({tax_percent}%)',
+                "iva_percent": f'{"IGIC" if use_igic else "IVA general"} ({round(nds * 100, 2)}%)',
             },
         ).data
 

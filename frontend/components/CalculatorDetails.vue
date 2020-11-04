@@ -1,9 +1,9 @@
 <template>
-  <div v-if="calculations.tax">
-    <v-card min-width="45%" class="mx-auto" max-width="500px">
+  <v-card v-if="calculations.tax">
+    <v-card class="mx-auto">
       <template v-for="item in terminos">
         <div :key="item.text">
-          <v-card-title style="padding-bottom: 0"> {{ item.text }} </v-card-title>
+          <v-card-title style="padding-bottom: 0">{{ item.text }}</v-card-title>
 
           <v-card-text style="line-height: 2px">
             <v-row v-for="(piece, idx) in item.items" :key="idx" align="center">
@@ -18,13 +18,13 @@
         </div>
       </template>
 
-      <v-card-title style="padding-bottom: 0"> Otros conceptos </v-card-title>
+      <v-card-title style="padding-bottom: 0">Otros conceptos</v-card-title>
 
       <v-card-text style="line-height: 2px">
         <v-row align="center">
           <div class="popusk"></div>
           <v-col class="popusk-2 font-weight-bold text-no-wrap">
-            Impuesto eléctrico ({{ calculations.tax.percent }}%)
+            {{ calculations.tax.percent }}
           </v-col>
           <v-col style="font-size: 12px"> {{ calculations.tax.value }}</v-col>
         </v-row>
@@ -39,7 +39,7 @@
 
         <v-row align="center">
           <div class="popusk"></div>
-          <v-col class="popusk-2 font-weight-bold text-no-wrap"> IVA general ({{ calculations.iva.percent }}%) </v-col>
+          <v-col class="popusk-2 font-weight-bold text-no-wrap">{{ calculations.iva.percent }}</v-col>
           <v-col class="text-no-wrap" style="font-size: 12px">
             {{ calculations.iva.value }}
           </v-col>
@@ -77,7 +77,7 @@
         <v-icon right> mdi-briefcase </v-icon>
       </v-btn>
     </v-card-actions>
-  </div>
+  </v-card>
 </template>
 
 <script>
