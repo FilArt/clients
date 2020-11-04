@@ -6,6 +6,7 @@
     label="Tarifa"
     style="min-width: 50px"
     chips
+    dense
     deletable-chips
     @input="$emit('input', tarif)"
   >

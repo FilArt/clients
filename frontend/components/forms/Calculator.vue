@@ -30,7 +30,6 @@
             <v-toolbar-title>
               <v-btn-toggle
                 group
-                borderless
                 mandatory
                 :value="form.kind"
                 @change="
@@ -40,11 +39,14 @@
               >
                 <v-btn value="luz">
                   <v-card-title>Luz</v-card-title>
-                  <v-icon large color="blue" right>mdi-flash</v-icon></v-btn
-                >
-                <v-btn value="gas"
-                  ><v-card-title>Gas</v-card-title><v-icon large color="red" right>mdi-fire</v-icon></v-btn
-                >
+                  <v-icon large color="blue" right>mdi-flash</v-icon>
+                </v-btn>
+
+                <v-spacer class="luz-gas" />
+
+                <v-btn value="gas">
+                  <v-card-title>Gas</v-card-title><v-icon large color="red" right>mdi-fire</v-icon>
+                </v-btn>
               </v-btn-toggle>
             </v-toolbar-title>
             <v-spacer />
@@ -52,11 +54,11 @@
 
           <v-row>
             <v-col>
-              <v-row align="center" class="text-center">
-                <v-col>IVA</v-col>
+              <v-row class="text-center switcher" align="center">
+                <v-col>Peninsula</v-col>
 
                 <v-col class="flex-grow-0">
-                  <v-switch :value="form.igic" @change="updateForm('igic', $event)" />
+                  <v-switch dense :value="form.igic" @change="updateForm('igic', $event)" />
                 </v-col>
 
                 <v-col>Islas Canareas</v-col>
@@ -72,7 +74,7 @@
             </v-col>
           </v-row>
 
-          <v-row>
+          <v-row align="center">
             <v-col>
               <company-select
                 :value="form.company"
@@ -94,6 +96,7 @@
                 label="Periodo"
                 name="period"
                 suffix="dias"
+                dense
                 :value="form.period"
                 :error-messages="errorMessages.period"
                 @input="updateForm('period', $event)"
@@ -119,6 +122,7 @@
                 label="Cadidad de pago en la factura actual"
                 name="current_price"
                 prefix="€"
+                dense
                 :value="form.current_price"
                 :error-messages="errorMessages.current_price"
                 @input="updateForm('current_price', $event)"
@@ -132,6 +136,7 @@
                 <v-col>
                   <v-text-field
                     v-show="showInput(letter, number)"
+                    dense
                     :suffix="letter === 'p' ? 'kw' : 'kW/h'"
                     :value="form[letter + number]"
                     :label="(letter === 'p' ? 'Potencia' : 'Consumo') + ' P' + number"
@@ -166,6 +171,7 @@
               <v-text-field
                 label="Consumo"
                 suffix="kW/h"
+                dense
                 :value="form.c1"
                 :error-messages="errorMessages.c1"
                 @input="updateForm('c1', $event)"
@@ -178,6 +184,7 @@
               <v-text-field
                 suffix="kW"
                 label="Energía reactiva"
+                dense
                 :value="form.reactive"
                 :error-messages="errorMessages.reactive"
                 @input="updateForm('reactive', $event)"
@@ -309,3 +316,35 @@ export default {
   },
 }
 </script>
+
+<style scoped>
+.switcher {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+}
+
+.luz-gas {
+  margin: 0 3em 0 3em;
+}
+
+@media only screen and (max-width: 768px) {
+  .switcher :nth-child(1) {
+    padding-bottom: 0;
+    padding-top: 0;
+  }
+  .switcher :nth-child(2) {
+    padding-bottom: 0;
+    padding-top: 0;
+    order: 2;
+  }
+  .switcher :nth-child(3) {
+    padding-bottom: 0;
+    padding-top: 0;
+    order: 1;
+  }
+  .luz-gas {
+    margin: 0;
+  }
+}
+</style>
