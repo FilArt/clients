@@ -150,7 +150,7 @@ export default {
   },
   methods: {
     async fetchUsers() {
-      this.users = await this.$axios.$get('users/users/?fields=id,fullname')
+      this.users = await this.$axios.$get('users/users/?fields=id,fullname&role__in=admin,agent,support')
     },
     async refresh() {
       this.loading = true

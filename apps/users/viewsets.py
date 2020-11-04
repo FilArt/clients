@@ -37,7 +37,8 @@ from .permissions import (
     ManageUserPermission,
     AgentClientsPermissions,
     AdminPermission,
-    AttachmentPermissions, NotyPermissions,
+    AttachmentPermissions,
+    NotyPermissions,
 )
 from .serializers import (
     LoadFacturasSerializer,
@@ -49,7 +50,8 @@ from .serializers import (
     RequestLogSerializer,
     RegisterByAdminSerializer,
     AgentClientsSerializer,
-    CanalAgentesSerializer, NotificationSerializer,
+    CanalAgentesSerializer,
+    NotificationSerializer,
 )
 
 logger = logging.getLogger(__name__)
@@ -107,7 +109,7 @@ class UserViewSet(
     search_fields = ("company_name", "first_name", "last_name", "email", "phone")
     pagination_class = UsersPagination
     filterset_fields = {
-        "role": ["exact", "isnull"],
+        "role": ["exact", "isnull", "in"],
         "date_joined": ["range"],
         "fecha_firma": ["range"],
         "source": ["exact"],
@@ -236,21 +238,29 @@ class AttachmentsViewSet(LoggingMixin, viewsets.ModelViewSet):
                 filter_kwargs["punto__user_id"] = user_id
             else:
                 filter_kwargs = dict()
-        elif user.role == 'support':
+        elif user.role == "support":
             filter_kwargs = dict()
         return super().filter_queryset(queryset.filter(**filter_kwargs))
 
     def perform_create(self, serializer):
         super(AttachmentsViewSet, self).perform_create(serializer)
         actor: Attachment = serializer.instance
-        recipient, _ = Group.objects.get_or_create(name='Attachment')
+        recipient, _ = Group.objects.get_or_create(name="Attachment")
         action_object = self.request.user
         target = actor.punto.user
-        level = 'success'
+        level = "success"
         public = False
         description = None
-        notify.send(sender=actor, recipient=recipient, verb='new_attachment', action_object=action_object,
-                    target=target, level=level, description=description, public=public)
+        notify.send(
+            sender=actor,
+            recipient=recipient,
+            verb="new_attachment",
+            action_object=action_object,
+            target=target,
+            level=level,
+            description=description,
+            public=public,
+        )
 
 
 class PaginatedAttachmentsViewSet(LoggingMixin, viewsets.ModelViewSet):
@@ -411,20 +421,20 @@ class NotificationViewSet(viewsets.ModelViewSet):
     serializer_class = NotificationSerializer
     permission_classes = (NotyPermissions,)
     filterset_fields = {
-        'unread': ['exact'],
+        "unread": ["exact"],
     }
 
     def get_queryset(self):
         return super().get_queryset().filter(recipient=self.request.user)
 
-    @action(methods=['POST'], detail=True)
+    @action(methods=["POST"], detail=True)
     def mark_read(self, request: Request, pk: int):
         noty: Notification = self.get_object()
         noty.mark_as_read()
-        return Response('ok')
+        return Response("ok")
 
-    @action(methods=['POST'], detail=True)
+    @action(methods=["POST"], detail=True)
     def mark_unread(self, request: Request, pk: int):
         noty: Notification = self.get_object()
         noty.mark_as_unread()
-        return Response('ok')
+        return Response("ok")
