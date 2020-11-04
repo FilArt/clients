@@ -301,7 +301,7 @@ export default {
       this.$axios
         .$post('calculator/calculate', {
           tarif: this.tarif,
-          ...Object.fromEntries(Object.entries(this.form).filter((i) => !!i[1])),
+          ...Object.fromEntries(Object.entries(this.form).filter((i) => [undefined, null].indexOf(i) === -1)),
         })
         .then((data) => {
           this.$store.commit('setCalculatedOffers', data)

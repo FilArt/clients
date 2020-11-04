@@ -5,11 +5,10 @@
     <v-col class="flex-grow-0">
       <v-switch
         v-model="item"
-        :items="items"
         :error-messages="errorMessages"
         chips
         deletable-chips
-        @input="$emit('input', item)"
+        @change="$emit('input', $event ? 1 : 0)"
       >
         <template v-if="hint" v-slot:append-outer>
           <v-tooltip bottom>
@@ -29,16 +28,6 @@
 </template>
 
 <script>
-const clientTypes = [
-  {
-    text: 'Fisico',
-    value: '0',
-  },
-  {
-    text: 'Juridico',
-    value: '1',
-  },
-]
 export default {
   name: 'ClientTypeSelect',
   props: {
@@ -47,8 +36,8 @@ export default {
       default: false,
     },
     value: {
-      type: String,
-      default: '',
+      type: Number,
+      default: 0,
     },
     errorMessages: {
       type: Array,
@@ -57,16 +46,12 @@ export default {
   },
   data() {
     return {
-      items: clientTypes,
-      item: clientTypes.find((t) => t.value === this.value),
+      item: this.value ? 1 : 0,
     }
   },
   watch: {
-    value: {
-      handler(val) {
-        this.item = this.items.find((i) => i.value === val)
-      },
-      deep: true,
+    value(val) {
+      this.item = val ? 1 : 0
     },
   },
 }
