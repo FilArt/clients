@@ -103,7 +103,7 @@ export default {
     }),
     terminos() {
       return [
-        { text: 'Termino de potencia', items: 'p' },
+        { text: `Termino de ${this.offer.kind === 'luz' ? 'potencia' : 'fijo'}`, items: 'p' },
         { text: 'Termino de energia', items: 'c' },
       ].map((termino) => {
         return {

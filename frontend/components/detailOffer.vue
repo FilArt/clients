@@ -49,7 +49,9 @@
             <br />
 
             <tr>
-              <td :rowspan="powers.length + 1">Precio por potencia:</td>
+              <td :rowspan="powers.length + 1">
+                Precio por {{ offer.kind === 'luz' ? 'potencia' : 'termino fijo' }}:
+              </td>
             </tr>
 
             <tr v-for="(power, pIdx) in powers" :key="'p' + pIdx">
