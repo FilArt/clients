@@ -52,9 +52,9 @@
 
           <v-row align="center" class="text-center">
             <v-col>
-              Impuestas
+              Impuestos
               <v-btn-toggle :value="form.igic" :color="ourColor" @change="updateForm('igic', $event)">
-                <v-btn :value="false">Peninsula</v-btn>
+                <v-btn :value="false">Península</v-btn>
                 <v-btn :value="true">Islas Canarias</v-btn>
               </v-btn-toggle>
             </v-col>

@@ -37,7 +37,7 @@
             <tr>
               <td>Tipo de oferta:</td>
               <td>
-                {{ offer.client_type === 0 ? 'Fisico' : 'Juridico' }}
+                {{ offer.client_type === 0 ? 'Físico' : 'Jurídico' }}
               </td>
             </tr>
 

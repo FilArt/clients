@@ -217,7 +217,7 @@ msgstr "Ciudad"
 
 #: apps/users/models.py:275
 msgid "Physical"
-msgstr "Fisico"
+msgstr "Físico"
 
 #: apps/users/models.py:275
 msgid "Autonomous"

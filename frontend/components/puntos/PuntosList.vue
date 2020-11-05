@@ -139,9 +139,9 @@ export default {
 
     return {
       categories: [
-        { text: 'Fisico', value: 'physical' },
+        { text: 'Físico', value: 'physical' },
         { text: 'Autonomous', value: 'autonomous' },
-        { text: 'Juridico', value: 'business' },
+        { text: 'Jurídico', value: 'business' },
       ],
       attachmentsItems: [
         { value: 'factura', text: 'Factura' },
