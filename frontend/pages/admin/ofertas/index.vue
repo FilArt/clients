@@ -123,7 +123,7 @@
       <v-spacer />
 
       <v-toolbar-items>
-        <v-btn nuxt to="/admin/comercializadoras" color="warning"> Comercializadoras </v-btn>
+        <v-btn nuxt to="/admin/comercializadoras" color="warning">Comercializadoras</v-btn>
 
         <v-btn nuxt to="/admin/ofertas/nuevo_oferta" color="success">
           <v-icon>mdi-plus</v-icon>
@@ -195,6 +195,7 @@ import { mapState } from 'vuex'
 import OfferRequiredFields from '@/components/selects/OfferRequiredFields'
 import DeleteButton from '@/components/buttons/deleteButton'
 import CloseButton from '@/components/buttons/closeButton'
+import constants from '@/lib/constants'
 
 export default {
   components: { CloseButton, DeleteButton, OfferRequiredFields },
@@ -306,19 +307,18 @@ export default {
   },
   async mounted() {
     if (!this.companies.length) await this.$store.dispatch('fetchCompanies')
-    if (!this.tarifs.length) await this.$store.dispatch('fetchTarifs')
+    await this.refresh()
     if (!this.names.length) await this.$store.dispatch('fetchNames')
     this.columns = this.columns.map((column) => {
       if (column.field === 'company') {
         column.filterOptions.filterDropdownItems = this.companies
       } else if (column.field === 'tarif') {
-        column.filterOptions.filterDropdownItems = this.tarifs
+        column.filterOptions.filterDropdownItems = constants.tarifs.concat(constants.tarifsGas)
       } else if (column.field === 'name') {
         column.filterOptions.filterDropdownItems = this.names
       }
       return column
     })
-    this.refresh()
   },
   methods: {
     async deleteRows() {
@@ -362,17 +362,18 @@ export default {
     onColumnFilter(params) {
       this.updateParams({ ...params.columnFilters, page: 1 })
     },
-    refresh() {
+    async refresh() {
       const fullPath = this.$route.fullPath
       let getParamsString = fullPath.includes('?') ? fullPath.split('?')[1] : 'page=1&itemsPerPage=10'
-      this.$axios
-        .$get(`calculator/admin_offers/?${getParamsString}`)
-        .then((data) => {
-          this.total = data.count
-          this.rows = data.results
-        })
-        .catch((e) => console.error(e))
-        .finally(() => (this.loading = false))
+      try {
+        const data = await this.$axios.$get(`calculator/admin_offers/?${getParamsString}`)
+        this.total = data.count
+        this.rows = data.results
+      } catch (e) {
+        console.error(e)
+      } finally {
+        this.loading = false
+      }
     },
 
     // hueta

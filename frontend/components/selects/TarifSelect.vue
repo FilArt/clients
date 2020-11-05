@@ -25,6 +25,8 @@
 </template>
 
 <script>
+import constants from '@/lib/constants'
+
 export default {
   name: 'TarifSelect',
   props: {
@@ -48,8 +50,8 @@ export default {
   data() {
     return {
       tarif: this.value,
-      tarifs: ['2.0A', '2.1A', '2.0DHA', '2.0DHS', '2.1DHA', '2.1DHS', '3.0A', '3.1A'],
-      tarifsGas: ['3.1', '3.2', '3.3', '3.4'],
+      tarifs: constants.tarifs,
+      tarifsGas: constants.tarifsGas,
     }
   },
   watch: {
