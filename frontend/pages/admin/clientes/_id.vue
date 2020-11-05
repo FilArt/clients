@@ -72,9 +72,9 @@ export default {
     UserDetailData: () => import('@/components/forms/UserDetailData'),
   },
   async asyncData({ params, $axios }) {
-    const user = await $axios.$get(`/users/users/${params.id}/?fields=phone,phones,email,avatar,bids`)
+    const user = await $axios.$get(`/users/users/${params.id}/?fields=phone,phone_city,email,avatar,bids`)
 
-    const phoneNumbers = [user.phone, ...user.phones.map((phone) => phone.number)].filter((p) => p)
+    const phoneNumbers = [user.phone, user.phone_city]
     let calls = []
     if (phoneNumbers.length) {
       calls = await $axios.$get(`users/calls/${params.id}`)
