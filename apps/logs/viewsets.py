@@ -6,7 +6,7 @@ from rest_framework.pagination import PageNumberPagination
 
 
 class LogPagination(PageNumberPagination):
-    page_size_query_param = 'size'
+    page_size_query_param = "size"
 
 
 class LogViewSet(viewsets.ModelViewSet):
@@ -14,8 +14,8 @@ class LogViewSet(viewsets.ModelViewSet):
     serializer_class = LogSerializer
     permission_classes = (AdminPermission,)
     pagination_class = LogPagination
-    ordering = ('-id',)
+    ordering = ("-id",)
     filterset_fields = {
-        'user': ['exact', 'in'],
-        'method': ['exact', 'in'],
+        "user": ["exact", "in"],
+        "method": ["exact", "in"],
     }

@@ -244,9 +244,7 @@ class CalculatorSerializer(serializers.ModelSerializer):
             .annotate(
                 pre_total=F("after_rental") + F("iva") + F("tax"),
             )
-            .annotate(
-                total=F('pre_total') + Value(data['reactive']) if is_luz else F('pre_total')
-            )
+            .annotate(total=F("pre_total") + Value(data["reactive"]) if is_luz else F("pre_total"))
             .annotate(
                 profit=-F("total") + current_price,
             )

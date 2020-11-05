@@ -125,7 +125,7 @@ class CustomUser(AbstractUser):
 
     @property
     def profile_filled(self) -> bool:
-        return (self.phone or self.phone_city)  and (
+        return (self.phone or self.phone_city) and (
             self.company_name is not None or (self.first_name is not None and self.last_name is not None)
         )
 

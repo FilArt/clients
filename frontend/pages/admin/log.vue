@@ -71,45 +71,66 @@
         </template>
 
         <template v-slot:item.response="{ item }">
-          <v-dialog>
+          <v-dialog v-if="item.response" max-width="1000px">
             <template v-slot:activator="{ on }">
               <v-btn v-on="on">show</v-btn>
             </template>
             <v-card>
-              {{ item.response }}
-            </v-card>
-          </v-dialog>
-        </template>
-
-        <template v-slot:item.errors="{ item }">
-          <v-dialog>
-            <template v-slot:activator="{ on }">
-              <v-btn v-on="on">show</v-btn>
-            </template>
-            <v-card>
-              {{ item.errors }}
-            </v-card>
-          </v-dialog>
-        </template>
-
-        <template v-slot:item.data="{ item }">
-          <v-dialog>
-            <template v-slot:activator="{ on }">
-              <v-btn v-on="on">show</v-btn>
-            </template>
-            <v-card>
-              {{ item.data }}
+              <v-card-text>
+                <pre>{{ item.response }}</pre>
+              </v-card-text>
             </v-card>
           </v-dialog>
         </template>
 
         <template v-slot:item.query_params="{ item }">
-          <v-dialog>
+          <v-dialog v-if="item.query_params" max-width="1000px">
             <template v-slot:activator="{ on }">
               <v-btn v-on="on">show</v-btn>
             </template>
             <v-card>
-              {{ item.query_params }}
+              <v-card-text>
+                <pre>{{ item.query_params }}</pre>
+              </v-card-text>
+            </v-card>
+          </v-dialog>
+        </template>
+
+        <template v-slot:item.errors="{ item }">
+          <v-dialog v-if="item.errors" max-width="1000px">
+            <template v-slot:activator="{ on }">
+              <v-btn v-on="on">show</v-btn>
+            </template>
+            <v-card>
+              <v-card-text>
+                <pre>{{ item.errors }}</pre>
+              </v-card-text>
+            </v-card>
+          </v-dialog>
+        </template>
+
+        <template v-slot:item.data="{ item }">
+          <v-dialog v-if="item.data" max-width="1000px">
+            <template v-slot:activator="{ on }">
+              <v-btn v-on="on">show</v-btn>
+            </template>
+            <v-card>
+              <v-card-text>
+                <pre>{{ item.data }}</pre>
+              </v-card-text>
+            </v-card>
+          </v-dialog>
+        </template>
+
+        <template v-slot:item.query_params="{ item }">
+          <v-dialog v-if="item.query_params" max-width="1000px">
+            <template v-slot:activator="{ on }">
+              <v-btn v-on="on">show</v-btn>
+            </template>
+            <v-card>
+              <v-card-text>
+                <pre>{{ item.query_params }}</pre>
+              </v-card-text>
             </v-card>
           </v-dialog>
         </template>
