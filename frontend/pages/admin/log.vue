@@ -20,7 +20,7 @@
         :options.sync="options"
         :server-items-length="total"
         :footer-props="{
-          itemsPerPageOptions: [10, 50, 100],
+          itemsPerPageOptions: [10, 50, 100, 1000],
           showFirstLastPage: true,
           firstIcon: 'mdi-arrow-collapse-left',
           lastIcon: 'mdi-arrow-collapse-right',

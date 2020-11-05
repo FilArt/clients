@@ -1,5 +1,4 @@
-from pickle import loads, dumps
-
+import ujson
 import yaml
 from drf_dynamic_fields import DynamicFieldsMixin
 from rest_framework import serializers
@@ -7,11 +6,18 @@ from rest_framework_tracking.models import APIRequestLog
 
 
 class PrettyJsonField(serializers.JSONField):
-    def to_representation(self, value):
+    def to_representation(self, value=None):
+        value = super().to_representation(value)
         if not value:
             return value
+        elif isinstance(value, str) and "{" in value and "}" in value:
+            try:
+                value = value.replace("'", '"').replace("True", "true").replace("False", "false")
+                return yaml.dump(ujson.loads(value))
+            except ValueError:
+                pass
 
-        return yaml.dump(yaml.load(loads(dumps(value))))
+        return value
 
 
 class LogSerializer(DynamicFieldsMixin, serializers.ModelSerializer):
