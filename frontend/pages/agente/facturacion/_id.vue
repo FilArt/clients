@@ -47,10 +47,7 @@ export default {
 
     return {
       user,
-      values: {
-        phones: [user.phone],
-        ...user,
-      },
+      values: { ...user },
     }
   },
   data() {
@@ -63,7 +60,7 @@ export default {
     async onTramitate() {
       const user = await this.$axios.$get(`users/users/${this.$route.params.id}/`)
       this.user = user
-      this.values = { phones: [user.phone], ...user }
+      this.values = { ...user }
     },
     bidStatusColor(status) {
       let color

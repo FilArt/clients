@@ -1,6 +1,13 @@
 <template>
-  <v-card class="pa-3">
-    <v-card-title>{{ user.fullname }}</v-card-title>
+  <v-card flat>
+    <v-toolbar dense>
+      <v-toolbar-title>
+        <v-btn icon color="error" @click="$router.back()">
+          <v-icon>mdi-arrow-left</v-icon>
+        </v-btn>
+        {{ user.fullname }}
+      </v-toolbar-title>
+    </v-toolbar>
 
     <v-card-text>
       <user-detail-data
@@ -72,9 +79,9 @@ export default {
     UserDetailData: () => import('@/components/forms/UserDetailData'),
   },
   async asyncData({ params, $axios }) {
-    const user = await $axios.$get(`/users/users/${params.id}/?fields=phone,phones,email,avatar,bids`)
+    const user = await $axios.$get(`/users/users/${params.id}/?fields=phone,phone_city,email,avatar,bids`)
 
-    const phoneNumbers = [user.phone, ...user.phones.map((phone) => phone.number)].filter((p) => p)
+    const phoneNumbers = [user.phone, user.phone_city].filter((p) => p)
     let calls = []
     if (phoneNumbers.length) {
       calls = await $axios.$get(`users/calls/${params.id}`)

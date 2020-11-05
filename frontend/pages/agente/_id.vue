@@ -42,10 +42,7 @@ export default {
 
     return {
       user,
-      values: {
-        phones: [user.phone],
-        ...user,
-      },
+      values: { ...user },
     }
   },
   data() {

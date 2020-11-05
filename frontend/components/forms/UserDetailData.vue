@@ -114,7 +114,7 @@ export default {
   },
   data() {
     return {
-      user: { phones: [] },
+      user: {},
       responsible: null,
       source: null,
       notificationKey: 0,

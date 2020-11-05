@@ -68,7 +68,7 @@ export default {
   async asyncData({ params, $axios }) {
     const user = await $axios.$get(`/users/users/${params.id}/`)
 
-    const phoneNumbers = [user.phone, ...user.phones.map((phone) => phone.number)].filter((p) => p)
+    const phoneNumbers = [user.phone, user.phone_city].filter((p) => p)
     let calls = []
     if (phoneNumbers.length) {
       calls = await $axios.$get(`users/calls/${user.id}`)
