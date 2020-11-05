@@ -1,4 +1,5 @@
-import ujson
+from pickle import loads, dumps
+
 import yaml
 from drf_dynamic_fields import DynamicFieldsMixin
 from rest_framework import serializers
@@ -10,7 +11,7 @@ class PrettyJsonField(serializers.JSONField):
         if not value:
             return value
 
-        return yaml.dump(yaml.load(ujson.loads(ujson.dumps(value))))
+        return yaml.dump(yaml.load(loads(dumps(value))))
 
 
 class LogSerializer(DynamicFieldsMixin, serializers.ModelSerializer):
