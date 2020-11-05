@@ -302,7 +302,7 @@ export default {
       this.errorMessages = {}
       this.loading = true
       this.$axios
-        .$post('calculator/calculate', {
+        .$post('calculator/calculate/', {
           tarif: this.tarif,
           ...Object.fromEntries(Object.entries(this.form).filter((i) => [undefined, null, ''].indexOf(i[1]) === -1)),
         })

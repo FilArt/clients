@@ -17,4 +17,5 @@ class LogViewSet(viewsets.ModelViewSet):
     ordering = ('-id',)
     filterset_fields = {
         'user': ['exact', 'in'],
+        'method': ['exact', 'in'],
     }

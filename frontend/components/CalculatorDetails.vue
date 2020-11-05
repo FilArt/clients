@@ -124,7 +124,7 @@ export default {
   methods: {
     async getDetails() {
       if (!this.offer || !this.form || !this.tarif) return
-      this.calculations = await this.$axios.$post('calculator/calculate', {
+      this.calculations = await this.$axios.$post('calculator/calculate/', {
         ...this.form,
         id: this.offer.id,
         tarif: this.tarif,

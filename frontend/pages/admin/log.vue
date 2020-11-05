@@ -30,20 +30,44 @@
         @update:options="refresh"
       >
         <template v-slot:top>
-          <v-autocomplete
-            v-model="filters.user__in"
-            :items="users"
-            multiple
-            item-value="id"
-            item-text="fullname"
-            label="Usuario"
-            clearable
-            @change="refresh"
-          />
+          <v-row>
+            <v-col>
+              <v-autocomplete
+                v-model="filters.user__in"
+                :items="users"
+                multiple
+                item-value="id"
+                item-text="fullname"
+                label="Usuario"
+                clearable
+                @change="refresh"
+              />
+            </v-col>
+            <v-col>
+              <v-select
+                v-model="filters.method__in"
+                label="Methods"
+                :items="['GET', 'POST', 'PATCH', 'DELETE']"
+                multiple
+                @change="refresh"
+              >
+                <template v-slot:item="{ item }">
+                  {{ item }}
+                  <v-icon :color="formatMethod('', item).color">{{ formatMethod('', item).icon }}</v-icon>
+                </template>
+              </v-select>
+            </v-col>
+          </v-row>
         </template>
 
         <template v-slot:item.requested_at="{ item }">
           {{ formatDt(item.requested_at) }}
+        </template>
+
+        <template v-slot:item.method="{ item }">
+          <v-icon :color="formatMethod(item.path, item.method).color">
+            {{ formatMethod(item.path, item.method).icon }}
+          </v-icon>
         </template>
 
         <template v-slot:item.response="{ item }">
@@ -102,6 +126,7 @@ export default {
       users: [],
       filters: {
         user__in: [],
+        method__in: ['POST', 'PATCH', 'DELETE'],
       },
       loading: false,
       items: [],
@@ -163,6 +188,10 @@ export default {
       const opts = this.options
       const ordering = opts.sortBy.length ? (opts.sortDesc[0] ? '-' : '') + opts.sortBy[0] : '-requested_at'
       const filters = Object.keys(this.filters)
+        .filter((k) => {
+          const val = this.filters[k]
+          return val instanceof Array ? !!val.length : true
+        })
         .map((k) => k + '=' + this.filters[k])
         .join('&')
       const params = [
@@ -180,6 +209,29 @@ export default {
     },
     formatDt(dt) {
       return format(parseISO(dt), 'dd/MM/yyyy HH:mm')
+    },
+    formatMethod(aep, method) {
+      let icon
+      let color
+      method = method.toLowerCase()
+      if (method === 'get') {
+        icon = 'mdi-book'
+        color = 'info'
+      } else if (method === 'post') {
+        if (aep.indexOf('api/calculator/calculate') !== -1) {
+          icon = 'mdi-calculator'
+        } else {
+          icon = 'mdi-cloud-upload'
+        }
+        color = 'success'
+      } else if (method === 'patch') {
+        icon = 'mdi-pencil'
+        color = 'warning'
+      } else if (method === 'delete') {
+        icon = 'mdi-trash-can-outline'
+        color = 'error'
+      }
+      return { icon, color }
     },
   },
 }
