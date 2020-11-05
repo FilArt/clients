@@ -174,12 +174,16 @@
             </v-col>
           </v-row>
 
-          <v-row v-if="form.kind === 'luz'">
+          <v-row v-if="form.kind === 'luz'" align="center">
+            <v-col>
+              <v-checkbox v-model="hasReactiveEnergy" label="Energía reactiva (opcional)" />
+            </v-col>
+
             <v-col>
               <v-text-field
-                suffix="kW"
-                label="Energía reactiva (opcional)"
-                dense
+                v-show="hasReactiveEnergy"
+                prefix="€"
+                label="Cadidad de pago energía reactiva"
                 :value="form.reactive"
                 :error-messages="errorMessages.reactive"
                 @input="updateForm('reactive', $event)"
@@ -220,6 +224,7 @@ export default {
   },
   data() {
     return {
+      hasReactiveEnergy: false,
       ourColor: constants.ourColor,
       errorMessages: {},
       loading: false,
