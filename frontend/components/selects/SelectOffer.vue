@@ -11,7 +11,7 @@
       <v-col>
         <client-type-select v-model="clientType" />
       </v-col>
-      <v-col v-if="company && tarif && clientType">
+      <v-col v-if="company && tarif">
         <offer-select
           v-model="newOffer"
           :company="company"
