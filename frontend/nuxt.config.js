@@ -7,6 +7,7 @@ const BACKEND_HOST = `http://localhost:${process.env.BACKEND_PORT || '8001'}`
 export default {
   ssr: false,
   dev: DEV,
+  target: 'static',
   /*
    ** Headers of the page
    */
