@@ -5,5 +5,5 @@ from .views import CalculateApiView
 
 urlpatterns = [
     path("", include(router.urls)),
-    path("calculate", CalculateApiView.as_view()),
+    path("calculate/", CalculateApiView.as_view()),
 ]
