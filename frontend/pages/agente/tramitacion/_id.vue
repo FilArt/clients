@@ -15,32 +15,17 @@
 
     <v-divider />
 
-    <v-row>
-      <v-col class="flex-grow-0">
-        <solicitudes-bar
-          :user-id="user.id"
-          :bids="user.bids"
-          @bid-added="refresh"
-          @chosen="
-            chosenBid = $event
-            x += 1
-          "
-        />
-      </v-col>
-
-      <div v-if="chosenBid" :key="x" class="flex-grow-1">
-        <tramitacion :bid-id="chosenBid" />
-      </div>
-    </v-row>
+    <v-card-text>
+      <solicitudes-process :user="user" @bid-added="refresh" />
+    </v-card-text>
   </v-card>
 </template>
 
 <script>
 export default {
   components: {
-    SolicitudesBar: () => import('@/components/support/SolicitudesBar'),
+    SolicitudesProcess: () => import('@/components/SolicitudesProcess'),
     UserDetailData: () => import('@/components/forms/UserDetailData'),
-    Tramitacion: () => import('~/components/support/Tramitacion'),
   },
   async asyncData({ $axios, params }) {
     const user = await $axios.$get(`users/users/${params.id}/`)
@@ -48,12 +33,6 @@ export default {
     return {
       user,
       values: { ...user },
-    }
-  },
-  data() {
-    return {
-      cols: 3,
-      errorMessages: { status: null, message: null },
     }
   },
   methods: {

@@ -1,75 +1,79 @@
 <template>
   <v-card>
-    <v-row>
-      <v-col>
-        <p class="text-center headline">
-          {{ hideName ? `Oferta ${offer.id}` : offer.name }}
-        </p>
-      </v-col>
-      <v-col v-if="closeable" class="flex-grow-0">
-        <v-btn icon color="error" @click="$emit('close')">
-          <v-icon>mdi-close</v-icon>
-        </v-btn>
-      </v-col>
-    </v-row>
+    <v-card-text>
+      <v-row>
+        <v-col>
+          <p class="text-center headline">
+            {{ hideName ? `Oferta ${offer.id}` : offer.name }}
+          </p>
+        </v-col>
+        <v-col v-if="closeable" class="flex-grow-0">
+          <v-btn icon color="error" @click="$emit('close')">
+            <v-icon>mdi-close</v-icon>
+          </v-btn>
+        </v-col>
+      </v-row>
+    </v-card-text>
 
     <v-divider />
 
-    <v-row align="center">
-      <v-col>
-        <v-img class="mx-auto" max-width="150" :src="'/no-image.svg'" />
-      </v-col>
+    <v-card-text>
+      <v-row align="center">
+        <v-col>
+          <v-img class="mx-auto" max-width="150" :src="'/no-image.svg'" />
+        </v-col>
 
-      <v-col class="flex-grow-1">
-        <v-simple-table style="max-width: 750px" class="pa-3">
-          <template v-slot:default>
-            <tr>
-              <td colspan="2" class="font-weight-light font-italic text-left" style="padding-bottom: 2em">
-                {{ offer.description }}
-              </td>
-            </tr>
+        <v-col class="flex-grow-1">
+          <v-simple-table style="max-width: 750px" class="pa-3">
+            <template v-slot:default>
+              <tr>
+                <td colspan="2" class="font-weight-light font-italic text-left" style="padding-bottom: 2em">
+                  {{ offer.description }}
+                </td>
+              </tr>
 
-            <tr>
-              <td>Tarifa:</td>
-              <td>{{ offer.tarif }}</td>
-            </tr>
+              <tr>
+                <td>Tarifa:</td>
+                <td>{{ offer.tarif }}</td>
+              </tr>
 
-            <tr>
-              <td>Tipo de oferta:</td>
-              <td>
-                {{ offer.client_type === 0 ? 'Físico' : 'Jurídico' }}
-              </td>
-            </tr>
+              <tr>
+                <td>Tipo de oferta:</td>
+                <td>
+                  {{ offer.client_type === 0 ? 'Físico' : 'Jurídico' }}
+                </td>
+              </tr>
 
-            <tr>
-              <td>Tipo de precio:</td>
-              <td>{{ offer.is_price_permanent }}</td>
-            </tr>
+              <tr>
+                <td>Tipo de precio:</td>
+                <td>{{ offer.is_price_permanent }}</td>
+              </tr>
 
-            <br />
+              <br />
 
-            <tr>
-              <td :rowspan="powers.length + 1">
-                Precio por {{ offer.kind === 'luz' ? 'potencia' : 'termino fijo' }}:
-              </td>
-            </tr>
+              <tr>
+                <td :rowspan="powers.length + 1">
+                  Precio por {{ offer.kind === 'luz' ? 'potencia' : 'termino fijo' }}:
+                </td>
+              </tr>
 
-            <tr v-for="(power, pIdx) in powers" :key="'p' + pIdx">
-              <td>{{ power.text }}: {{ power.value }} €</td>
-            </tr>
+              <tr v-for="(power, pIdx) in powers" :key="'p' + pIdx">
+                <td>{{ power.text }}: {{ power.value }} €</td>
+              </tr>
 
-            <br />
+              <br />
 
-            <tr>
-              <td :rowspan="consumptions.length + 1">Precio por consumo:</td>
-            </tr>
-            <tr v-for="(consumption, cIdx) in consumptions" :key="'c' + cIdx">
-              <td>{{ consumption.text }}: {{ consumption.value }} €</td>
-            </tr>
-          </template>
-        </v-simple-table>
-      </v-col>
-    </v-row>
+              <tr>
+                <td :rowspan="consumptions.length + 1">Precio por consumo:</td>
+              </tr>
+              <tr v-for="(consumption, cIdx) in consumptions" :key="'c' + cIdx">
+                <td>{{ consumption.text }}: {{ consumption.value }} €</td>
+              </tr>
+            </template>
+          </v-simple-table>
+        </v-col>
+      </v-row>
+    </v-card-text>
 
     <v-card-text v-if="changeable">
       Editar oferta
@@ -110,7 +114,9 @@
       </v-btn>
     </v-card-actions>
 
-    <calculator-details v-if="showCalcDetails" :offer="offer" />
+    <v-card-text>
+      <calculator-details v-if="showCalcDetails" :offer="offer" />
+    </v-card-text>
   </v-card>
 </template>
 

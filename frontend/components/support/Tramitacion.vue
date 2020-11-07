@@ -4,7 +4,15 @@
 
     <v-dialog v-model="tramitateDialog" max-width="500">
       <v-card>
-        <v-card-title>Agregar mensajes (opcional) y enviar</v-card-title>
+        <v-row align="center">
+          <v-col>
+            <v-card-title>Agregar mensajes (opcional) y enviar</v-card-title>
+          </v-col>
+
+          <v-col class="flex-grow-0">
+            <close-button @click="tramitateDialog = false" />
+          </v-col>
+        </v-row>
 
         <v-card-text>
           <v-form @submit.prevent="tramitate">
@@ -28,11 +36,17 @@
 
     <v-row class="text-center">
       <v-col style="max-width: 750px">
+        <v-card-title>
+          {{ modeTramitacion ? 'Tramitacion' : 'Facturacion' }}
+        </v-card-title>
+
         <v-row>
           <v-col>
             <v-dialog v-model="offerDetailDialog" max-width="750">
               <template v-slot:activator="{ on }">
                 <v-chip style="cursor: pointer" v-on="on">
+                  <v-col><v-icon>mdi-eye</v-icon></v-col>
+                  <v-col>Oferta</v-col>
                   <v-col>
                     <small>id {{ bid.offer.id }}</small>
                   </v-col>
@@ -43,22 +57,17 @@
                   <v-divider vertical />
                   <v-spacer />
                   <v-col>{{ bid.offer.name }}</v-col>
-                  <v-col><v-icon>mdi-information</v-icon></v-col>
                 </v-chip>
               </template>
 
-              <v-card>
-                <v-card-text>
-                  <detail-offer
-                    :offer="bid.offer"
-                    closeable
-                    changeable
-                    :bid-id="bidId"
-                    @close="offerDetailDialog = false"
-                    @offer-changed="fetchBid"
-                  />
-                </v-card-text>
-              </v-card>
+              <detail-offer
+                :offer="bid.offer"
+                closeable
+                changeable
+                :bid-id="bidId"
+                @close="offerDetailDialog = false"
+                @offer-changed="fetchBid"
+              />
             </v-dialog>
           </v-col>
         </v-row>
@@ -69,70 +78,53 @@
 
             <v-row v-if="modeTramitacion">
               <v-col>
-                <v-row v-for="group in groups" :key="group.label">
-                  <v-col>
-                    <v-radio-group v-model="bid[group.value]" :label="group.label" @change="tramitateDialog = true">
-                      <v-row>
-                        <v-col v-for="state in states" :key="state.label">
-                          <v-radio
-                            :label="state.label"
-                            :value="state.value"
-                            @click="newStatus = `${state.label} ${group.label}`"
-                          />
-                        </v-col>
-                        <v-col>
-                          <v-btn
-                            icon
-                            @click="
-                              bid[group.value] = null
-                              tramitateDialog = true
-                            "
-                          >
-                            <v-icon>mdi-eraser-variant</v-icon>
-                          </v-btn>
-                        </v-col>
-                      </v-row>
-                      <v-row>
-                        <v-col>
-                          {{ lastComments[group.value] }}
-                        </v-col>
-                      </v-row>
-                    </v-radio-group>
-                  </v-col>
-                </v-row>
+                <template
+                  v-for="group in groups.filter((g) =>
+                    bid.offer_status_accesible ? true : g.value !== 'offer_status',
+                  )"
+                >
+                  <v-radio-group
+                    :key="group.label"
+                    v-model="bid[group.value]"
+                    :style="`border: ${ourColor} solid 1px; border-radius: 10px; padding: 10px;`"
+                    @change="tramitateDialog = true"
+                  >
+                    <v-toolbar>
+                      <v-toolbar-title>
+                        {{ group.label }}
+                      </v-toolbar-title>
 
-                <v-row v-if="bid.offer_status_accesible">
-                  <v-col>
-                    <v-radio-group
-                      v-model="bid.offer_status"
-                      label="Estado de oferta"
-                      @change="tramitateDialog = true"
-                    >
-                      <v-row>
-                        <v-col>
-                          <v-radio label="Firmada" :value="0" @click="newStatus = `Estado de oferta: Firmada`" />
-                          <v-radio label="PTE Firmar" :value="1" @click="newStatus = `Estado de oferta: PTE Firmar`" />
-                        </v-col>
-                        <v-col>
-                          <v-btn
-                            icon
-                            @click="
-                              bid.offer_status = null
-                              tramitateDialog = true
-                            "
-                          >
-                            <v-icon>mdi-eraser-variant</v-icon>
-                          </v-btn>
-                        </v-col>
-                      </v-row>
-                      <v-row>
-                        <v-col>
-                          {{ lastComments.offer_status }}
-                        </v-col>
-                      </v-row>
-                    </v-radio-group>
-                  </v-col>
-                </v-row>
+                      <v-spacer />
+
+                      <v-toolbar-items class="align-baseline">
+                        <template
+                          v-for="state in group.value === 'offer_status' ? states.offer_status : states.default"
+                        >
+                          <v-container :key="state.label">
+                            <v-radio
+                              :label="state.label"
+                              :value="state.value"
+                              @click="newStatus = `${state.label} ${group.label}`"
+                            />
+                          </v-container>
+                        </template>
+                        <v-btn
+                          icon
+                          @click="
+                            bid[group.value] = null
+                            tramitateDialog = true
+                          "
+                        >
+                          <v-icon>mdi-eraser-variant</v-icon>
+                        </v-btn>
+                      </v-toolbar-items>
+                    </v-toolbar>
+
+                    <br />
+
+                    {{ lastComments[group.value] }}
+                  </v-radio-group>
+                </template>
               </v-col>
             </v-row>
 
@@ -186,6 +178,7 @@
       <v-divider vertical />
 
       <v-col>
+        <v-card-title> Puntos </v-card-title>
         <v-alert v-if="bid.puntos.length === 0" type="warning">No hay puntos</v-alert>
         <puntos-list v-else :puntos="bid.puntos" :kind="bid.offer.kind" @punto-updated="fetchBid" />
         <add-punto-dialog closeable :bid-id="bid.id" @punto-added="fetchBid" />
@@ -195,6 +188,8 @@
 </template>
 
 <script>
+import constants from '@/lib/constants'
+
 export default {
   name: 'Tramitacion',
   components: {
@@ -218,6 +213,7 @@ export default {
   },
   data() {
     return {
+      ourColor: constants.ourColor,
       lastComments: {
         doc: '...',
         scoring: '...',
@@ -245,17 +241,36 @@ export default {
           label: 'Scoring',
           value: 'scoring',
         },
-      ],
-      states: [
         {
-          label: 'OK',
-          value: true,
-        },
-        {
-          label: 'KO',
-          value: false,
+          label: 'Estado de oferta',
+          value: 'offer_status',
         },
       ],
+      // <v-radio label="Firmada" :value="0" @click="newStatus = `Estado de oferta: Firmada`" />
+      // <v-radio label="PTE Firmar" :value="1" @click="newStatus = `Estado de oferta: PTE Firmar`" />
+
+      states: {
+        default: [
+          {
+            label: 'OK',
+            value: true,
+          },
+          {
+            label: 'KO',
+            value: false,
+          },
+        ],
+        offer_status: [
+          {
+            label: 'Firmada',
+            value: 0,
+          },
+          {
+            label: 'PTE Firmar',
+            value: 1,
+          },
+        ],
+      },
       notificationKey: 0,
       bidErrors: {},
       tramitateDialog: false,
@@ -264,11 +279,19 @@ export default {
       modeTramitacion: !this.facturacion,
     }
   },
+  watch: {
+    async bidId() {
+      await this.refresh()
+    },
+  },
   async mounted() {
-    await this.fetchBid()
-    await this.fetchLastComments()
+    await this.refresh()
   },
   methods: {
+    async refresh() {
+      await this.fetchBid()
+      if (['admin', 'support'].includes(this.$auth.user.role)) await this.fetchLastComments()
+    },
     async fetchHistory() {
       this.history = await this.$axios.$get(`bids/bids/${this.bidId}/history/`)
     },

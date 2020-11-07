@@ -9,17 +9,22 @@
 
     <v-card-text>
       <v-form @submit.prevent="addPunto">
-        <v-radio-group v-model="newPunto.category" label="Seleccione categoría de cliente" mandatory>
-          <v-radio
-            v-for="category in categories"
-            :key="category.value"
-            :label="category.name"
-            :value="category.value"
-          />
-        </v-radio-group>
-
         <div v-for="field in puntoFields" :key="field.value">
-          <company-select v-if="field.value === 'company_luz' && admin" v-model="newPunto.company_luz" />
+          <v-radio-group
+            v-if="field.value === 'category'"
+            v-model="newPunto.category"
+            label="Seleccione categoría de cliente"
+            mandatory
+          >
+            <v-radio
+              v-for="category in categories"
+              :key="category.value"
+              :label="category.name"
+              :value="category.value"
+            />
+          </v-radio-group>
+
+          <company-select v-else-if="field.value === 'company_luz' && admin" v-model="newPunto.company_luz" />
 
           <v-autocomplete
             v-else-if="field.value === 'province'"

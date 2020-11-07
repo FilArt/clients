@@ -59,6 +59,14 @@ export default Object.freeze({
     },
   },
   puntoFields: {
+    category: {
+      text: 'Tipo de cliente',
+      value: 'category',
+      group: {
+        text: 'Documentacion',
+        value: 'doc',
+      },
+    },
     name: {
       text: 'Nuevo nombre',
       value: 'name',
@@ -230,14 +238,6 @@ export default Object.freeze({
       text: 'Representante legal',
       value: 'legal_representative',
       onlyAdmin: true,
-      group: {
-        text: 'Documentacion',
-        value: 'doc',
-      },
-    },
-    category: {
-      text: 'Tipo de cliente',
-      value: 'category',
       group: {
         text: 'Documentacion',
         value: 'doc',
