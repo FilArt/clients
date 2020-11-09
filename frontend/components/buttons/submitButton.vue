@@ -6,8 +6,7 @@
         :icon="!label"
         :disabled="disabled"
         :block="block"
-        color="#004680"
-        dark
+        color="primary"
         v-on="on"
         @click="$emit('click')"
       >

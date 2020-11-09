@@ -192,7 +192,7 @@
           </v-row>
 
           <v-row>
-            <submit-button block label="Comparar" />
+            <submit-button :disabled="hasReactiveEnergy ? !form.reactive : true" block label="Comparar" />
           </v-row>
         </v-form>
       </v-card-text>
