@@ -8,8 +8,8 @@ from django.utils.translation import gettext_lazy as _
 
 from apps.calculator.fields import NameField
 from clients.utils import PositiveNullableFloatField
-from .fields import is_positive
 from .managers import WithoutOtraManager
+from .validators import is_positive
 
 logger = logging.getLogger(__name__)
 

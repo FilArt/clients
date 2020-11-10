@@ -77,6 +77,23 @@
         <v-icon right> mdi-briefcase </v-icon>
       </v-btn>
     </v-card-actions>
+
+    <v-card-text>
+      <v-col>
+        <v-row>
+          <v-col>
+            <v-text-field v-model="direccion" label="Direccion" />
+            <v-text-field v-model="cups" label="CUPS" />
+            <v-text-field v-model="clientName" label="Nombre" />
+          </v-col>
+        </v-row>
+        <v-row>
+          <v-col>
+            <v-container v-html="htmlDetails" />
+          </v-col>
+        </v-row>
+      </v-col>
+    </v-card-text>
   </v-card>
 </template>
 
@@ -94,6 +111,10 @@ export default {
   data() {
     return {
       calculations: [],
+      htmlDetails: null,
+      direccion: null,
+      cups: null,
+      clientName: null,
     }
   },
   computed: {
@@ -124,12 +145,21 @@ export default {
   methods: {
     async getDetails() {
       if (!this.offer || !this.form || !this.tarif) return
-      this.calculations = await this.$axios.$post('calculator/calculate/', {
+      const data = {
         ...this.form,
         id: this.offer.id,
         tarif: this.tarif,
         with_calculations: true,
-      })
+        direccion: this.direccion,
+        cups: this.cups,
+        client_name: this.clientName,
+      }
+      const params = Object.keys(data)
+        .filter((key) => data[key] !== null)
+        .map((key) => `${key}=${data[key]}`)
+        .join('&')
+      this.htmlDetails = await this.$axios.$get(`calculator/new_offer/?${params}`)
+      this.calculations = await this.$axios.$post('calculator/calculate/', data)
       this.$emit('calculations', this.calculations)
     },
     addBid() {

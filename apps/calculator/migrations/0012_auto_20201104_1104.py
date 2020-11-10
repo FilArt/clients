@@ -3,6 +3,8 @@
 import apps.calculator.fields
 from django.db import migrations, models
 
+import apps.calculator.validators
+
 
 class Migration(migrations.Migration):
 
@@ -14,21 +16,21 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name="calculatorsettings",
             name="equip_rent_g31",
-            field=models.FloatField(default=0.6, validators=[apps.calculator.fields.is_positive]),
+            field=models.FloatField(default=0.6, validators=[apps.calculator.validators.is_positive]),
         ),
         migrations.AddField(
             model_name="calculatorsettings",
             name="equip_rent_g32",
-            field=models.FloatField(default=1.1, validators=[apps.calculator.fields.is_positive]),
+            field=models.FloatField(default=1.1, validators=[apps.calculator.validators.is_positive]),
         ),
         migrations.AddField(
             model_name="calculatorsettings",
             name="equip_rent_g33",
-            field=models.FloatField(default=12.5, validators=[apps.calculator.fields.is_positive]),
+            field=models.FloatField(default=12.5, validators=[apps.calculator.validators.is_positive]),
         ),
         migrations.AddField(
             model_name="calculatorsettings",
             name="equip_rent_g34",
-            field=models.FloatField(default=12.5, validators=[apps.calculator.fields.is_positive]),
+            field=models.FloatField(default=12.5, validators=[apps.calculator.validators.is_positive]),
         ),
     ]

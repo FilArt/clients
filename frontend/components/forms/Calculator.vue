@@ -186,13 +186,13 @@
                 label="Cadidad de pago energía reactiva"
                 :value="form.reactive"
                 :error-messages="errorMessages.reactive"
-                @input="updateForm('reactive', $event)"
+                @input="updateForm('reactive', $event && $event.length ? $event : null)"
               />
             </v-col>
           </v-row>
 
           <v-row>
-            <submit-button :disabled="hasReactiveEnergy ? !form.reactive : true" block label="Comparar" />
+            <submit-button :disabled="hasReactiveEnergy ? !form.reactive : false" block label="Comparar" />
           </v-row>
         </v-form>
       </v-card-text>

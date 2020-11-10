@@ -1,9 +1,9 @@
 from rest_framework.routers import SimpleRouter
 
-from .viewsets import CompanyViewSet, PaginatedOfferViewSet, TarifViewSet, OfferViewSet
+from . import viewsets
 
 router = SimpleRouter()
-router.register("companies", CompanyViewSet, basename="companies")
-router.register("tarifs", TarifViewSet, basename="tarifs")
-router.register("offers", OfferViewSet, basename="offers")
-router.register("admin_offers", PaginatedOfferViewSet, basename="admin_offers")
+router.register("companies", viewsets.CompanyViewSet, basename="companies")
+router.register("tarifs", viewsets.TarifViewSet, basename="tarifs")
+router.register("offers", viewsets.OfferViewSet, basename="offers")
+router.register("admin_offers", viewsets.PaginatedOfferViewSet, basename="admin_offers")
