@@ -24,7 +24,8 @@ class TaxField(serializers.CharField):
     def to_representation(self, value):
         return {
             "percent": self.context["tax_percent"],
-            "value": "{:.2f} €".format(value.tax),
+            # "value": "{:.2f} €".format(value.tax),
+            "value": "{:.2f}".format(value.tax),
         }
 
 
@@ -32,7 +33,8 @@ class IvaField(TaxField):
     def to_representation(self, value):
         return {
             "percent": self.context["iva_percent"],
-            "value": "{:.2f} €".format(value.iva),
+            # "value": "{:.2f} €".format(value.iva),
+            "value": "{:.2f}".format(value.iva),
         }
 
 
@@ -85,5 +87,6 @@ class BeautyFloatField(serializers.FloatField):
             raise ValueError("Value %s not float" % value)
         result = decimal.Decimal.from_float(value).quantize(QUANT, decimal.ROUND_HALF_UP).normalize()
         if self.show_euro:
-            return f"{result} €"
+            # return f"{result} €"
+            return f"{result}"
         return result

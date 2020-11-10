@@ -35,12 +35,38 @@ class SendOfferView(LoggingMixin, views.APIView):
         serializer.is_valid(raise_exception=True)
         calculated = serializer.get_calculated()
         old = {k: v[0] for k, v in request.query_params.items()}
+        old["oc"] = sum(
+            map(float, filter(None, [old.get("reactive"), old.get("tax", {}).get("value"), old.get("rental")]))
+        )
+        old["st_c"] = sum(map(float, filter(None, [old.get("st_c1"), old.get("st_c2"), old.get("st_c3")])))
+        old["st_p"] = sum(map(float, filter(None, [old.get("st_p1"), old.get("st_p2"), old.get("st_p3")])))
+        new_st_p = calculated["st_p1"] + calculated["st_p2"] + calculated["st_p3"]
+        new_st_c = calculated["st_c1"] + calculated["st_c2"] + calculated["st_c3"]
+        new_oc = sum(
+            map(
+                float,
+                filter(None, [calculated["reactive"], calculated["tax"]["value"], calculated["rental"]]),
+            )
+        )
         ctx = {
             "new": {
-                "st_p": calculated["st_p1"] + calculated["st_p2"] + calculated["st_p3"],
+                "st_p": new_st_p,
+                "st_c": new_st_c,
+                "oc": new_oc,
+                "bi": new_st_c + new_st_p + new_oc,
                 **calculated,
             },
             "old": {
+                "iva": {
+                    "percent": "?",
+                    "value": "?",
+                },
+                "reactive": "?",
+                "rental": "?",
+                "tax": {"percent": "?", "value": "?"},
+                "oc": old.get("oc") or "?",
+                "bi": (old.get("st_c") + old.get("st_p") + old.get("oc")) or "?",
+                "total": "?",
                 "p1": "?",
                 "p2": "?",
                 "p3": "?",
@@ -59,7 +85,8 @@ class SendOfferView(LoggingMixin, views.APIView):
                 "st_c1": "?",
                 "st_c2": "?",
                 "st_c3": "?",
-                "st_p": sum(map(float, filter(None, [old.get("st_p1"), old.get("st_p2"), old.get("st_p3")]))) or "?",
+                "st_p": old.get("st_p") or "?",
+                "st_c": old.get("st_c") or "?",
                 **old,
             },
             "period": old["period"],

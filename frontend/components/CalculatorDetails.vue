@@ -9,7 +9,7 @@
     </v-row>
     <v-row>
       <v-col>
-        <v-container v-html="htmlDetails" />
+        <v-container fluid v-html="htmlDetails" />
       </v-col>
     </v-row>
   </v-card>

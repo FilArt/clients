@@ -39,7 +39,6 @@ class CalculatorSerializer(serializers.ModelSerializer):
     reactive = serializers.FloatField(
         default=0,
         min_value=0,
-        write_only=True,
         allow_null=True,
         required=False,
         validators=[casi_positive_number],
@@ -65,7 +64,8 @@ class CalculatorSerializer(serializers.ModelSerializer):
 
     with_calculations = serializers.BooleanField(default=False, write_only=True)
 
-    rental = BeautyFloatField(show_euro=True)
+    # rental = BeautyFloatField(show_euro=True)
+    rental = serializers.FloatField(read_only=True)
     profit = BeautyFloatField(show_euro=True)
     profit_num = serializers.DecimalField(read_only=True, max_digits=10, decimal_places=2, source="profit")
     profit_percent = serializers.IntegerField(read_only=True)
@@ -118,6 +118,7 @@ class CalculatorSerializer(serializers.ModelSerializer):
             "kind",
             "reactive",
             "igic",
+            "rental",
         ]
         extra_kwargs = {
             "name": {"read_only": True},
@@ -208,7 +209,8 @@ class CalculatorSerializer(serializers.ModelSerializer):
             many=many,
             context={
                 "initial_data": self.initial_data,
-                "tax_percent": f'{"Imp. eléctrico" if is_luz else "Imp. hidrocarburos"} ({tax_percent}%)',
+                # "tax_percent": f'{"Imp. eléctrico" if is_luz else "Imp. hidrocarburos"} ({tax_percent}%)',
+                "tax_percent": tax_percent,
                 "iva_percent": f'{"IGIC" if use_igic else "IVA general"} ({round(nds * 100, 2)}%)',
             },
         ).data
