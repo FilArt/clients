@@ -1,99 +1,17 @@
 <template>
-  <v-card v-if="calculations.tax">
-    <v-card class="mx-auto">
-      <template v-for="item in terminos">
-        <div :key="item.text">
-          <v-card-title style="padding-bottom: 0">{{ item.text }}</v-card-title>
-
-          <v-card-text style="line-height: 2px">
-            <v-row v-for="(piece, idx) in item.items" :key="idx" align="center">
-              <div class="d-flex">
-                <div class="popusk"></div>
-                <v-col class="font-weight-bold flex-grow-0">{{ piece.text }}</v-col>
-                <div class="popusk"></div>
-                <v-col style="font-size: 12px">{{ piece.value }}</v-col>
-              </div>
-            </v-row>
-          </v-card-text>
-        </div>
-      </template>
-
-      <v-card-title style="padding-bottom: 0">Otros conceptos</v-card-title>
-
-      <v-card-text style="line-height: 2px">
-        <v-row align="center">
-          <div class="popusk"></div>
-          <v-col class="popusk-2 font-weight-bold text-no-wrap">
-            {{ calculations.tax.percent }}
-          </v-col>
-          <v-col style="font-size: 12px"> {{ calculations.tax.value }}</v-col>
-        </v-row>
-
-        <v-row align="center">
-          <div class="popusk"></div>
-          <v-col class="popusk-2 flex-shrink-0 font-weight-bold text-no-wrap"> Alquiler de equipos </v-col>
-          <v-col class="text-no-wrap" style="font-size: 12px">
-            {{ calculations.rental }}
-          </v-col>
-        </v-row>
-
-        <v-row align="center">
-          <div class="popusk"></div>
-          <v-col class="popusk-2 font-weight-bold text-no-wrap">{{ calculations.iva.percent }}</v-col>
-          <v-col class="text-no-wrap" style="font-size: 12px">
-            {{ calculations.iva.value }}
-          </v-col>
-        </v-row>
-      </v-card-text>
-
-      <v-card-text class="text-h6 text-right" style="">
-        <hr />
-        Total factura: {{ calculations.total }}
-      </v-card-text>
-
-      <v-card-text class="text-center overline red--text font-weight-bold" style="font-size: 18px !important">
-        Paga actualmente: {{ calculations.current_price }} €
-      </v-card-text>
-
-      <v-card-text>
-        <v-alert border="left" color="#004680" dark>
-          <div class="text-uppercase text-center font-weight-thin" style="font-size: 22px !important">
-            <p>Ahorro en cada factura</p>
-            <p>
-              <span class="font-weight-bold">{{ calculations.profit }} ({{ calculations.profit_percent }}%)</span>
-            </p>
-            <p>Ahorro en anual</p>
-            <p>
-              <span class="font-weight-bold">{{ calculations.annual_total }}</span>
-            </p>
-          </div>
-        </v-alert>
-      </v-card-text>
-    </v-card>
-
-    <v-card-actions v-if="$auth.loggedIn">
-      <v-btn rounded block outlined color="primary" @click="addBid">
-        Añadir a cartera
-        <v-icon right> mdi-briefcase </v-icon>
-      </v-btn>
-    </v-card-actions>
-
-    <v-card-text>
+  <v-card>
+    <v-row>
       <v-col>
-        <v-row>
-          <v-col>
-            <v-text-field v-model="direccion" label="Direccion" />
-            <v-text-field v-model="cups" label="CUPS" />
-            <v-text-field v-model="clientName" label="Nombre" />
-          </v-col>
-        </v-row>
-        <v-row>
-          <v-col>
-            <v-container v-html="htmlDetails" />
-          </v-col>
-        </v-row>
+        <v-text-field v-model="direccion" label="Direccion" />
+        <v-text-field v-model="cups" label="CUPS" />
+        <v-text-field v-model="clientName" label="Nombre" />
       </v-col>
-    </v-card-text>
+    </v-row>
+    <v-row>
+      <v-col>
+        <v-container v-html="htmlDetails" />
+      </v-col>
+    </v-row>
   </v-card>
 </template>
 
@@ -115,6 +33,7 @@ export default {
       direccion: null,
       cups: null,
       clientName: null,
+      interval: null,
     }
   },
   computed: {
@@ -141,6 +60,10 @@ export default {
   },
   async mounted() {
     await this.getDetails()
+    this.interval = setInterval(this.getDetails, 2000)
+  },
+  beforeDestroy() {
+    clearInterval(this.interval)
   },
   methods: {
     async getDetails() {

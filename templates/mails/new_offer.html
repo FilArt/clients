@@ -215,7 +215,7 @@
                                     <div style="margin-right: auto; font-family: Helvetica Neue,Helvetica,Arial,sans-serif; font-size: 14px; line-height: 1.4;"><span
                                         style="font-size: 12px;"><span style="color: #004680;"><strong>POTENCIA
                                             CONTRATADA (kW):&nbsp;</strong></span><span
-                                          style="color: rgb(0, 0, 0);"><strong>{{ p1 }}; {{ p2 }}; {{ p3 }}</strong></span></span></div>
+                                          style="color: rgb(0, 0, 0);"><strong>{{ new.p1 }}; {{ new.p2 }}; {{ new.p3 }}</strong></span></span></div>
                                     <div style="margin-right: auto; font-family: Helvetica Neue, Helvetica, Arial, sans-serif; color: #444444; font-size: 14px; line-height: 1.4;"><span
                                         style="color: #004680;"><strong><span style="font-size: 12px;">TARIFA:&nbsp;</span></strong></span><span
                                         style="color: rgb(0, 0, 0);"><strong><span
@@ -388,14 +388,14 @@ style="font-family: Roboto, RobotoDraft, Helvetica, Arial, sans-serif; font-styl
                                                 class="fr-unprocessed" style="font-size: 14px;"><span
                                                   style="font-size: 11px;"><strong><span
                                                       style="color: rgb(0, 70, 128);"><span
-                                                        style="color: rgb(0, 0, 0);">{{ p1 }}</span></span></strong></span></span></div>
+                                                        style="color: rgb(0, 0, 0);">{{ old.p1 }}</span></span></strong></span></span></div>
                                           </td>
                                           <td style="width: 7.9777%;">
                                             <div style="text-align: center;"><span
                                                 class="fr-unprocessed" style="font-size: 14px;"><span
                                                   style="font-size: 11px;"><strong><span
                                                       style="color: rgb(0, 70, 128);"><span
-                                                        style="color: rgb(0, 0, 0);">77</span></span></strong></span></span></div>
+                                                        style="color: rgb(0, 0, 0);">{{ period }}</span></span></strong></span></span></div>
                                           </td>
                                           <td style="width: 12.0594%;">
                                             <div style="text-align: right;"><span
@@ -404,14 +404,14 @@ style="font-family: Roboto, RobotoDraft, Helvetica, Arial, sans-serif; font-styl
                                                       style="color: rgb(0, 0, 0);"><span
                                                         style="color: rgb(0, 70, 128);"><span
                                                           style="color: rgb(0, 70, 128);">&nbsp;</span><span
-                                                          style="color: rgb(0, 0, 0);">p1_some</span></span></span></strong></span></span></div>
+                                                          style="color: rgb(0, 0, 0);">{{ old.st_p1 }}</span></span></span></strong></span></span></div>
                                           </td>
                                           <td style="width: 11.1317%;">
                                             <div style="text-align: right;"><span
                                                 class="fr-unprocessed" style="font-size: 14px;"><span
                                                   style="font-size: 11px;"><strong><span
                                                       style="color: rgb(0, 0, 0);"><span
-                                                        style="color: rgb(0, 0, 0);">&nbsp;p1_totales
+                                                        style="color: rgb(0, 0, 0);">&nbsp;{{ old.st_p1 }}
                                                         <span style="font-family: arial, sans-serif; font-style: normal; font-variant-ligatures: normal; font-variant-caps: normal; font-weight: 400; letter-spacing: normal; orphans: 2; text-align: left; text-indent: 0px; text-transform: none; white-space: normal; widows: 2; word-spacing: 0px; -webkit-text-stroke-width: 0px; background-color: rgb(255, 255, 255); text-decoration-thickness: initial; text-decoration-style: initial; text-decoration-color: initial; float: none; display: inline !important;">€</span></span></span></strong></span></span></div>
                                           </td>
                                           <td style="width: 9.462%;"><span class="fr-unprocessed"
@@ -426,14 +426,14 @@ style="font-family: Roboto, RobotoDraft, Helvetica, Arial, sans-serif; font-styl
                                                 class="fr-unprocessed" style="font-size: 14px;"><span
                                                   style="font-size: 11px;"><strong><span
                                                       style="color: rgb(0, 70, 128);"><span
-                                                        style="color: rgb(0, 0, 0);">{{ p1 }}</span></span></strong></span></span></div>
+                                                        style="color: rgb(0, 0, 0);">{{ old.p1 }}</span></span></strong></span></span></div>
                                           </td>
                                           <td style="width: 7.4212%;">
                                             <div style="text-align: center;"><span
                                                 class="fr-unprocessed" style="font-size: 14px;"><span
                                                   style="font-size: 11px;"><strong><span
                                                       style="color: rgb(0, 70, 128);"><span
-                                                        style="color: rgb(0, 0, 0);">77</span></span></strong></span></span></div>
+                                                        style="color: rgb(0, 0, 0);">{{ period }}</span></span></strong></span></span></div>
                                           </td>
                                           <td style="width: 12.2448%;">
                                             <div style="text-align: right;"><span
@@ -442,14 +442,14 @@ style="font-family: Roboto, RobotoDraft, Helvetica, Arial, sans-serif; font-styl
                                                       style="color: rgb(0, 0, 0);"><span
                                                         style="color: rgb(0, 70, 128);"><span
                                                           style="color: rgb(0, 70, 128);">&nbsp;</span><span
-                                                          style="color: rgb(0, 0, 0);">p1_some</span></span></span></strong></span></span></div>
+                                                          style="color: rgb(0, 0, 0);">{{ new.p1 }}</span></span></span></strong></span></span></div>
                                           </td>
                                           <td style="width: 10.0186%;">
                                             <div style="text-align: right;"><span
                                                 class="fr-unprocessed" style="font-size: 14px;"><span
                                                   style="font-size: 11px;"><strong><span
                                                       style="color: rgb(0, 0, 0);"><span
-                                                        style="color: rgb(0, 0, 0);">&nbsp;{{ p2 }}
+                                                        style="color: rgb(0, 0, 0);">&nbsp;{{ new.st_p1 }}
                                                         <span style="font-family: arial, sans-serif; font-style: normal; font-variant-ligatures: normal; font-variant-caps: normal; font-weight: 400; letter-spacing: normal; orphans: 2; text-align: left; text-indent: 0px; text-transform: none; white-space: normal; widows: 2; word-spacing: 0px; -webkit-text-stroke-width: 0px; background-color: rgb(255, 255, 255); text-decoration-thickness: initial; text-decoration-style: initial; text-decoration-color: initial; float: none; display: inline !important;">€</span></span></span></strong></span></span></div>
                                           </td>
                                         </tr>
@@ -467,7 +467,7 @@ style="font-family: Roboto, RobotoDraft, Helvetica, Arial, sans-serif; font-styl
                                                   style="font-size: 11px;"><strong><span
                                                       style="color: rgb(0, 0, 0);"><span
                                                         style="color: rgb(0, 70, 128);"><span
-                                                          style="color: rgb(0, 0, 0);">{{ p3 }}</span></span></span></strong></span></span></div>
+                                                          style="color: rgb(0, 0, 0);">{{ old.p3 }}</span></span></span></strong></span></span></div>
                                           </td>
                                           <td style="width: 7.9777%;">
                                             <div style="text-align: center;"><span
@@ -482,13 +482,13 @@ style="font-family: Roboto, RobotoDraft, Helvetica, Arial, sans-serif; font-styl
                                                   style="font-size: 11px;"><strong><span
                                                       style="color: rgb(0, 0, 0);"><span
 
-                                                        style="color: rgb(0, 0, 0);">&nbsp;p2_some</span></span></strong></span></span></div>
+                                                        style="color: rgb(0, 0, 0);">&nbsp;{{ old.p2 }}</span></span></strong></span></span></div>
                                           </td>
                                           <td style="width: 11.1317%;">
                                             <div style="text-align: right;"><span
                                                 class="fr-unprocessed" style="font-size: 14px;"><span
                                                   style="font-size: 11px;"><strong><span
-                                                      style="color: rgb(0, 0, 0);">&nbsp;p2_totales
+                                                      style="color: rgb(0, 0, 0);">&nbsp;{{ old.st_p2 }}
                                                       <span style="font-family: arial, sans-serif; font-style: normal; font-variant-ligatures: normal; font-variant-caps: normal; font-weight: 400; letter-spacing: normal; orphans: 2; text-align: left; text-indent: 0px; text-transform: none; white-space: normal; widows: 2; word-spacing: 0px; -webkit-text-stroke-width: 0px; background-color: rgb(255, 255, 255); text-decoration-thickness: initial; text-decoration-style: initial; text-decoration-color: initial; float: none; display: inline !important;">€</span></span></strong></span></span></div>
                                           </td>
                                           <td style="width: 9.462%;"><span class="fr-unprocessed"
@@ -502,7 +502,7 @@ style="font-family: Roboto, RobotoDraft, Helvetica, Arial, sans-serif; font-styl
                                                   style="font-size: 11px;"><strong><span
                                                       style="color: rgb(0, 0, 0);"><span
                                                         style="color: rgb(0, 70, 128);"><span
-                                                          style="color: rgb(0, 0, 0);">{{ p2 }}</span></span></span></strong></span></span></div>
+                                                          style="color: rgb(0, 0, 0);">{{ old.p2 }}</span></span></span></strong></span></span></div>
                                           </td>
                                           <td style="width: 7.4212%;">
                                             <div style="text-align: center;"><span
@@ -518,14 +518,14 @@ style="font-family: Roboto, RobotoDraft, Helvetica, Arial, sans-serif; font-styl
                                                       style="color: rgb(0, 0, 0);"><span
                                                         style="color: rgb(0, 70, 128);"><span
                                                           style="color: rgb(0, 70, 128);">&nbsp;</span><span
-                                                          style="color: rgb(0, 0, 0);">p2_some</span></span></span></strong></span></span></div>
+                                                          style="color: rgb(0, 0, 0);">{{ new.p2 }}</span></span></span></strong></span></span></div>
                                           </td>
                                           <td style="width: 10.0186%;">
                                             <div style="text-align: right;"><span
                                                 class="fr-unprocessed" style="font-size: 14px;"><span
                                                   style="font-size: 11px;"><strong><span
                                                       style="color: rgb(0, 0, 0);"><span
-                                                        style="color: rgb(0, 0, 0);">&nbsp;{{ c_st_p2 }}
+                                                        style="color: rgb(0, 0, 0);">&nbsp;{{ new.st_p2 }}
                                                         <span style="font-family: arial, sans-serif; font-style: normal; font-variant-ligatures: normal; font-variant-caps: normal; font-weight: 400; letter-spacing: normal; orphans: 2; text-align: left; text-indent: 0px; text-transform: none; white-space: normal; widows: 2; word-spacing: 0px; -webkit-text-stroke-width: 0px; background-color: rgb(255, 255, 255); text-decoration-thickness: initial; text-decoration-style: initial; text-decoration-color: initial; float: none; display: inline !important;">€</span></span></span></strong></span></span></div>
                                           </td>
                                         </tr>
@@ -539,25 +539,25 @@ style="font-family: Roboto, RobotoDraft, Helvetica, Arial, sans-serif; font-styl
                                             <div style="text-align: right;"><span
                                                 class="fr-unprocessed" style="font-size: 14px;"><span
                                                   style="font-size: 11px;"><strong><span
-                                                      style="color: rgb(0, 0, 0);">{{ p3 }}</span></strong></span></span></div>
+                                                      style="color: rgb(0, 0, 0);">{{ old.p3 }}</span></strong></span></span></div>
                                           </td>
                                           <td style="width: 7.9777%;">
                                             <div style="text-align: center;"><span
                                                 class="fr-unprocessed" style="font-size: 14px;"><span
                                                   style="font-size: 11px;"><strong><span
-                                                      style="color: rgb(0, 0, 0);">p3_some</span></strong></span></span></div>
+                                                      style="color: rgb(0, 0, 0);">{{ period }}</span></strong></span></span></div>
                                           </td>
                                           <td style="width: 12.0594%;">
                                             <div style="text-align: right;"><span
                                                 class="fr-unprocessed" style="font-size: 14px;"><span
                                                   style="font-size: 11px;"><strong><span
-                                                      style="color: rgb(0, 0, 0);">&nbsp;p3 some</span></strong></span></span></div>
+                                                      style="color: rgb(0, 0, 0);">&nbsp;{{ old.p3 }}</span></strong></span></span></div>
                                           </td>
                                           <td style="width: 11.1317%;">
                                             <div style="text-align: right;"><span
                                                 class="fr-unprocessed" style="font-size: 14px;"><span
                                                   style="font-size: 11px;"><strong><span
-                                                      style="color: rgb(0, 0, 0);">&nbsp;p3_totales
+                                                      style="color: rgb(0, 0, 0);">&nbsp;{{ old.st_p3 }}
                                                       <span style="font-family: arial, sans-serif; font-style: normal; font-variant-ligatures: normal; font-variant-caps: normal; font-weight: 400; letter-spacing: normal; orphans: 2; text-align: left; text-indent: 0px; text-transform: none; white-space: normal; widows: 2; word-spacing: 0px; -webkit-text-stroke-width: 0px; background-color: rgb(255, 255, 255); text-decoration-thickness: initial; text-decoration-style: initial; text-decoration-color: initial; float: none; display: inline !important;">€</span></span></strong></span></span></div>
                                           </td>
                                           <td style="width: 9.462%;"><span class="fr-unprocessed"
@@ -569,14 +569,14 @@ style="font-family: Roboto, RobotoDraft, Helvetica, Arial, sans-serif; font-styl
                                             <div style="text-align: right;"><span
                                                 class="fr-unprocessed" style="font-size: 14px;"><span
                                                   style="font-size: 11px;"><strong><span
-                                                      style="color: rgb(0, 0, 0);">77,77</span></strong></span></span></div>
+                                                      style="color: rgb(0, 0, 0);">{{ old.p3 }}</span></strong></span></span></div>
                                           </td>
                                           <td style="width: 7.4212%;">
                                             <div style="text-align: center;"><span
                                                 class="fr-unprocessed" style="font-size: 14px;"><span
                                                   style="font-size: 11px;"><strong><span
                                                       style="color: rgb(0, 70, 128);"><span
-                                                        style="color: rgb(0, 0, 0);">77</span></span></strong></span></span></div>
+                                                        style="color: rgb(0, 0, 0);">{{ period }}</span></span></strong></span></span></div>
                                           </td>
                                           <td style="width: 12.2448%;">
                                             <div style="text-align: right;"><span
@@ -585,91 +585,15 @@ style="font-family: Roboto, RobotoDraft, Helvetica, Arial, sans-serif; font-styl
                                                       style="color: rgb(0, 0, 0);"><span
                                                         style="color: rgb(0, 70, 128);"><span
                                                           style="color: rgb(0, 70, 128);">&nbsp;</span><span
-                                                          style="color: rgb(0, 0, 0);">0,777777</span></span></span></strong></span></span></div>
+                                                          style="color: rgb(0, 0, 0);">{{ new.p3 }}</span></span></span></strong></span></span></div>
                                           </td>
                                           <td style="width: 10.0186%;">
                                             <div style="text-align: right;"><span
                                                 class="fr-unprocessed" style="font-size: 14px;"><span
                                                   style="font-size: 11px;"><strong><span
                                                       style="color: rgb(0, 0, 0);"><span
-                                                        style="color: rgb(0, 0, 0);">&nbsp;77,77
+                                                        style="color: rgb(0, 0, 0);">&nbsp;{{ new.st_p3 }}
                                                         <span style="font-family: arial, sans-serif; font-style: normal; font-variant-ligatures: normal; font-variant-caps: normal; font-weight: 400; letter-spacing: normal; orphans: 2; text-align: left; text-indent: 0px; text-transform: none; white-space: normal; widows: 2; word-spacing: 0px; -webkit-text-stroke-width: 0px; background-color: rgb(255, 255, 255); text-decoration-thickness: initial; text-decoration-style: initial; text-decoration-color: initial; float: none; display: inline !important;">€</span></span></span></strong></span></span></div>
-                                          </td>
-                                        </tr>
-                                        <tr>
-                                          <td colspan="4" style="width: 35.436%;"><span
-                                              class="fr-unprocessed" style="font-size: 14px;"><span
-                                                style="font-size: 11px;"><strong><span
-                                                    style="color: rgb(0, 0, 0);">&nbsp;<br>
-                                                  </span></strong></span></span></td>
-                                          <td style="width: 11.1317%;">
-                                            <div style="text-align: right;"><span
-                                                class="fr-unprocessed" style="font-size: 14px;"><span
-                                                  style="font-size: 11px;"><strong><span
-                                                      style="color: rgb(0, 0, 0);"><strong>&nbsp;c1 client total<span style="color: rgb(0, 0, 0); font-family: arial, sans-serif; font-style: normal; font-variant-ligatures: normal; font-variant-caps: normal; font-weight: 400; letter-spacing: normal; orphans: 2; text-align: left; text-indent: 0px; text-transform: none; white-space: normal; widows: 2; word-spacing: 0px; -webkit-text-stroke-width: 0px; background-color: rgb(255, 255, 255); text-decoration-thickness: initial; text-decoration-style: initial; text-decoration-color: initial; float: none; display: inline !important;">€</span></strong></span></strong></span></span></div>
-                                          </td>
-                                          <td colspan="4" style="width: 37.8479%;"><span
-                                              class="fr-unprocessed" style="font-size: 14px;"><span
-                                                style="font-size: 11px;"><strong><span
-                                                    style="color: rgb(0, 0, 0);">&nbsp;<br>
-                                                  </span></strong></span></span></td>
-                                          <td style="width: 10.0185%;">
-                                            <div style="text-align: right;"><span
-                                                class="fr-unprocessed" style="font-size: 14px;"><span
-                                                  style="font-size: 11px;"><strong><span
-                                                      style="color: rgb(0, 0, 0);"><strong>&nbsp;c oferta total <span style="color: rgb(0, 0, 0); font-family: arial, sans-serif; font-style: normal; font-variant-ligatures: normal; font-variant-caps: normal; font-weight: 400; letter-spacing: normal; orphans: 2; text-align: left; text-indent: 0px; text-transform: none; white-space: normal; widows: 2; word-spacing: 0px; -webkit-text-stroke-width: 0px; background-color: rgb(255, 255, 255); text-decoration-thickness: initial; text-decoration-style: initial; text-decoration-color: initial; float: none; display: inline !important;">€</span></strong></span></strong></span></span></div>
-                                          </td>
-                                        </tr>
-                                        <tr>
-                                          <td colspan="3" style="width: 23.3766%;">
-                                            <div style="text-align: center;"><span
-                                                class="fr-unprocessed" style="font-size: 14px;"><span
-                                                  style="font-size: 11px;"><strong><span
-                                                      style="color: rgb(0, 0, 0);">&nbsp;<span
-style="font-family: Roboto, RobotoDraft, Helvetica, Arial, sans-serif; font-style: normal; font-variant-ligatures: normal; font-variant-caps: normal; font-weight: 400; letter-spacing: normal; orphans: 2; text-align: start; text-indent: 0px; text-transform: none; white-space: pre-wrap; widows: 2; word-spacing: 0px; -webkit-text-stroke-width: 0px; background-color: rgb(255, 255, 255); text-decoration-thickness: initial; text-decoration-style: initial; text-decoration-color: initial; float: none; display: inline !important;">DESCUENTO T. Fijo %:</span>
-                                                      <br>
-                                                    </span></strong></span></span></div>
-                                          </td>
-                                          <td style="width: 12.0594%;">
-                                            <div style="text-align: center;"><span
-                                                class="fr-unprocessed" style="font-size: 14px;"><span
-                                                  style="font-size: 11px;"><strong><span
-                                                      style="color: rgb(0, 70, 128);"><span
-                                                        style="color: rgb(0, 0, 0);">0
-                                                        %</span></span></strong></span></span></div>
-                                          </td>
-                                          <td style="width: 11.1317%;">
-                                            <div style="text-align: right;"><span
-                                                class="fr-unprocessed" style="font-size: 14px;"><span
-                                                  style="font-size: 11px;"><strong><span
-                                                      style="color: rgb(0, 70, 128);"><span
-                                                        style="color: rgb(0, 0, 0);">&nbsp;-<span
-                                                          style="font-family: arial, sans-serif; font-style: normal; font-variant-ligatures: normal; font-variant-caps: normal; font-weight: 400; letter-spacing: normal; orphans: 2; text-align: left; text-indent: 0px; text-transform: none; white-space: normal; widows: 2; word-spacing: 0px; -webkit-text-stroke-width: 0px; background-color: rgb(255, 255, 255); text-decoration-thickness: initial; text-decoration-style: initial; text-decoration-color: initial; float: none; display: inline !important;">€</span></span></span></strong></span></span></div>
-                                          </td>
-                                          <td colspan="3" style="width: 25.603%;">
-                                            <div style="text-align: center;"><span
-                                                class="fr-unprocessed" style="font-size: 14px;"><span
-                                                  style="font-size: 11px;"><strong><span
-                                                      style="color: rgb(0, 70, 128);"><span
-                                                        style="color: rgb(0, 0, 0);">&nbsp;<span
-style="font-family: Roboto, RobotoDraft, Helvetica, Arial, sans-serif; font-style: normal; font-variant-ligatures: normal; font-variant-caps: normal; font-weight: 400; letter-spacing: normal; orphans: 2; text-align: start; text-indent: 0px; text-transform: none; white-space: pre-wrap; widows: 2; word-spacing: 0px; -webkit-text-stroke-width: 0px; background-color: rgb(255, 255, 255); text-decoration-thickness: initial; text-decoration-style: initial; text-decoration-color: initial; float: none; display: inline !important;">DESCUENTO T. Fijo %:</span>
-                                                        <br>
-                                                      </span></span></strong></span></span></div>
-                                          </td>
-                                          <td style="width: 12.2449%;">
-                                            <div style="text-align: center;"><span
-                                                class="fr-unprocessed" style="font-size: 14px;"><span
-                                                  style="font-size: 11px;"><strong><span
-                                                      style="color: rgb(0, 70, 128);"><span
-                                                        style="color: rgb(0, 0, 0);">0%</span></span></strong></span></span></div>
-                                          </td>
-                                          <td style="width: 10.0186%;">
-                                            <div style="text-align: right;"><span
-                                                class="fr-unprocessed" style="font-size: 14px;"><span
-                                                  style="font-size: 11px;"><strong><span
-                                                      style="color: rgb(0, 70, 128);"><span
-                                                        style="color: rgb(0, 0, 0);">&nbsp;-<span
-                                                          style="color: rgb(34, 34, 34); font-family: arial, sans-serif; font-style: normal; font-variant-ligatures: normal; font-variant-caps: normal; font-weight: 400; letter-spacing: normal; orphans: 2; text-align: left; text-indent: 0px; text-transform: none; white-space: normal; widows: 2; word-spacing: 0px; -webkit-text-stroke-width: 0px; background-color: rgb(255, 255, 255); text-decoration-thickness: initial; text-decoration-style: initial; text-decoration-color: initial; float: none; display: inline !important;">€</span></span></span></strong></span></span></div>
                                           </td>
                                         </tr>
                                         <tr>
@@ -693,7 +617,7 @@ style="font-family: Roboto, RobotoDraft, Helvetica, Arial, sans-serif; font-styl
                                                   style="font-size: 11px;"><strong><span
                                                       style="color: rgb(0, 70, 128);"><span
                                                         style="color: rgb(0, 0, 0);">&nbsp;<span
-                                                          style="color: rgb(0, 0, 0);"><strong>p client total <span style="color: rgb(0, 0, 0); font-family: arial, sans-serif; font-style: normal; font-variant-ligatures: normal; font-variant-caps: normal; font-weight: 400; letter-spacing: normal; orphans: 2; text-align: left; text-indent: 0px; text-transform: none; white-space: normal; widows: 2; word-spacing: 0px; -webkit-text-stroke-width: 0px; background-color: rgb(255, 255, 255); text-decoration-thickness: initial; text-decoration-style: initial; text-decoration-color: initial; float: none; display: inline !important;">€</span></strong></span></span></span></strong></span></span></div>
+                                                          style="color: rgb(0, 0, 0);"><strong>{{ old.st_p }}<span style="color: rgb(0, 0, 0); font-family: arial, sans-serif; font-style: normal; font-variant-ligatures: normal; font-variant-caps: normal; font-weight: 400; letter-spacing: normal; orphans: 2; text-align: left; text-indent: 0px; text-transform: none; white-space: normal; widows: 2; word-spacing: 0px; -webkit-text-stroke-width: 0px; background-color: rgb(255, 255, 255); text-decoration-thickness: initial; text-decoration-style: initial; text-decoration-color: initial; float: none; display: inline !important;">€</span></strong></span></span></span></strong></span></span></div>
                                           </td>
                                           <td colspan="3" style="width: 25.603%;"><span
                                               class="fr-unprocessed" style="font-size: 14px;"><span
@@ -713,7 +637,7 @@ style="font-family: Roboto, RobotoDraft, Helvetica, Arial, sans-serif; font-styl
                                             <div style="text-align: right;"><span
                                                 class="fr-unprocessed" style="font-size: 14px;"><span
                                                   style="font-size: 11px;"><strong><span
-                                                      style="color: rgb(0, 0, 0);"><strong>&nbsp;p oferta total<span style="color: rgb(0, 0, 0); font-family: arial, sans-serif; font-style: normal; font-variant-ligatures: normal; font-variant-caps: normal; font-weight: 400; letter-spacing: normal; orphans: 2; text-align: left; text-indent: 0px; text-transform: none; white-space: normal; widows: 2; word-spacing: 0px; -webkit-text-stroke-width: 0px; background-color: rgb(255, 255, 255); text-decoration-thickness: initial; text-decoration-style: initial; text-decoration-color: initial; float: none; display: inline !important;">€</span></strong></span></strong></span></span></div>
+                                                      style="color: rgb(0, 0, 0);"><strong>&nbsp;{{ new.st_p }}<span style="color: rgb(0, 0, 0); font-family: arial, sans-serif; font-style: normal; font-variant-ligatures: normal; font-variant-caps: normal; font-weight: 400; letter-spacing: normal; orphans: 2; text-align: left; text-indent: 0px; text-transform: none; white-space: normal; widows: 2; word-spacing: 0px; -webkit-text-stroke-width: 0px; background-color: rgb(255, 255, 255); text-decoration-thickness: initial; text-decoration-style: initial; text-decoration-color: initial; float: none; display: inline !important;">€</span></strong></span></strong></span></span></div>
                                           </td>
                                         </tr>
                                       </tbody>
@@ -837,7 +761,7 @@ style="font-family: Roboto, RobotoDraft, Helvetica, Arial, sans-serif; font-styl
                                                       style="color: rgb(0, 0, 0);"><span
                                                         style="color: rgb(0, 70, 128);"><span
                                                           style="color: rgb(0, 70, 128);">&nbsp;</span><span
-                                                          style="color: rgb(0, 0, 0);">{{ client.c1 }}</span></span></span></strong></span></span></div>
+                                                          style="color: rgb(0, 0, 0);">{{ old.c1 }}</span></span></span></strong></span></span></div>
                                           </td>
                                           <td style="width: 11.5028%;">
                                             <div style="text-align: right;"><span
@@ -846,14 +770,14 @@ style="font-family: Roboto, RobotoDraft, Helvetica, Arial, sans-serif; font-styl
                                                       style="color: rgb(0, 0, 0);"><span
                                                         style="color: rgb(0, 70, 128);"><span
                                                           style="color: rgb(0, 70, 128);">&nbsp;</span><span
-                                                          style="color: rgb(0, 0, 0);">{{ c1 }}</span></span></span></strong></span></span></div>
+                                                          style="color: rgb(0, 0, 0);">{{ old.c1_offer }}</span></span></span></strong></span></span></div>
                                           </td>
                                           <td style="width: 12.8015%;">
                                             <div style="text-align: right;"><span
                                                 class="fr-unprocessed" style="font-size: 14px;"><span
                                                   style="font-size: 11px;"><strong><span
                                                       style="color: rgb(0, 0, 0);"><span
-                                                        style="color: rgb(0, 0, 0);">&nbsp;{{ st_c1  }}
+                                                        style="color: rgb(0, 0, 0);">&nbsp;{{ old.st_c1  }}
                                                         <span style="font-family: arial, sans-serif; font-style: normal; font-variant-ligatures: normal; font-variant-caps: normal; font-weight: 400; letter-spacing: normal; orphans: 2; text-align: left; text-indent: 0px; text-transform: none; white-space: normal; widows: 2; word-spacing: 0px; -webkit-text-stroke-width: 0px; background-color: rgb(255, 255, 255); text-decoration-thickness: initial; text-decoration-style: initial; text-decoration-color: initial; float: none; display: inline !important;">€</span></span></span></strong></span></span></div>
                                           </td>
                                           <td style="width: 9.2764%;"><span class="fr-unprocessed"
@@ -878,7 +802,7 @@ style="font-family: Roboto, RobotoDraft, Helvetica, Arial, sans-serif; font-styl
                                                       style="color: rgb(0, 0, 0);"><span
                                                         style="color: rgb(0, 70, 128);"><span
                                                           style="color: rgb(0, 70, 128);">&nbsp;</span><span
-                                                          style="color: rgb(0, 0, 0);">{{ c1 }}</span></span></span></strong></span></span></div>
+                                                          style="color: rgb(0, 0, 0);">{{ old.c1 }}</span></span></span></strong></span></span></div>
                                           </td>
                                           <td style="width: 10.3896%;">
                                             <div style="text-align: right;"><span
@@ -894,7 +818,7 @@ style="font-family: Roboto, RobotoDraft, Helvetica, Arial, sans-serif; font-styl
                                                 class="fr-unprocessed" style="font-size: 14px;"><span
                                                   style="font-size: 11px;"><strong><span
                                                       style="color: rgb(0, 0, 0);"><span
-                                                        style="color: rgb(0, 0, 0);">&nbsp;{{ st_c1 }}
+                                                        style="color: rgb(0, 0, 0);">&nbsp;{{ new.st_c1 }}
                                                         <span style="font-family: arial, sans-serif; font-style: normal; font-variant-ligatures: normal; font-variant-caps: normal; font-weight: 400; letter-spacing: normal; orphans: 2; text-align: left; text-indent: 0px; text-transform: none; white-space: normal; widows: 2; word-spacing: 0px; -webkit-text-stroke-width: 0px; background-color: rgb(255, 255, 255); text-decoration-thickness: initial; text-decoration-style: initial; text-decoration-color: initial; float: none; display: inline !important;">€</span></span></span></strong></span></span></div>
                                           </td>
                                         </tr>
@@ -913,7 +837,7 @@ style="font-family: Roboto, RobotoDraft, Helvetica, Arial, sans-serif; font-styl
                                                       style="color: rgb(0, 0, 0);"><span
                                                         style="color: rgb(0, 70, 128);"><span
                                                           style="color: rgb(0, 70, 128);">&nbsp;</span><span
-                                                          style="color: rgb(0, 0, 0);">{{ c2 }}</span></span></span></strong></span></span></div>
+                                                          style="color: rgb(0, 0, 0);">{{ old.c2 }}</span></span></span></strong></span></span></div>
                                           </td>
                                           <td style="width: 11.5028%;">
                                             <div style="text-align: right;"><span
@@ -941,7 +865,7 @@ style="font-family: Roboto, RobotoDraft, Helvetica, Arial, sans-serif; font-styl
                                                       style="color: rgb(0, 0, 0);"><span
                                                         style="color: rgb(0, 70, 128);"><span
                                                           style="color: rgb(0, 70, 128);">&nbsp;</span><span
-                                                          style="color: rgb(0, 0, 0);">{{ c2 }}</span></span></span></strong></span></span></div>
+                                                          style="color: rgb(0, 0, 0);">{{ old.c2 }}</span></span></span></strong></span></span></div>
                                           </td>
                                           <td style="width: 10.3896%;">
                                             <div style="text-align: right;"><span
@@ -950,14 +874,14 @@ style="font-family: Roboto, RobotoDraft, Helvetica, Arial, sans-serif; font-styl
                                                       style="color: rgb(0, 0, 0);"><span
                                                         style="color: rgb(0, 70, 128);"><span
                                                           style="color: rgb(0, 70, 128);">&nbsp;</span><span
-                                                          style="color: rgb(0, 0, 0);">c2 some </span></span></span></strong></span></span></div>
+                                                          style="color: rgb(0, 0, 0);">{{ new.st_c2 }}</span></span></span></strong></span></span></div>
                                           </td>
                                           <td style="width: 12.2449%;">
                                             <div style="text-align: right;"><span
                                                 class="fr-unprocessed" style="font-size: 14px;"><span
                                                   style="font-size: 11px;"><strong><span
                                                       style="color: rgb(0, 0, 0);"><span
-                                                        style="color: rgb(0, 0, 0);">&nbsp;{{ st_c2 }}
+                                                        style="color: rgb(0, 0, 0);">&nbsp;{{ new.st_c2 }}
                                                         <span style="font-family: arial, sans-serif; font-style: normal; font-variant-ligatures: normal; font-variant-caps: normal; font-weight: 400; letter-spacing: normal; orphans: 2; text-align: left; text-indent: 0px; text-transform: none; white-space: normal; widows: 2; word-spacing: 0px; -webkit-text-stroke-width: 0px; background-color: rgb(255, 255, 255); text-decoration-thickness: initial; text-decoration-style: initial; text-decoration-color: initial; float: none; display: inline !important;">€</span></span></span></strong></span></span></div>
                                           </td>
                                         </tr>
@@ -974,7 +898,7 @@ style="font-family: Roboto, RobotoDraft, Helvetica, Arial, sans-serif; font-styl
                                                       style="color: rgb(0, 0, 0);"><span
                                                         style="color: rgb(0, 70, 128);"><span
                                                           style="color: rgb(0, 70, 128);">&nbsp;</span><span
-                                                          style="color: rgb(0, 0, 0);">{{ c3_client }}</span></span></span></strong></span></span></div>
+                                                          style="color: rgb(0, 0, 0);">{{ old.c3 }}</span></span></span></strong></span></span></div>
                                           </td>
                                           <td style="width: 11.5028%;">
                                             <div style="text-align: right;"><span
@@ -1001,7 +925,7 @@ style="font-family: Roboto, RobotoDraft, Helvetica, Arial, sans-serif; font-styl
                                                       style="color: rgb(0, 0, 0);"><span
                                                         style="color: rgb(0, 70, 128);"><span
                                                           style="color: rgb(0, 70, 128);">&nbsp;</span><span
-                                                          style="color: rgb(0, 0, 0);">{{ c3 }}</span></span></span></strong></span></span></div>
+                                                          style="color: rgb(0, 0, 0);">{{ new.c3 }}</span></span></span></strong></span></span></div>
                                           </td>
                                           <td style="width: 10.3896%;">
                                             <div style="text-align: right;"><span
@@ -1017,7 +941,7 @@ style="font-family: Roboto, RobotoDraft, Helvetica, Arial, sans-serif; font-styl
                                                 class="fr-unprocessed" style="font-size: 14px;"><span
                                                   style="font-size: 11px;"><strong><span
                                                       style="color: rgb(0, 0, 0);"><span
-                                                        style="color: rgb(0, 0, 0);">&nbsp;{{ total_c3 }}
+                                                        style="color: rgb(0, 0, 0);">&nbsp;{{ new.st_c3 }}
                                                         <span style="font-family: arial, sans-serif; font-style: normal; font-variant-ligatures: normal; font-variant-caps: normal; font-weight: 400; letter-spacing: normal; orphans: 2; text-align: left; text-indent: 0px; text-transform: none; white-space: normal; widows: 2; word-spacing: 0px; -webkit-text-stroke-width: 0px; background-color: rgb(255, 255, 255); text-decoration-thickness: initial; text-decoration-style: initial; text-decoration-color: initial; float: none; display: inline !important;">€</span></span></span></strong></span></span></div>
                                           </td>
                                         </tr>
@@ -1499,9 +1423,9 @@ style="font-family: Roboto, RobotoDraft, Helvetica, Arial, sans-serif; font-styl
                                   <td style="text-align: left; background-color: rgb(0, 70, 128); padding: 20px 30px;">
                                     <div style="text-align: center;"><strong><span
                                           style="color: white;">AHORRO EN
-                                          FACTURA: {{ ahorro_factura}} €</span><br>
+                                          FACTURA: {{ new.total }} €</span><br>
                                         <span style="color: white;">&nbsp;AHORRO
-                                          ANUAL: {{ ahorro_anual }} €</span></strong></div>
+                                          ANUAL: {{ new.total_annual }} €</span></strong></div>
                                   </td>
                                 </tr>
                               </tbody>
