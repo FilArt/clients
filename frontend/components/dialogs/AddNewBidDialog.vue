@@ -1,8 +1,9 @@
 <template>
   <v-dialog v-if="userId" v-model="dialog" max-width="750">
     <template v-slot:activator="{ on }">
-      <v-btn icon v-on="on">
-        <v-icon color="success">mdi-plus</v-icon>
+      <v-btn outlined :icon="!label" v-on="on">
+        {{ label }}
+        <v-icon :right="!!label" color="success">mdi-plus</v-icon>
       </v-btn>
     </template>
 
@@ -23,6 +24,10 @@ export default {
   name: 'AddNewBidDialog',
   components: { AddNewBid },
   props: {
+    label: {
+      type: String,
+      default: null,
+    },
     userId: {
       type: Number,
       default: null,

@@ -29,7 +29,14 @@
         <v-tabs-items v-model="tabs">
           <v-tab-item>
             <v-list three-line subheader nav shaped>
-              <v-subheader inset> Solicitudes </v-subheader>
+              <v-subheader inset>
+                <v-row>
+                  <v-col> Solicitudes </v-col>
+                  <v-col>
+                    <add-new-bid-dialog :user-id="user.id" label="Añadir nuevo solicitud" />
+                  </v-col>
+                </v-row>
+              </v-subheader>
 
               <v-list-item v-for="bid in bids" :key="bid.id" nuxt :to="`/bids/${bid.id}`">
                 <v-list-item-content>
@@ -71,8 +78,10 @@
 </template>
 
 <script>
+import AddNewBidDialog from '@/components/dialogs/AddNewBidDialog'
 export default {
   components: {
+    AddNewBidDialog,
     Chat: () => import('~/components/chat/Chat'),
     PuntosList: () => import('~/components/puntos/PuntosList'),
     HistoryList: () => import('~/components/history/HistoryList'),
