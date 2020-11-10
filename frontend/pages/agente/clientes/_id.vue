@@ -31,9 +31,9 @@
             <v-list three-line subheader nav shaped>
               <v-subheader inset>
                 <v-row>
-                  <v-col> Solicitudes </v-col>
+                  <v-col>Solicitudes</v-col>
                   <v-col>
-                    <add-new-bid-dialog :user-id="user.id" label="Añadir nuevo solicitud" />
+                    <add-new-bid-dialog :user-id="$route.params.id" label="Añadir nuevo solicitud" />
                   </v-col>
                 </v-row>
               </v-subheader>
@@ -78,10 +78,9 @@
 </template>
 
 <script>
-import AddNewBidDialog from '@/components/dialogs/AddNewBidDialog'
 export default {
   components: {
-    AddNewBidDialog,
+    AddNewBidDialog: () => import('@/components/dialogs/AddNewBidDialog'),
     Chat: () => import('~/components/chat/Chat'),
     PuntosList: () => import('~/components/puntos/PuntosList'),
     HistoryList: () => import('~/components/history/HistoryList'),

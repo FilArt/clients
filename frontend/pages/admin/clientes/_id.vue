@@ -78,10 +78,9 @@
 </template>
 
 <script>
-import AddNewBidDialog from '@/components/dialogs/AddNewBidDialog'
 export default {
   components: {
-    AddNewBidDialog,
+    AddNewBidDialog: () => import('@/components/dialogs/AddNewBidDialog'),
     Chat: () => import('~/components/chat/Chat'),
     PuntosList: () => import('~/components/puntos/PuntosList'),
     HistoryList: () => import('~/components/history/HistoryList'),
