@@ -1,3 +1,5 @@
+from decimal import Decimal
+
 from django.shortcuts import render
 from django.utils import timezone
 from rest_framework import views
@@ -40,13 +42,16 @@ class SendOfferView(LoggingMixin, views.APIView):
         )
         old["st_c"] = sum(map(float, filter(None, [old.get("st_c1"), old.get("st_c2"), old.get("st_c3")])))
         old["st_p"] = sum(map(float, filter(None, [old.get("st_p1"), old.get("st_p2"), old.get("st_p3")])))
-        new_st_p = calculated["st_p1"] + calculated["st_p2"] + calculated["st_p3"]
-        new_st_c = calculated["st_c1"] + calculated["st_c2"] + calculated["st_c3"]
-        new_oc = sum(
-            map(
-                float,
-                filter(None, [calculated["reactive"], calculated["tax"]["value"], calculated["rental"]]),
-            )
+        new_st_p = round(calculated["st_p1"] + calculated["st_p2"] + calculated["st_p3"], 2)
+        new_st_c = round(calculated["st_c1"] + calculated["st_c2"] + calculated["st_c3"], 2)
+        new_oc = round(
+            sum(
+                map(
+                    float,
+                    filter(None, [calculated["reactive"], calculated["tax"]["value"], calculated["rental"]]),
+                )
+            ),
+            2,
         )
         ctx = {
             "new": {

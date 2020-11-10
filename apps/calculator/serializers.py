@@ -22,6 +22,11 @@ class CompanySerializer(serializers.ModelSerializer):
         fields = "__all__"
 
 
+class RoundedField(serializers.FloatField):
+    def to_representation(self, value):
+        return round(value, 2) if value else value
+
+
 class CalculatorSerializer(serializers.ModelSerializer):
     id = serializers.IntegerField(required=False)
     company_name = serializers.CharField(source="company.name", read_only=True)
@@ -52,12 +57,12 @@ class CalculatorSerializer(serializers.ModelSerializer):
     c_st_p2 = PotenciaCalculationField()
     c_st_p3 = PotenciaCalculationField()
 
-    st_c1 = serializers.FloatField(read_only=True)
-    st_c2 = serializers.FloatField(read_only=True)
-    st_c3 = serializers.FloatField(read_only=True)
-    st_p1 = serializers.FloatField(read_only=True)
-    st_p2 = serializers.FloatField(read_only=True)
-    st_p3 = serializers.FloatField(read_only=True)
+    st_c1 = RoundedField(read_only=True)
+    st_c2 = RoundedField(read_only=True)
+    st_c3 = RoundedField(read_only=True)
+    st_p1 = RoundedField(read_only=True)
+    st_p2 = RoundedField(read_only=True)
+    st_p3 = RoundedField(read_only=True)
 
     iva = IvaField(read_only=True)
     tax = TaxField(read_only=True)
@@ -211,6 +216,7 @@ class CalculatorSerializer(serializers.ModelSerializer):
                 "initial_data": self.initial_data,
                 # "tax_percent": f'{"Imp. eléctrico" if is_luz else "Imp. hidrocarburos"} ({tax_percent}%)',
                 "tax_percent": tax_percent,
-                "iva_percent": f'{"IGIC" if use_igic else "IVA general"} ({round(nds * 100, 2)}%)',
+                # "iva_percent": f'{"IGIC" if use_igic else "IVA general"} ({round(nds * 100, 2)}%)',
+                "iva_percent": f"{round(nds * 100)}%",
             },
         ).data

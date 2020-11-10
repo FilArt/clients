@@ -23,6 +23,9 @@
         line-height: 12px;
         text-align: center;
       }
+      .left-text > tr > td  {
+          text-align: left;
+      }
     </style>
   </head>
   <body>
@@ -59,33 +62,18 @@
               </tbody>
             </table>
 
-            <table
-              style="
-                margin: 0 auto;
-                background-color: #ffffff;
-                border-spacing: 0;
-                width: 600px;
-              "
-            >
-              <tbody
-                style="
-                  text-align: right;
+              <br>
+
+            <div style="
+                  text-align: left;
                   font-style: italic;
                   font-size: 11px;
-                  color: #004680;
-                "
-              >
-                <tr>
-                  <td>№ {{ new.id }}</td>
-                </tr>
-                <tr>
-                  <td>Fecha de la propuesta: {{ date }}</td>
-                </tr>
-                <tr>
-                  <td>Periodo de validez: 7 Días</td>
-                </tr>
-              </tbody>
-            </table>
+                  color: #004680;"
+            >
+                  <p style="text-align: right">№ {{ new.id }}</p>
+                  <p style="text-align: right">Fecha de la propuesta: {{ date }}</p>
+                  <p style="text-align: right">Periodo de validez: 7 Días</p>
+            </div>
 
             <table
               style="
@@ -311,7 +299,7 @@
                                     >
                                       <span style="color: #004680"
                                         ><span style="font-size: 12px"
-                                          >TARIFA:<span
+                                          >TARIFA: <span
                                             style="color: rgb(0, 0, 0)"
                                             ><span style="font-size: 12px"
                                               >{{ new.tarif }}
@@ -1392,7 +1380,7 @@
                                                       style="
                                                         color: rgb(0, 0, 0);
                                                       "
-                                                      >{{ old.st_p }}€
+                                                      ><strong>{{ old.st_p }} €</strong>
                                                     </span></span
                                                   ></span
                                                 ></span
@@ -1436,7 +1424,7 @@
                                               ><span style="font-size: 11px"
                                                 ><span
                                                   style="color: rgb(0, 0, 0)"
-                                                  >{{ new.st_p }}€
+                                                  ><strong>{{ new.st_p }} €</strong>
                                                 </span></span
                                               ></span
                                             >
@@ -1892,7 +1880,7 @@
                                                           float: none;
                                                           display: inline !important;
                                                         "
-                                                        >€</span
+                                                        > €</span
                                                       >
                                                     </span></span
                                                   ></span
@@ -2098,7 +2086,7 @@
                                                           float: none;
                                                           display: inline !important;
                                                         "
-                                                        >€</span
+                                                        > €</span
                                                       >
                                                     </span></span
                                                   ></span
@@ -2220,7 +2208,7 @@
                                                         float: none;
                                                         display: inline !important;
                                                       "
-                                                      >€</span
+                                                      > €</span
                                                     >
                                                   </span></span
                                                 ></span
@@ -2339,7 +2327,7 @@
                                                           float: none;
                                                           display: inline !important;
                                                         "
-                                                        >€</span
+                                                        > €</span
                                                       ></span
                                                     ></span
                                                   ></span
@@ -2438,7 +2426,7 @@
                                                         float: none;
                                                         display: inline !important;
                                                       "
-                                                      >€</span
+                                                      > €</span
                                                     ></span
                                                   ></span
                                                 ></span
@@ -2557,7 +2545,7 @@
                                                           float: none;
                                                           display: inline !important;
                                                         "
-                                                        >€</span
+                                                        > €</span
                                                       ></span
                                                     ></span
                                                   ></span
@@ -2621,7 +2609,7 @@
                                                         style="
                                                           color: rgb(0, 0, 0);
                                                         "
-                                                        >{{ old.st_c }}€</span
+                                                        ><strong>{{ old.st_c }} €</strong></span
                                                       ></span
                                                     ></span
                                                   ></span
@@ -2673,7 +2661,7 @@
                                                 ><span style="font-size: 11px"
                                                   ><span
                                                     style="color: rgb(0, 0, 0)"
-                                                    >{{ new.st_c }} €
+                                                    ><strong>{{ new.st_c }} €</strong>
                                                   </span></span
                                                 ></span
                                               >
@@ -2701,34 +2689,15 @@
                                   </tr>
                                   <tr>
                                     <td>
-                                      <table style="width: 539px">
-                                        <tbody>
+                                      <table style="width: 539px;">
+                                        <tbody class="left-text">
                                           <tr>
-                                            <td
-                                              style="
-                                                width: 25.7885%;
-                                                text-align: center;
-                                              "
-                                            >
-                                              <div style="text-align: left">
-                                                <span style="font-size: 14px"
-                                                  ><span
-                                                    style="
-                                                      font-size: 11px;
-                                                      color: rgb(0, 70, 128);
-                                                    "
-                                                    ><em
-                                                      >ENERGIA REACTIVA:</em
-                                                    ></span
-                                                  ></span
-                                                >
-                                              </div>
+                                            <td>
+                                                <span style="font-size: 11px; color: rgb(0, 70, 128);">
+                                                    <em>ENERGIA REACTIVA:</em>
+                                                </span>
                                             </td>
-                                            <td style="width: 8.1633%">
-                                              <span style="font-size: 14px"
-                                                ><br
-                                              /></span>
-                                            </td>
+                                            <td></td>
                                             <td style="width: 12.2449%">
                                               <span style="font-size: 14px"
                                                 ><span style="font-size: 11px"
@@ -2742,7 +2711,7 @@
                                                       "
                                                       >
                                                   <span style="color: rgb(0, 0, 0);">
-                                                      {{ old.reactive }}€
+                                                      {{ old.reactive }} €
                                                   </span>
                                               </span>
                                               </span>
@@ -2832,7 +2801,7 @@
                                                         style="
                                                           color: rgb(0, 0, 0);
                                                         "
-                                                        >{{ new.reactive }}€</span
+                                                        >{{ new.reactive }} €</span
                                                       ></span
                                                     ></span
                                                   ></span
@@ -2874,7 +2843,7 @@
                                                         style="
                                                           color: rgb(0, 0, 0);
                                                         "
-                                                        >{{ old.rental }}€</span
+                                                        >{{ old.rental }} €</span
                                                       ></span
                                                     ></span
                                                   ></span
@@ -2914,7 +2883,7 @@
                                                         style="
                                                           color: rgb(0, 0, 0);
                                                         "
-                                                        >{{ new.rental }}€
+                                                        >{{ new.rental }} €
                                                       </span></span
                                                     ></span
                                                   ></span
@@ -2970,7 +2939,7 @@
                                                         style="
                                                           color: rgb(0, 0, 0);
                                                         "
-                                                        >{{ old.tax.value }}€</span
+                                                        >{{ old.tax.value }} €</span
                                                       ></span
                                                     ></span
                                                   ></span
@@ -3024,7 +2993,7 @@
                                                         style="
                                                           color: rgb(0, 0, 0);
                                                         "
-                                                        >{{ new.tax.value }}€</span
+                                                        >{{ new.tax.value }} €</span
                                                       ></span
                                                     ></span
                                                   ></span
@@ -3066,7 +3035,7 @@
                                                         style="
                                                           color: rgb(0, 0, 0);
                                                         "
-                                                        >{{ old.oc }}€</span
+                                                        >{{ old.oc }} €</span
                                                       ></span
                                                     ></span
                                                   ></span
@@ -3106,7 +3075,7 @@
                                                         style="
                                                           color: rgb(0, 0, 0);
                                                         "
-                                                        >{{ new.oc }}€</span
+                                                        >{{ new.oc }} €</span
                                                       ></span
                                                     ></span
                                                   ></span
@@ -3148,7 +3117,7 @@
                                                         style="
                                                           color: rgb(0, 0, 0);
                                                         "
-                                                        >{{ old.bi }}€</span
+                                                        >{{ old.bi }} €</span
                                                       ></span
                                                     ></span
                                                   ></span
@@ -3188,7 +3157,7 @@
                                                         style="
                                                           color: rgb(0, 0, 0);
                                                         "
-                                                        >{{ new.bi }}€</span
+                                                        >{{ new.bi }} €</span
                                                       ></span
                                                     ></span
                                                   ></span
@@ -3244,7 +3213,7 @@
                                                         style="
                                                           color: rgb(0, 0, 0);
                                                         "
-                                                        >{{ old.iva.value }}€</span
+                                                        >{{ old.iva.value }} €</span
                                                       ></span
                                                     ></span
                                                   ></span
@@ -3298,7 +3267,7 @@
                                                         style="
                                                           color: rgb(0, 0, 0);
                                                         "
-                                                        >{{ new.iva.value }}€</span
+                                                        >{{ new.iva.value }} €</span
                                                       ></span
                                                     ></span
                                                   ></span
@@ -3359,46 +3328,18 @@
                               <table>
                                 <tbody>
                                   <tr>
+                                    <td style="font-size: 14px">
+                                     <strong style="color: red;">TOTAL:</strong> {{ old.total }} €
+                                    </td>
+
+                                    <td style="width: 50%"></td>
+
                                     <td
                                       style="
-                                        height: 1px;
-                                        color: red;
-                                        width: 26.2477%;
+                                        font-size: 14px;
                                       "
                                     >
-                                      <span style="font-size: 14px"
-                                        ><u></u><span><u>TOTAL:</u></span></span
-                                      >
-                                    </td>
-                                    <td style="height: 1px; width: 19.7782%">
-                                      <span style="font-size: 14px"
-                                        ><span style="color: rgb(0, 70, 128)"
-                                          ><span style="color: rgb(0, 0, 0)"
-                                            ><span style="color: rgb(0, 0, 0)"
-                                              >{{ old.total }}€</span
-                                            ></span
-                                          ></span
-                                        ></span
-                                      >
-                                    </td>
-                                    <td style="height: 1px; width: 6.0998%">
-                                      <span style="font-size: 14px"
-                                        ><br
-                                      /></span>
-                                    </td>
-                                    <td
-                                      style="
-                                        height: 1px;
-                                        color: darkgreen;
-                                        width: 23.7963%;
-                                      "
-                                    >
-                                      <span style="font-size: 14px"
-                                        ><u>TOTAL</u>:</span
-                                      >
-                                    </td>
-                                    <td style="height: 1px; width: 23.7963%">
-                                      {{ new.total }}€
+                                        <strong style="color: darkgreen">TOTAL:</strong> {{ new.total }} €
                                     </td>
                                   </tr>
                                 </tbody>
@@ -3411,6 +3352,8 @@
                 </tr>
               </tbody>
             </table>
+
+            <br>
 
             <table
               style="
@@ -3445,10 +3388,11 @@
                                       padding: 20px 30px;
                                     "
                                   >
-                                    <div style="text-align: center">
+                                    <div style="text-align: center; font-weight: bolder; font-size: 16px">
                                       <span style="color: white">
                                         AHORRO EN FACTURA: {{ new.total }} €
                                       </span>
+                                      <br />
                                       <br />
                                       <span style="color: white">
                                         AHORRO ANUAL: {{ new.annual_total }} €
@@ -3512,12 +3456,14 @@
                                     </span>
                                   </td>
 
-                                  <td style="padding-left: 20px">
-                                    Nombre del asesor: {{ agent }}
+                                  <td style="padding-left: 20px; text-align: left">
+                                    <strong>Nombre del asesor:</strong> {{ agent }}
                                     <br />
-                                    Teléfono de contacto: {{ agent_phone }}
                                     <br />
-                                    Email: {{ agent_email }}
+                                    <strong>Teléfono de contacto:</strong> {{ agent_phone }}
+                                    <br />
+                                    <br />
+                                    <strong>Email:</strong> {{ agent_email }}
                                   </td>
                                 </tr>
                               </tbody>
