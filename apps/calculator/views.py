@@ -1,7 +1,8 @@
-from decimal import Decimal
-
+from django.conf import settings
 from django.shortcuts import render
+from django.template.loader import render_to_string
 from django.utils import timezone
+from django.utils.html import strip_tags
 from rest_framework import views
 from rest_framework.request import Request
 from rest_framework.response import Response
@@ -103,4 +104,13 @@ class SendOfferView(LoggingMixin, views.APIView):
             "cups": request.data.get("cups") or request.query_params.get("cups"),
             "client_name": request.data.get("client_name") or request.query_params.get("client_name"),
         }
+
+        if request.query_params.get("send"):
+            subject = "Estudio comparativo"
+            html_message = render_to_string("mails/new_offer.html", context=ctx)
+            plain_message = strip_tags(html_message)
+            request.user.email_user(
+                subject=subject, message=plain_message, from_email=settings.EMAIL_HOST_USER, html_message=html_message
+            )
+
         return render(request, "mails/new_offer.html", context=ctx)

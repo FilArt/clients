@@ -12,6 +12,10 @@
         <v-container fluid v-html="htmlDetails" />
       </v-col>
     </v-row>
+
+    <v-card-actions>
+      <v-btn @click="send">Send me</v-btn>
+    </v-card-actions>
   </v-card>
 </template>
 
@@ -68,6 +72,17 @@ export default {
   methods: {
     async getDetails() {
       if (!this.offer || !this.form || !this.tarif) return
+      const { data, params } = this.getDataAndParams()
+      this.htmlDetails = await this.$axios.$get(`calculator/new_offer/?${params}`)
+      this.calculations = await this.$axios.$post('calculator/calculate/', data)
+      this.$emit('calculations', this.calculations)
+    },
+    async send() {
+      const { params } = this.getDataAndParams()
+      await this.$axios.$get(`calculator/new_offer/?send=true&${params}`)
+      await this.$swal({ title: 'Sent...', icon: 'success' })
+    },
+    getDataAndParams() {
       const data = {
         ...this.form,
         id: this.offer.id,
@@ -81,9 +96,7 @@ export default {
         .filter((key) => data[key] !== null)
         .map((key) => `${key}=${data[key]}`)
         .join('&')
-      this.htmlDetails = await this.$axios.$get(`calculator/new_offer/?${params}`)
-      this.calculations = await this.$axios.$post('calculator/calculate/', data)
-      this.$emit('calculations', this.calculations)
+      return { data, params }
     },
     addBid() {
       let data = { offer: this.offer.id }
