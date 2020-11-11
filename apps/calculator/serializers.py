@@ -83,6 +83,7 @@ class CalculatorSerializer(serializers.ModelSerializer):
         model = Offer
         fields = [
             "id",
+            "email_to",
             "company",
             "company_name",
             "company_logo",
