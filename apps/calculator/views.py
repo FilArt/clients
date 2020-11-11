@@ -109,7 +109,7 @@ class SendOfferView(LoggingMixin, views.APIView):
         }
 
         email_to = serializer.validated_data.get("email_to")
-        if email_to:
+        if email_to and "send" in request.query_params:
             subject = "Estudio comparativo"
             html_message = render_to_string("mails/new_offer.html", context=ctx)
             plain_message = subject  # strip_tags(html_message)

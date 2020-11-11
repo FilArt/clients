@@ -28,7 +28,7 @@ class RoundedField(serializers.FloatField):
 
 
 class CalculatorSerializer(serializers.ModelSerializer):
-    email_to = serializers.EmailField(write_only=True, required=False)
+    email_to = serializers.EmailField(write_only=True, required=False, allow_null=True)
     id = serializers.IntegerField(required=False)
     company_name = serializers.CharField(source="company.name", read_only=True)
     company_logo = serializers.ImageField(source="company.logo", read_only=True)
