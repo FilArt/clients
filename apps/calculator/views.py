@@ -1,8 +1,11 @@
+import os
+
+import pdfkit
 from django.conf import settings
+from django.core.mail import EmailMessage
 from django.shortcuts import render
 from django.template.loader import render_to_string
 from django.utils import timezone
-from django.utils.html import strip_tags
 from rest_framework import views
 from rest_framework.request import Request
 from rest_framework.response import Response
@@ -105,12 +108,23 @@ class SendOfferView(LoggingMixin, views.APIView):
             "client_name": request.data.get("client_name") or request.query_params.get("client_name"),
         }
 
-        if request.query_params.get("send"):
+        email_to = serializer.validated_data.get("email_to")
+        if email_to:
             subject = "Estudio comparativo"
             html_message = render_to_string("mails/new_offer.html", context=ctx)
-            plain_message = strip_tags(html_message)
-            request.user.email_user(
-                subject=subject, message=plain_message, from_email=settings.EMAIL_HOST_USER, html_message=html_message
-            )
+            plain_message = subject  # strip_tags(html_message)
+            filepath = f'/tmp/{calculated["id"]}.html'
+            with open(filepath, "w") as f:
+                f.write(html_message)
+
+            pdf_path = filepath.replace("html", "pdf")
+            pdfkit.from_file(f.name, pdf_path)
+
+            email = EmailMessage(subject, plain_message, settings.EMAIL_HOST_USER, [email_to])
+            email.attach_file(pdf_path)
+            email.send()
+
+            os.remove(filepath)
+            os.remove(pdf_path)
 
         return render(request, "mails/new_offer.html", context=ctx)

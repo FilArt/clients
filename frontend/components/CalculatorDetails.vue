@@ -5,15 +5,14 @@
         <v-text-field v-model="direccion" label="Direccion" />
         <v-text-field v-model="cups" label="CUPS" />
         <v-text-field v-model="clientName" label="Nombre" />
-      </v-col>
-    </v-row>
-    <v-row>
-      <v-col>
-        <v-container fluid v-html="htmlDetails" />
+        <email-field v-model="emailTo" />
       </v-col>
     </v-row>
 
+    <v-card-text v-html="htmlDetails" />
+
     <v-card-actions>
+      <v-btn @click="getDetails">Refresh</v-btn>
       <v-btn @click="send">Send me</v-btn>
     </v-card-actions>
   </v-card>
@@ -21,9 +20,11 @@
 
 <script>
 import { mapState } from 'vuex'
+import EmailField from '@/components/fields/emailField'
 
 export default {
   name: 'CalculatorDetails',
+  components: { EmailField },
   props: {
     offer: {
       type: Object,
@@ -37,7 +38,7 @@ export default {
       direccion: null,
       cups: null,
       clientName: null,
-      interval: null,
+      emailTo: null,
     }
   },
   computed: {
@@ -64,10 +65,6 @@ export default {
   },
   async mounted() {
     await this.getDetails()
-    this.interval = setInterval(this.getDetails, 2000)
-  },
-  beforeDestroy() {
-    clearInterval(this.interval)
   },
   methods: {
     async getDetails() {
@@ -79,8 +76,12 @@ export default {
     },
     async send() {
       const { params } = this.getDataAndParams()
-      await this.$axios.$get(`calculator/new_offer/?send=true&${params}`)
-      await this.$swal({ title: 'Sent...', icon: 'success' })
+      try {
+        await this.$axios.$get(`calculator/new_offer/?send=true&${params}`)
+        await this.$swal({ title: 'Sent...', icon: 'success' })
+      } catch (e) {
+        await this.$swal({ title: 'Not sent!', icon: 'error', text: e.response.data })
+      }
     },
     getDataAndParams() {
       const data = {
@@ -91,6 +92,7 @@ export default {
         direccion: this.direccion,
         cups: this.cups,
         client_name: this.clientName,
+        email_to: this.emailTo,
       }
       const params = Object.keys(data)
         .filter((key) => data[key] !== null)

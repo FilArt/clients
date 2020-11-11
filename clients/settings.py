@@ -195,6 +195,13 @@ CALLS_STORAGE_PATH = "/freeswitch_recordings"
 
 DATA_UPLOAD_MAX_MEMORY_SIZE = 262144000
 
+EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
+EMAIL_HOST = ""
+EMAIL_USE_TLS = True
+EMAIL_PORT = 587
+EMAIL_HOST_USER = ""
+EMAIL_HOST_PASSWORD = ""
+
 try:
     from .local_settings import *  # noqa: F403, F401
 except ImportError:
