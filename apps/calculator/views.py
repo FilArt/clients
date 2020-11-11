@@ -80,7 +80,6 @@ class SendOfferView(LoggingMixin, views.APIView):
                     "percent": "-",
                     "value": "-",
                 },
-                "reactive": "",
                 "rental": "-",
                 "tax": {"percent": "-", "value": "-"},
                 "oc": old.get("oc") or "-",

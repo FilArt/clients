@@ -842,15 +842,15 @@
                                                         </td>
                                                     {% endif %}
                                                         <td></td>
-                                                        {% if old.reactive %}
+                                                    {% if old.reactive %}
                                                             <td style="width: 12.2449%">
                                                                 {{ old.reactive }} €
                                                             </td>
-                                                        {% endif %}
+                                                    {% endif %}
                                                         <td rowspan="7" style="width: 5.9369%">
                                                             <br/>
                                                         </td>
-                                                    {% if new.reactive %}
+                                                    {% if old.reactive %}
                                                         <td style="width: 24.4898%">
                                                             <em>ENERGIA REACTIVA:</em>
                                                         </td>
@@ -858,9 +858,9 @@
                                                         <td style="width: 11.6883%">
                                                             <br/>
                                                         </td>
-                                                    {% if new.reactive %}
+                                                    {% if old.reactive %}
                                                         <td style="width: 11.5028%">
-                                                            {{ new.reactive }} €
+                                                            {{ old.reactive }} €
                                                         </td>
                                                     {% endif %}
                                                     </tr>

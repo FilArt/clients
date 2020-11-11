@@ -20,7 +20,15 @@
     <v-card-text>
       <v-row align="center">
         <v-col>
-          <v-img class="mx-auto" max-width="150" :src="'/no-image.svg'" />
+          <v-img
+            class="mx-auto"
+            max-width="150"
+            :src="
+              offer.company_logo
+                ? offer.company_logo.replace('localhost:8001', 'areaclientes.gestiongroup.es')
+                : '/no-image.svg'
+            "
+          />
         </v-col>
 
         <v-col class="flex-grow-1">

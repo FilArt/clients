@@ -1,41 +1,30 @@
 <template>
   <v-card elevation="0">
     <v-card-text>
-      <email-field v-model="emailTo" />
-      <v-text-field v-model="direccion" label="Direccion" />
-      <v-text-field v-model="cups" label="CUPS" />
       <v-text-field v-model="clientName" label="Nombre" />
+      <email-field v-model="emailTo" />
       <v-checkbox v-model="showAdditionalFields" label="Extra campos" />
     </v-card-text>
 
     <v-card-text v-show="showAdditionalFields">
-      <v-card-title> Extra campos </v-card-title>
-      <v-text-field v-model="p1_offer" label="Precio por potencia P1" />
-      <v-text-field v-model="p2_offer" label="Precio por potencia P2" />
-      <v-text-field v-model="p3_offer" label="Precio por potencia P3 " />
-      <v-text-field v-model="c1_offer" label="Precio por consumo P1" />
-      <v-text-field v-model="c2_offer" label="Precio por consumo P2" />
-      <v-text-field v-model="c3_offer" label="Precio por consumo P3" />
+      <v-card-title>Extra campos</v-card-title>
+      <v-text-field v-model="direccion" label="Direccion" />
+      <v-text-field v-model="cups" label="CUPS" />
+      <v-text-field v-model="p1_offer" label="Precio por potencia P1 facturacion actual" />
+      <v-text-field v-model="p2_offer" label="Precio por potencia P2 facturacion actual" />
+      <v-text-field v-model="p3_offer" label="Precio por potencia P3 facturacion actual" />
+      <v-text-field v-model="c1_offer" label="Precio por consumo P1 facturacion actual" />
+      <v-text-field v-model="c2_offer" label="Precio por consumo P2 facturacion actual" />
+      <v-text-field v-model="c3_offer" label="Precio por consumo P3 facturacion actual" />
     </v-card-text>
 
     <v-card-text v-html="htmlDetails" />
 
-    <v-btn color="success" :loading="loading" fixed right bottom fab icon outlined @click="getDetails">
-      <v-icon>mdi-refresh</v-icon>
+    <v-btn color="warning" :loading="loading" fixed right bottom rounded x-large @click="send">
+      <v-icon>mdi-email-send</v-icon>
     </v-btn>
-    <v-btn
-      color="warning"
-      :loading="loading"
-      fixed
-      right
-      bottom
-      fab
-      icon
-      outlined
-      style="margin-right: 5em"
-      @click="send"
-    >
-      <v-icon>mdi-email</v-icon>
+    <v-btn style="margin-right: 7em" color="success" :loading="loading" fixed right bottom rounded @click="getDetails">
+      <v-icon>mdi-refresh</v-icon>
     </v-btn>
   </v-card>
 </template>
