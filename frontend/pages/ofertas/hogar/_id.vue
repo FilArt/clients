@@ -1,8 +1,8 @@
 <template>
   <v-row>
-    <v-card v-for="offer in offers" :key="offer.id" style="margin-bottom: 1em">
+    <v-col v-for="offer in offers" :key="offer.id" cols="12">
       <detail-offer :offer="offer" show-add-btn />
-    </v-card>
+    </v-col>
   </v-row>
 </template>
 

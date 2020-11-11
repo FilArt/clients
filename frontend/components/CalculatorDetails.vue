@@ -1,20 +1,31 @@
 <template>
-  <v-card>
-    <v-row>
-      <v-col>
-        <v-text-field v-model="direccion" label="Direccion" />
-        <v-text-field v-model="cups" label="CUPS" />
-        <v-text-field v-model="clientName" label="Nombre" />
-        <email-field v-model="emailTo" />
-      </v-col>
-    </v-row>
+  <v-card elevation="0">
+    <v-card-text>
+      <v-text-field v-model="direccion" label="Direccion" />
+      <v-text-field v-model="cups" label="CUPS" />
+      <v-text-field v-model="clientName" label="Nombre" />
+      <email-field v-model="emailTo" />
+    </v-card-text>
 
     <v-card-text v-html="htmlDetails" />
 
-    <v-card-actions>
-      <v-btn @click="getDetails">Refresh</v-btn>
-      <v-btn @click="send">Send me</v-btn>
-    </v-card-actions>
+    <v-btn color="success" :loading="loading" fixed right bottom fab icon outlined @click="getDetails">
+      <v-icon>mdi-refresh</v-icon>
+    </v-btn>
+    <v-btn
+      color="warning"
+      :loading="loading"
+      fixed
+      right
+      bottom
+      fab
+      icon
+      outlined
+      style="margin-right: 5em"
+      @click="send"
+    >
+      <v-icon>mdi-email</v-icon>
+    </v-btn>
   </v-card>
 </template>
 
@@ -33,6 +44,7 @@ export default {
   },
   data() {
     return {
+      loading: false,
       calculations: [],
       htmlDetails: null,
       direccion: null,
@@ -69,18 +81,27 @@ export default {
   methods: {
     async getDetails() {
       if (!this.offer || !this.form || !this.tarif) return
+      this.loading = true
       const { data, params } = this.getDataAndParams()
       this.htmlDetails = await this.$axios.$get(`calculator/new_offer/?${params}`)
       this.calculations = await this.$axios.$post('calculator/calculate/', data)
       this.$emit('calculations', this.calculations)
+      this.loading = false
     },
     async send() {
+      if (!this.emailTo) {
+        await this.$swal({ title: 'Entrar correo', icon: 'error' })
+        return
+      }
+      this.loading = true
       const { params } = this.getDataAndParams()
       try {
         await this.$axios.$get(`calculator/new_offer/?send=true&${params}`)
         await this.$swal({ title: 'Sent...', icon: 'success' })
       } catch (e) {
         await this.$swal({ title: 'Not sent!', icon: 'error', text: e.response.data })
+      } finally {
+        this.loading = false
       }
     },
     getDataAndParams() {
