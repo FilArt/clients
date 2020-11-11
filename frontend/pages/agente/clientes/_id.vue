@@ -28,28 +28,31 @@
 
         <v-tabs-items v-model="tabs">
           <v-tab-item>
-            <v-list three-line subheader nav shaped>
-              <v-subheader inset>
-                <v-row>
+            <v-container>
+              <v-toolbar>
+                <v-row align="center">
                   <v-col>Solicitudes</v-col>
+                  <v-spacer />
                   <v-col>
                     <add-new-bid-dialog :user-id="$route.params.id" label="Añadir nuevo solicitud" />
                   </v-col>
                 </v-row>
-              </v-subheader>
+              </v-toolbar>
 
-              <v-list-item v-for="bid in bids" :key="bid.id" nuxt :to="`/bids/${bid.id}`">
-                <v-list-item-content>
-                  <v-list-item-title v-text="bid.offer_name" />
-                  <v-list-item-subtitle v-text="'id: ' + bid.id" />
-                  <v-list-item-subtitle v-text="bid.created_at" />
-                </v-list-item-content>
+              <v-list three-line subheader nav shaped>
+                <v-list-item v-for="bid in bids" :key="bid.id" nuxt :to="`/bids/${bid.id}`">
+                  <v-list-item-content>
+                    <v-list-item-title v-text="bid.offer_name" />
+                    <v-list-item-subtitle v-text="'id: ' + bid.id" />
+                    <v-list-item-subtitle v-text="bid.created_at" />
+                  </v-list-item-content>
 
-                <v-list-item-content>
-                  {{ bid.status }}
-                </v-list-item-content>
-              </v-list-item>
-            </v-list>
+                  <v-list-item-content>
+                    {{ bid.status }}
+                  </v-list-item-content>
+                </v-list-item>
+              </v-list>
+            </v-container>
           </v-tab-item>
 
           <v-tab-item>

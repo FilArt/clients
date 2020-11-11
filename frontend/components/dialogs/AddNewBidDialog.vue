@@ -29,7 +29,7 @@ export default {
       default: null,
     },
     userId: {
-      type: Number,
+      type: [Number, String],
       default: null,
     },
   },
