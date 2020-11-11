@@ -1,10 +1,21 @@
 <template>
   <v-card elevation="0">
     <v-card-text>
+      <email-field v-model="emailTo" />
       <v-text-field v-model="direccion" label="Direccion" />
       <v-text-field v-model="cups" label="CUPS" />
       <v-text-field v-model="clientName" label="Nombre" />
-      <email-field v-model="emailTo" />
+      <v-checkbox v-model="showAdditionalFields" label="Extra campos" />
+    </v-card-text>
+
+    <v-card-text v-show="showAdditionalFields">
+      <v-card-title> Extra campos </v-card-title>
+      <v-text-field v-model="p1_offer" label="Precio por potencia P1" />
+      <v-text-field v-model="p2_offer" label="Precio por potencia P2" />
+      <v-text-field v-model="p3_offer" label="Precio por potencia P3 " />
+      <v-text-field v-model="c1_offer" label="Precio por consumo P1" />
+      <v-text-field v-model="c2_offer" label="Precio por consumo P2" />
+      <v-text-field v-model="c3_offer" label="Precio por consumo P3" />
     </v-card-text>
 
     <v-card-text v-html="htmlDetails" />
@@ -51,6 +62,13 @@ export default {
       cups: null,
       clientName: null,
       emailTo: null,
+      showAdditionalFields: false,
+      p1_offer: null,
+      p2_offer: null,
+      p3_offer: null,
+      c1_offer: null,
+      c2_offer: null,
+      c3_offer: null,
     }
   },
   computed: {
@@ -114,6 +132,12 @@ export default {
         cups: this.cups,
         client_name: this.clientName,
         email_to: this.emailTo,
+        p1_offer: this.p1_offer,
+        p2_offer: this.p2_offer,
+        p3_offer: this.p3_offer,
+        c1_offer: this.c1_offer,
+        c2_offer: this.c2_offer,
+        c3_offer: this.c3_offer,
       }
       const params = Object.keys(data)
         .filter((key) => data[key] !== null)

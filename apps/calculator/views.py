@@ -1,4 +1,6 @@
 import os
+from functools import reduce
+from operator import mul
 
 import pdfkit
 from django.conf import settings
@@ -44,8 +46,16 @@ class SendOfferView(LoggingMixin, views.APIView):
         old["oc"] = sum(
             map(float, filter(None, [old.get("reactive"), old.get("tax", {}).get("value"), old.get("rental")]))
         )
+        old["st_c1"] = reduce(mul, map(float, (old.get("c1", 0), old.get("c1_offer", 0))))
+        old["st_c2"] = reduce(mul, map(float, (old.get("c2", 0), old.get("c2_offer", 0))))
+        old["st_c3"] = reduce(mul, map(float, (old.get("c3", 0), old.get("c3_offer", 0))))
+        old["st_p1"] = reduce(mul, map(float, (old.get("p1", 0), old.get("p1_offer", 0), old["period"])))
+        old["st_p2"] = reduce(mul, map(float, (old.get("p2", 0), old.get("p2_offer", 0), old["period"])))
+        old["st_p3"] = reduce(mul, map(float, (old.get("p3", 0), old.get("p3_offer", 0), old["period"])))
+
         old["st_c"] = sum(map(float, filter(None, [old.get("st_c1"), old.get("st_c2"), old.get("st_c3")])))
         old["st_p"] = sum(map(float, filter(None, [old.get("st_p1"), old.get("st_p2"), old.get("st_p3")])))
+        old["total"] = calculated["current_price"]
         new_st_p = round(calculated["st_p1"] + calculated["st_p2"] + calculated["st_p3"], 2)
         new_st_c = round(calculated["st_c1"] + calculated["st_c2"] + calculated["st_c3"], 2)
         new_oc = round(
