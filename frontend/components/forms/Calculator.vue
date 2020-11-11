@@ -279,6 +279,21 @@ export default {
         : _headers
     },
   },
+  watch: {
+    tarif() {
+      const fields = [
+        ['p', 2],
+        ['p', 3],
+        ['c', 2],
+        ['c', 3],
+      ]
+      fields.forEach((field) => {
+        if (!this.showInput(field[0], field[1])) {
+          this.updateForm(field[0] + field[1], null)
+        }
+      })
+    },
+  },
   methods: {
     getDetailUrl(offer) {
       return `/ofertas/${offer.client_type === 0 ? 'hogar' : 'pyme'}/${offer.id}/?id=${

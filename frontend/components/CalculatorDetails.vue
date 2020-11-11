@@ -85,7 +85,7 @@ export default {
     },
     getDataAndParams() {
       const data = {
-        ...this.form,
+        ...Object.fromEntries(Object.entries(this.form).filter((i) => [undefined, null, ''].indexOf(i[1]) === -1)),
         id: this.offer.id,
         tarif: this.tarif,
         with_calculations: true,
