@@ -8,14 +8,14 @@
 
     <v-card-text v-show="showAdditionalFields">
       <v-card-title>Extra campos</v-card-title>
-      <v-text-field v-model="direccion" label="Direccion" />
-      <v-text-field v-model="cups" label="CUPS" />
-      <v-text-field v-model="p1_offer" label="Precio por potencia P1 facturacion actual" />
-      <v-text-field v-model="p2_offer" label="Precio por potencia P2 facturacion actual" />
-      <v-text-field v-model="p3_offer" label="Precio por potencia P3 facturacion actual" />
-      <v-text-field v-model="c1_offer" label="Precio por consumo P1 facturacion actual" />
-      <v-text-field v-model="c2_offer" label="Precio por consumo P2 facturacion actual" />
-      <v-text-field v-model="c3_offer" label="Precio por consumo P3 facturacion actual" />
+      <v-text-field v-model="direccion" label="Direccion" type="number" />
+      <v-text-field v-model="cups" label="CUPS" type="number" />
+      <v-text-field v-model="p1_offer" label="Precio por potencia P1 facturacion actual" type="number" />
+      <v-text-field v-model="p2_offer" label="Precio por potencia P2 facturacion actual" type="number" />
+      <v-text-field v-model="p3_offer" label="Precio por potencia P3 facturacion actual" type="number" />
+      <v-text-field v-model="c1_offer" label="Precio por consumo P1 facturacion actual" type="number" />
+      <v-text-field v-model="c2_offer" label="Precio por consumo P2 facturacion actual" type="number" />
+      <v-text-field v-model="c3_offer" label="Precio por consumo P3 facturacion actual" type="number" />
     </v-card-text>
 
     <v-card-text v-html="htmlDetails" />

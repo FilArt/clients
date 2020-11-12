@@ -42,7 +42,7 @@ class SendOfferView(LoggingMixin, views.APIView):
         serializer = CalculatorSerializer(data=request.query_params)
         serializer.is_valid(raise_exception=True)
         calculated = serializer.get_calculated()
-        old = {k: v[0] for k, v in request.query_params.items()}
+        old = {k: v for k, v in request.query_params.items()}
         old["oc"] = sum(
             map(float, filter(None, [old.get("reactive"), old.get("tax", {}).get("value"), old.get("rental")]))
         )
@@ -55,7 +55,7 @@ class SendOfferView(LoggingMixin, views.APIView):
 
         old["st_c"] = sum(map(float, filter(None, [old.get("st_c1"), old.get("st_c2"), old.get("st_c3")])))
         old["st_p"] = sum(map(float, filter(None, [old.get("st_p1"), old.get("st_p2"), old.get("st_p3")])))
-        old["total"] = calculated["current_price"]
+        old["total"] = (old["st_c"] + old["st_p"]) or calculated["current_price"]
         new_st_p = round(calculated["st_p1"] + calculated["st_p2"] + calculated["st_p3"], 2)
         new_st_c = round(calculated["st_c1"] + calculated["st_c2"] + calculated["st_c3"], 2)
         new_oc = round(
