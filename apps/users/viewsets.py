@@ -198,7 +198,7 @@ class PuntoViewSet(LoggingMixin, viewsets.ModelViewSet):
     def filter_queryset(self, queryset):
         user = self.request.user
         filter_kwargs = dict(user=user)
-        if user.role == "admin":
+        if user.role in ("admin", "support"):
             if "user" in self.request.query_params:
                 filter_kwargs["user"] = self.request.query_params["user"]
             else:
