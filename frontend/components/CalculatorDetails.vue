@@ -11,11 +11,31 @@
       <v-text-field v-model="direccion" label="Direccion" type="number" />
       <v-text-field v-model="cups" label="CUPS" type="number" />
       <v-text-field v-model="p1_offer" label="Precio por potencia P1 facturacion actual" type="number" />
-      <v-text-field v-model="p2_offer" label="Precio por potencia P2 facturacion actual" type="number" />
-      <v-text-field v-model="p3_offer" label="Precio por potencia P3 facturacion actual" type="number" />
+      <v-text-field
+        v-show="showInput('p', 2)"
+        v-model="p2_offer"
+        label="Precio por potencia P2 facturacion actual"
+        type="number"
+      />
+      <v-text-field
+        v-show="showInput('p', 3)"
+        v-model="p3_offer"
+        label="Precio por potencia P3 facturacion actual"
+        type="number"
+      />
       <v-text-field v-model="c1_offer" label="Precio por consumo P1 facturacion actual" type="number" />
-      <v-text-field v-model="c2_offer" label="Precio por consumo P2 facturacion actual" type="number" />
-      <v-text-field v-model="c3_offer" label="Precio por consumo P3 facturacion actual" type="number" />
+      <v-text-field
+        v-show="showInput('c', 2)"
+        v-model="c2_offer"
+        label="Precio por consumo P2 facturacion actual"
+        type="number"
+      />
+      <v-text-field
+        v-show="showInput('c', 3)"
+        v-model="c3_offer"
+        label="Precio por consumo P3 facturacion actual"
+        type="number"
+      />
     </v-card-text>
 
     <v-card-text v-html="htmlDetails" />
@@ -32,6 +52,7 @@
 <script>
 import { mapState } from 'vuex'
 import EmailField from '@/components/fields/emailField'
+import constants from '@/lib/constants'
 
 export default {
   name: 'CalculatorDetails',
@@ -86,6 +107,9 @@ export default {
     await this.getDetails()
   },
   methods: {
+    showInput(letter, number) {
+      return constants.showInput(letter, number, this.form.tarif)
+    },
     async getDetails() {
       if (!this.offer || !this.form || !this.tarif) return
       this.loading = true

@@ -275,4 +275,11 @@ export default Object.freeze({
   ourColor: '#004680',
   tarifs: ['2.0A', '2.1A', '2.0DHA', '2.0DHS', '2.1DHA', '2.1DHS', '3.0A', '3.1A'],
   tarifsGas: ['3.1'], //, '3.2', '3.3', '3.4'],
+  showInput: (letter, number, tarif) => {
+    return (
+      number === 1 ||
+      ['3.0A', '3.1A'].includes(tarif) ||
+      (letter + number === 'c3' && ['2.1DHA', '2.0DHA'].includes(tarif))
+    )
+  },
 })
