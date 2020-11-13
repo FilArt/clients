@@ -34,7 +34,7 @@ import SubmitButton from '@/components/buttons/submitButton'
 export default {
   layout: 'empty',
   components: { SubmitButton, EmailField, Calculator },
-  auth: null,
+  auth: false,
   data() {
     return {
       menu: false,

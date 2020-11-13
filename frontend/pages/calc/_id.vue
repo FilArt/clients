@@ -11,7 +11,7 @@
 <script>
 import CalculatorDetails from '@/components/CalculatorDetails'
 export default {
-  auth: null,
+  auth: false,
   layout: 'empty',
   components: { CalculatorDetails },
   async asyncData({ $axios, route }) {
