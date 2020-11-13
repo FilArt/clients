@@ -65,7 +65,7 @@ class SendOfferView(LoggingMixin, views.APIView):
             old["total"] = float(rental) + float(tax) + old["st_c"] + old["st_p"]
             reactive = old.get("reactive")
             if reactive:
-                old["total"] += reactive
+                old["total"] += float(reactive)
 
         if old["bi"] != "-":
             old["iva"]["value"] = round(old["bi"] * 0.21, 2)
