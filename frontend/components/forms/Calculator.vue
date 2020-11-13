@@ -302,7 +302,7 @@ export default {
   methods: {
     getDetailUrl(offer) {
       return this.detailUrl
-        ? `${this.detailUrl}/${offer.id}`
+        ? this.detailUrl.replace('place_for_id', String(offer.id))
         : `/ofertas/${offer.client_type === 0 ? 'hogar' : 'pyme'}/${offer.id}/?id=${
             offer.id
           }&showCalculatorDetails=true`
