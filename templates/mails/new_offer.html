@@ -278,6 +278,7 @@
                                         </span>
                                       </span>
                                                 </div>
+                                            {% if new.kind == 'luz' %}
                                                 <div
                                                         style="
                                         margin-right: auto;
@@ -291,10 +292,11 @@
                                       ><span style="color: #004680"
                                       >POTENCIA CONTRATADA (kW):
                                           <span style="color: rgb(0, 0, 0)"
-                                          >{{ new.p1 }}; {{ new.p2 }}; {{ new.p3 }}</span></span
+                                          >{{ new.p1 }}{% if new.p2 %}; {{ new.p2 }}{% endif %}{% if new.p3 %}; {{ new.p3 }}{% endif %}</span></span
                                       ></span
                                       >
                                                 </div>
+                                            {% endif %}
                                                 <div
                                                         style="
                                         margin-right: auto;
@@ -355,36 +357,41 @@
                                     <table>
                                         <tbody>
                                         <tr style="height: 1px">
-                                            <td
-                                                    style="
+                                            <td style="
                                       height: 1px;
                                       background-color: rgb(255, 255, 255);
-                                    "
-                                            >
+                                    ">
                                                 <table style="width: 100%">
                                                     <tbody>
                                                     <tr>
-                                                        <td style="width: 50%; color: red">
-                                                            <div style="text-align: center">
-                                              <span style="font-size: 11px"
-                                              ><span style="font-size: 14px"
-                                              >FACTURACION ACTUAL
-                                                </span>
-                                              </span>
-                                                            </div>
+                                                        <td style="font-size: 14px; color: red">
+                                                            FACTURACION ACTUAL
                                                         </td>
-                                                        <td
-                                                                style="width: 50%; color: darkgreen"
-                                                        >
-                                                            <div style="text-align: center">
-                                              <span style="font-size: 11px"
-                                              ><span style="font-size: 14px"
-                                              >PROPUESTA DE FACTURACION
-                                                </span>
-                                              </span>
-                                                            </div>
+                                                        <td style="font-size: 14px; color: darkgreen">
+                                                            PROPUESTA DE FACTURACION
                                                         </td>
                                                     </tr>
+
+                                                    <tr><td></td></tr>
+
+                                                    <tr>
+                                                        <td>
+                                                            Comercializadora: {{ old.company_name }}
+                                                        </td>
+                                                        <td>
+                                                            Comercializadora: {{ new.company_name }}
+                                                        </td>
+                                                    </tr>
+
+                                                    <tr>
+                                                        <td>
+                                                            Oferta: {{ old.name }}
+                                                        </td>
+                                                        <td>
+                                                            Oferta: {{ new.name }}
+                                                        </td>
+                                                    </tr>
+
                                                     </tbody>
                                                 </table>
                                             </td>
@@ -408,6 +415,7 @@
                                                             <u><em>T. Fijo</em></u>
                                                         </td>
                                                         <td style="width: 7.7922%">
+                                                            {% if new.kind == 'luz' %}
                                                             <div style="
                                                 text-align: center;
                                                 font-size: 11px;
@@ -415,6 +423,7 @@
                                               ">
                                                                 <u><em>Potencia</em></u>
                                                             </div>
+                                                            {% endif %}
                                                         </td>
                                                         <td style="width: 7.9777%">
                                                                 <u><em>x Días</em></u>
@@ -448,6 +457,7 @@
                                                             </div>
                                                         </td>
                                                         <td style="width: 8.7199%">
+                                                            {% if new.kind == 'luz' %}
                                                             <div style="text-align: center">
                                               <span style="font-size: 14px"
                                               ><span style="font-size: 11px"
@@ -465,6 +475,7 @@
                                               ></span
                                               >
                                                             </div>
+                                                            {% endif %}
                                                         </td>
                                                         <td style="width: 7.4212%">
                                                             <div style="text-align: center">
@@ -552,10 +563,10 @@
                                                     </tr>
                                                     <tr>
                                                         <td style="width: 7.6067%">
-                                                            P1:
+                                                            {% if new.kind == 'luz' %}P1:{% endif %}
                                                         </td>
                                                         <td style="width: 7.7922%">
-                                                            {{ old.p1 }}
+                                                            {% if new.kind == 'luz' %}{{ old.p1 }}{% endif %}
                                                         </td>
                                                         <td style="width: 7.9777%">
                                                             {{ period }}
@@ -567,10 +578,10 @@
                                                             {{ old.st_p1 }} €
                                                         </td>
                                                         <td style="width: 9.462%">
-                                                            P1:
+                                                            {% if new.kind == 'luz' %}P1:{% endif %}
                                                         </td>
                                                         <td style="width: 8.7199%">
-                                                            {{ old.p1 }}
+                                                            {% if new.kind == 'luz' %}{{ old.p1 }}{% endif %}
                                                         </td>
                                                         <td style="width: 7.4212%">
                                                             {{ period }}
@@ -835,35 +846,29 @@
                                             <td>
                                                 <table style="width: 539px;">
                                                     <tbody class="left-text">
+                                                    {% if new.kind == 'luz' %}
                                                     <tr>
-                                                    {% if old.reactive %}
                                                         <td>
                                                             <em>ENERGIA REACTIVA:</em>
                                                         </td>
-                                                    {% endif %}
                                                         <td></td>
-                                                    {% if old.reactive %}
                                                             <td style="width: 12.2449%">
                                                                 {{ old.reactive }} €
                                                             </td>
-                                                    {% endif %}
                                                         <td rowspan="7" style="width: 5.9369%">
                                                             <br/>
                                                         </td>
-                                                    {% if old.reactive %}
                                                         <td style="width: 24.4898%">
                                                             <em>ENERGIA REACTIVA:</em>
                                                         </td>
-                                                    {% endif %}
                                                         <td style="width: 11.6883%">
                                                             <br/>
                                                         </td>
-                                                    {% if old.reactive %}
                                                         <td style="width: 11.5028%">
                                                             {{ old.reactive }} €
                                                         </td>
-                                                    {% endif %}
                                                     </tr>
+                                                    {% endif %}
                                                     <tr>
                                                         <td style="width: 25.7885%">
                                                             <em>ALQUILER EQUIPOS:</em>
@@ -886,18 +891,15 @@
                                                     </tr>
                                                     <tr>
                                                         <td style="width: 25.7885%">
-                                                            <em>IMP. ELECTRICIDAD:</em>
+                                                            <em>{% if new.kind == 'luz' %}IMP. ELECTRICIDAD:{% else %}IMP. HIDROCARBUROS{% endif %}</em>
                                                         </td>
                                                         <td style="width: 8.1633%">
-                                                            <div style="text-align: center">
-                                                                {{ new.tax.percent }}%
-                                                            </div>
                                                         </td>
                                                         <td style="width: 12.2449%">
-                                                            {{ old.tax.value }} €
+                                                            {{ old.tax }} €
                                                         </td>
                                                         <td style="width: 24.4898%">
-                                                            <em>IMP. ELECTRICIDAD:</em>
+                                                            <em>{% if new.kind == 'luz' %}IMP. ELECTRICIDAD:{% else %}IMP. HIDROCARBUROS{% endif %}</em>
                                                         </td>
                                                         <td style="width: 11.6883%">
                                                             <div style="text-align: center">
@@ -1092,6 +1094,12 @@
                 </tr>
                 </tbody>
             </table>
+
+            {% if note %}
+                <span style="left: 0">
+                    <em>Nota:</em> {{ note }}
+                </span>
+            {% endif %}
 
             <table
                     style="

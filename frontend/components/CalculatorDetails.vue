@@ -8,6 +8,7 @@
 
     <v-card-text v-show="showAdditionalFields">
       <v-card-title>Extra campos</v-card-title>
+      <v-text-field v-model="offerName" label="Oferta" />
       <v-text-field v-model="direccion" label="Direccion" type="number" />
       <v-text-field v-model="cups" label="CUPS" type="number" />
       <v-text-field v-model="p1_offer" label="Precio por potencia P1 facturacion actual" type="number" />
@@ -36,9 +37,14 @@
         label="Precio por consumo P3 facturacion actual"
         type="number"
       />
+      <v-text-field v-model="rental" label="Alquiler de equipo" type="number" />
+      <v-text-field v-model="tax" label="Imp.Electricidad" type="number" />
+      <v-textarea v-model="note" label="Nota" />
     </v-card-text>
 
-    <v-card-text v-html="htmlDetails" />
+    <v-card-text>
+      <v-sheet light v-html="htmlDetails" />
+    </v-card-text>
 
     <v-btn color="warning" :loading="loading" fixed right bottom rounded x-large @click="send">
       <v-icon>mdi-email-send</v-icon>
@@ -79,6 +85,10 @@ export default {
       c1_offer: null,
       c2_offer: null,
       c3_offer: null,
+      offerName: null,
+      note: null,
+      rental: null,
+      tax: null,
     }
   },
   computed: {
@@ -151,6 +161,10 @@ export default {
         c1_offer: this.c1_offer,
         c2_offer: this.c2_offer,
         c3_offer: this.c3_offer,
+        name: this.offerName,
+        note: this.note,
+        rental: this.rental,
+        tax: this.tax,
       }
       const params = Object.keys(data)
         .filter((key) => data[key] !== null)

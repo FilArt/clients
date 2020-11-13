@@ -42,20 +42,33 @@ class SendOfferView(LoggingMixin, views.APIView):
         serializer = CalculatorSerializer(data=request.query_params)
         serializer.is_valid(raise_exception=True)
         calculated = serializer.get_calculated()
+
         old = {k: v for k, v in request.query_params.items()}
-        old["oc"] = sum(
-            map(float, filter(None, [old.get("reactive"), old.get("tax", {}).get("value"), old.get("rental")]))
-        )
+        rental, tax = old.get("rental"), old.get("tax")
+        old["tax"] = tax or "-"
+        old["rental"] = rental or "-"
+        old["company_name"] = serializer.validated_data["company"].name
+        old["oc"] = sum(map(float, filter(None, [old.get("reactive"), tax, rental])))
         old["st_c1"] = reduce(mul, map(float, (old.get("c1", 0), old.get("c1_offer", 0))))
         old["st_c2"] = reduce(mul, map(float, (old.get("c2", 0), old.get("c2_offer", 0))))
         old["st_c3"] = reduce(mul, map(float, (old.get("c3", 0), old.get("c3_offer", 0))))
         old["st_p1"] = reduce(mul, map(float, (old.get("p1", 0), old.get("p1_offer", 0), old["period"])))
         old["st_p2"] = reduce(mul, map(float, (old.get("p2", 0), old.get("p2_offer", 0), old["period"])))
         old["st_p3"] = reduce(mul, map(float, (old.get("p3", 0), old.get("p3_offer", 0), old["period"])))
-
         old["st_c"] = sum(map(float, filter(None, [old.get("st_c1"), old.get("st_c2"), old.get("st_c3")])))
         old["st_p"] = sum(map(float, filter(None, [old.get("st_p1"), old.get("st_p2"), old.get("st_p3")])))
-        old["total"] = (old["st_c"] + old["st_p"]) or calculated["current_price"]
+        old["bi"] = (old.get("st_c") + old.get("st_p") + old.get("oc")) or "-"
+        old["iva"] = {"value": "-", "percent": "21%"}
+        if rental is not None and tax is not None:
+            old["total"] = float(rental) + float(tax) + old["st_c"] + old["st_p"]
+            reactive = old.get("reactive")
+            if reactive:
+                old["total"] += reactive
+
+        if old["bi"] != "-":
+            old["iva"]["value"] = round(old["bi"] * 0.21, 2)
+            old["total"] += old["iva"]["value"]
+
         new_st_p = round(calculated["st_p1"] + calculated["st_p2"] + calculated["st_p3"], 2)
         new_st_c = round(calculated["st_c1"] + calculated["st_c2"] + calculated["st_c3"], 2)
         new_oc = round(
@@ -76,14 +89,7 @@ class SendOfferView(LoggingMixin, views.APIView):
                 **calculated,
             },
             "old": {
-                "iva": {
-                    "percent": "-",
-                    "value": "-",
-                },
-                "rental": "-",
-                "tax": {"percent": "-", "value": "-"},
                 "oc": old.get("oc") or "-",
-                "bi": (old.get("st_c") + old.get("st_p") + old.get("oc")) or "-",
                 "total": "-",
                 "p1": "-",
                 "p2": "-",
@@ -115,6 +121,7 @@ class SendOfferView(LoggingMixin, views.APIView):
             "direccion": request.data.get("direccion") or request.query_params.get("direccion"),
             "cups": request.data.get("cups") or request.query_params.get("cups"),
             "client_name": request.data.get("client_name") or request.query_params.get("client_name"),
+            "note": request.data.get("note") or request.query_params.get("note"),
         }
 
         email_to = serializer.validated_data.get("email_to")

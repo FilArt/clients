@@ -2,6 +2,11 @@
   <v-card>
     <v-card-text>
       <v-row>
+        <v-col v-show="!closeable" class="flex-grow-0">
+          <v-btn icon color="error" @click="$router.back()">
+            <v-icon>mdi-arrow-left</v-icon>
+          </v-btn>
+        </v-col>
         <v-col>
           <p class="text-center headline">
             {{ hideName ? `Oferta ${offer.id}` : offer.name }}
@@ -18,11 +23,12 @@
     <v-divider />
 
     <v-card-text>
-      <v-row align="center">
-        <v-col>
+      <v-row align="center" class="pa-0">
+        <v-col class="pa-0">
           <v-img
             class="mx-auto"
             max-width="150"
+            max-height="100"
             :src="
               offer.company_logo
                 ? offer.company_logo.replace('localhost:8001', 'areaclientes.gestiongroup.es')
@@ -31,8 +37,8 @@
           />
         </v-col>
 
-        <v-col class="flex-grow-1">
-          <v-simple-table style="max-width: 750px" class="pa-3">
+        <v-col class="pa-0">
+          <v-simple-table style="max-width: 750px">
             <template v-slot:default>
               <tr>
                 <td colspan="2" class="font-weight-light font-italic text-left" style="padding-bottom: 2em">
@@ -57,8 +63,6 @@
                 <td>{{ offer.is_price_permanent }}</td>
               </tr>
 
-              <br />
-
               <tr>
                 <td :rowspan="powers.length + 1">
                   Precio por {{ offer.kind === 'luz' ? 'potencia' : 'termino fijo' }}:
@@ -69,11 +73,10 @@
                 <td>{{ power.text }}: {{ power.value }} €</td>
               </tr>
 
-              <br />
-
               <tr>
                 <td :rowspan="consumptions.length + 1">Precio por consumo:</td>
               </tr>
+
               <tr v-for="(consumption, cIdx) in consumptions" :key="'c' + cIdx">
                 <td>{{ consumption.text }}: {{ consumption.value }} €</td>
               </tr>
