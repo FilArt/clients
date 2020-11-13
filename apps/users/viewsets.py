@@ -203,6 +203,9 @@ class PuntoViewSet(LoggingMixin, viewsets.ModelViewSet):
                 filter_kwargs["user"] = self.request.query_params["user"]
             else:
                 del filter_kwargs["user"]
+        elif user.role in ("agent",):
+            del filter_kwargs["user"]
+            filter_kwargs["user__responsible"] = self.request.user.id
         return super().filter_queryset(queryset.filter(**filter_kwargs))
 
     def perform_create(self, serializer):
