@@ -59,6 +59,7 @@ class SendOfferView(LoggingMixin, views.APIView):
         old["st_p"] = sum(map(float, filter(None, [old.get("st_p1"), old.get("st_p2"), old.get("st_p3")])))
         old["bi"] = (old.get("st_c") + old.get("st_p") + old.get("oc")) or "-"
         old["iva"] = {"value": "-", "percent": "21%"}
+        old["total"] = 0
         if rental is not None and tax is not None:
             old["total"] = float(rental) + float(tax) + old["st_c"] + old["st_p"]
             reactive = old.get("reactive")
