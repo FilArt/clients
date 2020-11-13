@@ -12,6 +12,7 @@
 import DetailOffer from '~/components/detailOffer'
 
 export default {
+  auth: 'guest',
   components: {
     DetailOffer,
   },

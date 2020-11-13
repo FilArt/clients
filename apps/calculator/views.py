@@ -4,6 +4,7 @@ from operator import mul
 
 import pdfkit
 from django.conf import settings
+from django.contrib.auth.models import AnonymousUser
 from django.core.mail import EmailMessage
 from django.shortcuts import render
 from django.template.loader import render_to_string
@@ -116,9 +117,15 @@ class SendOfferView(LoggingMixin, views.APIView):
             },
             "period": old["period"],
             "date": timezone.now().date().strftime("%d/%m/%Y"),
-            "agent": request.user.fullname,
-            "agent_phone": request.user.phone,
-            "agent_email": request.user.email,
+            "agent": request.user.fullname
+            if not isinstance(request.user, AnonymousUser)
+            else old.get("agent_fullname"),
+            "agent_email": request.user.email
+            if not isinstance(request.user, AnonymousUser)
+            else old.get("agent_email"),
+            "agent_phone": request.user.phone
+            if not isinstance(request.user, AnonymousUser)
+            else old.get("agent_phone"),
             "direccion": request.data.get("direccion") or request.query_params.get("direccion"),
             "cups": request.data.get("cups") or request.query_params.get("cups"),
             "client_name": request.data.get("client_name") or request.query_params.get("client_name"),

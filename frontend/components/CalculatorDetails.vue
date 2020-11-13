@@ -1,8 +1,13 @@
 <template>
   <v-card elevation="0">
+    <v-card-text v-if="!$auth.loggedIn">
+      <v-text-field v-model="agent.fullname" label="Tu nombre" />
+      <email-field v-model="agent.email" />
+      <phone-field v-model="agent.phone" />
+    </v-card-text>
     <v-card-text>
-      <v-text-field v-model="clientName" label="Nombre" />
-      <email-field v-model="emailTo" />
+      <v-text-field v-model="clientName" label="Nombre de cliente" />
+      <email-field v-model="emailTo" label="Email de cliente" />
       <v-checkbox v-model="showAdditionalFields" label="Extra campos" />
     </v-card-text>
 
@@ -59,10 +64,11 @@
 import { mapState } from 'vuex'
 import EmailField from '@/components/fields/emailField'
 import constants from '@/lib/constants'
+import PhoneField from '@/components/fields/phoneField'
 
 export default {
   name: 'CalculatorDetails',
-  components: { EmailField },
+  components: { PhoneField, EmailField },
   props: {
     offer: {
       type: Object,
@@ -70,6 +76,8 @@ export default {
     },
   },
   data() {
+    let agent = localStorage.getItem('agent')
+    agent = agent && typeof agent === 'string' ? JSON.parse(agent) : { fullname: null, email: null, phone: null }
     return {
       loading: false,
       calculations: [],
@@ -89,7 +97,16 @@ export default {
       note: null,
       rental: null,
       tax: null,
+      agent,
     }
+  },
+  watch: {
+    agent: {
+      handler: (val) => {
+        localStorage.setItem('agent', JSON.stringify(val))
+      },
+      deep: true,
+    },
   },
   computed: {
     ...mapState({
@@ -165,6 +182,9 @@ export default {
         note: this.note,
         rental: this.rental,
         tax: this.tax,
+        agent_email: this.agent.email,
+        agent_fullname: this.agent.fullname,
+        agent_phone: this.agent.phone,
       }
       const params = Object.keys(data)
         .filter((key) => data[key] !== null)

@@ -16,7 +16,7 @@
       <template v-slot:[`item.profit_num`]="{ item }"> {{ item.profit_num }} € </template>
       <template v-slot:[`item.annual_total_num`]="{ item }"> {{ item.annual_total_num }} € </template>
 
-      <template v-if="$auth.loggedIn" v-slot:[`item.actions`]="{ item }">
+      <template v-slot:[`item.actions`]="{ item }">
         <v-btn icon nuxt :to="getDetailUrl(item)">
           <v-icon>mdi-eye</v-icon>
         </v-btn>

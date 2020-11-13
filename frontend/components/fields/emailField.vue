@@ -2,7 +2,7 @@
   <v-text-field
     v-model="email"
     :error-messages="errorMessages"
-    label="Email"
+    :label="label"
     name="email"
     prepend-icon="mdi-at"
     type="email"
@@ -14,6 +14,10 @@
 export default {
   name: 'EmailField',
   props: {
+    label: {
+      type: String,
+      default: 'Email',
+    },
     value: {
       type: String,
       default: null,
