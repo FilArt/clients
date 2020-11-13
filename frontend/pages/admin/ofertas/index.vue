@@ -234,6 +234,18 @@ export default {
       columns: [
         { label: 'ID', field: 'id', filterOptions: { enabled: true } },
         {
+          label: 'Activo',
+          field: 'active',
+          formatFn: this.booleanFormat,
+          filterOptions: {
+            enabled: true,
+            filterDropdownItems: [
+              { text: 'Si', value: true },
+              { text: 'No', value: false },
+            ],
+          },
+        },
+        {
           label: 'Tipo',
           field: 'kind',
           filterOptions: {
@@ -407,6 +419,9 @@ export default {
     formatClientType: (val) => (val === 0 ? 'F' : 'J'),
     formatCompany(id) {
       return this.companies.find((company) => company.value === id).text
+    },
+    booleanFormat(val) {
+      return val ? 'Si' : 'No'
     },
   },
 }

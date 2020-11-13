@@ -92,6 +92,7 @@ class PaginatedOfferViewSet(LoggingMixin, viewsets.ModelViewSet):
     serializer_class = AdminOfferListSerializer
     search_fields = ["name", "tarif", "company__name"]
     filterset_fields = [
+        "active",
         "kind",
         "id",
         "name",
