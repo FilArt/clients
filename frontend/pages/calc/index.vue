@@ -32,8 +32,9 @@ import Calculator from '@/components/forms/Calculator'
 import EmailField from '@/components/fields/emailField'
 import SubmitButton from '@/components/buttons/submitButton'
 export default {
+  layout: 'empty',
   components: { SubmitButton, EmailField, Calculator },
-  auth: 'guest',
+  auth: null,
   data() {
     return {
       menu: false,

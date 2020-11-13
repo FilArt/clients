@@ -1,4 +1,5 @@
 export default function ({ $auth, redirect, route }) {
+  console.log(route.name)
   if (
     route.name &&
     !$auth.loggedIn &&
