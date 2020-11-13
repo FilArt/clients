@@ -23,7 +23,7 @@
         </v-card-text>
       </v-card>
     </v-menu>
-    <calculator />
+    <calculator detail-url="/calc" />
   </div>
 </template>
 

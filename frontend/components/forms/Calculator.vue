@@ -222,6 +222,10 @@ export default {
       type: Boolean,
       default: false,
     },
+    detailUrl: {
+      type: String,
+      default: null,
+    },
   },
   data() {
     return {
@@ -297,9 +301,11 @@ export default {
   },
   methods: {
     getDetailUrl(offer) {
-      return `/ofertas/${offer.client_type === 0 ? 'hogar' : 'pyme'}/${offer.id}/?id=${
-        offer.id
-      }&showCalculatorDetails=true`
+      return this.detailUrl
+        ? `${this.detailUrl}/${offer.id}`
+        : `/ofertas/${offer.client_type === 0 ? 'hogar' : 'pyme'}/${offer.id}/?id=${
+            offer.id
+          }&showCalculatorDetails=true`
     },
     showInput(letter, number) {
       return (

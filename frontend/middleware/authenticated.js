@@ -1,5 +1,6 @@
 export default function ({ $auth, redirect, route }) {
   if (
+    route.name &&
     !$auth.loggedIn &&
     !route.name.includes('login') &&
     !route.name.includes('calc') &&
