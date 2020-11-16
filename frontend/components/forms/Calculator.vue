@@ -14,7 +14,7 @@
       </template>
 
       <template v-slot:[`item.profit_num`]="{ item }"> {{ item.profit_num }} € </template>
-      <template v-slot:[`item.annual_total_num`]="{ item }"> {{ item.annual_total_num }} € </template>
+      <template v-slot:[`item.annual_profit_num`]="{ item }"> {{ item.annual_profit_num }} € </template>
 
       <template v-slot:[`item.actions`]="{ item }">
         <v-btn icon nuxt :to="getDetailUrl(item)">
@@ -276,7 +276,7 @@ export default {
         },
         {
           text: 'Ahorro anual',
-          value: 'annual_total_num',
+          value: 'annual_profit_num',
         },
         {
           value: 'actions',

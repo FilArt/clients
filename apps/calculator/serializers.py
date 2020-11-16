@@ -76,8 +76,10 @@ class CalculatorSerializer(serializers.ModelSerializer):
     profit_num = serializers.DecimalField(read_only=True, max_digits=10, decimal_places=2, source="profit")
     profit_percent = serializers.IntegerField(read_only=True)
     total = BeautyFloatField(show_euro=True)
-    annual_total = BeautyFloatField(show_euro=True)
-    annual_total_num = serializers.DecimalField(read_only=True, max_digits=10, decimal_places=2, source="annual_total")
+    annual_profit = BeautyFloatField(show_euro=True)
+    annual_profit_num = serializers.DecimalField(
+        read_only=True, max_digits=10, decimal_places=2, source="annual_profit"
+    )
 
     class Meta:
         model = Offer
@@ -119,8 +121,8 @@ class CalculatorSerializer(serializers.ModelSerializer):
             "profit",
             "profit_num",
             "profit_percent",
-            "annual_total",
-            "annual_total_num",
+            "annual_profit",
+            "annual_profit_num",
             "with_calculations",
             "kind",
             "reactive",
@@ -195,9 +197,7 @@ class CalculatorSerializer(serializers.ModelSerializer):
                 profit=-F("total") + current_price,
             )
             .annotate(
-                annual_total=F("total") / Value(data["period"]) * Value(365),
-            )
-            .annotate(
+                annual_profit=F("profit") / Value(data["period"]) * Value(365),
                 profit_percent=F("profit") / F("total") * Value(100),
                 current_price=current_price,
                 rental=Value(rental, output_field=models.FloatField()),
