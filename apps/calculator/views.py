@@ -50,26 +50,29 @@ class SendOfferView(LoggingMixin, views.APIView):
         old["rental"] = rental or "-"
         old["company_name"] = serializer.validated_data["company"].name
         old["oc"] = sum(map(float, filter(None, [old.get("reactive"), tax, rental])))
-        old["st_c1"] = reduce(mul, map(float, (old.get("c1", 0), old.get("c1_offer", 0))))
-        old["st_c2"] = reduce(mul, map(float, (old.get("c2", 0), old.get("c2_offer", 0))))
-        old["st_c3"] = reduce(mul, map(float, (old.get("c3", 0), old.get("c3_offer", 0))))
-        old["st_p1"] = reduce(mul, map(float, (old.get("p1", 0), old.get("p1_offer", 0), old["period"])))
-        old["st_p2"] = reduce(mul, map(float, (old.get("p2", 0), old.get("p2_offer", 0), old["period"])))
-        old["st_p3"] = reduce(mul, map(float, (old.get("p3", 0), old.get("p3_offer", 0), old["period"])))
+        old["st_c1"] = reduce(mul, map(float, (old.get("c1") or 0, old.get("c1_offer") or 0)))
+        old["st_c2"] = reduce(mul, map(float, (old.get("c2") or 0, old.get("c2_offer") or 0)))
+        old["st_c3"] = reduce(mul, map(float, (old.get("c3") or 0, old.get("c3_offer") or 0)))
+        old["st_p1"] = reduce(mul, map(float, (old.get("p1") or 0, old.get("p1_offer") or 0, old["period"])))
+        old["st_p2"] = reduce(mul, map(float, (old.get("p2") or 0, old.get("p2_offer") or 0, old["period"])))
+        old["st_p3"] = reduce(mul, map(float, (old.get("p3") or 0, old.get("p3_offer") or 0, old["period"])))
         old["st_c"] = sum(map(float, filter(None, [old.get("st_c1"), old.get("st_c2"), old.get("st_c3")])))
         old["st_p"] = sum(map(float, filter(None, [old.get("st_p1"), old.get("st_p2"), old.get("st_p3")])))
         old["bi"] = (old.get("st_c") + old.get("st_p") + old.get("oc")) or "-"
         old["iva"] = {"value": "-", "percent": "21%"}
-        old["total"] = 0
+        old["total"] = old["bi"] if old["bi"] != "-" else 0
         if rental is not None and tax is not None:
-            old["total"] = float(rental) + float(tax) + old["st_c"] + old["st_p"]
-            reactive = old.get("reactive")
+            old["total"] += float(rental) + float(tax)
+            reactive = old.pop("reactive")
             if reactive:
                 old["total"] += float(reactive)
 
         if old["bi"] != "-":
             old["iva"]["value"] = round(old["bi"] * 0.21, 2)
+            old["bi"] = round(old["bi"], 2)
             old["total"] += old["iva"]["value"]
+
+        old["total"] = old["total"] or calculated["current_price"]
 
         new_st_p = round(calculated["st_p1"] + calculated["st_p2"] + calculated["st_p3"], 2)
         new_st_c = round(calculated["st_c1"] + calculated["st_c2"] + calculated["st_c3"], 2)
@@ -87,7 +90,7 @@ class SendOfferView(LoggingMixin, views.APIView):
                 "st_p": new_st_p,
                 "st_c": new_st_c,
                 "oc": new_oc,
-                "bi": new_st_c + new_st_p + new_oc,
+                "bi": round(new_st_c + new_st_p + new_oc, 2),
                 **calculated,
             },
             "old": {

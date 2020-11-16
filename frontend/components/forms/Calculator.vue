@@ -177,7 +177,11 @@
 
           <v-row v-if="form.kind === 'luz'" align="center">
             <v-col>
-              <v-checkbox v-model="hasReactiveEnergy" label="Energía reactiva (opcional)" />
+              <v-checkbox
+                v-model="hasReactiveEnergy"
+                label="Energía reactiva (opcional)"
+                @change="!$event ? updateForm('reactive', 0) : null"
+              />
             </v-col>
 
             <v-col>
@@ -298,6 +302,9 @@ export default {
         }
       })
     },
+  },
+  mounted() {
+    this.updateForm('reactive', 0)
   },
   methods: {
     getDetailUrl(offer) {

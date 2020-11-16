@@ -14,8 +14,8 @@
     <v-card-text v-show="showAdditionalFields">
       <v-card-title>Extra campos</v-card-title>
       <v-text-field v-model="offerName" label="Oferta" />
-      <v-text-field v-model="direccion" label="Direccion" type="number" />
-      <v-text-field v-model="cups" label="CUPS" type="number" />
+      <v-text-field v-model="direccion" label="Direccion" />
+      <v-text-field v-model="cups" label="CUPS" />
       <v-text-field v-model="p1_offer" label="Precio por potencia P1 facturacion actual" type="number" />
       <v-text-field
         v-show="showInput('p', 2)"
