@@ -1,5 +1,5 @@
 <template>
-  <v-row>
+  <v-row justify="center">
     <v-col v-for="offer in offers" :key="offer.id" xl="4" lg="6" md="12">
       <v-sheet>
         <detail-offer :offer="offer" show-add-btn />
@@ -12,7 +12,7 @@
 import DetailOffer from '~/components/detailOffer'
 
 export default {
-  auth: 'guest',
+  auth: false,
   components: {
     DetailOffer,
   },

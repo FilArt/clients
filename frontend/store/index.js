@@ -1,6 +1,10 @@
 export const state = () => ({
   calculatedOffers: [],
-  calculatorForm: {},
+  calculatorForm: {
+    kind: 'luz',
+    igic: false,
+    client_type: 0,
+  },
   tarif: null,
   puntoCategories: [],
   cities: [],

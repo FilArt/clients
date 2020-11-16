@@ -2,7 +2,7 @@
   <v-card>
     <v-card-text>
       <v-row>
-        <v-col v-show="!closeable" class="flex-grow-0">
+        <v-col v-if="showCalcDetails" class="flex-grow-0">
           <v-btn icon color="error" @click="$router.back()">
             <v-icon>mdi-arrow-left</v-icon>
           </v-btn>

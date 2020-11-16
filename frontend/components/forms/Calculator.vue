@@ -341,35 +341,3 @@ export default {
   },
 }
 </script>
-
-<style scoped>
-.switcher {
-  display: flex;
-  flex-direction: row;
-  justify-content: center;
-}
-
-.luz-gas {
-  margin: 0 3em 0 3em;
-}
-
-@media only screen and (max-width: 768px) {
-  .switcher :nth-child(1) {
-    padding-bottom: 0;
-    padding-top: 0;
-  }
-  .switcher :nth-child(2) {
-    padding-bottom: 0;
-    padding-top: 0;
-    order: 2;
-  }
-  .switcher :nth-child(3) {
-    padding-bottom: 0;
-    padding-top: 0;
-    order: 1;
-  }
-  .luz-gas {
-    margin: 0;
-  }
-}
-</style>

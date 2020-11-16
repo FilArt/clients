@@ -100,14 +100,6 @@ export default {
       agent,
     }
   },
-  watch: {
-    agent: {
-      handler: (val) => {
-        localStorage.setItem('agent', JSON.stringify(val))
-      },
-      deep: true,
-    },
-  },
   computed: {
     ...mapState({
       form: (state) => state.calculatorForm,
@@ -128,6 +120,14 @@ export default {
             .filter((t) => t.value),
         }
       })
+    },
+  },
+  watch: {
+    agent: {
+      handler: (val) => {
+        localStorage.setItem('agent', JSON.stringify(val))
+      },
+      deep: true,
     },
   },
   async mounted() {
@@ -224,21 +224,3 @@ export default {
   },
 }
 </script>
-
-<style scoped>
-.popusk {
-  width: 2em;
-}
-.popusk-2 {
-  flex-grow: 1;
-}
-@media only screen and (max-width: 768px) {
-  /* For mobile phones: */
-  .popusk {
-    width: 0;
-  }
-  .popusk-2 {
-    flex-grow: 3;
-  }
-}
-</style>
