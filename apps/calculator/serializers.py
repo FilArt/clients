@@ -195,7 +195,7 @@ class CalculatorSerializer(serializers.ModelSerializer):
                 profit=-F("total") + current_price,
             )
             .annotate(
-                annual_total=F("profit") / Value(data["period"]) * Value(365),
+                annual_total=F("total") / Value(data["period"]) * Value(365),
             )
             .annotate(
                 profit_percent=F("profit") / F("total") * Value(100),
