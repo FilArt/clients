@@ -2,6 +2,7 @@
   <v-btn-toggle v-model="item" :error-messages="errorMessages" :color="ourColor" @change="$emit('input', $event)">
     <v-btn :value="0">RESIDENCIAL</v-btn>
     <v-btn :value="1">PYME</v-btn>
+    <v-btn :value="2">AUTÓNOMO</v-btn>
   </v-btn-toggle>
 </template>
 

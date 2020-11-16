@@ -115,6 +115,7 @@ class Offer(models.Model):
     CLIENT_TYPE_CHOICES = (
         (0, _("Individual")),
         (1, _("Business")),
+        (2, _("Autónomo")),
     )
     PRICE_CHOICES = (
         ("Fijo", _("Fijo")),
