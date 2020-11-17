@@ -197,7 +197,7 @@ class CalculatorSerializer(serializers.ModelSerializer):
             )
             .annotate(
                 annual_profit=F("profit") / Value(data["period"]) * Value(365),
-                profit_percent=F("profit") / F("total") * Value(100),
+                profit_percent=F("profit") / current_price * Value(100),
                 current_price=current_price,
                 rental=Value(rental, output_field=models.FloatField()),
                 reactive=Value(data["reactive"], output_field=models.FloatField()),
