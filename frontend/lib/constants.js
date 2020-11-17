@@ -276,6 +276,7 @@ export default Object.freeze({
   tarifs: ['2.0A', '2.1A', '2.0DHA', '2.0DHS', '2.1DHA', '2.1DHS', '3.0A', '3.1A'],
   tarifsGas: ['3.1', '3.2', '3.3', '3.4'],
   showInput: (letter, number, tarif) => {
+    if (!letter || !number || !tarif) return false
     letter = letter.toLowerCase()
     number = parseInt(number)
     tarif = tarif.toUpperCase()
