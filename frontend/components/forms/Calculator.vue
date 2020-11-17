@@ -83,7 +83,13 @@
             </v-col>
 
             <v-col>
-              <tarif-select v-model="tarif" :error-messages="errorMessages.tarif" hint :gas="form.kind === 'gas'" />
+              <tarif-select
+                v-model="tarif"
+                :error-messages="errorMessages.tarif"
+                hint
+                :gas="form.kind === 'gas'"
+                @input="updateForm('tarif', tarif)"
+              />
             </v-col>
           </v-row>
 
@@ -315,11 +321,7 @@ export default {
           }&showCalculatorDetails=true`
     },
     showInput(letter, number) {
-      return (
-        number === 1 ||
-        ['3.0A', '3.1A'].includes(this.tarif) ||
-        (letter + number === 'c3' && ['2.1DHA', '2.0DHA'].includes(this.tarif))
-      )
+      return constants.showInput(letter, number, this.form.tarif)
     },
     updateForm(key, value) {
       this.$store.commit('updateCalculatorForm', {

@@ -49,7 +49,7 @@ class SendOfferView(LoggingMixin, views.APIView):
         old["tax"] = tax or "-"
         old["rental"] = rental or "-"
         old["company_name"] = serializer.validated_data["company"].name
-        old["oc"] = sum(map(float, filter(None, [old.get("reactive"), tax, rental])))
+        old["oc"] = sum(map(float, filter(None, [calculated["reactive"], tax, rental])))
         old["st_c1"] = reduce(mul, map(float, (old.get("c1") or 0, old.get("c1_offer") or 0)))
         old["st_c2"] = reduce(mul, map(float, (old.get("c2") or 0, old.get("c2_offer") or 0)))
         old["st_c3"] = reduce(mul, map(float, (old.get("c3") or 0, old.get("c3_offer") or 0)))
@@ -62,10 +62,7 @@ class SendOfferView(LoggingMixin, views.APIView):
         old["iva"] = {"value": "-", "percent": "21%"}
         old["total"] = old["bi"] if old["bi"] != "-" else 0
         if rental is not None and tax is not None:
-            old["total"] += float(rental) + float(tax)
-            reactive = old.pop("reactive")
-            if reactive:
-                old["total"] += float(reactive)
+            old["total"] += float(rental) + float(tax) + float(calculated["reactive"])
 
         if old["bi"] != "-":
             old["iva"]["value"] = round(old["bi"] * 0.21, 2)

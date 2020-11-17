@@ -43,7 +43,6 @@ class CalculatorSerializer(serializers.ModelSerializer):
     p3 = PotenciaField()
     current_price = serializers.FloatField(min_value=0, validators=[positive_number])
     reactive = serializers.FloatField(
-        default=0,
         min_value=0,
         allow_null=True,
         required=False,
@@ -201,6 +200,7 @@ class CalculatorSerializer(serializers.ModelSerializer):
                 profit_percent=F("profit") / F("total") * Value(100),
                 current_price=current_price,
                 rental=Value(rental, output_field=models.FloatField()),
+                reactive=Value(data["reactive"], output_field=models.FloatField()),
             )
             .order_by("total")
         )

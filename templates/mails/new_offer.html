@@ -296,8 +296,8 @@
                                       ><span style="color: #004680"
                                       >POTENCIA CONTRATADA (kW):
                                           <span style="color: rgb(0, 0, 0)"
-                                          >{{ new.p1 }}{% if new.p2 %}; {{ new.p2 }}{% endif %}{% if new.p3 %};
-                                              {{ new.p3 }}{% endif %}</span></span
+                                          >{{ old.p1 }}{% if old.p2 != '-' %}; {{ old.p2 }}{% endif %}{% if old.p3 != '-' %};
+                                              {{ old.p3 }}{% endif %}</span></span
                                       ></span
                                       >
                                                     </div>
@@ -1090,7 +1090,7 @@
                                             >
                                                 <div style="text-align: center; font-weight: bolder; font-size: 16px">
                                       <span style="color: white">
-                                        AHORRO EN FACTURA: {{ new.profit }} €
+                                        AHORRO EN FACTURA: {{ new.profit }} € ({{ new.profit_percent }})
                                       </span>
                                                     <br/>
                                                     <br/>
