@@ -2,7 +2,7 @@
   <v-card elevation="0">
     <v-card-text v-if="!$auth.loggedIn">
       <v-text-field v-model="agent.fullname" label="Tu nombre" />
-      <email-field v-model="agent.email" />
+      <email-field v-model="agent.email" label="Tu email" />
       <phone-field v-model="agent.phone" />
     </v-card-text>
     <v-card-text>

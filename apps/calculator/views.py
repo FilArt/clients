@@ -144,13 +144,18 @@ class SendOfferView(LoggingMixin, views.APIView):
             pdf_path = filepath.replace("html", "pdf")
             pdfkit.from_file(f.name, pdf_path)
 
+            cc = old.get("email") or []
+            if cc:
+                cc = [cc]
+            else:
+                cc = [request.user.email] if hasattr(request.user, "email") else None
+
             email = EmailMessage(
                 subject,
                 plain_message,
                 settings.EMAIL_HOST_USER,
                 [email_to],
-                # bcc=[request.user.email],
-                cc=[request.user.email],
+                cc=cc,
             )
             email.attach_file(pdf_path)
             email.send()
