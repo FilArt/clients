@@ -66,6 +66,7 @@
                 :value="form.client_type"
                 :error-messages="errorMessages.client_type"
                 hint
+                without-autonomo
                 @input="updateForm('client_type', $event)"
               />
             </v-col>
