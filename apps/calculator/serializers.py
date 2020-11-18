@@ -48,7 +48,7 @@ class CalculatorSerializer(serializers.ModelSerializer):
         required=False,
         validators=[casi_positive_number],
     )
-    igic = serializers.BooleanField(write_only=True, default=False)
+    igic = serializers.BooleanField(write_only=True)
 
     c_st_c1 = ConsumoCalculationField()
     c_st_c2 = ConsumoCalculationField()

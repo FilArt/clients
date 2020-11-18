@@ -54,10 +54,13 @@
           <v-row align="center" class="text-center">
             <v-col>
               Impuestos
-              <v-btn-toggle :value="form.igic" :color="ourColor" @change="updateForm('igic', $event)">
+              <v-btn-toggle :value="form.igic || false" :color="ourColor" @change="updateForm('igic', $event)">
                 <v-btn :value="false">Península</v-btn>
                 <v-btn :value="true">Islas Canarias</v-btn>
               </v-btn-toggle>
+              <v-alert v-if="errorMessages.igic" type="error">
+                {{ errorMessages.igic.join('; ') }}
+              </v-alert>
             </v-col>
             <v-col>
               Tipo de cliente
