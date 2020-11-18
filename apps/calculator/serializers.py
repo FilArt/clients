@@ -156,7 +156,8 @@ class CalculatorSerializer(serializers.ModelSerializer):
             offers = offers.filter(id=data.get("id"))
 
         qs = (
-            offers.exclude(company=data["company"])
+            offers.filter(active=True)
+            .exclude(company=data["company"])
             .filter(
                 Q(
                     Q(power_max__isnull=True) | Q(power_max__gte=power_min),
