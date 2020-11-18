@@ -509,7 +509,12 @@ class AgentContractSerializer(serializers.ModelSerializer):
         # 1 bid - 1 offer - 1 punto
         for pkey, punto_data in enumerate(puntos):
             offer = punto_data.pop("offer") if "offer" in punto_data else None
-            if offer and "phone" in offer.required_fields and not self.validated_data.get("phone"):
+            if (
+                offer
+                and offer.required_fields
+                and "phone" in offer.required_fields
+                and not self.validated_data.get("phone")
+            ):
                 raise ValidationError({"phone": "Requiredo."})
 
             offer_gas = punto_data.pop("offer_gas") if "offer_gas" in punto_data else None
