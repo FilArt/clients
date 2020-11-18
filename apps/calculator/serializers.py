@@ -148,7 +148,7 @@ class CalculatorSerializer(serializers.ModelSerializer):
 
         power_min = min(filter((lambda n: n != 0), (data["p1"], data["p2"], data["p3"])))
         power_max = max(filter((lambda n: n != 0), (data["p1"], data["p2"], data["p3"])))
-        annual_consumption = ((data["c1"] + data["c2"] + data["c3"]) / data["period"]) * 365
+        annual_consumption = ((data["c1"] + data["c2"] + data["c3"]) / data["period"]) * 365 if is_luz else data["c1"]
         current_price = Value(data["current_price"], output_field=models.FloatField())
 
         offers = Offer.objects.all()
