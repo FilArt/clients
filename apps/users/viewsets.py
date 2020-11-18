@@ -394,7 +394,7 @@ class RequestLogViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
 
 
 class CanalAgents(viewsets.ReadOnlyModelViewSet):
-    queryset = CustomUser.objects.filter(role="agent", agent_type="agent")
+    queryset = CustomUser.objects.filter(role="agent")
     permission_classes = (IsAuthenticated, AgentClientsPermissions)
     serializer_class = CanalAgentesSerializer
     search_fields = UserViewSet.search_fields
