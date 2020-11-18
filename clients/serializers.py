@@ -551,7 +551,7 @@ class AgentContractSerializer(serializers.ModelSerializer):
             "dni": ["dni"],
             "phone": ["phone"],
         }
-        required_fields = [xf for fields in [rf_map[f] for f in offer.required_fields] for xf in fields]
+        required_fields = [xf for fields in [rf_map[f] for f in (offer.required_fields or [])] for xf in fields]
         not_provided_fields = set(required_fields) - set(given_fields)
 
         if "name_changed" in not_provided_fields:
