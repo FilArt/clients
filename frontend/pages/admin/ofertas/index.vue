@@ -286,10 +286,10 @@ export default {
           formatFn: this.formatClientType,
           filterOptions: {
             enabled: true,
-            filterDropdownItems: [
-              { text: 'J', value: 1 },
-              { text: 'F', value: 0 },
-            ],
+            filterDropdownItems: Object.entries(constants.clientTypes).map((items) => ({
+              text: items[1],
+              value: parseInt(items[0]),
+            })),
           },
         },
         {
@@ -416,7 +416,7 @@ export default {
       await this.refresh()
       this.fieldToEdit = this.newValue = null
     },
-    formatClientType: (val) => (val === 0 ? 'F' : 'J'),
+    formatClientType: (val) => constants.clientTypes[val],
     formatCompany(id) {
       return this.companies.find((company) => company.value === id).text
     },

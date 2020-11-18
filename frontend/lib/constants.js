@@ -286,4 +286,9 @@ export default Object.freeze({
       (letter + number === 'c3' && ['2.1DHA', '2.0DHA'].includes(tarif))
     )
   },
+  clientTypes: {
+    0: 'Físico',
+    1: 'Jurídico',
+    2: 'Autónomo',
+  },
 })

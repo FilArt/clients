@@ -54,7 +54,7 @@
               <tr>
                 <td>Tipo de oferta:</td>
                 <td>
-                  {{ offer.client_type === 0 ? 'Físico' : 'Jurídico' }}
+                  {{ clientTypes[offer.client_type] }}
                 </td>
               </tr>
 
@@ -121,7 +121,7 @@
     <v-card-actions v-else-if="showAddBtn && $auth.loggedIn && !showCalcDetails">
       <v-btn rounded block outlined color="primary" @click="addBid">
         Añadir a cartera
-        <v-icon right> mdi-briefcase </v-icon>
+        <v-icon right>mdi-briefcase</v-icon>
       </v-btn>
     </v-card-actions>
 
@@ -132,6 +132,8 @@
 </template>
 
 <script>
+import constants from '@/lib/constants'
+
 export default {
   name: 'DetailOffer',
   components: {
@@ -182,6 +184,7 @@ export default {
       clientType: null,
       kind: null,
       newOffer: null,
+      clientTypes: constants.clientTypes,
     }
   },
   computed: {
