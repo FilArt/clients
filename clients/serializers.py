@@ -547,6 +547,7 @@ class AgentContractSerializer(serializers.ModelSerializer):
             "photo_recibo": ["recibo1"],
             "name_changed_doc": ["name_changed"],
             "contrato_arredamiento": ["arredamiento"],
+            "contrato": ["contrato"],
             "cif": ["cif"],
             "dni": ["dni"],
             "phone": ["phone"],

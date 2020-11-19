@@ -131,6 +131,7 @@ class Offer(models.Model):
         ("phone", _("Phone")),
         ("name_changed_doc", _("DOCUMENTO CAMBIO DE NOMBRE")),
         ("contrato_arredamiento", _("CONTRATO ARREDAMIENTO/COMPRAVENTA")),
+        ("contrato", _("CONTRATO")),
     )
     OFFER_KIND_CHOICES = (
         ("luz", _("Luz")),

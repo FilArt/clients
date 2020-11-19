@@ -230,6 +230,7 @@ export default {
         { value: 'phone', text: 'Telefono' },
         { value: 'contrato_arredamiento', text: 'CONTRATO ARREDAMIENTO/COMPRAVENTA' },
         { value: 'name_changed_doc', text: 'DOCUMENTO CAMBIO DE NOMBRE' },
+        { value: 'contrato', text: 'CONTRATO' },
       ],
       columns: [
         { label: 'ID', field: 'id', filterOptions: { enabled: true } },
