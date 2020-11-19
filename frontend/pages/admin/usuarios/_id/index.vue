@@ -109,16 +109,13 @@
             @click:append="update({ permissions: settings.permissions })"
           />
 
-          <v-select
-            v-model="settings.groups"
-            multiple
-            label="Notificaciones"
+          <item-grouper
+            v-model="user.groups"
+            label="Grupos"
             item-text="name"
             item-value="id"
-            return-object
             :items="allGroups"
-            :append-icon="String(settings.groups) !== String(user.groups) ? 'mdi-content-save' : null"
-            @click:append="update({ groups: settings.groups })"
+            @input="update({ groups: $event })"
           />
         </v-col>
 
@@ -147,8 +144,13 @@
 <script>
 import PhoneField from '@/components/fields/phoneField'
 import constants from '@/lib/constants'
+import ItemGrouper from '@/components/selects/ItemGrouper'
+const hints = {
+  Attachment: 'Notificar al usuario sobre nuevos archivos',
+}
 export default {
   components: {
+    ItemGrouper,
     PhoneField,
     SnackBarIt: () => import('@/components/snackbar/SnackBarIt'),
     AgentsList: () => import('@/components/selects/AgentsList'),
@@ -158,7 +160,7 @@ export default {
     const allGroups = await $axios.$get('/users/groups/')
     return {
       user,
-      allGroups: allGroups.map((g) => ({ ...g, name: constants.trans[g.name] || g.name })),
+      allGroups: allGroups.map((g) => ({ ...g, name: constants.trans[g.name] || g.name, hint: hints[g.name] })),
       settings: { ...user },
       apiUrl: `users/manage_users/${user.id}/`,
     }
@@ -187,6 +189,12 @@ export default {
     },
   },
   methods: {
+    addGroup(group) {
+      this.update({ groups: this.settings.groups.concat(group) })
+    },
+    removeGroup(group) {
+      this.update({ groups: this.allGroups.filter((g) => g.id !== group.id) })
+    },
     update(data) {
       this.errorMessages = {}
       this.$axios
