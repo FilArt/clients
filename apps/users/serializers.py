@@ -3,6 +3,7 @@ import logging
 import arrow
 from django.conf import settings
 from django.contrib.auth.base_user import BaseUserManager
+from django.contrib.auth.models import Group
 from django.contrib.auth.password_validation import validate_password
 from django.core.exceptions import ValidationError as DjangoValidationError
 from django.template.loader import render_to_string
@@ -153,7 +154,15 @@ class ManageUserListSerializer(UserListSerializer):
         ]
 
 
+class GroupSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Group
+        fields = "__all__"
+
+
 class ManageUserSerializer(UserListSerializer):
+    groups = GroupSerializer(many=True)
+
     class Meta:
         model = CustomUser
         fields = [
@@ -169,6 +178,7 @@ class ManageUserSerializer(UserListSerializer):
             "fixed_salary",
             "permissions",
             "agents",
+            "groups",
         ]
         extra_kwargs = {"password": {"write_only": True}, "agent_type": {"allow_null": True}}
 
@@ -198,6 +208,11 @@ class ManageUserSerializer(UserListSerializer):
 
                 agent.canal = user
                 agent.save(update_fields=["canal"])
+
+        if "groups" in validated_data:
+            validated_data.pop("groups")
+            groups_ids = [item["id"] for item in self.initial_data["groups"]]
+            user.groups.set(Group.objects.filter(id__in=groups_ids))
 
         ret = super().update(user, validated_data)
 

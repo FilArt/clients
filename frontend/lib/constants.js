@@ -291,4 +291,7 @@ export default Object.freeze({
     1: 'Jurídico',
     2: 'Autónomo',
   },
+  trans: {
+    Attachment: 'Archivos',
+  },
 })

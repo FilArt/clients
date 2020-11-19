@@ -108,6 +108,18 @@
             :append-icon="user.permissions !== settings.permissions ? 'mdi-content-save' : null"
             @click:append="update({ permissions: settings.permissions })"
           />
+
+          <v-select
+            v-model="settings.groups"
+            multiple
+            label="Notificaciones"
+            item-text="name"
+            item-value="id"
+            return-object
+            :items="allGroups"
+            :append-icon="String(settings.groups) !== String(user.groups) ? 'mdi-content-save' : null"
+            @click:append="update({ groups: settings.groups })"
+          />
         </v-col>
 
         <v-divider vertical />
@@ -134,6 +146,7 @@
 
 <script>
 import PhoneField from '@/components/fields/phoneField'
+import constants from '@/lib/constants'
 export default {
   components: {
     PhoneField,
@@ -142,14 +155,17 @@ export default {
   },
   async asyncData({ params, $axios }) {
     const user = await $axios.$get(`/users/manage_users/${params.id}/`)
+    const allGroups = await $axios.$get('/users/groups/')
     return {
       user,
+      allGroups: allGroups.map((g) => ({ ...g, name: constants.trans[g.name] || g.name })),
       settings: { ...user },
       apiUrl: `users/manage_users/${user.id}/`,
     }
   },
   data() {
     return {
+      groups: [],
       notificationKey: 0,
       errorMessages: {},
     }

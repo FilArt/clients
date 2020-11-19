@@ -52,6 +52,7 @@ from .serializers import (
     AgentClientsSerializer,
     CanalAgentesSerializer,
     NotificationSerializer,
+    GroupSerializer,
 )
 
 logger = logging.getLogger(__name__)
@@ -441,3 +442,8 @@ class NotificationViewSet(viewsets.ModelViewSet):
         noty: Notification = self.get_object()
         noty.mark_as_unread()
         return Response("ok")
+
+
+class GroupsViewSet(viewsets.ModelViewSet):
+    queryset = Group.objects.all()
+    serializer_class = GroupSerializer
