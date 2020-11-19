@@ -13,12 +13,7 @@
     <v-card-text>
       <users-table
         list-url="users/agent_clients"
-        :statuses="[
-          { text: 'KO', value: 'tramitacion_ko' },
-          { text: 'Pendiente tramitacion', value: 'tramitacion_pendiente' },
-          { text: 'Pagado', value: 'facturacion_ok' },
-          { text: 'Pendiente pago', value: 'facturacion_pendiente' },
-        ]"
+        :statuses="statuses"
         :responsible="$route.params.id"
         :detail-url="null"
         :headers="[
@@ -54,6 +49,8 @@
 </template>
 
 <script>
+import constants from '@/lib/constants'
+
 export default {
   components: {
     UsersTable: () => import('~/components/tables/UsersTable'),
@@ -62,9 +59,16 @@ export default {
   async asyncData({ params, $axios }) {
     const apiUrl = `users/manage_users/${params.id}/`
     const user = await $axios.$get(apiUrl)
+    const statuses = [
+      constants.statuses.KO,
+      constants.statuses.PENDIENTE_TRAMITACION,
+      constants.statuses.PAGADO,
+      constants.statuses.PENDIENTE_PAGO,
+    ]
     return {
       user,
       apiUrl,
+      statuses,
     }
   },
 }

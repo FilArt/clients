@@ -282,7 +282,6 @@ class AgentClientsSerializer(UserListSerializer):
         fields = [
             "id",
             "fullname",
-            "status",
             "bids_count",
             "paid_count",
             "canal_paid_count",
@@ -294,7 +293,7 @@ class NotificationSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Notification
-        fields = '__all__'
+        fields = "__all__"
 
     def get_author(self, noty: Notification) -> str:
-        return noty.action_object.fullname if noty.action_object else 'Anonymous'
+        return noty.action_object.fullname if noty.action_object else "Anonymous"

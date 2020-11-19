@@ -290,7 +290,7 @@ export default {
   props: {
     statuses: {
       type: Array,
-      default: () => [],
+      default: () => null,
     },
     listUrl: {
       type: String,
@@ -448,7 +448,7 @@ export default {
     },
     getQuery() {
       const query = constants.cleanEmpty({
-        statuses_in: this.statuses.join(','),
+        statuses_in: this.statuses && this.statuses.length ? this.statuses.join(',') : null,
         ...this.query,
         ordering: this.query.sortBy.length
           ? this.query.sortBy.map((sortBy, idx) => (this.query.sortDesc[idx] ? '+' : '-') + sortBy).join()
@@ -457,6 +457,7 @@ export default {
         role__isnull: this.role === 'null' ? true : null,
       })
       return Object.keys(query)
+        .filter((k) => query[k] !== null)
         .map((k) => {
           const value = query[k]
           return value instanceof Array ? `${k}=${value.join()}` : `${k}=${value}`
