@@ -16,6 +16,7 @@
     />
     <style>
         table {
+            max-width: 750px;
             margin: auto;
             padding: 0;
         }
@@ -33,14 +34,13 @@
         }
 
         .signature {
-            text-align: left;
+            text-align: right;
             font-style: italic;
             font-size: 11px;
             color: #004680;
         }
 
         .signature > p {
-            text-align: right;
             line-height: 1px;
             padding: 0;
         }
@@ -50,87 +50,64 @@
 <table>
     <tbody>
     <tr>
-        <td>
-            <table
-                    style="
-                width: 100%;
-                border-collapse: collapse;
-                border-spacing: 0;
-                margin: 0;
-                border: 0;
-              "
+        <td
+                style="
+          padding-left: 15px;
+          padding-right: 15px;
+          text-align: center;
+        "
+        >
+            <img
+                    src="https://static.tildacdn.com/tild3064-6339-4335-b062-623135663063/GG_LOGO_004680.png"
+                    style="max-width: 333px; height: 111px;"
+                    alt="Logo"
+            />
+            <div class="signature"
+                 style="width: 100%"
             >
-                <tbody>
-                <tr>
-                    <td
-                            style="
-                      padding-left: 15px;
-                      padding-right: 15px;
-                      width: 100%;
-                      text-align: center;
-                    "
-                    >
-                        <img
-                                style="width: 333px; height: 111px"
-                                src="https://static.tildacdn.com/tild3064-6339-4335-b062-623135663063/GG_LOGO_004680.png"
-                                alt="Logo"
-                        />
-                    </td>
-                </tr>
-                </tbody>
-            </table>
-
-            <br>
-
-            <div class="signature">
                 <p>№ {{ new.id }}</p>
                 <p>Fecha de la propuesta: {{ date }}</p>
                 <p>Periodo de validez: 7 Días</p>
             </div>
 
+        </td>
+    </tr>
+    </tbody>
+</table>
+
+<br>
+
+
+<table>
+    <tbody>
+    <tr>
+        <td style="padding-left: 15px; padding-right: 15px">
             <table
                     style="
-                width: 100%;
-                border-collapse: collapse;
-                border-spacing: 0;
-                margin: 0;
-                border: 0;
-              "
+            margin: 0 auto;
+            background-color: #ffffff;
+            border-spacing: 0;
+          "
             >
                 <tbody>
                 <tr>
-                    <td style="padding-left: 15px; padding-right: 15px">
-                        <table
-                                style="
-                        margin: 0 auto;
-                        background-color: #ffffff;
-                        border-spacing: 0;
-                        width: 600px;
-                      "
-                        >
+                    <td style="padding: 0 0 0 0">
+                        <table>
                             <tbody>
                             <tr>
-                                <td style="padding: 0 0 0 0">
-                                    <table>
-                                        <tbody>
-                                        <tr>
-                                            <td style="height: 15px" height="15px"></td>
-                                        </tr>
-                                        <tr>
-                                            <td
-                                                    style="
-                                      height: 1px;
-                                      background-color: #004680;
-                                    "
-                                                    height="1px"
-                                            ></td>
-                                        </tr>
-                                        <tr>
-                                            <td style="height: 15px" height="15px"></td>
-                                        </tr>
-                                        </tbody>
-                                    </table>
-                                </td>
+                                <td style="height: 15px" height="15px"></td>
+                            </tr>
+                            <tr>
+                                <td
+                                        style="
+                          height: 1px;
+                          background-color: #004680;
+                        "
+                                        height="1px"
+                                ></td>
+                            </tr>
+                            <tr>
+                                <td style="height: 15px" height="15px"></td>
                             </tr>
                             </tbody>
                         </table>
@@ -138,922 +115,474 @@
                 </tr>
                 </tbody>
             </table>
+        </td>
+    </tr>
+    </tbody>
+</table>
 
-            <table
+<table>
+    <tbody>
+    <tr>
+        <td style="text-align: center; padding: 0 0 0">
+            <div
                     style="
-                width: 100%;
-                border-collapse: collapse;
-                border-spacing: 0;
-                margin: 0;
-                border: 0;
-              "
+                            margin: 0 auto;
+                            font-family: Helvetica Neue, Helvetica,
+                              Arial, sans-serif;
+                            font-size: 24px;
+                            text-transform: uppercase;
+                            font-weight: bold;
+                            color: #004680;
+                          "
             >
+                estudio comparativo
+            </div>
+        </td>
+    </tr>
+    </tbody>
+</table>
+
+<br>
+
+<div
+style="        margin: auto;
+                          max-width: 750px;
+"
+>
+
+<div
+        style="
+                            margin-right: auto;
+                            font-family: Helvetica Neue, Helvetica,
+                              Arial, sans-serif;
+                            font-size: 14px;
+                            line-height: 1.4;
+                          "
+>
+                          <span style="color: #004680">
+                            <span style="font-size: 12px">
+                              NOMBRE DEL CLIENTE:
+                              <span
+                                      style="
+                                  color: rgb(0, 0, 0);
+                                  font-size: 12px;
+                                "
+                              >{{ client_name }}</span
+                              >
+                            </span>
+                          </span>
+</div>
+<div
+        style="
+                            margin-right: auto;
+                            font-family: Helvetica Neue, Helvetica,
+                              Arial, sans-serif;
+                            font-size: 14px;
+                            line-height: 1.4;
+                          "
+>
+                          <span style="font-size: 12px"
+                          ><span style="color: #004680"
+                          >DIRECCIÓN:
+                              <span style="color: rgb(0, 0, 0)"
+                              >{{ direccion }}<span
+                                      style="color: #004680"
+                              ><br/>
+                                </span>
+                              </span>
+                            </span>
+                          </span>
+</div>
+<div
+        style="
+                            margin-right: auto;
+                            font-family: Helvetica Neue, Helvetica,
+                              Arial, sans-serif;
+                            font-size: 14px;
+                            line-height: 1.4;
+                          "
+>
+                          <span style="font-size: 12px"
+                          ><span style="color: #004680"
+                          >CUPS:
+                              <span style="color: rgb(0, 0, 0)"
+                              >{{ cups }}
+                              </span>
+                            </span>
+                          </span>
+</div>
+{% if new.kind == 'luz' %}
+    <div
+            style="
+                            margin-right: auto;
+                            font-family: Helvetica Neue, Helvetica,
+                              Arial, sans-serif;
+                            font-size: 14px;
+                            line-height: 1.4;
+                          "
+    >
+                          <span style="font-size: 12px"
+                          ><span style="color: #004680"
+                          >POTENCIA CONTRATADA (kW):
+                              <span style="color: rgb(0, 0, 0)"
+                              >{{ old.p1 }}{% if old.p2 != '-' %}; {{ old.p2 }}{% endif %}
+                                  {% if old.p3 != '-' %};
+                                      {{ old.p3 }}{% endif %}</span></span
+                          ></span
+                          >
+    </div>
+{% endif %}
+<div
+        style="
+                            margin-right: auto;
+                            font-family: Helvetica Neue, Helvetica,
+                              Arial, sans-serif;
+                            color: #444444;
+                            font-size: 14px;
+                            line-height: 1.4;
+                          "
+>
+                          <span style="color: #004680"
+                          ><span style="font-size: 12px"
+                          >TARIFA: <span
+                                  style="color: rgb(0, 0, 0)"
+                          ><span style="font-size: 12px"
+                          >{{ new.tarif }}
+                                </span></span
+                          ></span
+                          ></span
+                          >
+</div>
+</div>
+
+<br>
+
+<table>
+    <tbody>
+    <tr>
+        <td>
+            <table>
                 <tbody>
-                <tr>
-                    <td style="padding-left: 15px; padding-right: 15px">
-                        <table
-                                style="
-                        margin: 0 auto;
-                        background-color: #ffffff;
-                        border-spacing: 0;
-                        width: 600px;
-                      "
-                        >
+                <tr style="height: 1px">
+                    <td style="
+                          height: 1px;
+                          background-color: rgb(255, 255, 255);
+                        ">
+                        <table style="width: 100%">
                             <tbody>
                             <tr>
-                                <td style="padding: 0 30px 0 30px">
-                                    <table style="width: 100%">
-                                        <tbody>
-                                        <tr>
-                                            <td
-                                                    style="text-align: center; padding: 0 0 0"
-                                            >
-                                                <div
-                                                        style="
-                                        margin: 0 auto;
-                                        font-family: Helvetica Neue, Helvetica,
-                                          Arial, sans-serif;
-                                        font-size: 30px;
-                                        line-height: 1.3;
-                                        text-transform: uppercase;
-                                        font-weight: bold;
-                                        color: #004680;
-                                      "
-                                                >
-                                                    estudio comparativo
-                                                </div>
-                                            </td>
-                                        </tr>
-                                        </tbody>
-                                    </table>
+                                <td style="font-size: 14px; color: red">
+                                    FACTURACION ACTUAL
+                                </td>
+                                <td style="font-size: 14px; color: darkgreen">
+                                    PROPUESTA DE FACTURACION
                                 </td>
                             </tr>
+
+                            <tr>
+                                <td></td>
+                            </tr>
+
+                            <tr>
+                                <td>
+                                    Comercializadora: {{ old.company_name }}
+                                </td>
+                                <td>
+                                    Comercializadora: {{ new.company_name }}
+                                </td>
+                            </tr>
+
+                            <tr>
+                                <td>
+                                    Oferta: {{ old.name }}
+                                </td>
+                                <td>
+                                    Oferta: {{ new.name }}
+                                </td>
+                            </tr>
+
                             </tbody>
                         </table>
                     </td>
                 </tr>
-                </tbody>
-            </table>
-
-            <table
-                    style="
-                width: 100%;
-                border-collapse: collapse;
-                border-spacing: 0;
-                margin: 0;
-                border: 0;
-              "
-            >
-                <tbody>
-                <tr>
-                    <td style="padding-left: 15px; padding-right: 15px">
-                        <table
-                                style="
-                        margin: 0 auto;
-                        background-color: #ffffff;
-                        border-spacing: 0;
-                        width: 600px;
-                      "
-                        >
+                <tr style="height: 19px">
+                    <td style="height: 19px">
+                        <table>
                             <tbody>
                             <tr>
-                                <td style="padding: 15px 30px 0 30px">
-                                    <table style="width: 100%">
-                                        <tbody>
-                                        <tr>
-                                            <td style="text-align: left; padding: 0 0 0">
-                                                <div
-                                                        style="
-                                        margin-right: auto;
-                                        font-family: Helvetica Neue, Helvetica,
-                                          Arial, sans-serif;
-                                        font-size: 14px;
-                                        line-height: 1.4;
-                                      "
-                                                >
-                                      <span style="color: #004680">
-                                        <span style="font-size: 12px">
-                                          NOMBRE DEL CLIENTE:
-                                          <span
-                                                  style="
-                                              color: rgb(0, 0, 0);
-                                              font-size: 12px;
-                                            "
-                                          >{{ client_name }}</span
-                                          >
-                                        </span>
-                                      </span>
-                                                </div>
-                                                <div
-                                                        style="
-                                        margin-right: auto;
-                                        font-family: Helvetica Neue, Helvetica,
-                                          Arial, sans-serif;
-                                        font-size: 14px;
-                                        line-height: 1.4;
-                                      "
-                                                >
-                                      <span style="font-size: 12px"
-                                      ><span style="color: #004680"
-                                      >DIRECCIÓN:
-                                          <span style="color: rgb(0, 0, 0)"
-                                          >{{ direccion }}<span
-                                                  style="color: #004680"
-                                          ><br/>
-                                            </span>
-                                          </span>
-                                        </span>
-                                      </span>
-                                                </div>
-                                                <div
-                                                        style="
-                                        margin-right: auto;
-                                        font-family: Helvetica Neue, Helvetica,
-                                          Arial, sans-serif;
-                                        font-size: 14px;
-                                        line-height: 1.4;
-                                      "
-                                                >
-                                      <span style="font-size: 12px"
-                                      ><span style="color: #004680"
-                                      >CUPS:
-                                          <span style="color: rgb(0, 0, 0)"
-                                          >{{ cups }}
-                                          </span>
-                                        </span>
-                                      </span>
-                                                </div>
-                                                {% if new.kind == 'luz' %}
-                                                    <div
-                                                            style="
-                                        margin-right: auto;
-                                        font-family: Helvetica Neue, Helvetica,
-                                          Arial, sans-serif;
-                                        font-size: 14px;
-                                        line-height: 1.4;
-                                      "
-                                                    >
-                                      <span style="font-size: 12px"
-                                      ><span style="color: #004680"
-                                      >POTENCIA CONTRATADA (kW):
-                                          <span style="color: rgb(0, 0, 0)"
-                                          >{{ old.p1 }}{% if old.p2 != '-' %}; {{ old.p2 }}{% endif %}
-                                          {% if old.p3 != '-' %};
-                                              {{ old.p3 }}{% endif %}</span></span
-                                      ></span
-                                      >
-                                                    </div>
-                                                {% endif %}
-                                                <div
-                                                        style="
-                                        margin-right: auto;
-                                        font-family: Helvetica Neue, Helvetica,
-                                          Arial, sans-serif;
-                                        color: #444444;
-                                        font-size: 14px;
-                                        line-height: 1.4;
-                                      "
-                                                >
-                                      <span style="color: #004680"
-                                      ><span style="font-size: 12px"
-                                      >TARIFA: <span
-                                              style="color: rgb(0, 0, 0)"
-                                      ><span style="font-size: 12px"
-                                      >{{ new.tarif }}
-                                            </span></span
-                                      ></span
-                                      ></span
-                                      >
-                                                </div>
-                                            </td>
-                                        </tr>
-                                        </tbody>
-                                    </table>
+                                <td style="
+                                              width: 7.6067%;
+                                              color: rgb(0, 70, 128);
+                                              font-size: 11px;
+                                              text-align: center;"
+                                >
+                                    <u><em>T. Fijo</em></u>
+                                </td>
+                                <td style="width: 7.7922%">
+                                    {% if new.kind == 'luz' %}
+                                        <div style="
+                                    text-align: center;
+                                    font-size: 11px;
+                                    color: rgb(0, 70, 128);
+                                  ">
+                                            <u><em>Potencia</em></u>
+                                        </div>
+                                    {% endif %}
+                                </td>
+                                <td style="width: 7.9777%">
+                                    <u><em>x Días</em></u>
+                                </td>
+
+                                <td style="width: 12.0594%">
+                                    <u><em>x €/kW Día</em></u>
+                                </td>
+                                <td style="width: 11.1317%">
+                                    <u><em>TOTALES</em></u>
+                                </td>
+                                <td rowspan="7" style="width: 5.5659%">
+                                </td>
+                                <td style="width: 9.462%">
+                                    <div style="text-align: center">
+                                  <span style="font-size: 14px"
+                                  ><span style="font-size: 11px"
+                                  ><span
+                                          style="
+                                          color: rgb(0, 70, 128);
+                                        "
+                                  ><span
+                                          style="
+                                            color: rgb(0, 70, 128);
+                                          "
+                                  ><u><em>T. Fijo</em></u>
+                                        </span></span
+                                  ></span
+                                  ></span
+                                  >
+                                    </div>
+                                </td>
+                                <td style="width: 8.7199%">
+                                    {% if new.kind == 'luz' %}
+                                        <div style="text-align: center">
+                                  <span style="font-size: 14px"
+                                  ><span style="font-size: 11px"
+                                  ><span
+                                          style="
+                                          color: rgb(0, 70, 128);
+                                        "
+                                  ><span
+                                          style="
+                                            color: rgb(0, 70, 128);
+                                          "
+                                  ><u><em>Potencia</em></u>
+                                        </span></span
+                                  ></span
+                                  ></span
+                                  >
+                                        </div>
+                                    {% endif %}
+                                </td>
+                                <td style="width: 7.4212%">
+                                    <div style="text-align: center">
+                                  <span style="font-size: 14px"
+                                  ><span style="font-size: 11px"
+                                  ><span
+                                          style="
+                                          color: rgb(0, 70, 128);
+                                        "
+                                  ><span
+                                          style="
+                                            color: rgb(0, 70, 128);
+                                          "
+                                  ><u
+                                  ><em
+                                  ><em
+                                  ><em
+                                  ><em
+                                  ><em
+                                  >x Días</em
+                                  ></em
+                                  ></em
+                                  ></em
+                                  ></em
+                                  ></u
+                                  ></span
+                                  ></span
+                                  ></span
+                                  ></span
+                                  >
+                                    </div>
+                                </td>
+                                <td style="width: 12.2448%">
+                                    <div style="text-align: center">
+                                  <span style="font-size: 14px"
+                                  ><span style="font-size: 11px"
+                                  ><span
+                                          style="
+                                          color: rgb(0, 70, 128);
+                                        "
+                                  ><span
+                                          style="
+                                            color: rgb(0, 70, 128);
+                                          "
+                                  ><u
+                                  ><em
+                                  ><em
+                                  >x €/kW Día</em
+                                  ></em
+                                  ></u
+                                  ></span
+                                  ></span
+                                  ></span
+                                  ></span
+                                  >
+                                    </div>
+                                </td>
+                                <td style="width: 10.0186%">
+                                    <div style="text-align: center">
+                                  <span style="font-size: 14px"
+                                  ><span style="font-size: 11px"
+                                  ><span
+                                          style="
+                                          color: rgb(0, 70, 128);
+                                        "
+                                  ><span
+                                          style="
+                                            color: rgb(0, 70, 128);
+                                          "
+                                  ><u
+                                  ><em
+                                  ><em
+                                  ><em
+                                  >TOTALES</em
+                                  ></em
+                                  ></em
+                                  ></u
+                                  ></span
+                                  ></span
+                                  ></span
+                                  ></span
+                                  >
+                                    </div>
                                 </td>
                             </tr>
-                            </tbody>
-                        </table>
-                    </td>
-                </tr>
-                </tbody>
-            </table>
-
-            <table
-                    style="
-                width: 100%;
-                border-collapse: collapse;
-                border-spacing: 0;
-                margin: 0;
-                border: 0;
-              "
-            >
-                <tbody>
-                <tr>
-                    <td style="padding-left: 15px; padding-right: 15px">
-                        <table
-                                style="
-                        margin: 0 auto;
-                        background-color: #ffffff;
-                        border-spacing: 0;
-                        width: 600px;
-                      "
-                        >
-                            <tbody>
                             <tr>
-                                <td style="padding: 15px 30px 0 30px">
-                                    <table>
-                                        <tbody>
-                                        <tr style="height: 1px">
-                                            <td style="
-                                      height: 1px;
-                                      background-color: rgb(255, 255, 255);
-                                    ">
-                                                <table style="width: 100%">
-                                                    <tbody>
-                                                    <tr>
-                                                        <td style="font-size: 14px; color: red">
-                                                            FACTURACION ACTUAL
-                                                        </td>
-                                                        <td style="font-size: 14px; color: darkgreen">
-                                                            PROPUESTA DE FACTURACION
-                                                        </td>
-                                                    </tr>
-
-                                                    <tr>
-                                                        <td></td>
-                                                    </tr>
-
-                                                    <tr>
-                                                        <td>
-                                                            Comercializadora: {{ old.company_name }}
-                                                        </td>
-                                                        <td>
-                                                            Comercializadora: {{ new.company_name }}
-                                                        </td>
-                                                    </tr>
-
-                                                    <tr>
-                                                        <td>
-                                                            Oferta: {{ old.name }}
-                                                        </td>
-                                                        <td>
-                                                            Oferta: {{ new.name }}
-                                                        </td>
-                                                    </tr>
-
-                                                    </tbody>
-                                                </table>
-                                            </td>
-                                        </tr>
-                                        <tr style="height: 19px">
-                                            <td style="height: 19px">
-                                                <span style="font-size: 14px"></span>
-                                            </td>
-                                        </tr>
-                                        <tr style="height: 19px">
-                                            <td style="height: 19px">
-                                                <table style="width: 539px">
-                                                    <tbody>
-                                                    <tr>
-                                                        <td style="
-                                                          width: 7.6067%;
-                                                          color: rgb(0, 70, 128);
-                                                          font-size: 11px;
-                                                          text-align: center;"
-                                                        >
-                                                            <u><em>T. Fijo</em></u>
-                                                        </td>
-                                                        <td style="width: 7.7922%">
-                                                            {% if new.kind == 'luz' %}
-                                                                <div style="
-                                                text-align: center;
-                                                font-size: 11px;
-                                                color: rgb(0, 70, 128);
-                                              ">
-                                                                    <u><em>Potencia</em></u>
-                                                                </div>
-                                                            {% endif %}
-                                                        </td>
-                                                        <td style="width: 7.9777%">
-                                                            <u><em>x Días</em></u>
-                                                        </td>
-
-                                                        <td style="width: 12.0594%">
-                                                            <u><em>x €/kW Día</em></u>
-                                                        </td>
-                                                        <td style="width: 11.1317%">
-                                                            <u><em>TOTALES</em></u>
-                                                        </td>
-                                                        <td rowspan="7" style="width: 5.5659%">
-                                                        </td>
-                                                        <td style="width: 9.462%">
-                                                            <div style="text-align: center">
-                                              <span style="font-size: 14px"
-                                              ><span style="font-size: 11px"
-                                              ><span
-                                                      style="
-                                                      color: rgb(0, 70, 128);
-                                                    "
-                                              ><span
-                                                      style="
-                                                        color: rgb(0, 70, 128);
-                                                      "
-                                              ><u><em>T. Fijo</em></u>
-                                                    </span></span
-                                              ></span
-                                              ></span
-                                              >
-                                                            </div>
-                                                        </td>
-                                                        <td style="width: 8.7199%">
-                                                            {% if new.kind == 'luz' %}
-                                                                <div style="text-align: center">
-                                              <span style="font-size: 14px"
-                                              ><span style="font-size: 11px"
-                                              ><span
-                                                      style="
-                                                      color: rgb(0, 70, 128);
-                                                    "
-                                              ><span
-                                                      style="
-                                                        color: rgb(0, 70, 128);
-                                                      "
-                                              ><u><em>Potencia</em></u>
-                                                    </span></span
-                                              ></span
-                                              ></span
-                                              >
-                                                                </div>
-                                                            {% endif %}
-                                                        </td>
-                                                        <td style="width: 7.4212%">
-                                                            <div style="text-align: center">
-                                              <span style="font-size: 14px"
-                                              ><span style="font-size: 11px"
-                                              ><span
-                                                      style="
-                                                      color: rgb(0, 70, 128);
-                                                    "
-                                              ><span
-                                                      style="
-                                                        color: rgb(0, 70, 128);
-                                                      "
-                                              ><u
-                                              ><em
-                                              ><em
-                                              ><em
-                                              ><em
-                                              ><em
-                                              >x Días</em
-                                              ></em
-                                              ></em
-                                              ></em
-                                              ></em
-                                              ></u
-                                              ></span
-                                              ></span
-                                              ></span
-                                              ></span
-                                              >
-                                                            </div>
-                                                        </td>
-                                                        <td style="width: 12.2448%">
-                                                            <div style="text-align: center">
-                                              <span style="font-size: 14px"
-                                              ><span style="font-size: 11px"
-                                              ><span
-                                                      style="
-                                                      color: rgb(0, 70, 128);
-                                                    "
-                                              ><span
-                                                      style="
-                                                        color: rgb(0, 70, 128);
-                                                      "
-                                              ><u
-                                              ><em
-                                              ><em
-                                              >x €/kW Día</em
-                                              ></em
-                                              ></u
-                                              ></span
-                                              ></span
-                                              ></span
-                                              ></span
-                                              >
-                                                            </div>
-                                                        </td>
-                                                        <td style="width: 10.0186%">
-                                                            <div style="text-align: center">
-                                              <span style="font-size: 14px"
-                                              ><span style="font-size: 11px"
-                                              ><span
-                                                      style="
-                                                      color: rgb(0, 70, 128);
-                                                    "
-                                              ><span
-                                                      style="
-                                                        color: rgb(0, 70, 128);
-                                                      "
-                                              ><u
-                                              ><em
-                                              ><em
-                                              ><em
-                                              >TOTALES</em
-                                              ></em
-                                              ></em
-                                              ></u
-                                              ></span
-                                              ></span
-                                              ></span
-                                              ></span
-                                              >
-                                                            </div>
-                                                        </td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td style="width: 7.6067%">
-                                                            {% if new.kind == 'luz' %}P1:{% endif %}
-                                                        </td>
-                                                        <td style="width: 7.7922%">
-                                                            {% if new.kind == 'luz' %}{{ old.p1 }}{% endif %}
-                                                        </td>
-                                                        <td style="width: 7.9777%">
-                                                            {{ period }}
-                                                        </td>
-                                                        <td style="width: 12.0594%">
-                                                            {{ old.p1_offer }}
-                                                        </td>
-                                                        <td style="width: 11.1317%">
-                                                            {{ old.st_p1 }} €
-                                                        </td>
-                                                        <td style="width: 9.462%">
-                                                            {% if new.kind == 'luz' %}P1:{% endif %}
-                                                        </td>
-                                                        <td style="width: 8.7199%">
-                                                            {% if new.kind == 'luz' %}{{ old.p1 }}{% endif %}
-                                                        </td>
-                                                        <td style="width: 7.4212%">
-                                                            {{ period }}
-                                                        </td>
-                                                        <td style="width: 12.2448%">
-                                                            {{ new.p1 }}
-                                                        </td>
-                                                        <td style="width: 10.0186%">
-                                                            {{ new.st_p1 }} €
-                                                        </td>
-                                                    </tr>
-                                                    {% if old.p2 != '-' %}
-                                                        <tr>
-                                                            <td style="width: 7.6067%">
-                                                                P2:
-                                                            </td>
-                                                            <td style="width: 7.7922%">
-                                                                {{ old.p2 }}
-                                                            </td>
-                                                            <td style="width: 7.9777%">
-                                                                {{ period }}
-                                                            </td>
-                                                            <td style="width: 12.0594%">
-                                                                {{ old.p2_offer }}
-                                                            </td>
-                                                            <td style="width: 11.1317%">
-                                                                {{ old.st_p2 }} €
-                                                            </td>
-                                                            <td style="width: 9.462%">
-                                                                P2:
-                                                            </td>
-                                                            <td style="width: 8.7199%">
-                                                                {{ old.p2 }}
-                                                            </td>
-                                                            <td style="width: 7.4212%">
-                                                                {{ period }}
-                                                            </td>
-                                                            <td style="width: 12.2448%">
-                                                                {{ new.p2 }}
-                                                            </td>
-                                                            <td style="width: 10.0186%">
-                                                                {{ new.st_p2 }} €
-                                                            </td>
-                                                        </tr>
-                                                    {% endif %}
-                                                    {% if old.p3 != '-' %}
-                                                        <tr>
-                                                            <td style="width: 7.6067%">
-                                                                P3:
-                                                            </td>
-                                                            <td style="width: 7.7922%">
-                                                                {{ old.p3 }}
-                                                            </td>
-                                                            <td style="width: 7.9777%">
-                                                                {{ period }}
-                                                            </td>
-                                                            <td style="width: 12.0594%">
-                                                                {{ old.p3_offer }}
-                                                            </td>
-                                                            <td style="width: 11.1317%">
-                                                                {{ old.st_p3 }} €
-                                                            </td>
-                                                            <td style="width: 9.462%">
-                                                                P3:
-                                                            </td>
-                                                            <td style="width: 8.7199%">
-                                                                {{ old.p3 }}
-                                                            </td>
-                                                            <td style="width: 7.4212%">
-                                                                {{ period }}
-                                                            </td>
-                                                            <td style="width: 12.2448%">
-                                                                {{ new.p3 }}
-                                                            </td>
-                                                            <td style="width: 10.0186%">
-                                                                {{ new.st_p3 }} €
-                                                            </td>
-                                                        </tr>
-                                                    {% endif %}
-                                                    <tr>
-                                                        <td colspan="3" style="width: 23.3766%">
-                                                            <br/>
-                                                        </td>
-                                                        <td style="width: 10.3896%">
-                                                            SUMAS
-                                                        </td>
-                                                        <td style="width: 11.1317%">
-                                                            <strong>{{ old.st_p }} €</strong>
-                                                        </td>
-                                                        <td colspan="3" style="width: 25.603%">
-                                                            <br/>
-                                                        </td>
-                                                        <td style="width: 12.2449%">
-                                                            SUMAS
-                                                        </td>
-                                                        <td style="width: 10.0186%">
-                                                            <strong>{{ new.st_p }} €</strong>
-                                                        </td>
-                                                    </tr>
-                                                    </tbody>
-                                                </table>
-                                            </td>
-                                        </tr>
-                                        </tbody>
-                                    </table>
+                                <td style="width: 7.6067%">
+                                    {% if new.kind == 'luz' %}P1:{% endif %}
+                                </td>
+                                <td style="width: 7.7922%">
+                                    {% if new.kind == 'luz' %}{{ old.p1 }}{% endif %}
+                                </td>
+                                <td style="width: 7.9777%">
+                                    {{ period }}
+                                </td>
+                                <td style="width: 12.0594%">
+                                    {{ old.p1_offer }}
+                                </td>
+                                <td style="width: 11.1317%">
+                                    {{ old.st_p1 }} €
+                                </td>
+                                <td style="width: 9.462%">
+                                    {% if new.kind == 'luz' %}P1:{% endif %}
+                                </td>
+                                <td style="width: 8.7199%">
+                                    {% if new.kind == 'luz' %}{{ old.p1 }}{% endif %}
+                                </td>
+                                <td style="width: 7.4212%">
+                                    {{ period }}
+                                </td>
+                                <td style="width: 12.2448%">
+                                    {{ new.p1 }}
+                                </td>
+                                <td style="width: 10.0186%">
+                                    {{ new.st_p1 }} €
+                                </td>
+                            </tr>
+                            {% if old.p2 != '-' %}
+                                <tr>
+                                    <td style="width: 7.6067%">
+                                        P2:
+                                    </td>
+                                    <td style="width: 7.7922%">
+                                        {{ old.p2 }}
+                                    </td>
+                                    <td style="width: 7.9777%">
+                                        {{ period }}
+                                    </td>
+                                    <td style="width: 12.0594%">
+                                        {{ old.p2_offer }}
+                                    </td>
+                                    <td style="width: 11.1317%">
+                                        {{ old.st_p2 }} €
+                                    </td>
+                                    <td style="width: 9.462%">
+                                        P2:
+                                    </td>
+                                    <td style="width: 8.7199%">
+                                        {{ old.p2 }}
+                                    </td>
+                                    <td style="width: 7.4212%">
+                                        {{ period }}
+                                    </td>
+                                    <td style="width: 12.2448%">
+                                        {{ new.p2 }}
+                                    </td>
+                                    <td style="width: 10.0186%">
+                                        {{ new.st_p2 }} €
+                                    </td>
+                                </tr>
+                            {% endif %}
+                            {% if old.p3 != '-' %}
+                                <tr>
+                                    <td style="width: 7.6067%">
+                                        P3:
+                                    </td>
+                                    <td style="width: 7.7922%">
+                                        {{ old.p3 }}
+                                    </td>
+                                    <td style="width: 7.9777%">
+                                        {{ period }}
+                                    </td>
+                                    <td style="width: 12.0594%">
+                                        {{ old.p3_offer }}
+                                    </td>
+                                    <td style="width: 11.1317%">
+                                        {{ old.st_p3 }} €
+                                    </td>
+                                    <td style="width: 9.462%">
+                                        P3:
+                                    </td>
+                                    <td style="width: 8.7199%">
+                                        {{ old.p3 }}
+                                    </td>
+                                    <td style="width: 7.4212%">
+                                        {{ period }}
+                                    </td>
+                                    <td style="width: 12.2448%">
+                                        {{ new.p3 }}
+                                    </td>
+                                    <td style="width: 10.0186%">
+                                        {{ new.st_p3 }} €
+                                    </td>
+                                </tr>
+                            {% endif %}
+                            <tr>
+                                <td colspan="3" style="width: 23.3766%">
                                     <br/>
-                                    <table>
-                                        <tbody>
-                                        <tr>
-                                            <td>
-                                                <table style="width: 539px">
-                                                    <tbody>
-                                                    <tr>
-                                                        <td style="width: 6.1224%; text-align: center;">
-                                                            <em><u>T. Var.</u></em>
-                                                        </td>
-                                                        <td style="width: 15.7699%">
-                                                            <u><em>Consumo kWh</em></u>
-                                                        </td>
-                                                        <td style="width: 11.5028%">
-                                                            <u><em>x €/kWh</em></u>
-                                                        </td>
-                                                        <td style="width: 12.8015%">
-                                                            <u><em>TOTALES</em></u>
-                                                        </td>
-                                                        <td rowspan="7" style="width: 5.5659%">
-                                                        </td>
-                                                        <td style="width: 9.2764%">
-                                                            <u><em>T.Var.</em></u>
-                                                        </td>
-                                                        <td style="width: 15.2134%">
-                                                            <u><em>Consumo kWh</em></u>
-                                                        </td>
-                                                        <td style="width: 10.3896%">
-                                                            <u><em>x €/kWh</em></u>
-                                                        </td>
-                                                        <td style="width: 12.2449%">
-                                                            <u><em>TOTALES</em></u>
-                                                        </td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td style="width: 6.1224%;">
-                                                            P1:
-                                                        </td>
-                                                        <td style="width: 15.3989%">
-                                                            {{ old.c1 }}
-                                                        </td>
-                                                        <td style="width: 11.5028%">
-                                                            {{ old.c1_offer }}
-                                                        </td>
-                                                        <td style="width: 12.8015%">
-                                                            {{ old.st_c1 }} €
-                                                        </td>
-                                                        <td style="width: 9.2764%">
-                                                            P1:
-                                                        </td>
-                                                        <td style="width: 15.2134%">
-                                                            {{ old.c1 }}
-                                                        </td>
-                                                        <td style="width: 10.3896%">
-                                                            {{ new.c1 }}
-                                                        </td>
-                                                        <td style="width: 12.2449%">
-                                                            {{ new.st_c1 }} €
-                                                        </td>
-                                                    </tr>
-                                                    {% if old.p2 != '-' %}
-                                                        <tr>
-                                                            <td style="width: 6.1224%">
-                                                                P2:
-                                                            </td>
-                                                            <td style="width: 15.3989%">
-                                                                {{ old.c2 }}
-                                                            </td>
-                                                            <td style="width: 11.5028%">
-                                                                {{ old.c2_offer }}
-                                                            </td>
-                                                            <td style="width: 12.8015%">
-                                                                {{ old.st_c2 }} €
-                                                            </td>
-                                                            <td style="width: 9.2764%">
-                                                                P2:
-                                                            </td>
-                                                            <td style="width: 15.2134%">
-                                                                {{ old.c2 }}
-                                                            </td>
-                                                            <td style="width: 10.3896%">
-                                                                {{ new.c2 }}
-                                                            </td>
-                                                            <td style="width: 12.2449%">
-                                                                {{ new.st_c2 }} €
-                                                            </td>
-                                                        </tr>
-                                                    {% endif %}
-                                                    {% if old.c3 != '-' %}
-                                                        <tr>
-                                                            <td style="width: 6.1224%">
-                                                                P3:
-                                                            </td>
-                                                            <td style="width: 15.3989%">
-                                                                {{ old.c3 }}
-                                                            </td>
-                                                            <td style="width: 11.5028%">
-                                                                {{ old.c3_offer }}
-                                                            </td>
-                                                            <td style="width: 12.8015%">
-                                                                {{ old.st_c3 }} €
-                                                            </td>
-                                                            <td style="width: 9.2764%">
-                                                                P3:
-                                                            </td>
-                                                            <td style="width: 15.2134%">
-                                                                {{ old.c3 }}
-                                                            </td>
-                                                            <td style="width: 10.3896%">
-                                                                {{ new.c3 }}
-                                                            </td>
-                                                            <td style="width: 12.2449%">
-                                                                {{ new.st_c3 }} €
-                                                            </td>
-                                                        </tr>
-                                                    {% endif %}
-                                                    <tr>
-                                                        <td colspan="2" style="width: 22.0779%">
-                                                            <br/>
-                                                        </td>
-                                                        <td style="width: 10.3896%">
-                                                            <div style="text-align: center">
-                                                                SUMAS
-                                                            </div>
-                                                        </td>
-                                                        <td style="width: 12.8015%">
-                                                            <strong>{{ old.st_c }} €</strong>
-                                                        </td>
-                                                        <td colspan="2" style="width: 24.8608%">
-                                                            <br/>
-                                                        </td>
-                                                        <td style="width: 10.3896%">
-                                                            <div style="text-align: center">
-                                                                SUMAS
-                                                            </div>
-                                                        </td>
-                                                        <td style="width: 12.2449%">
-                                                            <strong>{{ new.st_c }} €</strong>
-                                                        </td>
-                                                    </tr>
-                                                    </tbody>
-                                                </table>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td>
-                                                <br/>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td>
-                                                <br/>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td>
-                                                <table style="width: 539px;">
-                                                    <tbody class="left-text">
-                                                    {% if new.kind == 'luz' %}
-                                                        <tr>
-                                                            <td>
-                                                                {% if new.reactive %}
-                                                                    <em>ENERGIA REACTIVA:</em>
-                                                                {% endif %}
-                                                            </td>
-                                                            <td></td>
-                                                            <td style="width: 12.2449%">
-                                                                {% if new.reactive %}
-                                                                    {{ new.reactive }} €
-                                                                {% endif %}
-                                                            </td>
-                                                            <td rowspan="7" style="width: 5.9369%">
-                                                                <br/>
-                                                            </td>
-                                                            <td style="width: 24.4898%">
-                                                                {% if new.reactive %}
-                                                                    <em>ENERGIA REACTIVA:</em>
-                                                                {% endif %}
-                                                            </td>
-                                                            <td style="width: 11.6883%">
-                                                                <br/>
-                                                            </td>
-                                                            <td style="width: 11.5028%">
-                                                                {% if new.reactive %}
-                                                                    {{ new.reactive }} €
-                                                                {% endif %}
-                                                            </td>
-                                                        </tr>
-                                                    {% endif %}
-                                                    <tr>
-                                                        <td style="width: 25.7885%">
-                                                            <em>ALQUILER EQUIPOS:</em>
-                                                        </td>
-                                                        <td style="width: 8.1633%">
-                                                            <br/>
-                                                        </td>
-                                                        <td style="width: 12.2449%">
-                                                            {{ old.rental }} €
-                                                        </td>
-                                                        <td style="width: 24.4898%">
-                                                            <em>ALQUILER EQUIPOS:</em>
-                                                        </td>
-                                                        <td style="width: 11.6883%">
-                                                            <br/>
-                                                        </td>
-                                                        <td style="width: 11.5028%">
-                                                            {{ new.rental }} €
-                                                        </td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td style="width: 25.7885%">
-                                                            <em>{% if new.kind == 'luz' %}IMP. ELECTRICIDAD:{% else %}
-                                                                IMP. HIDROCARBUROS{% endif %}</em>
-                                                        </td>
-                                                        <td style="width: 8.1633%"></td>
-                                                        <td style="width: 12.2449%">
-                                                            {{ old.tax }} €
-                                                        </td>
-                                                        <td style="width: 24.4898%">
-                                                            <em>{% if new.kind == 'luz' %}IMP. ELECTRICIDAD:{% else %}
-                                                                IMP. HIDROCARBUROS{% endif %}</em>
-                                                        </td>
-                                                        <td style="width: 11.6883%">
-                                                            <div style="text-align: center">
-                                                                {{ new.tax.percent }}%
-                                                            </div>
-                                                        </td>
-                                                        <td style="width: 11.5028%">
-                                                            {{ new.tax.value }} €
-                                                        </td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td style="width: 25.7885%">
-                                                            <br>
-                                                            <em>OTROS CONCEPTOS:</em>
-                                                        </td>
-                                                        <td style="width: 8.1633%">
-                                                            <br/>
-                                                        </td>
-                                                        <td style="width: 12.2449%">
-                                                            <br>
-                                                            {{ old.oc }} €
-                                                        </td>
-                                                        <td style="width: 24.4898%">
-                                                            <br>
-                                                            <em>OTROS CONCEPTOS:</em>
-                                                        </td>
-                                                        <td style="width: 11.6883%">
-                                                            <br/>
-                                                        </td>
-                                                        <td style="width: 11.5028%">
-                                                            <br>
-                                                            {{ new.oc }} €
-                                                        </td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td style="width: 25.7885%">
-                                                            <em>BASE IMPONIBLE:</em>
-                                                        </td>
-                                                        <td style="width: 8.1633%">
-                                                            <br/>
-                                                        </td>
-                                                        <td style="width: 12.2449%">
-                                                            {{ old.bi }} €
-                                                        </td>
-                                                        <td style="width: 24.4898%">
-                                                            <em>BASE IMPONIBLE:</em>
-                                                        </td>
-                                                        <td style="width: 11.6883%">
-                                                            <br/>
-                                                        </td>
-                                                        <td style="width: 11.5028%">
-                                                            {{ new.bi }} €
-                                                        </td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td style="width: 25.7885%">
-                                                            {% if old.igic == 'true' %}
-                                                            <em>IGIC:</em>
-                                                            {% else %}
-                                                            <em>I.V.A:</em>
-                                                            {% endif %}
-                                                        </td>
-                                                        <td style="width: 8.1633%">
-                                                            <div style="text-align: center">
-                                                                {{ old.iva.percent }} %
-                                                            </div>
-                                                        </td>
-                                                        <td style="width: 12.2449%">
-                                                            {{ old.iva.value }} €
-                                                        </td>
-                                                        <td style="width: 24.4898%">
-                                                            {% if old.igic == 'true' %}
-                                                            <em>IGIC:</em>
-                                                            {% else %}
-                                                            <em>I.V.A:</em>
-                                                            {% endif %}
-                                                        </td>
-                                                        <td style="width: 11.6883%">
-                                                            <div style="text-align: center">
-                                                                {{ new.iva.percent }}
-                                                            </div>
-                                                        </td>
-                                                        <td style="width: 11.5028%">
-                                                            {{ new.iva.value }} €
-                                                        </td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td style="width: 25.7885%">
-                                                            <br/>
-                                                        </td>
-                                                        <td style="width: 8.1633%">
-                                                            <br/>
-                                                        </td>
-                                                        <td style="width: 12.2449%">
-                                                            <br/>
-                                                        </td>
-                                                        <td style="width: 24.4898%">
-                                                            <br/>
-                                                        </td>
-                                                        <td style="width: 11.6883%">
-                                                            <br/>
-                                                        </td>
-                                                        <td style="width: 11.5028%">
-                                                            <br/>
-                                                        </td>
-                                                    </tr>
-                                                    </tbody>
-                                                </table>
-                                            </td>
-                                        </tr>
-                                        </tbody>
-                                    </table>
-                                    <table style="table-layout: fixed">
-                                        <tbody>
-                                        <tr>
-                                            <td style="padding-left: 20px">
-                                                <br/>
-                                            </td>
-                                        </tr>
-                                        </tbody>
-                                    </table>
-                                    <table>
-                                        <tbody>
-                                        <tr>
-                                            <td style="font-size: 14px">
-                                                <strong style="color: red;">TOTAL:</strong> {{ old.total }} €
-                                            </td>
-
-                                            <td style="width: 50%"></td>
-
-                                            <td style="font-size: 14px;">
-                                                <strong style="color: darkgreen">TOTAL:</strong> {{ new.total }} €
-                                            </td>
-                                        </tr>
-                                        </tbody>
-                                    </table>
+                                </td>
+                                <td style="width: 10.3896%">
+                                    SUMAS
+                                </td>
+                                <td style="width: 11.1317%">
+                                    <strong>{{ old.st_p }} €</strong>
+                                </td>
+                                <td colspan="3" style="width: 25.603%">
+                                    <br/>
+                                </td>
+                                <td style="width: 12.2449%">
+                                    SUMAS
+                                </td>
+                                <td style="width: 10.0186%">
+                                    <strong>{{ new.st_p }} €</strong>
                                 </td>
                             </tr>
                             </tbody>
@@ -1062,211 +591,530 @@
                 </tr>
                 </tbody>
             </table>
+            <br/>
+            <table>
+                <tbody>
+                <tr>
+                    <td>
+                        <table>
+                            <tbody>
+                            <tr>
+                                <td style="width: 6.1224%; text-align: center;">
+                                    <em><u>T. Var.</u></em>
+                                </td>
+                                <td style="width: 15.7699%">
+                                    <u><em>Consumo kWh</em></u>
+                                </td>
+                                <td style="width: 11.5028%">
+                                    <u><em>x €/kWh</em></u>
+                                </td>
+                                <td style="width: 12.8015%">
+                                    <u><em>TOTALES</em></u>
+                                </td>
+                                <td rowspan="7" style="width: 5.5659%">
+                                </td>
+                                <td style="width: 9.2764%">
+                                    <u><em>T.Var.</em></u>
+                                </td>
+                                <td style="width: 15.2134%">
+                                    <u><em>Consumo kWh</em></u>
+                                </td>
+                                <td style="width: 10.3896%">
+                                    <u><em>x €/kWh</em></u>
+                                </td>
+                                <td style="width: 12.2449%">
+                                    <u><em>TOTALES</em></u>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="width: 6.1224%;">
+                                    P1:
+                                </td>
+                                <td style="width: 15.3989%">
+                                    {{ old.c1 }}
+                                </td>
+                                <td style="width: 11.5028%">
+                                    {{ old.c1_offer }}
+                                </td>
+                                <td style="width: 12.8015%">
+                                    {{ old.st_c1 }} €
+                                </td>
+                                <td style="width: 9.2764%">
+                                    P1:
+                                </td>
+                                <td style="width: 15.2134%">
+                                    {{ old.c1 }}
+                                </td>
+                                <td style="width: 10.3896%">
+                                    {{ new.c1 }}
+                                </td>
+                                <td style="width: 12.2449%">
+                                    {{ new.st_c1 }} €
+                                </td>
+                            </tr>
+                            {% if old.p2 != '-' %}
+                                <tr>
+                                    <td style="width: 6.1224%">
+                                        P2:
+                                    </td>
+                                    <td style="width: 15.3989%">
+                                        {{ old.c2 }}
+                                    </td>
+                                    <td style="width: 11.5028%">
+                                        {{ old.c2_offer }}
+                                    </td>
+                                    <td style="width: 12.8015%">
+                                        {{ old.st_c2 }} €
+                                    </td>
+                                    <td style="width: 9.2764%">
+                                        P2:
+                                    </td>
+                                    <td style="width: 15.2134%">
+                                        {{ old.c2 }}
+                                    </td>
+                                    <td style="width: 10.3896%">
+                                        {{ new.c2 }}
+                                    </td>
+                                    <td style="width: 12.2449%">
+                                        {{ new.st_c2 }} €
+                                    </td>
+                                </tr>
+                            {% endif %}
+                            {% if old.c3 != '-' %}
+                                <tr>
+                                    <td style="width: 6.1224%">
+                                        P3:
+                                    </td>
+                                    <td style="width: 15.3989%">
+                                        {{ old.c3 }}
+                                    </td>
+                                    <td style="width: 11.5028%">
+                                        {{ old.c3_offer }}
+                                    </td>
+                                    <td style="width: 12.8015%">
+                                        {{ old.st_c3 }} €
+                                    </td>
+                                    <td style="width: 9.2764%">
+                                        P3:
+                                    </td>
+                                    <td style="width: 15.2134%">
+                                        {{ old.c3 }}
+                                    </td>
+                                    <td style="width: 10.3896%">
+                                        {{ new.c3 }}
+                                    </td>
+                                    <td style="width: 12.2449%">
+                                        {{ new.st_c3 }} €
+                                    </td>
+                                </tr>
+                            {% endif %}
+                            <tr>
+                                <td colspan="2" style="width: 22.0779%">
+                                    <br/>
+                                </td>
+                                <td style="width: 10.3896%">
+                                    <div style="text-align: center">
+                                        SUMAS
+                                    </div>
+                                </td>
+                                <td style="width: 12.8015%">
+                                    <strong>{{ old.st_c }} €</strong>
+                                </td>
+                                <td colspan="2" style="width: 24.8608%">
+                                    <br/>
+                                </td>
+                                <td style="width: 10.3896%">
+                                    <div style="text-align: center">
+                                        SUMAS
+                                    </div>
+                                </td>
+                                <td style="width: 12.2449%">
+                                    <strong>{{ new.st_c }} €</strong>
+                                </td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <br/>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <br/>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <table>
+                            <tbody class="left-text">
+                            {% if new.kind == 'luz' %}
+                                <tr>
+                                    <td>
+                                        {% if new.reactive %}
+                                            <em>ENERGIA REACTIVA:</em>
+                                        {% endif %}
+                                    </td>
+                                    <td></td>
+                                    <td style="width: 12.2449%">
+                                        {% if new.reactive %}
+                                            {{ new.reactive }} €
+                                        {% endif %}
+                                    </td>
+                                    <td rowspan="7" style="width: 5.9369%">
+                                        <br/>
+                                    </td>
+                                    <td style="width: 24.4898%">
+                                        {% if new.reactive %}
+                                            <em>ENERGIA REACTIVA:</em>
+                                        {% endif %}
+                                    </td>
+                                    <td style="width: 11.6883%">
+                                        <br/>
+                                    </td>
+                                    <td style="width: 11.5028%">
+                                        {% if new.reactive %}
+                                            {{ new.reactive }} €
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                            {% endif %}
+                            <tr>
+                                <td style="width: 25.7885%">
+                                    <em>ALQUILER EQUIPOS:</em>
+                                </td>
+                                <td style="width: 8.1633%">
+                                    <br/>
+                                </td>
+                                <td style="width: 12.2449%">
+                                    {{ old.rental }} €
+                                </td>
+                                <td style="width: 24.4898%">
+                                    <em>ALQUILER EQUIPOS:</em>
+                                </td>
+                                <td style="width: 11.6883%">
+                                    <br/>
+                                </td>
+                                <td style="width: 11.5028%">
+                                    {{ new.rental }} €
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="width: 25.7885%">
+                                    <em>{% if new.kind == 'luz' %}IMP. ELECTRICIDAD:{% else %}
+                                        IMP. HIDROCARBUROS{% endif %}</em>
+                                </td>
+                                <td style="width: 8.1633%"></td>
+                                <td style="width: 12.2449%">
+                                    {{ old.tax }} €
+                                </td>
+                                <td style="width: 24.4898%">
+                                    <em>{% if new.kind == 'luz' %}IMP. ELECTRICIDAD:{% else %}
+                                        IMP. HIDROCARBUROS{% endif %}</em>
+                                </td>
+                                <td style="width: 11.6883%">
+                                    <div style="text-align: center">
+                                        {{ new.tax.percent }}%
+                                    </div>
+                                </td>
+                                <td style="width: 11.5028%">
+                                    {{ new.tax.value }} €
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="width: 25.7885%">
+                                    <br>
+                                    <em>OTROS CONCEPTOS:</em>
+                                </td>
+                                <td style="width: 8.1633%">
+                                    <br/>
+                                </td>
+                                <td style="width: 12.2449%">
+                                    <br>
+                                    {{ old.oc }} €
+                                </td>
+                                <td style="width: 24.4898%">
+                                    <br>
+                                    <em>OTROS CONCEPTOS:</em>
+                                </td>
+                                <td style="width: 11.6883%">
+                                    <br/>
+                                </td>
+                                <td style="width: 11.5028%">
+                                    <br>
+                                    {{ new.oc }} €
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="width: 25.7885%">
+                                    <em>BASE IMPONIBLE:</em>
+                                </td>
+                                <td style="width: 8.1633%">
+                                    <br/>
+                                </td>
+                                <td style="width: 12.2449%">
+                                    {{ old.bi }} €
+                                </td>
+                                <td style="width: 24.4898%">
+                                    <em>BASE IMPONIBLE:</em>
+                                </td>
+                                <td style="width: 11.6883%">
+                                    <br/>
+                                </td>
+                                <td style="width: 11.5028%">
+                                    {{ new.bi }} €
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="width: 25.7885%">
+                                    {% if old.igic == 'true' %}
+                                        <em>IGIC:</em>
+                                    {% else %}
+                                        <em>I.V.A:</em>
+                                    {% endif %}
+                                </td>
+                                <td style="width: 8.1633%">
+                                    <div style="text-align: center">
+                                        {{ old.iva.percent }} %
+                                    </div>
+                                </td>
+                                <td style="width: 12.2449%">
+                                    {{ old.iva.value }} €
+                                </td>
+                                <td style="width: 24.4898%">
+                                    {% if old.igic == 'true' %}
+                                        <em>IGIC:</em>
+                                    {% else %}
+                                        <em>I.V.A:</em>
+                                    {% endif %}
+                                </td>
+                                <td style="width: 11.6883%">
+                                    <div style="text-align: center">
+                                        {{ new.iva.percent }}
+                                    </div>
+                                </td>
+                                <td style="width: 11.5028%">
+                                    {{ new.iva.value }} €
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="width: 25.7885%">
+                                    <br/>
+                                </td>
+                                <td style="width: 8.1633%">
+                                    <br/>
+                                </td>
+                                <td style="width: 12.2449%">
+                                    <br/>
+                                </td>
+                                <td style="width: 24.4898%">
+                                    <br/>
+                                </td>
+                                <td style="width: 11.6883%">
+                                    <br/>
+                                </td>
+                                <td style="width: 11.5028%">
+                                    <br/>
+                                </td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+            <table style="table-layout: fixed">
+                <tbody>
+                <tr>
+                    <td style="padding-left: 20px">
+                        <br/>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+            <table>
+                <tbody>
+                <tr>
+                    <td style="font-size: 14px">
+                        <strong style="color: red;">TOTAL:</strong> {{ old.total }} €
+                    </td>
 
-            <br>
+                    <td style="width: 50%"></td>
 
+                    <td style="font-size: 14px;">
+                        <strong style="color: darkgreen">TOTAL:</strong> {{ new.total }} €
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </td>
+    </tr>
+    </tbody>
+</table>
+
+<br>
+
+<table>
+    <tbody>
+    <tr>
+        <td>
+            <table>
+                <tbody>
+                <tr>
+                    <td>
+                        <table style="width: 100%">
+                            <tbody>
+                            <tr>
+                                <td
+                                        style="
+                                        padding: 5px;
+                          text-align: left;
+                          background-color: rgb(0, 70, 128);
+                        "
+                                >
+                                    <div style="text-align: center; font-weight: bolder; font-size: 16px">
+                          <span style="color: white">
+                            AHORRO EN FACTURA: {{ new.profit }} € ({{ new.profit_percent }}%)
+                          </span>
+                                        <br/>
+                                        <br/>
+                                        <span style="color: white">
+                            AHORRO ANUAL: {{ new.annual_profit }} €
+                          </span>
+                                    </div>
+                                </td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </td>
+    </tr>
+    </tbody>
+</table>
+
+{% if note %}
+    <span style="left: 0">
+        <em>Nota:</em> {{ note }}
+    </span>
+{% endif %}
+
+<table>
+    <tbody>
+    <tr>
+        <td>
+            <table>
+                <tbody>
+                <tr>
+                    <td>
+                        <table style="table-layout: fixed">
+                            <tbody>
+                            <tr>
+                                <td style="width: 50px">
+                        <span style="font-size: 14px">
+                          <span style="font-size: 11px">
+                            <span style="color: rgb(0, 70, 128)">
+                              <span style="color: rgb(0, 0, 0)">
+                                <a href="/">
+                                  <img
+                                          style="width: 100%"
+                                          src="https://static.tildacdn.com/tild3963-3830-4534-b366-396334633532/employee_1.png"
+                                          alt="Employee"
+                                          width="50"
+                                  />
+                                </a>
+                              </span>
+                            </span>
+                          </span>
+                        </span>
+                                </td>
+
+                                <td style="padding-left: 20px; text-align: left">
+                                    <strong>Nombre del asesor:</strong> {{ agent }}
+                                    <br/>
+                                    <br/>
+                                    <strong>Teléfono de contacto:</strong> {{ agent_phone }}
+                                    <br/>
+                                    <br/>
+                                    <strong>Email:</strong> {{ agent_email }}
+                                </td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </td>
+    </tr>
+    </tbody>
+</table>
+
+<table>
+    <tbody>
+    <tr>
+        <td style="padding-left: 15px; padding-right: 15px">
             <table
                     style="
-                width: 100%;
-                border-collapse: collapse;
-                border-spacing: 0;
-                margin: 0;
-                border: 0;
-              "
+            margin: 0 auto;
+            background-color: #ffffff;
+            border-spacing: 0;
+          "
             >
                 <tbody>
                 <tr>
-                    <td style="padding-left: 15px; padding-right: 15px">
-                        <table
-                                style="
-                        margin: 0 auto;
-                        background-color: #ffffff;
-                        border-spacing: 0;
-                        width: 600px;
-                      "
-                        >
+                    <td style="padding: 0 30px 45px 30px">
+                        <table>
                             <tbody>
                             <tr>
-                                <td style="padding: 15px 30px 15px 30px">
-                                    <table style="width: 100%">
-                                        <tbody>
-                                        <tr>
-                                            <td
-                                                    style="
-                                      text-align: left;
-                                      background-color: rgb(0, 70, 128);
-                                      padding: 20px 30px;
+                                <td>
+                        <span style="font-size: 14px"
+                        ><span style="color: rgb(0, 70, 128)"
+                        ><span style="color: rgb(0, 0, 0)"
+                        ><img
+                                style="width: 60px"
+                                src="https://static.tildacdn.com/tild3638-3938-4639-a639-653464643630/GG_LOGO_BIG_3.png"
+                                class="fr-dib"
+                                width="60" alt="Logo"/></span></span
+                        ></span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td
+                                        style="
+                          text-align: center;
+                          padding: 25px 0 0;
+                        "
+                                >
+                                    <div
+                                            style="
+                            margin: 0 auto;
+                            font-weight: normal;
+                            font-family: Helvetica Neue, Helvetica,
+                              Arial, sans-serif;
+                            color: #a1a1a1;
+                            font-size: 14px;
+                            line-height: 1.5;
+                          "
+                                    >
+                          <span style="font-size: 14px"
+                          ><span style="font-size: 11px"
+                          ><span style="color: rgb(0, 70, 128)"
+                          ><span style="color: rgb(0, 0, 0)"
+                          ><a
+                                  href="https://gestiongroup.es"
+                                  style="
+                                      animation: 1.3s ease-in 0s 1
+                                        normal none running bong;
                                     "
-                                            >
-                                                <div style="text-align: center; font-weight: bolder; font-size: 16px">
-                                      <span style="color: white">
-                                        AHORRO EN FACTURA: {{ new.profit }} € ({{ new.profit_percent }}%)
-                                      </span>
-                                                    <br/>
-                                                    <br/>
-                                                    <span style="color: white">
-                                        AHORRO ANUAL: {{ new.annual_profit }} €
-                                      </span>
-                                                </div>
-                                            </td>
-                                        </tr>
-                                        </tbody>
-                                    </table>
-                                </td>
-                            </tr>
-                            </tbody>
-                        </table>
-                    </td>
-                </tr>
-                </tbody>
-            </table>
-
-            {% if note %}
-                <span style="left: 0">
-                    <em>Nota:</em> {{ note }}
-                </span>
-            {% endif %}
-
-            <table
-                    style="
-                width: 100%;
-                border-collapse: collapse;
-                border-spacing: 0;
-                margin: 0;
-                border: 0;
-              "
-            >
-                <tbody>
-                <tr>
-                    <td style="padding-left: 15px; padding-right: 15px">
-                        <table
-                                style="
-                        margin: 0 auto;
-                        background-color: #ffffff;
-                        border-spacing: 0;
-                        width: 600px;
-                      "
-                        >
-                            <tbody>
-                            <tr>
-                                <td style="padding: 30px">
-                                    <table style="table-layout: fixed">
-                                        <tbody>
-                                        <tr>
-                                            <td style="width: 50px">
-                                    <span style="font-size: 14px">
-                                      <span style="font-size: 11px">
-                                        <span style="color: rgb(0, 70, 128)">
-                                          <span style="color: rgb(0, 0, 0)">
-                                            <a href="/">
-                                              <img
-                                                      style="width: 100%"
-                                                      src="https://static.tildacdn.com/tild3963-3830-4534-b366-396334633532/employee_1.png"
-                                                      alt="Employee"
-                                                      width="50"
-                                              />
-                                            </a>
-                                          </span>
-                                        </span>
-                                      </span>
-                                    </span>
-                                            </td>
-
-                                            <td style="padding-left: 20px; text-align: left">
-                                                <strong>Nombre del asesor:</strong> {{ agent }}
-                                                <br/>
-                                                <br/>
-                                                <strong>Teléfono de contacto:</strong> {{ agent_phone }}
-                                                <br/>
-                                                <br/>
-                                                <strong>Email:</strong> {{ agent_email }}
-                                            </td>
-                                        </tr>
-                                        </tbody>
-                                    </table>
-                                </td>
-                            </tr>
-                            </tbody>
-                        </table>
-                    </td>
-                </tr>
-                </tbody>
-            </table>
-
-            <table
-                    style="
-                width: 100%;
-                border-collapse: collapse;
-                border-spacing: 0;
-                margin: 0;
-                border: 0;
-              "
-            >
-                <tbody>
-                <tr>
-                    <td style="padding-left: 15px; padding-right: 15px">
-                        <table
-                                style="
-                        margin: 0 auto;
-                        background-color: #ffffff;
-                        border-spacing: 0;
-                        width: 600px;
-                      "
-                        >
-                            <tbody>
-                            <tr>
-                                <td style="padding: 0 30px 45px 30px">
-                                    <table>
-                                        <tbody>
-                                        <tr>
-                                            <td>
-                                    <span style="font-size: 14px"
-                                    ><span style="color: rgb(0, 70, 128)"
-                                    ><span style="color: rgb(0, 0, 0)"
-                                    ><img
-                                            style="width: 60px"
-                                            src="https://static.tildacdn.com/tild3638-3938-4639-a639-653464643630/GG_LOGO_BIG_3.png"
-                                            class="fr-dib"
-                                            width="60" alt="Logo"/></span></span
-                                    ></span>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td
-                                                    style="
-                                      text-align: center;
-                                      padding: 25px 0 0;
-                                    "
-                                            >
-                                                <div
-                                                        style="
-                                        margin: 0 auto;
-                                        font-weight: normal;
-                                        font-family: Helvetica Neue, Helvetica,
-                                          Arial, sans-serif;
-                                        color: #a1a1a1;
-                                        font-size: 14px;
-                                        line-height: 1.5;
-                                      "
-                                                >
-                                      <span style="font-size: 14px"
-                                      ><span style="font-size: 11px"
-                                      ><span style="color: rgb(0, 70, 128)"
-                                      ><span style="color: rgb(0, 0, 0)"
-                                      ><a
-                                              href="https://gestiongroup.es"
-                                              style="
-                                                  animation: 1.3s ease-in 0s 1
-                                                    normal none running bong;
-                                                "
-                                      >gestiongroup.es</a
-                                      ><br/> </span></span></span
-                                      ></span>
-                                                </div>
-                                            </td>
-                                        </tr>
-                                        </tbody>
-                                    </table>
+                          >gestiongroup.es</a
+                          ><br/> </span></span></span
+                          ></span>
+                                    </div>
                                 </td>
                             </tr>
                             </tbody>
