@@ -58,8 +58,7 @@
           />
           <v-text-field v-model="rental" label="Alquiler de equipo" type="number" dense />
           <v-text-field v-model="tax" label="Imp.Electricidad" type="number" dense />
-          <v-text-field v-if="form.igic" v-model="iva" label="IGIC" type="number" dense />
-          <v-text-field v-else v-model="igic" label="IVA" type="number" dense />
+          <v-text-field v-model="iva" :label="form.igic ? 'IGIC' : 'IVA'" suffix="%" type="number" dense />
         </v-col>
       </v-row>
       <v-row>
@@ -113,8 +112,7 @@ export default {
       note: null,
       rental: null,
       tax: null,
-      iva: null,
-      igic: null,
+      iva: 21,
       agent,
       error: null,
     }
@@ -122,7 +120,7 @@ export default {
   computed: {
     ...mapState({
       form: (state) => state.calculatorForm,
-      tarif: (state) => state.tarif,
+      // tarif: (state) => state.tarif,
     }),
     isGas() {
       return this.offer.kind === 'gas'
@@ -147,7 +145,8 @@ export default {
       return this.form.tarif ? constants.showInput(letter, number, this.form.tarif) : false
     },
     async getDetails() {
-      if (!this.offer || !this.form || !this.tarif) return
+      console.log(this)
+      if (!this.offer || !this.form || !this.form.tarif) return
       this.loading = true
       const { params } = this.getDataAndParams()
       this.htmlDetails = await this.$axios.$get(`calculator/new_offer/?${params}`)
@@ -173,7 +172,7 @@ export default {
       const data = {
         ...Object.fromEntries(Object.entries(this.form).filter((i) => [undefined, null, ''].indexOf(i[1]) === -1)),
         id: this.offer.id,
-        tarif: this.tarif,
+        tarif: this.form.tarif,
         with_calculations: true,
         direccion: this.direccion,
         cups: this.cups,
@@ -192,7 +191,6 @@ export default {
         agent_email: this.agent.email,
         agent_fullname: this.agent.fullname,
         agent_phone: this.agent.phone,
-        igic_value: this.igic,
         iva: this.iva,
       }
       const params = Object.keys(data)

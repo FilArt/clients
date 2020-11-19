@@ -59,13 +59,16 @@ class SendOfferView(LoggingMixin, views.APIView):
         old["st_c"] = sum(map(float, filter(None, [old.get("st_c1"), old.get("st_c2"), old.get("st_c3")])))
         old["st_p"] = sum(map(float, filter(None, [old.get("st_p1"), old.get("st_p2"), old.get("st_p3")])))
         old["bi"] = (old.get("st_c") + old.get("st_p") + old.get("oc")) or "-"
-        old["total"] = old["bi"] if old["bi"] != "-" else 0
 
-        if old["bi"] != "-" and old.get("iva"):
+        if old["bi"] != "-":
             old["bi"] = round(old["bi"], 2)
-            old["total"] += float(old["iva"])
+            old["total"] = old["bi"]
+            if old.get("iva"):
+                iva = float(old["iva"]) / 100 * old["total"]
+                old["iva"] = {"value": iva, "percent": old["iva"]}
+                old["total"] = round(iva + old["total"], 2)
 
-        old["total"] = old["total"] or calculated["current_price"]
+        old["total"] = old.get("total") or calculated["current_price"]
 
         new_st_p = round(calculated["st_p1"] + calculated["st_p2"] + calculated["st_p3"], 2)
         new_st_c = round(calculated["st_c1"] + calculated["st_c2"] + calculated["st_c3"], 2)
