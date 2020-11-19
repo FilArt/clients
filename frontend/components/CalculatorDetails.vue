@@ -1,62 +1,77 @@
 <template>
   <v-card elevation="0">
-    <v-card-text v-if="!$auth.loggedIn">
-      <v-text-field v-model="agent.fullname" label="Tu nombre" />
-      <email-field v-model="agent.email" label="Tu email" />
-      <phone-field v-model="agent.phone" />
-    </v-card-text>
-    <v-card-text>
-      <v-text-field v-model="clientName" label="Nombre de cliente" />
-      <email-field v-model="emailTo" label="Email de cliente" />
-      <v-checkbox v-model="showAdditionalFields" label="Extra campos" />
-    </v-card-text>
+    <v-card-actions>
+      <v-spacer />
+      <v-btn style="margin-right: 7em" color="success" :loading="loading" rounded @click="getDetails">
+        <v-icon>mdi-refresh</v-icon>
+      </v-btn>
+      <v-btn color="warning" :loading="loading" rounded x-large @click="send">
+        <v-icon>mdi-email-send</v-icon>
+      </v-btn>
+    </v-card-actions>
 
-    <v-card-text v-show="showAdditionalFields">
-      <v-card-title>Extra campos</v-card-title>
-      <v-text-field v-model="offerName" label="Oferta" />
-      <v-text-field v-model="direccion" label="Direccion" />
-      <v-text-field v-model="cups" label="CUPS" />
-      <v-text-field v-model="p1_offer" :label="`Precio por ${word} ${isGas ? '' : 'P1'}`" type="number" />
-      <v-text-field
-        v-show="showInput('p', 2)"
-        v-model="p2_offer"
-        :label="`Precio por ${word} ${isGas ? '' : 'P2'}`"
-        type="number"
-      />
-      <v-text-field
-        v-show="showInput('p', 3)"
-        v-model="p3_offer"
-        :label="`Precio por ${word} ${isGas ? '' : 'P3'}`"
-        type="number"
-      />
-      <v-text-field v-model="c1_offer" :label="`Precio por consumo ${isGas ? '' : 'P1'}`" type="number" />
-      <v-text-field
-        v-show="showInput('c', 2)"
-        v-model="c2_offer"
-        :label="`Precio por consumo ${isGas ? '' : 'P2'}`"
-        type="number"
-      />
-      <v-text-field
-        v-show="showInput('c', 3)"
-        v-model="c3_offer"
-        :label="`Precio por consumo ${isGas ? '' : 'P3'}`"
-        type="number"
-      />
-      <v-text-field v-model="rental" label="Alquiler de equipo" type="number" />
-      <v-text-field v-model="tax" label="Imp.Electricidad" type="number" />
-      <v-textarea v-model="note" label="Nota" />
+    <v-card-text>
+      <v-row>
+        <v-col>
+          <template>
+            <v-text-field v-model="agent.fullname" label="Tu nombre" />
+            <email-field v-model="agent.email" label="Tu email" />
+            <phone-field v-model="agent.phone" />
+          </template>
+
+          <v-text-field v-model="clientName" label="Nombre de cliente" />
+          <email-field v-model="emailTo" label="Email de cliente" />
+        </v-col>
+        <v-col>
+          <v-text-field v-model="offerName" dense label="Oferta" />
+          <v-text-field v-model="direccion" dense label="Direccion" />
+          <v-text-field v-model="cups" dense label="CUPS" />
+          <v-text-field v-model="p1_offer" dense :label="`Precio por ${word} ${isGas ? '' : 'P1'}`" type="number" />
+          <v-text-field
+            v-show="showInput('p', 2)"
+            v-model="p2_offer"
+            dense
+            :label="`Precio por ${word} ${isGas ? '' : 'P2'}`"
+            type="number"
+          />
+          <v-text-field
+            v-show="showInput('p', 3)"
+            v-model="p3_offer"
+            dense
+            :label="`Precio por ${word} ${isGas ? '' : 'P3'}`"
+            type="number"
+          />
+          <v-text-field v-model="c1_offer" :label="`Precio por consumo ${isGas ? '' : 'P1'}`" type="number" dense />
+          <v-text-field
+            v-show="showInput('c', 2)"
+            v-model="c2_offer"
+            dense
+            :label="`Precio por consumo ${isGas ? '' : 'P2'}`"
+            type="number"
+          />
+          <v-text-field
+            v-show="showInput('c', 3)"
+            v-model="c3_offer"
+            dense
+            :label="`Precio por consumo ${isGas ? '' : 'P3'}`"
+            type="number"
+          />
+          <v-text-field v-model="rental" label="Alquiler de equipo" type="number" dense />
+          <v-text-field v-model="tax" label="Imp.Electricidad" type="number" dense />
+          <v-text-field v-if="form.igic" v-model="iva" label="IGIC" type="number" dense />
+          <v-text-field v-else v-model="igic" label="IVA" type="number" dense />
+        </v-col>
+      </v-row>
+      <v-row>
+        <v-col>
+          <v-textarea v-model="note" label="Nota" dense />
+        </v-col>
+      </v-row>
     </v-card-text>
 
     <v-card-text>
       <v-sheet light v-html="htmlDetails" />
     </v-card-text>
-
-    <v-btn color="warning" :loading="loading" fixed right bottom rounded x-large @click="send">
-      <v-icon>mdi-email-send</v-icon>
-    </v-btn>
-    <v-btn style="margin-right: 7em" color="success" :loading="loading" fixed right bottom rounded @click="getDetails">
-      <v-icon>mdi-refresh</v-icon>
-    </v-btn>
   </v-card>
 </template>
 
@@ -77,16 +92,17 @@ export default {
   },
   data() {
     let agent = localStorage.getItem('agent')
-    agent = agent && typeof agent === 'string' ? JSON.parse(agent) : { fullname: null, email: null, phone: null }
+    agent =
+      agent && typeof agent === 'string'
+        ? JSON.parse(agent)
+        : { fullname: this.$auth.user.fullname, email: this.$auth.user.email, phone: this.$auth.user.phone }
     return {
       loading: false,
-      calculations: [],
       htmlDetails: null,
       direccion: null,
       cups: null,
       clientName: null,
       emailTo: null,
-      showAdditionalFields: false,
       p1_offer: null,
       p2_offer: null,
       p3_offer: null,
@@ -97,7 +113,10 @@ export default {
       note: null,
       rental: null,
       tax: null,
+      iva: null,
+      igic: null,
       agent,
+      error: null,
     }
   },
   computed: {
@@ -105,22 +124,6 @@ export default {
       form: (state) => state.calculatorForm,
       tarif: (state) => state.tarif,
     }),
-    terminos() {
-      return [
-        { text: `Termino de ${this.offer.kind === 'luz' ? 'potencia' : 'fijo'}`, items: 'p' },
-        { text: 'Termino de energia', items: 'c' },
-      ].map((termino) => {
-        return {
-          ...termino,
-          items: [1, 2, 3]
-            .map((number) => ({
-              text: `${termino.items.toUpperCase()}${number}`,
-              value: this.calculations[`c_st_${termino.items}${number}`],
-            }))
-            .filter((t) => t.value),
-        }
-      })
-    },
     isGas() {
       return this.offer.kind === 'gas'
     },
@@ -146,10 +149,8 @@ export default {
     async getDetails() {
       if (!this.offer || !this.form || !this.tarif) return
       this.loading = true
-      const { data, params } = this.getDataAndParams()
+      const { params } = this.getDataAndParams()
       this.htmlDetails = await this.$axios.$get(`calculator/new_offer/?${params}`)
-      this.calculations = await this.$axios.$post('calculator/calculate/', data)
-      this.$emit('calculations', this.calculations)
       this.loading = false
     },
     async send() {
@@ -191,6 +192,8 @@ export default {
         agent_email: this.agent.email,
         agent_fullname: this.agent.fullname,
         agent_phone: this.agent.phone,
+        igic_value: this.igic,
+        iva: this.iva,
       }
       const params = Object.keys(data)
         .filter((key) => data[key] !== null)

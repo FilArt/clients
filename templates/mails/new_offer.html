@@ -17,6 +17,7 @@
     <style>
         table {
             margin: auto;
+            padding: 0;
         }
 
         td {
@@ -296,7 +297,8 @@
                                       ><span style="color: #004680"
                                       >POTENCIA CONTRATADA (kW):
                                           <span style="color: rgb(0, 0, 0)"
-                                          >{{ old.p1 }}{% if old.p2 != '-' %}; {{ old.p2 }}{% endif %}{% if old.p3 != '-' %};
+                                          >{{ old.p1 }}{% if old.p2 != '-' %}; {{ old.p2 }}{% endif %}
+                                          {% if old.p3 != '-' %};
                                               {{ old.p3 }}{% endif %}</span></span
                                       ></span
                                       >
@@ -972,10 +974,15 @@
                                                     </tr>
                                                     <tr>
                                                         <td style="width: 25.7885%">
-                                                            <em>I.V.A (o IGIC):</em>
+                                                            {% if old.igic == 'true' %}
+                                                            <em>IGIC:</em>
+                                                            {% else %}
+                                                            <em>I.V.A:</em>
+                                                            {% endif %}
                                                         </td>
                                                         <td style="width: 8.1633%">
                                                             <div style="text-align: center">
+                                                                {{ old.igic_value }}
                                                                 {{ old.iva.percent }}
                                                             </div>
                                                         </td>
@@ -983,7 +990,11 @@
                                                             {{ old.iva.value }} €
                                                         </td>
                                                         <td style="width: 24.4898%">
-                                                            <em>I.V.A (o IGIC):</em>
+                                                            {% if old.igic == 'true' %}
+                                                            <em>IGIC:</em>
+                                                            {% else %}
+                                                            <em>I.V.A:</em>
+                                                            {% endif %}
                                                         </td>
                                                         <td style="width: 11.6883%">
                                                             <div style="text-align: center">
@@ -1090,7 +1101,7 @@
                                             >
                                                 <div style="text-align: center; font-weight: bolder; font-size: 16px">
                                       <span style="color: white">
-                                        AHORRO EN FACTURA: {{ new.profit }} € ({{ new.profit_percent  }}%)
+                                        AHORRO EN FACTURA: {{ new.profit }} € ({{ new.profit_percent }}%)
                                       </span>
                                                     <br/>
                                                     <br/>

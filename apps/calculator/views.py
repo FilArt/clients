@@ -59,15 +59,11 @@ class SendOfferView(LoggingMixin, views.APIView):
         old["st_c"] = sum(map(float, filter(None, [old.get("st_c1"), old.get("st_c2"), old.get("st_c3")])))
         old["st_p"] = sum(map(float, filter(None, [old.get("st_p1"), old.get("st_p2"), old.get("st_p3")])))
         old["bi"] = (old.get("st_c") + old.get("st_p") + old.get("oc")) or "-"
-        old["iva"] = {"value": "-", "percent": "21%"}
         old["total"] = old["bi"] if old["bi"] != "-" else 0
-        if rental is not None and tax is not None:
-            old["total"] += float(rental) + float(tax) + float(calculated["reactive"])
 
-        if old["bi"] != "-":
-            old["iva"]["value"] = round(old["bi"] * 0.21, 2)
+        if old["bi"] != "-" and old.get("iva"):
             old["bi"] = round(old["bi"], 2)
-            old["total"] += old["iva"]["value"]
+            old["total"] += float(old["iva"])
 
         old["total"] = old["total"] or calculated["current_price"]
 
@@ -91,7 +87,9 @@ class SendOfferView(LoggingMixin, views.APIView):
                 **calculated,
             },
             "old": {
-                "oc": old.get("oc") or "-",
+                "iva": "-",
+                "igic": "-",
+                "oc": "-",
                 "total": "-",
                 "p1": "-",
                 "p2": "-",
@@ -111,8 +109,8 @@ class SendOfferView(LoggingMixin, views.APIView):
                 "st_c1": "-",
                 "st_c2": "-",
                 "st_c3": "-",
-                "st_p": old.get("st_p") or "-",
-                "st_c": old.get("st_c") or "-",
+                "st_p": "-",
+                "st_c": "-",
                 **old,
             },
             "period": old["period"],
