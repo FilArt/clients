@@ -1,5 +1,11 @@
 <template>
-  <v-select v-model="modelValue" label="Campos obligatorio" :items="requiredFieldsItems" multiple />
+  <v-select
+    v-model="modelValue"
+    label="Campos obligatorio"
+    :items="requiredFieldsItems"
+    multiple
+    @input="$emit('input', $event)"
+  />
 </template>
 
 <script>
@@ -13,7 +19,7 @@ export default {
   },
   data() {
     return {
-      modelValue: [],
+      modelValue: this.value,
       requiredFieldsItems: [
         { value: 'photo_cif', text: 'Foto CIF' },
         { value: 'photo_dni', text: 'Foto DNI' },
