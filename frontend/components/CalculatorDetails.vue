@@ -90,11 +90,12 @@ export default {
     },
   },
   data() {
+    const user = this.$auth.user || {}
     let agent = localStorage.getItem('agent')
     agent =
       agent && typeof agent === 'string'
         ? JSON.parse(agent)
-        : { fullname: this.$auth.user.fullname, email: this.$auth.user.email, phone: this.$auth.user.phone }
+        : { fullname: user.fullname, email: user.email, phone: user.phone }
     return {
       loading: false,
       htmlDetails: null,
