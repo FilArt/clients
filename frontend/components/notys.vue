@@ -11,7 +11,7 @@
     <v-card>
       <v-card-title>
         <v-row align="center">
-          <v-col>Notys</v-col>
+          <v-col>Notificaciones</v-col>
 
           <v-spacer />
 
