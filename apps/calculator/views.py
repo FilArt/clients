@@ -70,7 +70,7 @@ class SendOfferView(LoggingMixin, views.APIView):
             if old.get("otros"):
                 old["total"] += float(old["otros"])
             if old.get("descuento"):
-                old["descuento_value"] = old["total"] * float(old["descuento"]) / 100
+                old["descuento_value"] = round(old["total"] * float(old["descuento"]) / 100, 2)
                 old["total"] = old["total"] - old["descuento_value"]
 
         calculated = serializer.get_calculated(new_current_price=old["total"])
