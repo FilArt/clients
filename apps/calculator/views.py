@@ -134,7 +134,8 @@ class SendOfferView(LoggingMixin, views.APIView):
         }
 
         email_to = serializer.validated_data.get("email_to")
-        if email_to and "send" in request.query_params:
+        agent_email = old.get("agent_email", request.user.email if hasattr(request.user, "email") else None)
+        if "send" in request.query_params and email_to:
             subject = "Estudio comparativo"
             html_message = render_to_string("mails/new_offer.html", context=ctx)
             plain_message = subject  # strip_tags(html_message)
@@ -145,18 +146,12 @@ class SendOfferView(LoggingMixin, views.APIView):
             pdf_path = filepath.replace("html", "pdf")
             pdfkit.from_file(f.name, pdf_path)
 
-            cc = old.get("email") or []
-            if cc:
-                cc = [cc]
-            else:
-                cc = [request.user.email] if hasattr(request.user, "email") else None
-
             email = EmailMessage(
                 subject,
                 plain_message,
                 settings.EMAIL_HOST_USER,
                 [email_to],
-                cc=cc,
+                cc=[agent_email],
             )
             email.attach_file(pdf_path)
             email.send()
