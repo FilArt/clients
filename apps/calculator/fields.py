@@ -66,9 +66,8 @@ class PotenciaCalculationField(ConsumoCalculationField):
 
 class ConsumoField(serializers.FloatField):
     def __init__(self, **kwargs):
-        kwargs["default"] = 0
         kwargs["min_value"] = 0
-        kwargs["required"] = False
+        kwargs["required"] = kwargs.get("required", False)
         super().__init__(**kwargs)
 
 

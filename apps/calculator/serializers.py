@@ -135,7 +135,7 @@ class CalculatorSerializer(serializers.ModelSerializer):
             "description": {"read_only": True},
         }
 
-    def get_calculated(self):
+    def get_calculated(self, new_current_price: float = None):
         data = self.validated_data
         kind = data.pop("kind")
         is_luz = kind == "luz"
@@ -146,10 +146,12 @@ class CalculatorSerializer(serializers.ModelSerializer):
         nds = calculator_settings.igic if use_igic else calculator_settings.iva
         zero = Value(0, output_field=models.FloatField())
 
-        power_min = min(filter((lambda n: n != 0), (data["p1"], data["p2"], data["p3"])))
-        power_max = max(filter((lambda n: n != 0), (data["p1"], data["p2"], data["p3"])))
-        annual_consumption = ((data["c1"] + data["c2"] + data["c3"]) / data["period"]) * 365 if is_luz else data["c1"]
-        current_price = Value(data["current_price"], output_field=models.FloatField())
+        p1, p2, p3 = data.get("p1"), data.get("p2", 0), data.get("p3", 0)
+        c1, c2, c3 = data.get("c1"), data.get("c2", 0), data.get("c3", 0)
+        power_min = min(filter((lambda n: n != 0), (p1, p2, p3)))
+        power_max = max(filter((lambda n: n != 0), (p1, p2, p3)))
+        annual_consumption = (sum((c1, c2, c3)) / data["period"]) * 365 if is_luz else c1
+        current_price = Value(new_current_price or data["current_price"], output_field=models.FloatField())
 
         offers = Offer.objects.all()
         if data.get("id"):
@@ -170,12 +172,12 @@ class CalculatorSerializer(serializers.ModelSerializer):
                 ),
             )
             .annotate(
-                st_c1=F("c1") * Value(data["c1"]),
-                st_c2=F("c2") * Value(data["c2"]) if is_luz else zero,
-                st_c3=F("c3") * Value(data["c3"]) if is_luz else zero,
-                st_p1=F("p1") * Value(data["p1"]) * Value(data["period"]) if is_luz else zero,
-                st_p2=F("p2") * Value(data["p2"]) * Value(data["period"]) if is_luz else zero,
-                st_p3=F("p3") * Value(data["p3"]) * Value(data["period"]) if is_luz else zero,
+                st_c1=F("c1") * Value(c1),
+                st_c2=F("c2") * Value(c2) if is_luz else zero,
+                st_c3=F("c3") * Value(c3) if is_luz else zero,
+                st_p1=F("p1") * Value(p1) * Value(data["period"]) if is_luz else zero,
+                st_p2=F("p2") * Value(p2) * Value(data["period"]) if is_luz else zero,
+                st_p3=F("p3") * Value(p3) * Value(data["period"]) if is_luz else zero,
             )
             .annotate(
                 subtotal=F("st_c1") + F("st_c2") + F("st_c3") + F("st_p1") + F("st_p2") + F("st_p3")

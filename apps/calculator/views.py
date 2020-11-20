@@ -42,14 +42,12 @@ class SendOfferView(LoggingMixin, views.APIView):
     def get(self, request: Request):
         serializer = CalculatorSerializer(data=request.query_params)
         serializer.is_valid(raise_exception=True)
-        calculated = serializer.get_calculated()
 
         old = {k: v for k, v in request.query_params.items()}
         rental, tax = old.get("rental"), old.get("tax")
         old["tax"] = tax or "-"
         old["rental"] = rental or "-"
         old["company_name"] = serializer.validated_data["company"].name
-        old["oc"] = sum(map(float, filter(None, [calculated["reactive"], tax, rental])))
         old["st_c1"] = round(reduce(mul, map(float, (old.get("c1") or 0, old.get("c1_offer") or 0))), 2)
         old["st_c2"] = round(reduce(mul, map(float, (old.get("c2") or 0, old.get("c2_offer") or 0))), 2)
         old["st_c3"] = round(reduce(mul, map(float, (old.get("c3") or 0, old.get("c3_offer") or 0))), 2)
@@ -58,17 +56,24 @@ class SendOfferView(LoggingMixin, views.APIView):
         old["st_p3"] = round(reduce(mul, map(float, (old.get("p3") or 0, old.get("p3_offer") or 0, old["period"]))), 2)
         old["st_c"] = sum(map(float, filter(None, [old.get("st_c1"), old.get("st_c2"), old.get("st_c3")])))
         old["st_p"] = sum(map(float, filter(None, [old.get("st_p1"), old.get("st_p2"), old.get("st_p3")])))
+        old["oc"] = sum(map(float, filter(None, [old["reactive"], tax, rental])))
         old["bi"] = (old.get("st_c") + old.get("st_p") + old.get("oc")) or "-"
-
+        old["total"] = 0
         if old["bi"] != "-":
             old["bi"] = round(old["bi"], 2)
             old["total"] = old["bi"]
             if old.get("iva"):
                 iva = float(old["iva"]) / 100 * old["total"]
-                old["iva"] = {"value": iva, "percent": old["iva"]}
+                old["iva"] = {"value": round(iva, 2), "percent": old["iva"]}
                 old["total"] = round(iva + old["total"], 2)
 
-        old["total"] = old.get("total") or calculated["current_price"]
+            if old.get("otros"):
+                old["total"] += float(old["otros"])
+            if old.get("descuento"):
+                old["descuento_value"] = old["total"] * float(old["descuento"]) / 100
+                old["total"] = old["total"] - old["descuento_value"]
+
+        calculated = serializer.get_calculated(new_current_price=old["total"])
 
         new_st_p = round(calculated["st_p1"] + calculated["st_p2"] + calculated["st_p3"], 2)
         new_st_c = round(calculated["st_c1"] + calculated["st_c2"] + calculated["st_c3"], 2)
@@ -90,6 +95,7 @@ class SendOfferView(LoggingMixin, views.APIView):
                 **calculated,
             },
             "old": {
+                "descuento_value": "-",
                 "iva": "-",
                 "igic": "-",
                 "oc": "-",

@@ -2,6 +2,6 @@ import createPersistedState from 'vuex-persistedstate'
 
 export default ({ store }) => {
   createPersistedState({
-    paths: ['privacyAccepted'],
+    paths: ['calculatorForm', 'privacyAccepted', 'tarif'],
   })(store)
 }

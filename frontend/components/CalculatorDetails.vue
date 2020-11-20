@@ -56,6 +56,9 @@
             :label="`Precio por consumo ${isGas ? '' : 'P3'}`"
             type="number"
           />
+          <v-text-field v-model="otros" label="Otros" type="number" />
+          <v-text-field v-model="descuento" label="Descuento" type="number" />
+
           <v-text-field v-model="rental" label="Alquiler de equipo" type="number" dense />
           <v-text-field v-model="tax" label="Imp.Electricidad" type="number" dense />
           <v-text-field v-model="iva" :label="form.igic ? 'IGIC' : 'IVA'" suffix="%" type="number" dense />
@@ -114,6 +117,8 @@ export default {
       rental: null,
       tax: null,
       iva: 21,
+      otros: null,
+      descuento: null,
       agent,
       error: null,
     }
@@ -121,7 +126,6 @@ export default {
   computed: {
     ...mapState({
       form: (state) => state.calculatorForm,
-      // tarif: (state) => state.tarif,
     }),
     isGas() {
       return this.offer.kind === 'gas'
@@ -146,8 +150,6 @@ export default {
       return this.form.tarif ? constants.showInput(letter, number, this.form.tarif) : false
     },
     async getDetails() {
-      console.log(this)
-      if (!this.offer || !this.form || !this.form.tarif) return
       this.loading = true
       const { params } = this.getDataAndParams()
       this.htmlDetails = await this.$axios.$get(`calculator/new_offer/?${params}`)
@@ -193,6 +195,8 @@ export default {
         agent_fullname: this.agent.fullname,
         agent_phone: this.agent.phone,
         iva: this.iva,
+        otros: this.otros,
+        descuento: this.descuento,
       }
       const params = Object.keys(data)
         .filter((key) => data[key] !== null)

@@ -32,7 +32,7 @@
               :style="`width: 50%; ${form.kind === 'gas' ? 'opacity: 50%' : null}`"
               @click="
                 updateForm('kind', 'luz')
-                tarif = null
+                updateForm('tarif', null)
               "
             >
               <v-card-title>Luz</v-card-title>
@@ -44,7 +44,7 @@
               :color="form.kind === 'gas' ? ourColor : null"
               @click="
                 updateForm('kind', 'gas')
-                tarif = null
+                updateForm('tarif', null)
               "
             >
               <v-card-title>Gas</v-card-title><v-icon large color="red" right>mdi-fire</v-icon>
@@ -265,6 +265,7 @@ export default {
     tarif: {
       set(val) {
         this.$store.commit('setTarif', val)
+        this.updateForm('tarif', val)
       },
       get() {
         return this.$store.state.tarif
@@ -317,9 +318,6 @@ export default {
         }
       })
     },
-  },
-  mounted() {
-    this.updateForm('reactive', 0)
   },
   methods: {
     getDetailUrl(offer) {

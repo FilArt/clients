@@ -5,7 +5,6 @@ export const state = () => ({
     igic: false,
     client_type: 0,
   },
-  tarif: null,
   puntoCategories: [],
   cities: [],
   privacyAccepted: false,
@@ -31,6 +30,14 @@ export const actions = {
 }
 
 export const mutations = {
+  resetCalculator(state) {
+    state.calculatorForm = {
+      kind: 'luz',
+      igic: false,
+      client_type: 0,
+      reactive: 0,
+    }
+  },
   setNames(state, names) {
     state.names = names
   },
