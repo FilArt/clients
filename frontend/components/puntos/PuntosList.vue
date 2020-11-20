@@ -104,7 +104,7 @@
                         <v-card-title>
                           <v-row>
                             <v-col>
-                              <span class="title headline">AÑADIR ARCHIVO</span>
+                              <span class="title headline">Añadir archivo</span>
                             </v-col>
                             <v-col class="flex-grow-0">
                               <v-btn icon color="error" @click="uploadFileDialog = false">
@@ -171,6 +171,7 @@ export default {
         { value: 'repr_legal', text: 'Foto DNI Representante Legal' },
         { value: 'name_changed', text: 'Cambio de nombre' },
         { value: 'arredamiento', text: 'Contrato arredamiento' },
+        { value: 'contrato', text: 'Contrato' },
       ],
       uploadFileDialog: false,
       file: null,
