@@ -59,7 +59,7 @@ class SendOfferView(LoggingMixin, views.APIView):
         old["oc"] = sum(map(float, filter(None, [old["reactive"], tax, rental])))
         old["bi"] = (old.get("st_c") + old.get("st_p") + old.get("oc")) or "-"
         old["total"] = 0
-        if old["bi"] != "-":
+        if old["st_c"] or old["st_p"]:
             old["bi"] = round(old["bi"], 2)
             old["total"] = old["bi"]
             if old.get("iva"):
