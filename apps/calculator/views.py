@@ -74,6 +74,7 @@ class SendOfferView(LoggingMixin, views.APIView):
                 old["total"] = old["total"] - old["descuento_value"]
 
         calculated = serializer.get_calculated(new_current_price=old["total"])
+        old["total"] = old["total"] or calculated["current_price"]
 
         new_st_p = round(calculated["st_p1"] + calculated["st_p2"] + calculated["st_p3"], 2)
         new_st_c = round(calculated["st_c1"] + calculated["st_c2"] + calculated["st_c3"], 2)
