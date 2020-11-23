@@ -705,6 +705,7 @@
                                     {{ new.tax.value }} €
                                 </td>
                             </tr>
+                            {% if old.otros %}
                             <tr>
                                 <td style="width: 25.7885%">
                                     <em>OTROS:</em>
@@ -725,6 +726,7 @@
                                     - €
                                 </td>
                             </tr>
+                            {% endif %}
                             <tr>
                                 <td style="width: 25.7885%">
                                     <br>
@@ -749,6 +751,7 @@
                                     {{ new.oc }} €
                                 </td>
                             </tr>
+                            {% if old.descuento %}
                             <tr>
                                 <td style="width: 25.7885%">
                                     <em>DESCUENTO:</em>
@@ -767,6 +770,7 @@
                                     - €
                                 </td>
                             </tr>
+                            {% endif %}
                             <tr>
                                 <td style="width: 25.7885%">
                                     <em>BASE IMPONIBLE:</em>
