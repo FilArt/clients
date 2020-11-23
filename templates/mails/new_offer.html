@@ -50,31 +50,20 @@
 <table>
     <tbody>
     <tr>
-        <td
-                style="
-          padding-left: 15px;
-          padding-right: 15px;
-          text-align: center;
-        "
-        >
-            <img
-                    src="https://static.tildacdn.com/tild3064-6339-4335-b062-623135663063/GG_LOGO_004680.png"
-                    style="max-width: 333px; height: 111px;"
-                    alt="Logo"
+        <td style="padding-left: 15px; padding-right: 15px; text-align: center;">
+            <img src="https://static.tildacdn.com/tild3064-6339-4335-b062-623135663063/GG_LOGO_004680.png"
+                 style="max-width: 333px; height: 111px;"
+                 alt="Logo"
             />
-            <div class="signature"
-                 style="width: 100%"
-            >
+            <div class="signature" style="width: 100%">
                 <p>№ {{ new.id }}</p>
                 <p>Fecha de la propuesta: {{ date }}</p>
                 <p>Periodo de validez: 7 Días</p>
             </div>
-
         </td>
     </tr>
     </tbody>
 </table>
-
 
 <table>
     <tbody>
@@ -94,11 +83,11 @@
     <br>
     <tr>
         <table>
-    <tbody style="margin-right: 15em; display: block">
-    <tr>
-        <td style="text-align: left">
-            <div>
-                <div style="text-align: left;
+            <tbody style="margin-right: 15em; display: block">
+            <tr>
+                <td style="text-align: left">
+                    <div>
+                        <div style="text-align: left;
                             font-family: Helvetica Neue, Helvetica,
                               Arial, sans-serif;
                             font-size: 14px;
@@ -116,16 +105,16 @@
                               >
                             </span>
                           </span>
-    </div>
-    <div
-            style="
+                        </div>
+                        <div
+                                style="
                             margin-right: auto;
                             font-family: Helvetica Neue, Helvetica,
                               Arial, sans-serif;
                             font-size: 14px;
                             line-height: 1.4;
                           "
-    >
+                        >
                           <span style="font-size: 12px"
                           ><span style="color: #004680"
                           >DIRECCIÓN:
@@ -137,16 +126,16 @@
                               </span>
                             </span>
                           </span>
-    </div>
-    <div
-            style="
+                        </div>
+                        <div
+                                style="
                             margin-right: auto;
                             font-family: Helvetica Neue, Helvetica,
                               Arial, sans-serif;
                             font-size: 14px;
                             line-height: 1.4;
                           "
-    >
+                        >
                           <span style="font-size: 12px"
                           ><span style="color: #004680"
                           >CUPS:
@@ -155,17 +144,17 @@
                               </span>
                             </span>
                           </span>
-    </div>
-    {% if new.kind == 'luz' %}
-        <div
-                style="
+                        </div>
+                        {% if new.kind == 'luz' %}
+                            <div
+                                    style="
                             margin-right: auto;
                             font-family: Helvetica Neue, Helvetica,
                               Arial, sans-serif;
                             font-size: 14px;
                             line-height: 1.4;
                           "
-        >
+                            >
                           <span style="font-size: 12px"
                           ><span style="color: #004680"
                           >POTENCIA CONTRATADA (kW):
@@ -175,10 +164,10 @@
                                       {{ old.p3 }}{% endif %}</span></span
                           ></span
                           >
-        </div>
-    {% endif %}
-    <div
-            style="
+                            </div>
+                        {% endif %}
+                        <div
+                                style="
                             margin-right: auto;
                             font-family: Helvetica Neue, Helvetica,
                               Arial, sans-serif;
@@ -186,7 +175,7 @@
                             font-size: 14px;
                             line-height: 1.4;
                           "
-    >
+                        >
                           <span style="color: #004680"
                           ><span style="font-size: 12px"
                           >TARIFA: <span
@@ -197,12 +186,12 @@
                           ></span
                           ></span
                           >
-    </div>
-</div>
-        </td>
-    </tr>
-    </tbody>
-</table>
+                        </div>
+                    </div>
+                </td>
+            </tr>
+            </tbody>
+        </table>
     </tr>
     </tbody>
 </table>
@@ -292,26 +281,11 @@
                                 <td style="width: 11.1317%">
                                     <u><em>TOTALES</em></u>
                                 </td>
+
                                 <td rowspan="7" style="width: 5.5659%">
                                 </td>
-                                <td style="width: 9.462%">
-                                    <div style="text-align: center">
-                                  <span style="font-size: 14px"
-                                  ><span style="font-size: 11px"
-                                  ><span
-                                          style="
-                                          color: rgb(0, 70, 128);
-                                        "
-                                  ><span
-                                          style="
-                                            color: rgb(0, 70, 128);
-                                          "
-                                  ><u><em>T. Fijo</em></u>
-                                        </span></span
-                                  ></span
-                                  ></span
-                                  >
-                                    </div>
+                                <td>
+                                    <u><em>T. Fijo</em></u>
                                 </td>
                                 <td style="width: 8.7199%">
                                     {% if new.kind == 'luz' %}
@@ -366,56 +340,10 @@
                                     </div>
                                 </td>
                                 <td style="width: 12.2448%">
-                                    <div style="text-align: center">
-                                  <span style="font-size: 14px"
-                                  ><span style="font-size: 11px"
-                                  ><span
-                                          style="
-                                          color: rgb(0, 70, 128);
-                                        "
-                                  ><span
-                                          style="
-                                            color: rgb(0, 70, 128);
-                                          "
-                                  ><u
-                                  ><em
-                                  ><em
-                                  >x €/kW Día</em
-                                  ></em
-                                  ></u
-                                  ></span
-                                  ></span
-                                  ></span
-                                  ></span
-                                  >
-                                    </div>
+                                    <u><em>x €/kW Día</em></u>
                                 </td>
                                 <td style="width: 10.0186%">
-                                    <div style="text-align: center">
-                                  <span style="font-size: 14px"
-                                  ><span style="font-size: 11px"
-                                  ><span
-                                          style="
-                                          color: rgb(0, 70, 128);
-                                        "
-                                  ><span
-                                          style="
-                                            color: rgb(0, 70, 128);
-                                          "
-                                  ><u
-                                  ><em
-                                  ><em
-                                  ><em
-                                  >TOTALES</em
-                                  ></em
-                                  ></em
-                                  ></u
-                                  ></span
-                                  ></span
-                                  ></span
-                                  ></span
-                                  >
-                                    </div>
+                                    <u><em>TOTALES</em></u>
                                 </td>
                             </tr>
                             <tr>
@@ -434,6 +362,7 @@
                                 <td style="width: 11.1317%">
                                     {{ old.st_p1 }} €
                                 </td>
+
                                 <td style="width: 9.462%">
                                     {% if new.kind == 'luz' %}P1:{% endif %}
                                 </td>
@@ -778,6 +707,26 @@
                             </tr>
                             <tr>
                                 <td style="width: 25.7885%">
+                                    <em>OTROS:</em>
+                                </td>
+                                <td style="width: 8.1633%">
+                                    <br/>
+                                </td>
+                                <td style="width: 12.2449%">
+                                    {{ old.otros }} €
+                                </td>
+                                <td style="width: 24.4898%">
+                                    <em>OTROS:</em>
+                                </td>
+                                <td style="width: 11.6883%">
+                                    <br/>
+                                </td>
+                                <td style="width: 11.5028%">
+                                    - €
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="width: 25.7885%">
                                     <br>
                                     <em>OTROS CONCEPTOS:</em>
                                 </td>
@@ -818,26 +767,6 @@
                                 </td>
                                 <td style="width: 11.5028%">
                                     {{ new.bi }} €
-                                </td>
-                            </tr>
-                            <tr>
-                                <td style="width: 25.7885%">
-                                    <em>OTROS:</em>
-                                </td>
-                                <td style="width: 8.1633%">
-                                    <br/>
-                                </td>
-                                <td style="width: 12.2449%">
-                                    {{ old.otros }} €
-                                </td>
-                                <td style="width: 24.4898%">
-                                    <em>OTROS:</em>
-                                </td>
-                                <td style="width: 11.6883%">
-                                    <br/>
-                                </td>
-                                <td style="width: 11.5028%">
-                                    - €
                                 </td>
                             </tr>
                             <tr>
@@ -996,17 +925,17 @@
 </table>
 
 {% if note %}
-<table>
-    <tbody style="display: block; margin-right: 15em">
-    <tr>
-        <td>
+    <table>
+        <tbody style="display: block; margin-right: 15em">
+        <tr>
+            <td>
             <span style="left: 0">
                 <em>Nota:</em> {{ note }}
             </span>
-        </td>
-    </tr>
-    </tbody>
-</table>
+            </td>
+        </tr>
+        </tbody>
+    </table>
 {% endif %}
 
 <table>
