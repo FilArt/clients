@@ -160,33 +160,43 @@ class CalculatorSerializer(serializers.ModelSerializer):
             offers = offers.filter(id=data.get("id"))
 
         qs = (
-            offers.filter(active=True)
-            .exclude(company=data["company"])
-            .filter(
+            offers.filter(
                 Q(
-                    Q(power_max__isnull=True) | Q(power_max__gte=power_min) if is_luz else Q(),
-                    Q(power_min__isnull=True) | Q(power_min__lte=power_max) if is_luz else Q(),
                     Q(consumption_max__isnull=True) | Q(consumption_max__gte=annual_consumption),
                     Q(consumption_min__isnull=True) | Q(consumption_min__lte=annual_consumption),
-                    client_type=data["client_type"],
-                    tarif=data["tarif"],
-                    kind=kind,
                 ),
+                active=True,
+                client_type=data["client_type"],
+                tarif=data["tarif"],
+                kind=kind,
             )
+            .exclude(company=data["company"])
             .annotate(
                 st_c1=F("c1") * Value(c1),
-                st_c2=F("c2") * Value(c2) if is_luz else zero,
-                st_c3=F("c3") * Value(c3) if is_luz else zero,
-                st_p1=F("p1") * Value(p1) * Value(data["period"]) if is_luz else zero,
-                st_p2=F("p2") * Value(p2) * Value(data["period"]) if is_luz else zero,
-                st_p3=F("p3") * Value(p3) * Value(data["period"]) if is_luz else zero,
+                st_p1=F("p1") * Value(p1) * Value(data["period"]),
             )
-            .annotate(
-                subtotal=F("st_c1") + F("st_c2") + F("st_c3") + F("st_p1") + F("st_p2") + F("st_p3")
-                if is_luz
-                else F("st_c1"),
+        )
+        if is_luz:
+            qs = (
+                qs.filter(
+                    Q(
+                        Q(power_max__isnull=True) | Q(power_max__gte=power_min),
+                        Q(power_min__isnull=True) | Q(power_min__lte=power_max),
+                    )
+                )
+                .annotate(
+                    st_c2=F("c2") * Value(c2),
+                    st_c3=F("c3") * Value(c3),
+                    st_p2=F("p2") * Value(p2) * Value(data["period"]),
+                    st_p3=F("p3") * Value(p3) * Value(data["period"]),
+                )
+                .annotate(subtotal=F("st_c1") + F("st_c2") + F("st_c3") + F("st_p1") + F("st_p2") + F("st_p3"))
             )
-            .annotate(
+        else:
+            qs = qs.annotate(subtotal=F("st_c1"))
+
+        qs = (
+            qs.annotate(
                 after_rental=F("subtotal") + Value(rental),
             )
             .annotate(
