@@ -152,6 +152,7 @@ class CalculatorSerializer(serializers.ModelSerializer):
         power_max = max(filter((lambda n: n != 0), (p1, p2, p3)))
         annual_consumption = (sum((c1, c2, c3)) / data["period"]) * 365 if is_luz else c1
         current_price = Value(new_current_price or data["current_price"], output_field=models.FloatField())
+        reactive = Value(data.get("reactive", 0), output_field=models.FloatField())
 
         offers = Offer.objects.all()
         if data.get("id"):
@@ -194,7 +195,7 @@ class CalculatorSerializer(serializers.ModelSerializer):
             .annotate(
                 pre_total=F("after_rental") + F("iva") + F("tax"),
             )
-            .annotate(total=F("pre_total") + Value(data["reactive"]) if is_luz else F("pre_total"))
+            .annotate(total=F("pre_total") + reactive if is_luz else F("pre_total"))
             .annotate(
                 profit=-F("total") + current_price,
             )
@@ -203,7 +204,7 @@ class CalculatorSerializer(serializers.ModelSerializer):
                 profit_percent=F("profit") / current_price * Value(100),
                 current_price=current_price,
                 rental=Value(rental, output_field=models.FloatField()),
-                reactive=Value(data["reactive"], output_field=models.FloatField()),
+                reactive=reactive,
             )
             .order_by("total")
         )

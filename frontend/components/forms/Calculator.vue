@@ -253,6 +253,7 @@ export default {
       errorMessages: {},
       loading: false,
       showResults: false,
+      tarif: null,
     }
   },
   computed: {
@@ -261,15 +262,6 @@ export default {
     },
     form() {
       return this.$store.state.calculatorForm
-    },
-    tarif: {
-      set(val) {
-        this.$store.commit('setTarif', val)
-        this.updateForm('tarif', val)
-      },
-      get() {
-        return this.$store.state.tarif
-      },
     },
     headers() {
       const _headers = [
@@ -306,6 +298,7 @@ export default {
   },
   watch: {
     tarif() {
+      this.updateForm('tarif', this.tarif)
       const fields = [
         ['p', 2],
         ['p', 3],
@@ -319,6 +312,9 @@ export default {
       })
     },
   },
+  mounted() {
+    this.$store.commit('resetCalculator')
+  },
   methods: {
     getDetailUrl(offer) {
       return this.detailUrl
@@ -328,7 +324,7 @@ export default {
           }&showCalculatorDetails=true`
     },
     showInput(letter, number) {
-      return constants.showInput(letter, number, this.form.tarif)
+      return constants.showInput(letter, number, this.tarif)
     },
     updateForm(key, value) {
       this.$store.commit('updateCalculatorForm', {
