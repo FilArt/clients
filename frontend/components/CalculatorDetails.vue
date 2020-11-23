@@ -57,7 +57,7 @@
             type="number"
           />
           <v-text-field v-model="otros" label="Otros" type="number" />
-          <v-text-field v-model="descuento" label="Descuento" type="number" />
+          <v-text-field v-model="descuento" label="Descuento" suffix="%" type="number" />
 
           <v-text-field v-model="rental" label="Alquiler de equipo" type="number" dense />
           <v-text-field v-model="tax" label="Imp.Electricidad" type="number" dense />
