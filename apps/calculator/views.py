@@ -60,15 +60,15 @@ class SendOfferView(LoggingMixin, views.APIView):
         old["bi"] = (old.get("st_c") + old.get("st_p") + old.get("oc")) or "-"
         old["total"] = 0
         if old["st_c"] or old["st_p"]:
+            if old.get("descuento"):
+                old["bi"] = old["bi"] - float(old["descuento"])
             old["bi"] = round(old["bi"], 2)
+
             old["total"] = old["bi"]
             if old.get("iva"):
                 iva = float(old["iva"]) / 100 * old["total"]
                 old["iva"] = {"value": round(iva, 2), "percent": old["iva"]}
                 old["total"] = round(iva + old["total"], 2)
-
-            if old.get("descuento"):
-                old["total"] = old["total"] - float(old["descuento"])
 
         calculated = serializer.get_calculated(new_current_price=old["total"])
         old["total"] = old["total"] or calculated["current_price"]
