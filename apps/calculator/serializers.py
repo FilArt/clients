@@ -38,7 +38,7 @@ class CalculatorSerializer(serializers.ModelSerializer):
     c1 = ConsumoField(required=True)
     c2 = ConsumoField()
     c3 = ConsumoField()
-    p1 = PotenciaField(required=True)
+    p1 = PotenciaField()
     p2 = PotenciaField()
     p3 = PotenciaField()
     current_price = serializers.FloatField(min_value=0, validators=[positive_number])
@@ -146,10 +146,11 @@ class CalculatorSerializer(serializers.ModelSerializer):
         nds = calculator_settings.igic if use_igic else calculator_settings.iva
         zero = Value(0, output_field=models.FloatField())
 
-        p1, p2, p3 = data.get("p1"), data.get("p2", 0), data.get("p3", 0)
+        p1, p2, p3 = data.get("p1", 0), data.get("p2", 0), data.get("p3", 0)
         c1, c2, c3 = data.get("c1"), data.get("c2", 0), data.get("c3", 0)
-        power_min = min(filter((lambda n: n != 0), (p1, p2, p3)))
-        power_max = max(filter((lambda n: n != 0), (p1, p2, p3)))
+        power_min = min(filter((lambda n: n != 0), (p1, p2, p3))) if is_luz else None
+        power_max = max(filter((lambda n: n != 0), (p1, p2, p3))) if is_luz else None
+
         annual_consumption = (sum((c1, c2, c3)) / data["period"]) * 365 if is_luz else c1
         current_price = Value(new_current_price or data["current_price"], output_field=models.FloatField())
         reactive = Value(data.get("reactive", 0), output_field=models.FloatField())
@@ -163,8 +164,8 @@ class CalculatorSerializer(serializers.ModelSerializer):
             .exclude(company=data["company"])
             .filter(
                 Q(
-                    Q(power_max__isnull=True) | Q(power_max__gte=power_min),
-                    Q(power_min__isnull=True) | Q(power_min__lte=power_max),
+                    Q(power_max__isnull=True) | Q(power_max__gte=power_min) if is_luz else Q(),
+                    Q(power_min__isnull=True) | Q(power_min__lte=power_max) if is_luz else Q(),
                     Q(consumption_max__isnull=True) | Q(consumption_max__gte=annual_consumption),
                     Q(consumption_min__isnull=True) | Q(consumption_min__lte=annual_consumption),
                     client_type=data["client_type"],
