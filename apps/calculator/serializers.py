@@ -193,7 +193,12 @@ class CalculatorSerializer(serializers.ModelSerializer):
                 .annotate(subtotal=F("st_c1") + F("st_c2") + F("st_c3") + F("st_p1") + F("st_p2") + F("st_p3"))
             )
         else:
-            qs = qs.annotate(subtotal=F("st_c1"))
+            qs = qs.annotate(
+                st_c2=zero,
+                st_c3=zero,
+                st_p2=zero,
+                st_p3=zero,
+            ).annotate(subtotal=F("st_c1"))
 
         qs = (
             qs.annotate(
