@@ -10,7 +10,14 @@
       </v-btn>
     </v-card-actions>
 
-    <v-card-text v-if="sendingEmail"> </v-card-text>
+    <v-card-text v-if="sendingEmail">
+      <v-progress-linear v-if="loading" indeterminate />
+      <v-alert v-else color="success">Sent</v-alert>
+      <v-btn v-if="!loading" rounded outlined block color="#004680" @click="sendingEmail = false">
+        Atrás
+        <v-icon>mdi-keyboard-return</v-icon>
+      </v-btn>
+    </v-card-text>
 
     <div v-else>
       <v-card-text>
@@ -175,7 +182,6 @@ export default {
         await this.$swal({ title: 'Not sent!', icon: 'error', text: e.response.data })
       } finally {
         this.loading = false
-        this.sendingEmail = false
       }
     },
     getDataAndParams() {
