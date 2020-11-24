@@ -44,6 +44,10 @@
             line-height: 1px;
             padding: 0;
         }
+
+        .f-table > tbody > tr > td:nth-child(2) {
+            width: 100px;
+        }
     </style>
 </head>
 <body>
@@ -80,7 +84,7 @@
             </div>
         </td>
     </tr>
-    <br>
+
     <tr>
         <table>
             <tbody style="margin-right: 15em; display: block">
@@ -196,594 +200,503 @@
     </tbody>
 </table>
 
-
 <br>
+
 
 <table>
     <tbody>
     <tr>
-        <td>
-            <table>
-                <tbody>
-                <tr>
-                    <td>
-                        <table style="width: 100%">
-                            <tbody>
-                            <tr>
-                                <td style="font-size: 14px; color: red">
-                                    FACTURACION ACTUAL
-                                </td>
-                                <td style="font-size: 14px; color: darkgreen">
-                                    PROPUESTA DE FACTURACION
-                                </td>
-                            </tr>
-
-                            <tr>
-                                <td>
-                                    Comercializadora: {{ old.company_name }}
-                                </td>
-                                <td>
-                                    Comercializadora: {{ new.company_name }}
-                                </td>
-                            </tr>
-
-                            <tr>
-                                <td>
-                                    Oferta: {{ old.name }}
-                                </td>
-                                <td>
-                                    Oferta: {{ new.name }}
-                                </td>
-                            </tr>
-
-                            </tbody>
-                        </table>
-                    </td>
-                </tr>
-                <tr style="height: 19px">
-                    <td style="height: 19px">
-                        <table>
-                            <tbody>
-                            <tr>
-                                <td>
-                                    <u><em>T. Fijo</em></u>
-                                </td>
-                                <td>
-                                    {% if new.kind == 'luz' %}
-                                        <u><em>Potencia</em></u>
-                                    {% endif %}
-                                </td>
-                                <td>
-                                    <u><em>x Días</em></u>
-                                </td>
-
-                                <td>
-                                    <u><em>x €/kW Día</em></u>
-                                </td>
-                                <td>
-                                    <u><em style="margin-right: 2em">TOTALES</em></u>
-                                </td>
-
-                                <td>
-                                    <u><em>T. Fijo</em></u>
-                                </td>
-                                <td>
-                                    {% if new.kind == 'luz' %}
-                                        <u><em>Potencia</em></u>
-                                    {% endif %}
-                                </td>
-                                <td>
-                                    <u><em>x Días</em></u>
-                                </td>
-                                <td>
-                                    <u><em>x €/kW Día</em></u>
-                                </td>
-                                <td>
-                                    <u><em>TOTALES</em></u>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>
-                                    {% if new.kind == 'luz' %}P1:{% endif %}
-                                </td>
-                                <td>
-                                    {% if new.kind == 'luz' %}{{ old.p1 }}{% endif %}
-                                </td>
-                                <td>
-                                    {{ period }}
-                                </td>
-                                <td>
-                                    {{ old.p1_offer }}
-                                </td>
-                                <td>
-                                    {{ old.st_p1 }} €
-                                </td>
-
-                                <td>
-                                    {% if new.kind == 'luz' %}P1:{% endif %}
-                                </td>
-                                <td>
-                                    {% if new.kind == 'luz' %}{{ old.p1 }}{% endif %}
-                                </td>
-                                <td>
-                                    {{ period }}
-                                </td>
-                                <td>
-                                    {{ new.p1 }}
-                                </td>
-                                <td>
-                                    {{ new.st_p1 }} €
-                                </td>
-                            </tr>
-                            {% if old.p2 != '-' %}
-                                <tr>
-                                    <td>
-                                        P2:
-                                    </td>
-                                    <td>
-                                        {{ old.p2 }}
-                                    </td>
-                                    <td>
-                                        {{ period }}
-                                    </td>
-                                    <td>
-                                        {{ old.p2_offer }}
-                                    </td>
-                                    <td>
-                                        {{ old.st_p2 }} €
-                                    </td>
-
-                                    <td>
-                                        P2:
-                                    </td>
-                                    <td>
-                                        {{ old.p2 }}
-                                    </td>
-                                    <td>
-                                        {{ period }}
-                                    </td>
-                                    <td>
-                                        {{ new.p2 }}
-                                    </td>
-                                    <td>
-                                        {{ new.st_p2 }} €
-                                    </td>
-                                </tr>
-                            {% endif %}
-                            {% if old.p3 != '-' %}
-                                <tr>
-                                    <td>
-                                        P3:
-                                    </td>
-                                    <td>
-                                        {{ old.p3 }}
-                                    </td>
-                                    <td>
-                                        {{ period }}
-                                    </td>
-                                    <td>
-                                        {{ old.p3_offer }}
-                                    </td>
-                                    <td>
-                                        {{ old.st_p3 }} €
-                                    </td>
-
-                                    <td>
-                                        P3:
-                                    </td>
-                                    <td>
-                                        {{ old.p3 }}
-                                    </td>
-                                    <td>
-                                        {{ period }}
-                                    </td>
-                                    <td>
-                                        {{ new.p3 }}
-                                    </td>
-                                    <td>
-                                        {{ new.st_p3 }} €
-                                    </td>
-                                </tr>
-                            {% endif %}
-                            <tr>
-                                <td colspan="3">
-                                </td>
-                                <td>
-                                    SUMAS
-                                </td>
-                                <td>
-                                    <strong>{{ old.st_p }} €</strong>
-                                </td>
-                                <td colspan="3">
-                                </td>
-                                <td>
-                                    SUMAS
-                                </td>
-                                <td>
-                                    <strong>{{ new.st_p }} €</strong>
-                                </td>
-                            </tr>
-                            </tbody>
-                        </table>
-                    </td>
-                </tr>
-                </tbody>
-            </table>
-            <br/>
-            <table>
-                <tbody>
-                <tr>
-                    <td>
-                        <table>
-                            <tbody>
-                            <tr>
-                                <td style="width: 6.1224%; text-align: center;">
-                                    <em><u>T. Var.</u></em>
-                                </td>
-                                <td style="width: 15.7699%">
-                                    <u><em>Consumo kWh</em></u>
-                                </td>
-                                <td style="width: 11.5028%">
-                                    <u><em>x €/kWh</em></u>
-                                </td>
-                                <td style="width: 12.8015%">
-                                    <u><em style="margin-right: 2em;">TOTALES</em></u>
-                                </td>
-                                <td rowspan="7" style="width: 5.5659%">
-                                </td>
-                                <td style="width: 9.2764%">
-                                    <u><em>T.Var.</em></u>
-                                </td>
-                                <td style="width: 15.2134%">
-                                    <u><em>Consumo kWh</em></u>
-                                </td>
-                                <td style="width: 10.3896%">
-                                    <u><em>x €/kWh</em></u>
-                                </td>
-                                <td style="width: 12.2449%">
-                                    <u><em>TOTALES</em></u>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td style="width: 6.1224%;">
-                                    P1:
-                                </td>
-                                <td style="width: 15.3989%">
-                                    {{ old.c1 }}
-                                </td>
-                                <td style="width: 11.5028%">
-                                    {{ old.c1_offer }}
-                                </td>
-                                <td style="width: 12.8015%">
-                                    {{ old.st_c1 }} €
-                                </td>
-                                <td style="width: 9.2764%">
-                                    P1:
-                                </td>
-                                <td style="width: 15.2134%">
-                                    {{ old.c1 }}
-                                </td>
-                                <td style="width: 10.3896%">
-                                    {{ new.c1 }}
-                                </td>
-                                <td style="width: 12.2449%">
-                                    {{ new.st_c1 }} €
-                                </td>
-                            </tr>
-                            {% if old.p2 != '-' %}
-                                <tr>
-                                    <td style="width: 6.1224%">
-                                        P2:
-                                    </td>
-                                    <td style="width: 15.3989%">
-                                        {{ old.c2 }}
-                                    </td>
-                                    <td style="width: 11.5028%">
-                                        {{ old.c2_offer }}
-                                    </td>
-                                    <td style="width: 12.8015%">
-                                        {{ old.st_c2 }} €
-                                    </td>
-                                    <td style="width: 9.2764%">
-                                        P2:
-                                    </td>
-                                    <td style="width: 15.2134%">
-                                        {{ old.c2 }}
-                                    </td>
-                                    <td style="width: 10.3896%">
-                                        {{ new.c2 }}
-                                    </td>
-                                    <td style="width: 12.2449%">
-                                        {{ new.st_c2 }} €
-                                    </td>
-                                </tr>
-                            {% endif %}
-                            {% if old.c3 != '-' %}
-                                <tr>
-                                    <td style="width: 6.1224%">
-                                        P3:
-                                    </td>
-                                    <td style="width: 15.3989%">
-                                        {{ old.c3 }}
-                                    </td>
-                                    <td style="width: 11.5028%">
-                                        {{ old.c3_offer }}
-                                    </td>
-                                    <td style="width: 12.8015%">
-                                        {{ old.st_c3 }} €
-                                    </td>
-                                    <td style="width: 9.2764%">
-                                        P3:
-                                    </td>
-                                    <td style="width: 15.2134%">
-                                        {{ old.c3 }}
-                                    </td>
-                                    <td style="width: 10.3896%">
-                                        {{ new.c3 }}
-                                    </td>
-                                    <td style="width: 12.2449%">
-                                        {{ new.st_c3 }} €
-                                    </td>
-                                </tr>
-                            {% endif %}
-                            <tr>
-                                <td colspan="2" style="width: 22.0779%">
-                                    <br/>
-                                </td>
-                                <td style="width: 10.3896%">
-                                    <div style="text-align: center">
-                                        SUMAS
-                                    </div>
-                                </td>
-                                <td style="width: 12.8015%">
-                                    <strong>{{ old.st_c }} €</strong>
-                                </td>
-                                <td colspan="2" style="width: 24.8608%">
-                                    <br/>
-                                </td>
-                                <td style="width: 10.3896%">
-                                    <div style="text-align: center">
-                                        SUMAS
-                                    </div>
-                                </td>
-                                <td style="width: 12.2449%">
-                                    <strong>{{ new.st_c }} €</strong>
-                                </td>
-                            </tr>
-                            </tbody>
-                        </table>
-                    </td>
-                </tr>
-                <tr>
-                    <td>
-                        <br>
-                    </td>
-                </tr>
-                <tr>
-                    <td>
-                        <table>
-                            <tbody class="left-text">
-                            {% if new.kind == 'luz' %}
-                                <tr>
-                                <td style="width: 3em;"></td>
-                                    <td>
-                                        {% if new.reactive %}
-                                            <em>ENERGIA REACTIVA:</em>
-                                        {% endif %}
-                                    </td>
-                                    <td></td>
-                                    <td>
-                                        {% if new.reactive %}
-                                            {{ new.reactive }} €
-                                        {% endif %}
-                                    </td>
-                                    <td></td>
-                                    <td>
-                                        {% if new.reactive %}
-                                            <em>ENERGIA REACTIVA:</em>
-                                        {% endif %}
-                                    </td>
-                                <td></td>
-                                    <td>
-                                        {% if new.reactive %}
-                                            {{ new.reactive }} €
-                                        {% endif %}
-                                    </td>
-                                </tr>
-                            {% endif %}
-                            <tr>
-                                <td></td>
-                                <td>
-                                    <em>ALQUILER EQUIPOS:</em>
-                                </td>
-
-                                <td></td>
-
-                                <td>
-                                    {{ old.rental }} €
-                                </td>
-
-                                <td style="width: 2em"></td>
-
-                                <td>
-                                    <em>ALQUILER EQUIPOS:</em>
-                                </td>
-
-                                <td></td>
-
-                                <td>
-                                    {{ new.rental }} €
-                                </td>
-                            </tr>
-                            <tr>
-                                <td></td>
-                                <td>
-                                    <em>{% if new.kind == 'luz' %}IMP. ELECTRICIDAD:{% else %} IMP.
-                                        HIDROCARBUROS{% endif %}</em>
-                                </td>
-
-                                <td></td>
-
-                                <td>
-                                    {{ old.tax }} €
-                                </td>
-
-                                <td></td>
-
-                                <td>
-                                    <em>{% if new.kind == 'luz' %}IMP. ELECTRICIDAD:{% else %}
-                                        IMP. HIDROCARBUROS{% endif %}</em> ({{ new.tax.percent }}%)
-                                </td>
-
-                                <td></td>
-
-                                <td>
-                                    {{ new.tax.value }} €
-                                </td>
-                            </tr>
-                            {% if old.otros %}
-                                <tr>
-                                <td></td>
-                                    <td>
-                                        <em>OTROS:</em>
-                                    </td>
-                                    <td></td>
-                                    <td>
-                                        {{ old.otros }} €
-                                    </td>
-                                    <td></td>
-                                    <td>
-                                        <em>OTROS:</em>
-                                    </td>
-                                    <td></td>
-                                    <td>
-                                        - €
-                                    </td>
-                                </tr>
-                            {% endif %}
-                            <tr>
-                                <td></td>
-                                <td>
-                                    <em>OTROS CONCEPTOS:</em>
-                                </td>
-                                <td></td>
-                                <td>
-                                    {{ old.oc }} €
-                                </td>
-                                <td></td>
-                                <td>
-                                    <em>OTROS CONCEPTOS:</em>
-                                </td>
-                                <td></td>
-                                <td>
-                                    {{ new.oc }} €
-                                </td>
-                            </tr>
-                            {% if old.descuento %}
-                                <tr>
-                                <td></td>
-                                    <td>
-                                        <em>DESCUENTO:</em>
-                                    </td>
-                                    <td></td>
-                                    <td>
-                                        {{ old.descuento }} €
-                                    </td>
-                                    <td></td>
-                                    <td>
-                                        <em>DESCUENTO:</em>
-                                    </td>
-                                    <td></td>
-                                    <td>
-                                        - €
-                                    </td>
-                                </tr>
-                            {% endif %}
-                            <tr>
-                                <td></td>
-                                <td>
-                                    <em>BASE IMPONIBLE:</em>
-                                </td>
-                                <td></td>
-                                <td>
-                                    {{ old.bi }} €
-                                </td>
-                                <td></td>
-                                <td>
-                                    <em>BASE IMPONIBLE:</em>
-                                </td>
-                                <td></td>
-                                <td>
-                                    {{ new.bi }} €
-                                </td>
-                            </tr>
-                            <tr>
-                                <td></td>
-                                <td>
-                                    {% if old.igic == 'true' %}
-                                        <em>IGIC:</em>
-                                    {% else %}
-                                        <em>I.V.A:</em>
-                                    {% endif %}
-
-                                    {% if old.iva.percent %}
-                                        ({{ old.iva.percent }} %)
-                                    {% endif %}
-
-                                </td>
-
-                                <td></td>
-
-                                <td>
-                                    {{ old.iva.value }} €
-                                </td>
-
-                                <td></td>
-                                <td>
-                                    <em>
-
-                                        {% if old.igic == 'true' %}
-                                            IGIC
-                                        {% else %}
-                                            I.V.A
-                                        {% endif %}
-                                        ({{ new.iva.percent }}):
-                                    </em>
-                                </td>
-
-                                <td></td>
-
-                                <td>
-                                    {{ new.iva.value }} €
-                                </td>
-                            </tr>
-                            </tbody>
-                        </table>
-                    </td>
-                </tr>
-                </tbody>
-            </table>
-
-            <table style="table-layout: fixed">
-                <tbody>
-                <tr>
-                    <td style="padding-left: 20px">
-                        <br/>
-                    </td>
-                </tr>
-                </tbody>
-            </table>
-            <div style="display: flex; align-content: center; justify-content: space-around">
-                    <span style="font-size: 14px">
-                        <strong style="color: red;">TOTAL:</strong> {{ old.total }} €
-                    </span>
-
-                    <span style="font-size: 14px;">
-                        <strong style="color: darkgreen">TOTAL:</strong> {{ new.total }} €
-                    </span>
-            </div>
+        <td colspan="5" style="font-size: 14px; color: red;">
+            FACTURACION ACTUAL
+        </td>
+        <td colspan="5" style="font-size: 14px; color: darkgreen">
+            PROPUESTA DE FACTURACION
         </td>
     </tr>
+
+    <tr>
+        <td colspan="5">
+            Comercializadora: {{ old.company_name }}
+        </td>
+        <td colspan="5">
+            Comercializadora: {{ new.company_name }}
+        </td>
+    </tr>
+
+    <tr>
+        <td colspan="5">
+            Oferta: {{ old.name }}
+        </td>
+        <td colspan="5">
+            Oferta: {{ new.name }}
+        </td>
+    </tr>
+
+    <tr>
+        <td colspan="10"><br></td>
+    </tr>
+
+    <tr>
+        <td>
+            <u><em>T. Fijo</em></u>
+        </td>
+        <td>
+            {% if new.kind == 'luz' %}
+                <u><em>Potencia</em></u>
+            {% endif %}
+        </td>
+        <td>
+            <u><em>x Días</em></u>
+        </td>
+        <td>
+            <u><em>x €/kW Día</em></u>
+        </td>
+        <td>
+            <u><em style="margin-right: 2em">TOTALES</em></u>
+        </td>
+        <td>
+            <u><em>T. Fijo</em></u>
+        </td>
+        <td>
+            {% if new.kind == 'luz' %}
+                <u><em>Potencia</em></u>
+            {% endif %}
+        </td>
+        <td>
+            <u><em>x Días</em></u>
+        </td>
+        <td>
+            <u><em>x €/kW Día</em></u>
+        </td>
+        <td>
+            <u><em>TOTALES</em></u>
+        </td>
+    </tr>
+    <tr>
+        <td>
+            {% if new.kind == 'luz' %}P1:{% endif %}
+        </td>
+        <td>
+            {% if new.kind == 'luz' %}{{ old.p1 }}{% endif %}
+        </td>
+        <td>
+            {{ period }}
+        </td>
+        <td>
+            {{ old.p1_offer }}
+        </td>
+        <td>
+            {{ old.st_p1 }} €
+        </td>
+
+        <td>
+            {% if new.kind == 'luz' %}P1:{% endif %}
+        </td>
+        <td>
+            {% if new.kind == 'luz' %}{{ old.p1 }}{% endif %}
+        </td>
+        <td>
+            {{ period }}
+        </td>
+        <td>
+            {{ new.p1 }}
+        </td>
+        <td>
+            {{ new.st_p1 }} €
+        </td>
+    </tr>
+    {% if old.p2 != '-' %}
+        <tr>
+            <td>
+                P2:
+            </td>
+            <td>
+                {{ old.p2 }}
+            </td>
+            <td>
+                {{ period }}
+            </td>
+            <td>
+                {{ old.p2_offer }}
+            </td>
+            <td>
+                {{ old.st_p2 }} €
+            </td>
+
+            <td>
+                P2:
+            </td>
+            <td>
+                {{ old.p2 }}
+            </td>
+            <td>
+                {{ period }}
+            </td>
+            <td>
+                {{ new.p2 }}
+            </td>
+            <td>
+                {{ new.st_p2 }} €
+            </td>
+        </tr>
+    {% endif %}
+    {% if old.p3 != '-' %}
+        <tr>
+            <td>
+                P3:
+            </td>
+            <td>
+                {{ old.p3 }}
+            </td>
+            <td>
+                {{ period }}
+            </td>
+            <td>
+                {{ old.p3_offer }}
+            </td>
+            <td>
+                {{ old.st_p3 }} €
+            </td>
+
+            <td>
+                P3:
+            </td>
+            <td>
+                {{ old.p3 }}
+            </td>
+            <td>
+                {{ period }}
+            </td>
+            <td>
+                {{ new.p3 }}
+            </td>
+            <td>
+                {{ new.st_p3 }} €
+            </td>
+        </tr>
+    {% endif %}
+    <tr>
+        <td colspan="3">
+        </td>
+        <td>
+            SUMAS
+        </td>
+        <td>
+            <strong>{{ old.st_p }} €</strong>
+        </td>
+        <td colspan="3">
+        </td>
+        <td>
+            SUMAS
+        </td>
+        <td>
+            <strong>{{ new.st_p }} €</strong>
+        </td>
+    </tr>
+
+    <tr>
+        <td colspan="10"><br></td>
+    </tr>
+
+    <tr>
+        <td>
+            <em><u>T. Var.</u></em>
+        </td>
+        <td>
+            <u><em>Consumo kWh</em></u>
+        </td>
+        <td colspan="2">
+            <u><em>x €/kWh</em></u>
+        </td>
+        <td>
+            <u><em>TOTALES</em></u>
+        </td>
+        <td>
+            <u><em>T. Var.</em></u>
+        </td>
+        <td>
+            <u><em>Consumo kWh</em></u>
+        </td>
+        <td colspan="2">
+            <u><em>x €/kWh</em></u>
+        </td>
+        <td style="text-align: right">
+            <u><em>TOTALES</em></u>
+        </td>
+    </tr>
+    <tr>
+        <td>
+            P1:
+        </td>
+        <td>
+            {{ old.c1 }}
+        </td>
+        <td colspan="2">
+            {{ old.c1_offer }}
+        </td>
+        <td>
+            {{ old.st_c1 }} €
+        </td>
+        <td>
+            P1:
+        </td>
+        <td>
+            {{ old.c1 }}
+        </td>
+        <td colspan="2">
+            {{ new.c1 }}
+        </td>
+        <td style="text-align: right">
+            {{ new.st_c1 }} €
+        </td>
+    </tr>
+    {% if old.p2 != '-' %}
+        <tr>
+            <td>
+                P2:
+            </td>
+            <td>
+                {{ old.c2 }}
+            </td>
+            <td colspan="2">
+                {{ old.c2_offer }}
+            </td>
+            <td>
+                {{ old.st_c2 }} €
+            </td>
+            <td>
+                P2:
+            </td>
+            <td>
+                {{ old.c2 }}
+            </td>
+            <td colspan="2">
+                {{ new.c2 }}
+            </td>
+            <td style="text-align: right">
+                {{ new.st_c2 }} €
+            </td>
+        </tr>
+    {% endif %}
+    {% if old.c3 != '-' %}
+        <tr>
+            <td>
+                P3:
+            </td>
+            <td>
+                {{ old.c3 }}
+            </td>
+            <td colspan="2">
+                {{ old.c3_offer }}
+            </td>
+            <td>
+                {{ old.st_c3 }} €
+            </td>
+            <td>
+                P3:
+            </td>
+            <td>
+                {{ old.c3 }}
+            </td>
+            <td colspan="2">
+                {{ new.c3 }}
+            </td>
+            <td style="text-align: right">
+                {{ new.st_c3 }} €
+            </td>
+        </tr>
+    {% endif %}
+    <tr>
+        <td colspan="3"></td>
+        <td>
+            SUMAS
+        </td>
+        <td>
+            <strong>{{ old.st_c }} €</strong>
+        </td>
+
+        <td colspan="3"></td>
+
+        <td style="text-align: center">
+            SUMAS
+        </td>
+
+        <td>
+            <strong>{{ new.st_c }} €</strong>
+        </td>
+    </tr>
+
+    <tr>
+        <td colspan="10"><br></td>
+    </tr>
+
+    {% if new.kind == 'luz' %}
+        <tr>
+            <td colspan="3">
+                {% if new.reactive %}
+                    <em>ENERGIA REACTIVA:</em>
+                {% endif %}
+            </td>
+            <td colspan="2">
+                {% if new.reactive %}
+                    {{ new.reactive }} €
+                {% endif %}
+            </td>
+            <td colspan="3">
+                {% if new.reactive %}
+                    <em>ENERGIA REACTIVA:</em>
+                {% endif %}
+            </td>
+            <td colspan="2">
+                {% if new.reactive %}
+                    {{ new.reactive }} €
+                {% endif %}
+            </td>
+        </tr>
+    {% endif %}
+    <tr>
+        <td colspan="3">
+            <em>ALQUILER EQUIPOS:</em>
+        </td>
+
+        <td colspan="2">
+            {{ old.rental }} €
+        </td>
+
+        <td colspan="3">
+            <em>ALQUILER EQUIPOS:</em>
+        </td>
+
+        <td colspan="2">
+            {{ new.rental }} €
+        </td>
+    </tr>
+    <tr>
+        <td colspan="3">
+            <em>{% if new.kind == 'luz' %}IMP. ELECTRICIDAD:{% else %} IMP.
+                HIDROCARBUROS{% endif %}</em>
+        </td>
+
+        <td colspan="2">
+            {{ old.tax }} €
+        </td>
+
+        <td colspan="3">
+            <em>{% if new.kind == 'luz' %}IMP. ELECTRICIDAD:{% else %}
+                IMP. HIDROCARBUROS{% endif %}</em> ({{ new.tax.percent }}%)
+        </td>
+
+        <td colspan="2">
+            {{ new.tax.value }} €
+        </td>
+    </tr>
+    {% if old.otros %}
+        <tr>
+            <td colspan="3">
+                <em>OTROS:</em>
+            </td>
+            <td colspan="2">
+                {{ old.otros }} €
+            </td>
+            <td colspan="3">
+                <em>OTROS:</em>
+            </td>
+            <td colspan="2">
+                - €
+            </td>
+        </tr>
+    {% endif %}
+    <tr>
+        <td colspan="3">
+            <em>OTROS CONCEPTOS:</em>
+        </td>
+        <td colspan="2">
+            {{ old.oc }} €
+        </td>
+        <td colspan="3">
+            <em>OTROS CONCEPTOS:</em>
+        </td>
+        <td colspan="2">
+            {{ new.oc }} €
+        </td>
+    </tr>
+    {% if old.descuento %}
+        <tr>
+            <td colspan="3">
+                <em>DESCUENTO:</em>
+            </td>
+            <td colspan="2">
+                {{ old.descuento }} €
+            </td>
+            <td colspan="3">
+                <em>DESCUENTO:</em>
+            </td>
+            <td colspan="2">
+                - €
+            </td>
+        </tr>
+    {% endif %}
+    <tr>
+        <td colspan="3">
+            <em>BASE IMPONIBLE:</em>
+        </td>
+        <td colspan="2">
+            {{ old.bi }} €
+        </td>
+        <td colspan="3">
+            <em>BASE IMPONIBLE:</em>
+        </td>
+        <td colspan="2">
+            {{ new.bi }} €
+        </td>
+    </tr>
+    <tr>
+        <td colspan="3">
+            {% if old.igic == 'true' %}
+                IGIC
+            {% else %}
+                I.V.A
+            {% endif %}
+
+            {% if old.iva.percent %}
+                ({{ old.iva.percent }} %)
+            {% endif %}
+            :
+        </td>
+
+        <td colspan="2">
+            {{ old.iva.value }} €
+        </td>
+
+        <td colspan="3">
+            {% if old.igic == 'true' %}
+                IGIC
+            {% else %}
+                I.V.A
+            {% endif %}
+            ({{ new.iva.percent }}):
+        </td>
+
+        <td colspan="2">
+            {{ new.iva.value }} €
+        </td>
+    </tr>
+
+    <tr>
+        <td colspan="10"><br></td>
+    </tr>
+
+    <tr>
+        <td colspan="3" style="color: red; font-size: 16px; font-weight: bolder">
+            TOTAL:
+        </td>
+        <td colspan="2" style="color: red; font-size: 16px; font-weight: bolder">{{ old.total }} €</td>
+        <td colspan="3" style="color: darkgreen; font-size: 16px; font-weight: bolder">
+            TOTAL:
+        </td>
+        <td colspan="2" style="color: darkgreen; font-size: 16px; font-weight: bolder">{{ new.total }} €</td>
+    </tr>
+
     </tbody>
 </table>
 
@@ -792,39 +705,23 @@
 <table>
     <tbody>
     <tr>
-        <td>
-            <table>
-                <tbody>
-                <tr>
-                    <td>
-                        <table style="width: 100%">
-                            <tbody>
-                            <tr>
-                                <td
-                                        style="
+        <td
+                style="
                                         padding: 5px;
                           text-align: left;
                           background-color: rgb(0, 70, 128);
                         "
-                                >
-                                    <div style="text-align: center; font-weight: bolder; font-size: 16px">
+        >
+            <div style="text-align: center; font-weight: bolder; font-size: 16px">
                           <span style="color: white">
                             AHORRO EN FACTURA: {{ new.profit }} € ({{ new.profit_percent }}%)
                           </span>
-                                        <br/>
-                                        <br/>
-                                        <span style="color: white">
+                <br/>
+                <br/>
+                <span style="color: white">
                             AHORRO ANUAL: {{ new.annual_profit }} €
                           </span>
-                                    </div>
-                                </td>
-                            </tr>
-                            </tbody>
-                        </table>
-                    </td>
-                </tr>
-                </tbody>
-            </table>
+            </div>
         </td>
     </tr>
     </tbody>
@@ -844,129 +741,46 @@
     </table>
 {% endif %}
 
-<table>
-    <tbody>
-    <tr>
-        <td>
-            <table>
-                <tbody>
-                <tr>
-                    <td>
-                        <table style="table-layout: fixed">
-                            <tbody>
-                            <tr>
-                                <td style="width: 50px">
-                        <span style="font-size: 14px">
-                          <span style="font-size: 11px">
-                            <span style="color: rgb(0, 70, 128)">
-                              <span style="color: rgb(0, 0, 0)">
-                                <a href="/">
-                                  <img
-                                          style="width: 100%"
-                                          src="https://static.tildacdn.com/tild3963-3830-4534-b366-396334633532/employee_1.png"
-                                          alt="Employee"
-                                          width="50"
-                                  />
-                                </a>
-                              </span>
-                            </span>
-                          </span>
-                        </span>
-                                </td>
+<br>
 
-                                <td style="padding-left: 20px; text-align: left">
-                                    <strong>Nombre del asesor:</strong> {{ agent }}
-                                    <br/>
-                                    <br/>
-                                    <strong>Teléfono de contacto:</strong> {{ agent_phone }}
-                                    <br/>
-                                    <br/>
-                                    <strong>Email:</strong> {{ agent_email }}
-                                </td>
-                            </tr>
-                            </tbody>
-                        </table>
-                    </td>
-                </tr>
-                </tbody>
-            </table>
-        </td>
-    </tr>
-    </tbody>
-</table>
+<div style="display: flex; justify-content: center">
+    <img
+            style="width: 50px"
+            src="https://static.tildacdn.com/tild3963-3830-4534-b366-396334633532/employee_1.png"
+            alt="Employee"
+            width="50"
+    />
+</div>
 
-<table>
-    <tbody>
-    <tr>
-        <td style="padding-left: 15px; padding-right: 15px">
-            <table
-                    style="
-            margin: 0 auto;
-            background-color: #ffffff;
-            border-spacing: 0;
-          "
-            >
-                <tbody>
-                <tr>
-                    <td style="padding: 0 30px 45px 30px">
-                        <table>
-                            <tbody>
-                            <tr>
-                                <td>
-                        <span style="font-size: 14px"
-                        ><span style="color: rgb(0, 70, 128)"
-                        ><span style="color: rgb(0, 0, 0)"
-                        ><img
-                                style="width: 60px"
-                                src="https://static.tildacdn.com/tild3638-3938-4639-a639-653464643630/GG_LOGO_BIG_3.png"
-                                class="fr-dib"
-                                width="60" alt="Logo"/></span></span
-                        ></span>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td
-                                        style="
-                          text-align: center;
-                          padding: 25px 0 0;
-                        "
-                                >
-                                    <div
-                                            style="
-                            margin: 0 auto;
-                            font-weight: normal;
-                            font-family: Helvetica Neue, Helvetica,
-                              Arial, sans-serif;
-                            color: #a1a1a1;
-                            font-size: 14px;
-                            line-height: 1.5;
-                          "
-                                    >
-                          <span style="font-size: 14px"
-                          ><span style="font-size: 11px"
-                          ><span style="color: rgb(0, 70, 128)"
-                          ><span style="color: rgb(0, 0, 0)"
-                          ><a
-                                  href="https://gestiongroup.es"
-                                  style="
-                                      animation: 1.3s ease-in 0s 1
-                                        normal none running bong;
-                                    "
-                          >gestiongroup.es</a
-                          ><br/> </span></span></span
-                          ></span>
-                                    </div>
-                                </td>
-                            </tr>
-                            </tbody>
-                        </table>
-                    </td>
-                </tr>
-                </tbody>
-            </table>
-        </td>
-    </tr>
-    </tbody>
-</table>
+<br>
+
+<div style="font-size: 12px; text-align: center">
+    <div>
+        <strong>Nombre del asesor:</strong> {{ agent }}
+    </div>
+    <div>
+        <strong>Teléfono de contacto:</strong> {{ agent_phone }}
+    </div>
+    <div>
+        <strong>Email:</strong> {{ agent_email }}
+    </div>
+</div>
+
+<div style="text-align: center">
+    <div>
+        <img style="width: 60px"
+             src="https://static.tildacdn.com/tild3638-3938-4639-a639-653464643630/GG_LOGO_BIG_3.png"
+             class="fr-dib"
+             width="60" alt="Logo"
+        />
+    </div>
+
+    <div style="font-size: 12px">
+        <a href="https://gestiongroup.es">gestiongroup.es</a>
+    </div>
+
+</div>
+
+
 </body>
 </html>
