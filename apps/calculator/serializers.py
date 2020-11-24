@@ -151,7 +151,7 @@ class CalculatorSerializer(serializers.ModelSerializer):
         power_min = min(filter((lambda n: n != 0), (p1, p2, p3))) if is_luz else None
         power_max = max(filter((lambda n: n != 0), (p1, p2, p3))) if is_luz else None
 
-        annual_consumption = (sum((c1, c2, c3)) / data["period"]) * 365 if is_luz else c1
+        annual_consumption = (sum((c1, c2, c3)) / data["period"]) * 365
         current_price = Value(new_current_price or data["current_price"], output_field=models.FloatField())
         reactive = Value(data.get("reactive", 0), output_field=models.FloatField())
 
