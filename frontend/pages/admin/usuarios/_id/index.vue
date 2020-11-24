@@ -79,11 +79,22 @@
           />
 
           <v-switch
+            v-if="user.role === 'agent'"
             v-model="settings.fixed_salary"
             label="Sueldo fijo?"
             :error-messages="errorMessages.fixed_salary"
             :append-icon="user.fixed_salary !== settings.fixed_salary ? 'mdi-content-save' : null"
             @click:append="update({ fixed_salary: settings.fixed_salary })"
+          />
+
+          <item-grouper
+            v-if="user.role === 'admin'"
+            v-model="user.groups"
+            label="Grupos"
+            item-text="name"
+            item-value="id"
+            :items="allGroups"
+            @input="update({ groups: $event })"
           />
 
           <v-select
@@ -108,15 +119,6 @@
             :append-icon="user.permissions !== settings.permissions ? 'mdi-content-save' : null"
             @click:append="update({ permissions: settings.permissions })"
           />
-
-          <item-grouper
-            v-model="user.groups"
-            label="Grupos"
-            item-text="name"
-            item-value="id"
-            :items="allGroups"
-            @input="update({ groups: $event })"
-          />
         </v-col>
 
         <v-divider vertical />
@@ -136,8 +138,6 @@
         </v-col>
       </v-row>
     </v-card-text>
-
-    <v-card-text> </v-card-text>
   </v-card>
 </template>
 
