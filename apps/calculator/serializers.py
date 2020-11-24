@@ -155,26 +155,24 @@ class CalculatorSerializer(serializers.ModelSerializer):
         current_price = Value(new_current_price or data["current_price"], output_field=models.FloatField())
         reactive = Value(data.get("reactive", 0), output_field=models.FloatField())
 
-        offers = Offer.objects.all()
+        offers = Offer.objects.exclude(company=data["company"])
+        many = True
         if data.get("id"):
+            many = False
             offers = offers.filter(id=data.get("id"))
 
-        qs = (
-            offers.filter(
-                Q(
-                    Q(consumption_max__isnull=True) | Q(consumption_max__gte=annual_consumption),
-                    Q(consumption_min__isnull=True) | Q(consumption_min__lte=annual_consumption),
-                ),
-                active=True,
-                client_type=data["client_type"],
-                tarif=data["tarif"],
-                kind=kind,
-            )
-            .exclude(company=data["company"])
-            .annotate(
-                st_c1=F("c1") * Value(c1),
-                st_p1=F("p1") * Value(p1) * Value(data["period"]),
-            )
+        qs = offers.filter(
+            Q(
+                Q(consumption_max__isnull=True) | Q(consumption_max__gte=annual_consumption),
+                Q(consumption_min__isnull=True) | Q(consumption_min__lte=annual_consumption),
+            ),
+            active=True,
+            client_type=data["client_type"],
+            tarif=data["tarif"],
+            kind=kind,
+        ).annotate(
+            st_c1=F("c1") * Value(c1),
+            st_p1=F("p1") * Value(p1) * Value(data["period"]),
         )
         if is_luz:
             qs = (
@@ -228,7 +226,6 @@ class CalculatorSerializer(serializers.ModelSerializer):
         offers_count = qs.count()
         if offers_count == 0:
             return []
-        many = offers_count > 1
         tax_percent = calculator_settings.tax if is_luz else calculator_settings.carbon_tax
         tax_percent = round(tax_percent * 100, 2)
         return CalculatorSerializer(
