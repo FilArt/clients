@@ -205,11 +205,8 @@
         <td>
             <table>
                 <tbody>
-                <tr style="height: 1px">
-                    <td style="
-                          height: 1px;
-                          background-color: rgb(255, 255, 255);
-                        ">
+                <tr>
+                    <td>
                         <table style="width: 100%">
                             <tbody>
                             <tr>
@@ -219,10 +216,6 @@
                                 <td style="font-size: 14px; color: darkgreen">
                                     PROPUESTA DE FACTURACION
                                 </td>
-                            </tr>
-
-                            <tr>
-                                <td></td>
                             </tr>
 
                             <tr>
@@ -252,218 +245,161 @@
                         <table>
                             <tbody>
                             <tr>
-                                <td style="
-                                              width: 7.6067%;
-                                              color: rgb(0, 70, 128);
-                                              font-size: 11px;
-                                              text-align: center;"
-                                >
-                                    <u><em>T. Fijo</em></u>
-                                </td>
-                                <td style="width: 7.7922%">
-                                    {% if new.kind == 'luz' %}
-                                        <div style="
-                                    text-align: center;
-                                    font-size: 11px;
-                                    color: rgb(0, 70, 128);
-                                  ">
-                                            <u><em>Potencia</em></u>
-                                        </div>
-                                    {% endif %}
-                                </td>
-                                <td style="width: 7.9777%">
-                                    <u><em>x Días</em></u>
-                                </td>
-
-                                <td style="width: 12.0594%">
-                                    <u><em>x €/kW Día</em></u>
-                                </td>
-                                <td style="width: 11.1317%">
-                                    <u><em>TOTALES</em></u>
-                                </td>
-
-                                <td rowspan="7" style="width: 5.5659%">
-                                </td>
                                 <td>
                                     <u><em>T. Fijo</em></u>
                                 </td>
-                                <td style="width: 8.7199%">
+                                <td>
                                     {% if new.kind == 'luz' %}
-                                        <div style="text-align: center">
-                                  <span style="font-size: 14px"
-                                  ><span style="font-size: 11px"
-                                  ><span
-                                          style="
-                                          color: rgb(0, 70, 128);
-                                        "
-                                  ><span
-                                          style="
-                                            color: rgb(0, 70, 128);
-                                          "
-                                  ><u><em>Potencia</em></u>
-                                        </span></span
-                                  ></span
-                                  ></span
-                                  >
-                                        </div>
+                                        <u><em>Potencia</em></u>
                                     {% endif %}
                                 </td>
-                                <td style="width: 7.4212%">
-                                    <div style="text-align: center">
-                                  <span style="font-size: 14px"
-                                  ><span style="font-size: 11px"
-                                  ><span
-                                          style="
-                                          color: rgb(0, 70, 128);
-                                        "
-                                  ><span
-                                          style="
-                                            color: rgb(0, 70, 128);
-                                          "
-                                  ><u
-                                  ><em
-                                  ><em
-                                  ><em
-                                  ><em
-                                  ><em
-                                  >x Días</em
-                                  ></em
-                                  ></em
-                                  ></em
-                                  ></em
-                                  ></u
-                                  ></span
-                                  ></span
-                                  ></span
-                                  ></span
-                                  >
-                                    </div>
+                                <td>
+                                    <u><em>x Días</em></u>
                                 </td>
-                                <td style="width: 12.2448%">
+
+                                <td>
                                     <u><em>x €/kW Día</em></u>
                                 </td>
-                                <td style="width: 10.0186%">
+                                <td>
+                                    <u><em style="margin-right: 2em">TOTALES</em></u>
+                                </td>
+
+                                <td>
+                                    <u><em>T. Fijo</em></u>
+                                </td>
+                                <td>
+                                    {% if new.kind == 'luz' %}
+                                        <u><em>Potencia</em></u>
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    <u><em>x Días</em></u>
+                                </td>
+                                <td>
+                                    <u><em>x €/kW Día</em></u>
+                                </td>
+                                <td>
                                     <u><em>TOTALES</em></u>
                                 </td>
                             </tr>
                             <tr>
-                                <td style="width: 7.6067%">
+                                <td>
                                     {% if new.kind == 'luz' %}P1:{% endif %}
                                 </td>
-                                <td style="width: 7.7922%">
+                                <td>
                                     {% if new.kind == 'luz' %}{{ old.p1 }}{% endif %}
                                 </td>
-                                <td style="width: 7.9777%">
+                                <td>
                                     {{ period }}
                                 </td>
-                                <td style="width: 12.0594%">
+                                <td>
                                     {{ old.p1_offer }}
                                 </td>
-                                <td style="width: 11.1317%">
+                                <td>
                                     {{ old.st_p1 }} €
                                 </td>
 
-                                <td style="width: 9.462%">
+                                <td>
                                     {% if new.kind == 'luz' %}P1:{% endif %}
                                 </td>
-                                <td style="width: 8.7199%">
+                                <td>
                                     {% if new.kind == 'luz' %}{{ old.p1 }}{% endif %}
                                 </td>
-                                <td style="width: 7.4212%">
+                                <td>
                                     {{ period }}
                                 </td>
-                                <td style="width: 12.2448%">
+                                <td>
                                     {{ new.p1 }}
                                 </td>
-                                <td style="width: 10.0186%">
+                                <td>
                                     {{ new.st_p1 }} €
                                 </td>
                             </tr>
                             {% if old.p2 != '-' %}
                                 <tr>
-                                    <td style="width: 7.6067%">
+                                    <td>
                                         P2:
                                     </td>
-                                    <td style="width: 7.7922%">
+                                    <td>
                                         {{ old.p2 }}
                                     </td>
-                                    <td style="width: 7.9777%">
+                                    <td>
                                         {{ period }}
                                     </td>
-                                    <td style="width: 12.0594%">
+                                    <td>
                                         {{ old.p2_offer }}
                                     </td>
-                                    <td style="width: 11.1317%">
+                                    <td>
                                         {{ old.st_p2 }} €
                                     </td>
-                                    <td style="width: 9.462%">
+
+                                    <td>
                                         P2:
                                     </td>
-                                    <td style="width: 8.7199%">
+                                    <td>
                                         {{ old.p2 }}
                                     </td>
-                                    <td style="width: 7.4212%">
+                                    <td>
                                         {{ period }}
                                     </td>
-                                    <td style="width: 12.2448%">
+                                    <td>
                                         {{ new.p2 }}
                                     </td>
-                                    <td style="width: 10.0186%">
+                                    <td>
                                         {{ new.st_p2 }} €
                                     </td>
                                 </tr>
                             {% endif %}
                             {% if old.p3 != '-' %}
                                 <tr>
-                                    <td style="width: 7.6067%">
+                                    <td>
                                         P3:
                                     </td>
-                                    <td style="width: 7.7922%">
+                                    <td>
                                         {{ old.p3 }}
                                     </td>
-                                    <td style="width: 7.9777%">
+                                    <td>
                                         {{ period }}
                                     </td>
-                                    <td style="width: 12.0594%">
+                                    <td>
                                         {{ old.p3_offer }}
                                     </td>
-                                    <td style="width: 11.1317%">
+                                    <td>
                                         {{ old.st_p3 }} €
                                     </td>
-                                    <td style="width: 9.462%">
+
+                                    <td>
                                         P3:
                                     </td>
-                                    <td style="width: 8.7199%">
+                                    <td>
                                         {{ old.p3 }}
                                     </td>
-                                    <td style="width: 7.4212%">
+                                    <td>
                                         {{ period }}
                                     </td>
-                                    <td style="width: 12.2448%">
+                                    <td>
                                         {{ new.p3 }}
                                     </td>
-                                    <td style="width: 10.0186%">
+                                    <td>
                                         {{ new.st_p3 }} €
                                     </td>
                                 </tr>
                             {% endif %}
                             <tr>
-                                <td colspan="3" style="width: 23.3766%">
-                                    <br/>
+                                <td colspan="3">
                                 </td>
-                                <td style="width: 10.3896%">
+                                <td>
                                     SUMAS
                                 </td>
-                                <td style="width: 11.1317%">
+                                <td>
                                     <strong>{{ old.st_p }} €</strong>
                                 </td>
-                                <td colspan="3" style="width: 25.603%">
-                                    <br/>
+                                <td colspan="3">
                                 </td>
-                                <td style="width: 12.2449%">
+                                <td>
                                     SUMAS
                                 </td>
-                                <td style="width: 10.0186%">
+                                <td>
                                     <strong>{{ new.st_p }} €</strong>
                                 </td>
                             </tr>
@@ -491,7 +427,7 @@
                                     <u><em>x €/kWh</em></u>
                                 </td>
                                 <td style="width: 12.8015%">
-                                    <u><em>TOTALES</em></u>
+                                    <u><em style="margin-right: 2em;">TOTALES</em></u>
                                 </td>
                                 <td rowspan="7" style="width: 5.5659%">
                                 </td>
@@ -620,12 +556,7 @@
                 </tr>
                 <tr>
                     <td>
-                        <br/>
-                    </td>
-                </tr>
-                <tr>
-                    <td>
-                        <br/>
+                        <br>
                     </td>
                 </tr>
                 <tr>
@@ -640,23 +571,19 @@
                                         {% endif %}
                                     </td>
                                     <td></td>
-                                    <td style="width: 12.2449%">
+                                    <td>
                                         {% if new.reactive %}
                                             {{ new.reactive }} €
                                         {% endif %}
                                     </td>
-                                    <td rowspan="7" style="width: 5.9369%">
-                                        <br/>
-                                    </td>
-                                    <td style="width: 24.4898%">
+                                    <td></td>
+                                    <td>
                                         {% if new.reactive %}
                                             <em>ENERGIA REACTIVA:</em>
                                         {% endif %}
                                     </td>
-                                    <td style="width: 11.6883%">
-                                        <br/>
-                                    </td>
-                                    <td style="width: 11.5028%">
+                                <td></td>
+                                    <td>
                                         {% if new.reactive %}
                                             {{ new.reactive }} €
                                         {% endif %}
@@ -664,184 +591,162 @@
                                 </tr>
                             {% endif %}
                             <tr>
-                                <td style="width: 25.7885%">
+                                <td>
                                     <em>ALQUILER EQUIPOS:</em>
                                 </td>
-                                <td style="width: 8.1633%">
-                                    <br/>
-                                </td>
-                                <td style="width: 12.2449%">
+
+                                <td></td>
+
+                                <td>
                                     {{ old.rental }} €
                                 </td>
-                                <td style="width: 24.4898%">
+
+                                <td style="width: 2em"></td>
+
+                                <td>
                                     <em>ALQUILER EQUIPOS:</em>
                                 </td>
-                                <td style="width: 11.6883%">
-                                    <br/>
-                                </td>
-                                <td style="width: 11.5028%">
+
+                                <td></td>
+
+                                <td>
                                     {{ new.rental }} €
                                 </td>
                             </tr>
                             <tr>
-                                <td style="width: 25.7885%">
-                                    <em>{% if new.kind == 'luz' %}IMP. ELECTRICIDAD:{% else %}
-                                        IMP. HIDROCARBUROS{% endif %}</em>
+                                <td>
+                                    <em>{% if new.kind == 'luz' %}IMP. ELECTRICIDAD:{% else %} IMP.
+                                        HIDROCARBUROS{% endif %}</em>
                                 </td>
-                                <td style="width: 8.1633%"></td>
-                                <td style="width: 12.2449%">
+
+                                <td></td>
+
+                                <td>
                                     {{ old.tax }} €
                                 </td>
-                                <td style="width: 24.4898%">
+
+                                <td></td>
+
+                                <td>
                                     <em>{% if new.kind == 'luz' %}IMP. ELECTRICIDAD:{% else %}
-                                        IMP. HIDROCARBUROS{% endif %}</em>
+                                        IMP. HIDROCARBUROS{% endif %}</em> ({{ new.tax.percent }}%)
                                 </td>
-                                <td style="width: 11.6883%">
-                                    <div style="text-align: center">
-                                        {{ new.tax.percent }}%
-                                    </div>
-                                </td>
-                                <td style="width: 11.5028%">
+
+                                <td></td>
+
+                                <td>
                                     {{ new.tax.value }} €
                                 </td>
                             </tr>
                             {% if old.otros %}
-                            <tr>
-                                <td style="width: 25.7885%">
-                                    <em>OTROS:</em>
-                                </td>
-                                <td style="width: 8.1633%">
-                                    <br/>
-                                </td>
-                                <td style="width: 12.2449%">
-                                    {{ old.otros }} €
-                                </td>
-                                <td style="width: 24.4898%">
-                                    <em>OTROS:</em>
-                                </td>
-                                <td style="width: 11.6883%">
-                                    <br/>
-                                </td>
-                                <td style="width: 11.5028%">
-                                    - €
-                                </td>
-                            </tr>
+                                <tr>
+                                    <td>
+                                        <em>OTROS:</em>
+                                    </td>
+                                    <td></td>
+                                    <td>
+                                        {{ old.otros }} €
+                                    </td>
+                                    <td></td>
+                                    <td>
+                                        <em>OTROS:</em>
+                                    </td>
+                                    <td></td>
+                                    <td>
+                                        - €
+                                    </td>
+                                </tr>
                             {% endif %}
                             <tr>
-                                <td style="width: 25.7885%">
-                                    <br>
+                                <td>
                                     <em>OTROS CONCEPTOS:</em>
                                 </td>
-                                <td style="width: 8.1633%">
-                                    <br/>
-                                </td>
-                                <td style="width: 12.2449%">
-                                    <br>
+                                <td></td>
+                                <td>
                                     {{ old.oc }} €
                                 </td>
-                                <td style="width: 24.4898%">
-                                    <br>
+                                <td></td>
+                                <td>
                                     <em>OTROS CONCEPTOS:</em>
                                 </td>
-                                <td style="width: 11.6883%">
-                                    <br/>
-                                </td>
-                                <td style="width: 11.5028%">
-                                    <br>
+                                <td></td>
+                                <td>
                                     {{ new.oc }} €
                                 </td>
                             </tr>
                             {% if old.descuento %}
-                            <tr>
-                                <td style="width: 25.7885%">
-                                    <em>DESCUENTO:</em>
-                                </td>
-                                <td style="width: 8.1633%">
-                                </td>
-                                <td style="width: 12.2449%">
-                                    {{ old.descuento }} €
-                                </td>
-                                <td style="width: 24.4898%">
-                                    <em>DESCUENTO:</em>
-                                </td>
-                                <td style="width: 11.6883%">
-                                </td>
-                                <td style="width: 11.5028%">
-                                    - €
-                                </td>
-                            </tr>
+                                <tr>
+                                    <td>
+                                        <em>DESCUENTO:</em>
+                                    </td>
+                                    <td></td>
+                                    <td>
+                                        {{ old.descuento }} €
+                                    </td>
+                                    <td></td>
+                                    <td>
+                                        <em>DESCUENTO:</em>
+                                    </td>
+                                    <td></td>
+                                    <td>
+                                        - €
+                                    </td>
+                                </tr>
                             {% endif %}
                             <tr>
-                                <td style="width: 25.7885%">
+                                <td>
                                     <em>BASE IMPONIBLE:</em>
                                 </td>
-                                <td style="width: 8.1633%">
-                                    <br/>
-                                </td>
-                                <td style="width: 12.2449%">
+                                <td></td>
+                                <td>
                                     {{ old.bi }} €
                                 </td>
-                                <td style="width: 24.4898%">
+                                <td></td>
+                                <td>
                                     <em>BASE IMPONIBLE:</em>
                                 </td>
-                                <td style="width: 11.6883%">
-                                    <br/>
-                                </td>
-                                <td style="width: 11.5028%">
+                                <td></td>
+                                <td>
                                     {{ new.bi }} €
                                 </td>
                             </tr>
                             <tr>
-                                <td style="width: 25.7885%">
+                                <td>
                                     {% if old.igic == 'true' %}
                                         <em>IGIC:</em>
                                     {% else %}
                                         <em>I.V.A:</em>
                                     {% endif %}
+
+                                    {% if old.iva.percent %}
+                                        ({{ old.iva.percent }} %)
+                                    {% endif %}
+
                                 </td>
-                                <td style="width: 8.1633%">
-                                    <div style="text-align: center">
-                                        {{ old.iva.percent }} %
-                                    </div>
-                                </td>
-                                <td style="width: 12.2449%">
+
+                                <td></td>
+
+                                <td>
                                     {{ old.iva.value }} €
                                 </td>
-                                <td><br></td>
-                                <td style="width: 24.4898%">
-                                    {% if old.igic == 'true' %}
-                                        <em>IGIC:</em>
-                                    {% else %}
-                                        <em>I.V.A:</em>
-                                    {% endif %}
+
+                                <td></td>
+                                <td>
+                                    <em>
+
+                                        {% if old.igic == 'true' %}
+                                            IGIC
+                                        {% else %}
+                                            I.V.A
+                                        {% endif %}
+                                        ({{ new.iva.percent }}):
+                                    </em>
                                 </td>
-                                <td style="width: 11.6883%">
-                                    <div style="text-align: center">
-                                        {{ new.iva.percent }}
-                                    </div>
-                                </td>
-                                <td style="width: 11.5028%">
+
+                                <td></td>
+
+                                <td>
                                     {{ new.iva.value }} €
-                                </td>
-                            </tr>
-                            <tr>
-                                <td style="width: 25.7885%">
-                                    <br/>
-                                </td>
-                                <td style="width: 8.1633%">
-                                    <br/>
-                                </td>
-                                <td style="width: 12.2449%">
-                                    <br/>
-                                </td>
-                                <td style="width: 24.4898%">
-                                    <br/>
-                                </td>
-                                <td style="width: 11.6883%">
-                                    <br/>
-                                </td>
-                                <td style="width: 11.5028%">
-                                    <br/>
                                 </td>
                             </tr>
                             </tbody>
@@ -850,6 +755,7 @@
                 </tr>
                 </tbody>
             </table>
+
             <table style="table-layout: fixed">
                 <tbody>
                 <tr>
