@@ -565,6 +565,7 @@
                             <tbody class="left-text">
                             {% if new.kind == 'luz' %}
                                 <tr>
+                                <td style="width: 3em;"></td>
                                     <td>
                                         {% if new.reactive %}
                                             <em>ENERGIA REACTIVA:</em>
@@ -591,6 +592,7 @@
                                 </tr>
                             {% endif %}
                             <tr>
+                                <td></td>
                                 <td>
                                     <em>ALQUILER EQUIPOS:</em>
                                 </td>
@@ -614,6 +616,7 @@
                                 </td>
                             </tr>
                             <tr>
+                                <td></td>
                                 <td>
                                     <em>{% if new.kind == 'luz' %}IMP. ELECTRICIDAD:{% else %} IMP.
                                         HIDROCARBUROS{% endif %}</em>
@@ -640,6 +643,7 @@
                             </tr>
                             {% if old.otros %}
                                 <tr>
+                                <td></td>
                                     <td>
                                         <em>OTROS:</em>
                                     </td>
@@ -658,6 +662,7 @@
                                 </tr>
                             {% endif %}
                             <tr>
+                                <td></td>
                                 <td>
                                     <em>OTROS CONCEPTOS:</em>
                                 </td>
@@ -676,6 +681,7 @@
                             </tr>
                             {% if old.descuento %}
                                 <tr>
+                                <td></td>
                                     <td>
                                         <em>DESCUENTO:</em>
                                     </td>
@@ -694,6 +700,7 @@
                                 </tr>
                             {% endif %}
                             <tr>
+                                <td></td>
                                 <td>
                                     <em>BASE IMPONIBLE:</em>
                                 </td>
@@ -711,6 +718,7 @@
                                 </td>
                             </tr>
                             <tr>
+                                <td></td>
                                 <td>
                                     {% if old.igic == 'true' %}
                                         <em>IGIC:</em>
@@ -765,21 +773,15 @@
                 </tr>
                 </tbody>
             </table>
-            <table>
-                <tbody>
-                <tr>
-                    <td style="font-size: 14px">
+            <div style="display: flex; align-content: center; justify-content: space-around">
+                    <span style="font-size: 14px">
                         <strong style="color: red;">TOTAL:</strong> {{ old.total }} €
-                    </td>
+                    </span>
 
-                    <td style="width: 50px"></td>
-
-                    <td style="font-size: 14px;">
+                    <span style="font-size: 14px;">
                         <strong style="color: darkgreen">TOTAL:</strong> {{ new.total }} €
-                    </td>
-                </tr>
-                </tbody>
-            </table>
+                    </span>
+            </div>
         </td>
     </tr>
     </tbody>
