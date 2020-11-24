@@ -70,8 +70,10 @@ class SendOfferView(LoggingMixin, views.APIView):
                 old["iva"] = {"value": round(iva, 2), "percent": old["iva"]}
                 old["total"] = round(iva + old["total"], 2)
 
-        calculated = serializer.get_calculated(new_current_price=old["total"])
-        old["total"] = old["total"] or calculated["current_price"]
+        # calculated = serializer.get_calculated(new_current_price=old["total"])
+        # old["total"] = old["total"] or calculated["current_price"]
+        calculated = serializer.get_calculated()
+        old["total"] = calculated["current_price"]
 
         for n in ("st_c", "st_p", "oc"):
             old[n] = round(old[n], 2)
