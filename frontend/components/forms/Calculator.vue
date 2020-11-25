@@ -180,16 +180,6 @@
           <v-row v-else>
             <v-col>
               <v-text-field
-                label="Potencia"
-                suffix="kW"
-                dense
-                :value="form.p1"
-                :error-messages="errorMessages.p1"
-                @input="updateForm('p1', $event)"
-              />
-            </v-col>
-            <v-col>
-              <v-text-field
                 label="Consumo"
                 suffix="kW/h"
                 dense
