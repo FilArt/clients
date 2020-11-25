@@ -4,7 +4,7 @@ if (!document.location.href.includes('nosupport')) {
     text: 'Soporte',
     background: '#ff0000',
     color: '#ffffff',
-    fontSize: '16px',
+    fontSize: '9px',
     borderRadius: 5,
     buttonSide: 'right',
     buttonAlign: 'center',
