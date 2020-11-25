@@ -1,7 +1,7 @@
 <template>
   <v-autocomplete
     v-model="tarif"
-    :items="gas ? tarifsGas : tarifs"
+    :items="all ? tarifs.concat(tarifsGas) : gas ? tarifsGas : tarifs"
     :error-messages="errorMessages"
     label="Tarifa"
     style="min-width: 50px"
@@ -30,6 +30,10 @@ import constants from '@/lib/constants'
 export default {
   name: 'TarifSelect',
   props: {
+    all: {
+      type: Boolean,
+      default: false,
+    },
     gas: {
       type: Boolean,
       default: false,

@@ -6,7 +6,7 @@
         <company-select v-model="company" />
       </v-col>
       <v-col>
-        <tarif-select v-model="tarif" :gas="newOffer && newOffer.kind === 'gas'" />
+        <tarif-select v-model="tarif" all />
       </v-col>
       <v-col>
         <client-type-select v-model="clientType" />
