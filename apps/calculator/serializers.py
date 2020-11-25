@@ -172,7 +172,6 @@ class CalculatorSerializer(serializers.ModelSerializer):
             kind=kind,
         ).annotate(
             st_c1=F("c1") * Value(c1),
-            st_p1=F("p1") * Value(p1) * Value(data["period"]),
         )
         if is_luz:
             qs = (
@@ -183,6 +182,7 @@ class CalculatorSerializer(serializers.ModelSerializer):
                     )
                 )
                 .annotate(
+                    st_p1=F("p1") * Value(p1) * Value(data["period"]),
                     st_c2=F("c2") * Value(c2),
                     st_c3=F("c3") * Value(c3),
                     st_p2=F("p2") * Value(p2) * Value(data["period"]),
@@ -192,6 +192,7 @@ class CalculatorSerializer(serializers.ModelSerializer):
             )
         else:
             qs = qs.annotate(
+                st_p1=F("p1") * Value(data["period"]),
                 st_c2=zero,
                 st_c3=zero,
                 st_p2=zero,
