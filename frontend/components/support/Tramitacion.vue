@@ -1,7 +1,5 @@
 <template>
-  <div v-if="bid">
-    <snack-bar-it :noty-key="notificationKey" />
-
+  <div v-if="bidId && bid">
     <v-dialog v-model="tramitateDialog" max-width="500">
       <v-card>
         <v-row align="center">
@@ -140,10 +138,7 @@
               :current-canal-commission="parseFloat(bid.canal_commission)"
               :is-canal-paid="bid.canal_paid"
               :is-responsible-paid="bid.paid"
-              @paid="
-                notificationKey += 1
-                $emit('tramitate')
-              "
+              @paid="$emit('tramitate')"
             />
           </v-col>
         </v-row>
@@ -199,13 +194,8 @@ export default {
     PuntosList: () => import('@/components/puntos/PuntosList'),
     detailOffer: () => import('@/components/detailOffer'),
     HistoryList: () => import('@/components/history/HistoryList'),
-    SnackBarIt: () => import('@/components/snackbar/SnackBarIt'),
   },
   props: {
-    bidId: {
-      type: Number,
-      default: null,
-    },
     facturacion: {
       type: Boolean,
       default: false,
@@ -271,7 +261,6 @@ export default {
           },
         ],
       },
-      notificationKey: 0,
       bidErrors: {},
       tramitateDialog: false,
       message: '',
@@ -279,13 +268,19 @@ export default {
       modeTramitacion: !this.facturacion,
     }
   },
+  computed: {
+    bidId() {
+      const { bid_id } = this.$route.query
+      return bid_id
+    },
+  },
   watch: {
     async bidId() {
       await this.refresh()
     },
   },
   async mounted() {
-    await this.refresh()
+    if (this.bidId) await this.refresh()
   },
   methods: {
     async refresh() {
@@ -321,7 +316,7 @@ export default {
         })
         this.$emit('tramitate')
         await this.fetchLastComments()
-        this.notificationKey += 1
+        this.$toast.global.done()
         this.tramitateDialog = false
         this.message = this.internalMessage = null
       } catch (e) {

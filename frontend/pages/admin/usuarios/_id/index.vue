@@ -1,7 +1,5 @@
 <template>
   <v-card flat>
-    <snack-bar-it :noty-key="notificationKey" />
-
     <v-toolbar dense>
       <v-toolbar-title>
         <v-btn icon color="error" @click="$router.back()">
@@ -152,7 +150,6 @@ export default {
   components: {
     ItemGrouper,
     PhoneField,
-    SnackBarIt: () => import('@/components/snackbar/SnackBarIt'),
     AgentsList: () => import('@/components/selects/AgentsList'),
   },
   async asyncData({ params, $axios }) {
@@ -168,7 +165,6 @@ export default {
   data() {
     return {
       groups: [],
-      notificationKey: 0,
       errorMessages: {},
     }
   },
@@ -202,7 +198,7 @@ export default {
         .then((user) => {
           this.user = user
           this.settings = { ...user }
-          this.notificationKey += 1
+          this.$toast.global.done()
         })
         .catch((e) => (this.errorMessages = e.response.data))
     },

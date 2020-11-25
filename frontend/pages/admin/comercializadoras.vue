@@ -1,7 +1,5 @@
 <template>
   <v-card>
-    <snack-bar-it :noty-key="notificationKey" />
-
     <v-toolbar>
       <v-toolbar-title>
         <v-btn icon color="error" @click="$router.back()">
@@ -27,15 +25,12 @@
 </template>
 
 <script>
-import SnackBarIt from '@/components/snackbar/SnackBarIt'
 export default {
-  components: { SnackBarIt },
   data() {
     return {
       companies: [],
       errorMessages: {},
       loading: false,
-      notificationKey: 0,
     }
   },
   async mounted() {
@@ -49,8 +44,8 @@ export default {
       this.loading = true
       try {
         await this.$axios.$patch(`calculator/companies/${id}/`, data)
-        this.notificationKey++
         await this.refresh()
+        this.$toast.global.done()
       } catch (e) {
         this.errorMessages = e.reponse.data
       } finally {

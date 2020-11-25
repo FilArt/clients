@@ -1,8 +1,6 @@
 <template>
   <v-container>
     <v-row justify="space-around">
-      <snack-bar-it :noty-key="notificationKey" />
-
       <v-col cols="12" lg="5" class="pa-0 ma-0">
         <v-toolbar short dense>
           <v-spacer />
@@ -99,9 +97,6 @@ import { format, parseISO, parse } from 'date-fns'
 const DATE_FORMAT = 'dd/MM/yyyy HH:mm'
 export default {
   name: 'UserDetailData',
-  components: {
-    SnackBarIt: () => import('@/components/snackbar/SnackBarIt'),
-  },
   props: {
     userId: {
       type: [Number, String],
@@ -117,7 +112,6 @@ export default {
       user: {},
       responsible: null,
       source: null,
-      notificationKey: 0,
       phone: null,
     }
   },
@@ -210,9 +204,6 @@ export default {
     unformatDate(maybeDate) {
       return maybeDate ? parse(maybeDate, DATE_FORMAT, new Date()).toISOString() : null
     },
-    notify() {
-      this.notificationKey += 1
-    },
     formatDate(dt) {
       if (!dt) return
       try {
@@ -224,7 +215,7 @@ export default {
     async updateUser(field, value) {
       try {
         const user = await this.$axios.$patch(`users/users/${this.userId}/`, { [field]: value })
-        this.notify()
+        this.$toast.global.done()
         this.$emit('user-updated', user)
       } catch (e1) {
         try {

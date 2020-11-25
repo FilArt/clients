@@ -72,6 +72,7 @@ export default {
     ],
     'nuxt-compress',
     ['nuxt-highcharts', { exporting: true }],
+    '@nuxtjs/toast',
   ],
   /*
    ** Axios module configuration
@@ -144,6 +145,17 @@ export default {
         },
       },
     },
+  },
+  toast: {
+    position: 'bottom-right',
+    duration: 2500,
+    register: [
+      {
+        name: 'done',
+        message: '¡Hecho!',
+        options: { type: 'success' },
+      },
+    ],
   },
   /*
    ** Build configuration
