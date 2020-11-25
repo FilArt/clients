@@ -1,18 +1,13 @@
 <template>
   <v-row class="flex-wrap" align="top" justify="center">
     <v-col class="flex-grow-0">
-      <solicitudes-bar
-        :user-id="user.id"
-        :bids="user.bids"
-        @bid-added="$emit('bid-added')"
-        @chosen="chosenBid = $event"
-      />
+      <solicitudes-bar :user-id="user.id" :bids="user.bids" @bid-added="$emit('bid-added')" />
     </v-col>
 
-    <v-col v-if="chosenBid" class="flex-grow-1">
+    <v-col class="flex-grow-1">
       <v-card>
         <v-card-text>
-          <tramitacion :bid-id="chosenBid" :facturacion="facturacion" @tramitate="$emit('tramitate')" />
+          <tramitacion :facturacion="facturacion" @tramitate="$emit('tramitate')" />
         </v-card-text>
       </v-card>
     </v-col>
@@ -35,11 +30,6 @@ export default {
       type: Boolean,
       default: false,
     },
-  },
-  data() {
-    return {
-      chosenBid: null,
-    }
   },
 }
 </script>

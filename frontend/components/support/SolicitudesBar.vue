@@ -11,7 +11,7 @@
         <v-divider />
 
         <v-list dense nav>
-          <v-list-item v-for="bid in bids" :key="bid.id" @click="$emit('chosen', bid.id)">
+          <v-list-item v-for="bid in bids" :key="bid.id" nuxt :to="getNewUrl(bid.id)">
             <v-icon v-if="bid.offer_kind === 'luz'" color="warning">mdi-flash</v-icon>
             <v-icon v-else color="blue">mdi-fire</v-icon>
             <v-list-item-title>
@@ -65,6 +65,20 @@ export default {
     return {
       addNewBidDialog: false,
     }
+  },
+  methods: {
+    getNewUrl(bidId) {
+      const params = { ...this.$route.query, bid_id: bidId }
+      return (
+        this.$route.path +
+        '?' +
+        Object.keys(params)
+          .map((key) => {
+            return encodeURIComponent(key) + '=' + encodeURIComponent(params[key])
+          })
+          .join('&')
+      )
+    },
   },
 }
 </script>
