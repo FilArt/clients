@@ -1,4 +1,5 @@
 import os
+import shutil
 from functools import reduce
 from operator import mul
 
@@ -6,6 +7,7 @@ import pdfkit
 from django.conf import settings
 from django.contrib.auth.models import AnonymousUser
 from django.core.mail import EmailMessage
+from django.http import HttpResponse
 from django.shortcuts import render
 from django.template.loader import render_to_string
 from django.utils import timezone
@@ -144,28 +146,40 @@ class SendOfferView(LoggingMixin, views.APIView):
 
         email_to = serializer.validated_data.get("email_to")
         agent_email = old.get("agent_email", request.user.email if hasattr(request.user, "email") else None)
-        if "send" in request.query_params and email_to:
-            subject = "Estudio comparativo"
+        response = None
+
+        if "send" in request.query_params or "download" in request.query_params:
             html_message = render_to_string("mails/new_offer.html", context=ctx)
-            plain_message = subject  # strip_tags(html_message)
-            filepath = f'/tmp/{calculated["id"]}.html'
+            dt = timezone.now().strftime("%d_%m_%Y_%H_%M")
+            filename = f'{dt}_{calculated["id"]}.html'
+            filepath = f"/tmp/{filename}"
             with open(filepath, "w") as f:
                 f.write(html_message)
 
             pdf_path = filepath.replace("html", "pdf")
             pdfkit.from_file(f.name, pdf_path)
 
-            email = EmailMessage(
-                subject,
-                plain_message,
-                settings.EMAIL_HOST_USER,
-                [email_to],
-                cc=[agent_email],
-            )
-            email.attach_file(pdf_path)
-            email.send()
+            if "send" in request.query_params and email_to:
+                subject = "Estudio comparativo"
+                plain_message = subject  # strip_tags(html_message)
+
+                email = EmailMessage(
+                    subject,
+                    plain_message,
+                    settings.EMAIL_HOST_USER,
+                    [email_to],
+                    cc=[agent_email],
+                )
+                email.attach_file(pdf_path)
+                email.send()
+                response = HttpResponse("OK")
+
+            elif "download" in request.query_params:
+                pdf_name = filename.replace("html", "pdf")
+                new_pdf_path = os.path.join(settings.MEDIA_ROOT, pdf_name)
+                shutil.move(pdf_path, new_pdf_path)
+                response = HttpResponse(new_pdf_path)
 
             os.remove(filepath)
-            os.remove(pdf_path)
 
-        return render(request, "mails/new_offer.html", context=ctx)
+        return response or render(request, "mails/new_offer.html", context=ctx)

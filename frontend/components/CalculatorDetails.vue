@@ -2,11 +2,24 @@
   <v-card elevation="0">
     <v-card-actions>
       <v-spacer />
-      <v-btn style="margin-right: 7em" color="success" :disabled="loading" rounded @click="getDetails">
+      <v-btn style="margin-right: 7em" color="success" :disabled="loading || downloading" rounded @click="getDetails">
         <v-icon>mdi-refresh</v-icon>
       </v-btn>
-      <v-btn color="warning" :loading="loading" rounded x-large @click="send">
+      <v-btn color="warning" :disabled="downloading" :loading="loading" rounded x-large @click="send(false)">
         <v-icon>mdi-email-send</v-icon>
+      </v-btn>
+      <v-btn
+        target="_blank"
+        :href="downloadURL"
+        color="info"
+        :loading="downloading"
+        :disabled="loading"
+        rounded
+        x-large
+        @click="downloadURL ? (downloadURL = null) : send(true)"
+      >
+        <span v-if="downloadURL">PDF</span>
+        <v-icon v-else>mdi-download</v-icon>
       </v-btn>
     </v-card-actions>
 
@@ -113,6 +126,7 @@ export default {
     return {
       sendingEmail: false,
       loading: false,
+      downloading: false,
       htmlDetails: null,
       direccion: null,
       cups: null,
@@ -133,6 +147,7 @@ export default {
       descuento: null,
       agent,
       error: null,
+      downloadURL: null,
     }
   },
   computed: {
@@ -167,21 +182,28 @@ export default {
       this.htmlDetails = await this.$axios.$get(`calculator/new_offer/?${params}`)
       this.loading = false
     },
-    async send() {
-      if (!this.emailTo) {
+    async send(download) {
+      if (!download && !this.emailTo) {
         await this.$swal({ title: 'Entrar correo', icon: 'error' })
         return
       }
-      this.sendingEmail = true
-      this.$vuetify.goTo(0)
-      this.loading = true
+      this.sendingEmail = !download
+      await this.$vuetify.goTo(0)
+      if (download) {
+        this.downloading = true
+      } else {
+        this.loading = true
+      }
       const { params } = this.getDataAndParams()
       try {
-        await this.$axios.$get(`calculator/new_offer/?send=true&${params}`)
+        const response = await this.$axios.$get(
+          `calculator/new_offer/?${download ? 'download' : 'send'}=true&${params}`,
+        )
+        if (download) this.downloadURL = `${location.origin}/${response}`
       } catch (e) {
         await this.$swal({ title: 'Not sent!', icon: 'error', text: e.response.data })
       } finally {
-        this.loading = false
+        this.loading = this.downloading = false
       }
     },
     getDataAndParams() {

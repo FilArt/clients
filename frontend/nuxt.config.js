@@ -84,8 +84,8 @@ export default {
   },
   proxy: {
     '/api/': !DEV ? 'https://areaclientes.gestiongroup.es/' : BACKEND_HOST,
-    // '/media/': !DEV ? 'https://areaclientes.gestiongroup.es/' : BACKEND_HOST,
-    '/media/': 'https://areaclientes.gestiongroup.es/',
+    '/media/': !DEV ? 'https://areaclientes.gestiongroup.es/' : BACKEND_HOST,
+    // '/media/': 'https://areaclientes.gestiongroup.es/',
   },
   auth: {
     redirect: {
