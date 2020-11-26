@@ -478,7 +478,7 @@ export default {
         this.updateQuery({ fecha_firma__range: null })
       }
     },
-    updateQuery(options) {
+    async updateQuery(options) {
       this.query.page = 1
       Object.keys(options).forEach((key) => {
         const value = options[key]
@@ -488,8 +488,13 @@ export default {
           delete this.query[key]
         }
       })
-      this.$router.replace({ query: Object.entries(this.query).reduce((a, [k, v]) => (v ? ((a[k] = v), a) : a), {}) })
-      this.fetchUsers()
+      const q = Object.entries(this.query).filter((entry) => {
+        const value = entry[1]
+        if (value instanceof Array) return value.length
+        return !!value
+      })
+      await this.$router.replace({ query: q })
+      await this.fetchUsers()
     },
     openChat(user) {
       this.$store.dispatch('chat/fetchParticipant', {
