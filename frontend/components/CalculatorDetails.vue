@@ -12,7 +12,7 @@
 
     <v-card-text v-if="sendingEmail">
       <v-progress-linear v-if="loading" indeterminate />
-      <v-alert v-else color="success">Sent</v-alert>
+      <v-alert v-else color="success">Enviado</v-alert>
       <v-btn v-if="!loading" rounded outlined block color="#004680" @click="sendingEmail = false">
         Atrás
         <v-icon>mdi-keyboard-return</v-icon>
