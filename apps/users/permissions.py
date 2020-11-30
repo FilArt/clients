@@ -33,7 +33,7 @@ class UsersPermission(BasePermission):
             return obj.client_role != "leed"
         elif request.user.role == "agent":
             permitted_ids = (
-                obj.responsible.canal_id,
+                obj.responsible.canal_id if obj.responsible else None,
                 obj.responsible_id,
                 obj.invited_by_id,
                 obj.canal_id

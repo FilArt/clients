@@ -136,16 +136,6 @@ class UserViewSet(
         elif "status" in ordering:
             queryset = queryset.order_by("status")
 
-        user: CustomUser = self.request.user
-        if user.role == "agent":
-            agent_filters = Q(responsible_id=user.id) | Q(invited_by_id=user.id)
-            if self.detail:
-                agent_filters |= Q(responsible__canal_id=user.id)
-            elif user.agent_type == "canal":
-                agent_filters |= Q(canal_id=user.id)
-
-            queryset = queryset.filter(agent_filters)
-
         return queryset
 
     def get_serializer_class(self):
