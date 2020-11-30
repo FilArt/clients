@@ -10,5 +10,5 @@ class BidsPermission(BasePermission):
         if role in ("support", "admin"):
             return True
         elif role == "agent":
-            return obj.user.responsible == requester and view.action in ("retrieve", "history")
+            return requester in (obj.user.responsible, obj.user.responsible.canal) and view.action in ("retrieve", "history")
         return obj.user == requester

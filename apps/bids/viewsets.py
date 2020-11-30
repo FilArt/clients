@@ -1,3 +1,4 @@
+from django.db.models import Q
 from rest_framework import viewsets
 from rest_framework.decorators import action
 from rest_framework.generics import get_object_or_404
@@ -33,6 +34,8 @@ class BidViewSet(LoggingMixin, viewsets.ModelViewSet):
         if user.role in ("admin", "support"):
             return qs
         elif user.role == "agent":
+            if self.detail:
+                return qs.filter(Q(user__responsible=user) | Q(user__responsible__canal=user))
             return qs.filter(user__responsible=user)
 
         return qs.filter(user=user)
