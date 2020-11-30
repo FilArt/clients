@@ -65,7 +65,7 @@
             </v-list>
           </v-tab-item>
 
-          <v-tab-item v-if="history.length">
+          <v-tab-item>
             <history-list :history="history" />
           </v-tab-item>
 
