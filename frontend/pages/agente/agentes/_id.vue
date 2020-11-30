@@ -13,9 +13,10 @@
     <v-card-text>
       <users-table
         list-url="users/agent_clients"
+        use-full-name
+        detail-url="/agente/clientes"
         :statuses="statuses"
         :responsible="$route.params.id"
-        :detail-url="null"
         :headers="[
           {
             text: 'ID',

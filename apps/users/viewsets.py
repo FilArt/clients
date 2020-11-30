@@ -138,7 +138,9 @@ class UserViewSet(
 
         user: CustomUser = self.request.user
         if user.role == "agent":
-            if user.agent_type == "canal":
+            if self.detail:
+                queryset = queryset.filter(responsible__canal_id=user.id)
+            elif user.agent_type == "canal":
                 queryset = queryset.filter(Q(responsible_id=user.id) | Q(invited_by_id=user.id) | Q(canal_id=user.id))
             else:
                 queryset = queryset.filter(Q(responsible_id=user.id) | Q(invited_by_id=user.id))
