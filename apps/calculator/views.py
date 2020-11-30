@@ -178,7 +178,7 @@ class SendOfferView(LoggingMixin, views.APIView):
                 pdf_name = filename.replace("html", "pdf")
                 new_pdf_path = os.path.join(settings.MEDIA_ROOT, pdf_name)
                 shutil.move(pdf_path, new_pdf_path)
-                response = HttpResponse(new_pdf_path)
+                response = HttpResponse(f'media{new_pdf_path[len(settings.MEDIA_ROOT):]}')
 
             os.remove(filepath)
 
