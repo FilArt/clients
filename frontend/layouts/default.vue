@@ -2,7 +2,7 @@
   <v-app>
     <v-navigation-drawer v-if="$auth.loggedIn" v-model="drawer" fixed app clipped>
       <v-list>
-        <v-list-item v-for="(item, i) in items" :key="i" :href="item.href" :to="item.to" router exact>
+        <v-list-item v-for="(item, i) in items" :key="i" :href="item.href" :to="item.to" nuxt>
           <v-list-item-action>
             <v-icon color="primary">
               {{ item.icon }}
