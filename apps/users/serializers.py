@@ -41,6 +41,7 @@ class RegisterSerializer(serializers.ModelSerializer):
         }
 
     def save(self, **kwargs):
+        user: CustomUser = super().save(**kwargs)
         if self.tg_message:
             try:
                 notify_telegram(self.tg_message, **{**self.validated_data, **kwargs})
@@ -49,11 +50,9 @@ class RegisterSerializer(serializers.ModelSerializer):
 
         if not settings.DEBUG:
             password = BaseUserManager().make_random_password()
-            user: CustomUser = super().save()
             user.set_password(password)
             user.save(update_fields=["password"])
         else:
-            user: CustomUser = super().save()
             user.set_password("1")
             user.save(update_fields=["password"])
             return user
@@ -312,3 +311,17 @@ class NotificationSerializer(serializers.ModelSerializer):
 
     def get_author(self, noty: Notification) -> str:
         return noty.action_object.fullname if noty.action_object else "Anonymous"
+
+
+class CreateClientSerializer(RegisterSerializer):
+    class Meta:
+        model = CustomUser
+        fields = [
+            'id',
+            'email',
+            'company_name',
+            'phone',
+        ]
+        extra_kwargs = {
+            'id': {'read_only': True}
+        }

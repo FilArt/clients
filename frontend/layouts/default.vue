@@ -117,6 +117,11 @@ export default {
       } else if (role === 'agent') {
         items = items.concat([
           {
+            icon: 'mdi-account-plus',
+            title: 'NUEVO CLIENTE',
+            to: '/agente/nuevo_cliente',
+          },
+          {
             icon: 'mdi-file-document-edit',
             title: 'TRAMITACIÓN',
             to: '/agente/tramitacion',

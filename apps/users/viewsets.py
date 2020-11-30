@@ -52,7 +52,7 @@ from .serializers import (
     AgentClientsSerializer,
     CanalAgentesSerializer,
     NotificationSerializer,
-    GroupSerializer,
+    GroupSerializer, CreateClientSerializer,
 )
 
 logger = logging.getLogger(__name__)
@@ -138,12 +138,13 @@ class UserViewSet(
 
         user: CustomUser = self.request.user
         if user.role == "agent":
+            agent_filters = Q(responsible_id=user.id) | Q(invited_by_id=user.id)
             if self.detail:
-                queryset = queryset.filter(responsible__canal_id=user.id)
+                agent_filters |= Q(responsible__canal_id=user.id)
             elif user.agent_type == "canal":
-                queryset = queryset.filter(Q(responsible_id=user.id) | Q(invited_by_id=user.id) | Q(canal_id=user.id))
-            else:
-                queryset = queryset.filter(Q(responsible_id=user.id) | Q(invited_by_id=user.id))
+                agent_filters |= Q(canal_id=user.id)
+
+            queryset = queryset.filter(agent_filters)
 
         return queryset
 
@@ -449,3 +450,11 @@ class NotificationViewSet(viewsets.ModelViewSet):
 class GroupsViewSet(viewsets.ModelViewSet):
     queryset = Group.objects.all()
     serializer_class = GroupSerializer
+
+
+class CreateClientViewSet(mixins.CreateModelMixin, viewsets.GenericViewSet):
+    queryset = CustomUser.objects.all()
+    serializer_class = CreateClientSerializer
+
+    def perform_create(self, serializer):
+        serializer.save(responsible=self.request.user)

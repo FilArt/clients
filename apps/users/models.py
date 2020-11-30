@@ -6,9 +6,8 @@ from django.contrib.postgres.fields import ArrayField
 from django.core.validators import MinLengthValidator, RegexValidator
 from django.db import models
 from django.db.models.aggregates import Sum
-from django.utils.translation import pgettext_lazy
 from django.utils.translation import gettext_lazy as _
-from rest_framework.exceptions import ValidationError as DRFValError
+from django.utils.translation import pgettext_lazy
 
 from .managers import CustomUserManager
 
@@ -24,7 +23,6 @@ class MyCharField(models.CharField):
 phone_number_validator = RegexValidator(
     regex=r"^[1-9]\d{8}$", message="Utilice este formato para su número de teléfono: 999999999"
 )
-
 
 PERMISSIONS_CHOICES = (
     ("offers", _("Offers")),
@@ -93,10 +91,10 @@ class CustomUser(AbstractUser):
         models.CharField(choices=PERMISSIONS_CHOICES, max_length=30),
         default=get_default_user_permissions,
         help_text="%s %s"
-        % (
-            pgettext_lazy("help text for user permissions field", "Possible values:"),
-            ", ".join(get_default_user_permissions()),
-        ),
+                  % (
+                      pgettext_lazy("help text for user permissions field", "Possible values:"),
+                      ", ".join(get_default_user_permissions()),
+                  ),
     )
     agent_type = models.CharField(max_length=20, choices=AGENT_TYPE_CHOICES, blank=True, null=True)
     fixed_salary = models.BooleanField(blank=True, null=True)
@@ -126,7 +124,7 @@ class CustomUser(AbstractUser):
     @property
     def profile_filled(self) -> bool:
         return (self.phone or self.phone_city) and (
-            self.company_name is not None or (self.first_name is not None and self.last_name is not None)
+                self.company_name is not None or (self.first_name is not None and self.last_name is not None)
         )
 
     @cached_property

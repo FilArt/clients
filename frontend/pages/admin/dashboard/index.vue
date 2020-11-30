@@ -54,7 +54,7 @@
 <script>
 import { eachDayOfInterval, addDays, format } from 'date-fns'
 import constants from '@/lib/constants'
-import AddNewClient from '@/components/forms/AddNewUser'
+import AddNewClient from '@/components/forms/AddNewClient'
 
 export default {
   components: {

@@ -1,5 +1,4 @@
-import json
-
+import yaml
 from django.conf import settings
 from django.core import validators
 from django.db import models
@@ -17,5 +16,10 @@ def notify_telegram(premessage: str = "Nuevo usuario - ...", **kwargs):
     kwargs = {k: v for k, v in kwargs.items() if k != 'password'}
     bot = Bot(settings.TELEGRAM_TOKEN)
     chat_id = settings.TELEGRAM_CHAT_ID
-    text = f"{premessage}\n{json.dumps(kwargs, indent=4, sort_keys=True)}"
+
+    for k, v in kwargs.items():
+        if hasattr(v, 'fullname'):
+            kwargs[k] = v.fullname
+
+    text = f"{premessage}\n{yaml.dump(kwargs)}"
     bot.send_message(chat_id=chat_id, text=text, timeout=2)

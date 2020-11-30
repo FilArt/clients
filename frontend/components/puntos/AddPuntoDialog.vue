@@ -15,7 +15,7 @@
       :punto="punto"
       :bid-id="bidId"
       @close="dialog = false"
-      @punto-added="$emit('punto-added')"
+      @punto-added="$emit('punto-added', $event)"
     />
   </v-dialog>
 </template>
