@@ -1,7 +1,7 @@
 <template>
   <v-card>
     <v-card-text>
-      <add-new-client />
+      <add-new-client-dialog />
     </v-card-text>
 
     <v-card-text>
@@ -54,11 +54,11 @@
 <script>
 import { eachDayOfInterval, addDays, format } from 'date-fns'
 import constants from '@/lib/constants'
-import AddNewClient from '@/components/forms/AddNewClient'
+import AddNewClientDialog from '@/components/dialogs/AddNewClientDialog'
 
 export default {
   components: {
-    AddNewClient,
+    AddNewClientDialog,
     DateTimeFilter: () => import('~/components/DateTimeFilter'),
   },
   data() {
