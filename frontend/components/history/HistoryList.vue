@@ -16,7 +16,8 @@
         <v-card-title class="headline">
           <span>{{ story.status }}</span>
         </v-card-title>
-        <v-card-text>
+
+        <v-card-text v-if="story.message || story.internal_message">
           <p>
             {{ story.message }}
           </p>
@@ -29,8 +30,18 @@
           </div>
         </v-card-text>
 
-        <v-card-actions v-if="$auth.user.role === 'admin'">
-          <delete-button @click="deleteComment(story.id)" />
+        <v-card-actions>
+          <v-tooltip v-if="story.data" bottom>
+            <template v-slot:activator="{ on }">
+              <v-btn link target="_blank" :href="story.data.attachment" v-on="on">
+                {{ story.data.type_verbose_name }}
+                <v-icon right>mdi-open-in-new</v-icon>
+              </v-btn>
+            </template>
+            <span>{{ story.data.description }}</span>
+          </v-tooltip>
+
+          <delete-button v-else-if="$auth.user.role === 'admin'" @click="deleteComment(story.id)" />
         </v-card-actions>
       </v-card>
     </v-timeline-item>
@@ -38,6 +49,7 @@
 </template>
 <script>
 import DeleteButton from '~/components/buttons/deleteButton'
+
 export default {
   name: 'HistoryList',
   components: { DeleteButton },

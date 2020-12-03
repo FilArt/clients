@@ -3,7 +3,6 @@ import re
 from typing import Tuple
 
 from django.contrib.auth.models import Group
-from django.db.models import Q
 from drf_dynamic_fields import DynamicFieldsMixin
 from notifications.models import Notification
 from notifications.signals import notify

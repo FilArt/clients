@@ -1,3 +1,6 @@
+from operator import itemgetter
+
+import ujson
 from django.db.models import Q
 from rest_framework import viewsets
 from rest_framework.decorators import action
@@ -6,11 +9,12 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework_tracking.mixins import LoggingMixin
+from rest_framework_tracking.models import APIRequestLog
 
 from clients.serializers import BidListSerializer
 from .models import Bid, BidStory
 from .permissions import BidsPermission
-from .serializers import BidSerializer, BidStorySerializer, CreateBidSerializer
+from .serializers import BidSerializer, CreateBidSerializer, BidStorySerializer
 
 
 class BidViewSet(LoggingMixin, viewsets.ModelViewSet):
@@ -58,9 +62,36 @@ class BidViewSet(LoggingMixin, viewsets.ModelViewSet):
     @action(methods=["GET"], detail=True)
     def history(self, request: Request, pk: int):
         bid = self.get_object()
-        qs = bid.stories.order_by("-dt")
-        serializer = BidStorySerializer(qs, many=True, context={"request": request})
-        return Response(serializer.data)
+        stories = bid.stories.all()
+        logs = APIRequestLog.objects.filter(view='apps.users.viewsets.AttachmentsViewSet', data__icontains='punto')
+        story: BidStory
+        data = [
+            {
+                'user': story.user.fullname,
+                'dt': story.dt,
+                'message': story.message,
+                'internal_message': story.internal_message,
+                'status': story.status,
+            }
+            for story in stories
+        ]
+        puntos_ids = set(bid.puntos.values_list('id', flat=True))
+        for log in logs:
+            response = ujson.loads(log.response)
+            if response.get('punto') in puntos_ids:
+                data.append({
+                    'user': log.user.fullname,
+                    'dt': log.requested_at,
+                    'data': response,
+                    'status': 'Nuevo archivo',
+                })
+
+        def format_item(item: dict) -> dict:
+            item['dt'] = item['dt'].strftime('%d/%m/%Y %H:%M')
+            return item
+
+        data = list(map(format_item, sorted(data, key=itemgetter('dt'), reverse=True)))
+        return Response(data)
 
     @action(methods=["GET"], detail=True)
     def last_comments(self, request: Request, pk: int):
