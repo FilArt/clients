@@ -9,7 +9,7 @@ repository = "https://github.com/FilArt/clients"
 keywords = ["clients", "crm", "vuejs", "drf"]
 
 [tool.poetry.dependencies]
-python = "^3.8"
+python = ">=3.8"
 django = "^3.1"
 arrow = "^0.16"
 channels-redis = "^3.0.1"
