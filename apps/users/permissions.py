@@ -17,7 +17,7 @@ class ManageUserPermission(BasePermission):
     def has_permission(self, request: Request, view: View) -> bool:
         user = request.user
         return user.role == "admin" or (
-                user.role == "agent" and user.agent_type == "canal" and view.action in ("list", "retrieve")
+            user.role == "agent" and user.agent_type == "canal" and view.action in ("list", "retrieve")
         )
 
     def has_object_permission(self, request: Request, view: View, obj: Any) -> bool:
@@ -36,9 +36,9 @@ class UsersPermission(BasePermission):
                 obj.responsible.canal_id if obj.responsible else None,
                 obj.responsible_id,
                 obj.invited_by_id,
-                obj.canal_id
+                obj.canal_id,
             )
-            return request.user.id in permitted_ids and view.action == "retrieve"
+            return request.user.id in permitted_ids
         return True
 
 
