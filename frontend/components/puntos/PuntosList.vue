@@ -158,7 +158,7 @@ export default {
       puntoDialog: false,
       categories: [
         { text: 'Físico', value: 'physical' },
-        { text: 'Autonomous', value: 'autonomous' },
+        { text: 'Autónomo', value: 'autonomous' },
         { text: 'Jurídico', value: 'business' },
       ],
       attachmentsItems: [

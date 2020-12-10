@@ -221,7 +221,7 @@ msgstr "Físico"
 
 #: apps/users/models.py:275
 msgid "Autonomous"
-msgstr "Autonomo"
+msgstr "Autónomo"
 
 #: apps/users/models.py:280
 msgid "Name"
