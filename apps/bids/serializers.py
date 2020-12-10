@@ -1,12 +1,12 @@
 from decimal import Decimal
 
-import arrow
 from django.db import transaction
 from django.utils import timezone
 from rest_framework import serializers
 from rest_framework.exceptions import PermissionDenied
 
 from clients.serializers import BidListSerializer, DetailOfferSerializer, PuntoSerializer
+from clients.utils import humanize
 from .models import Bid, BidStory
 
 
@@ -129,7 +129,7 @@ class BidStorySerializer(serializers.ModelSerializer):
         fields = "__all__"
 
     def get_dt(self, instance: BidStory):
-        return arrow.get(instance.dt).humanize(locale=self.context["request"].LANGUAGE_CODE)
+        return humanize(instance.dt, locale=self.context["request"].LANGUAGE_CODE)
 
     def get_user(self, instance: BidStory):
         if instance.user == self.context["request"].user:

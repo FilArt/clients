@@ -1,3 +1,4 @@
+import arrow
 import yaml
 from django.conf import settings
 from django.core import validators
@@ -23,3 +24,10 @@ def notify_telegram(premessage: str = "Nuevo usuario - ...", **kwargs):
 
     text = f"{premessage}\n{yaml.dump(kwargs)}"
     bot.send_message(chat_id=chat_id, text=text, timeout=2)
+
+
+def humanize(dt, locale='es'):
+    try:
+        return arrow.get(dt).humanize(locale=locale)
+    except Exception:
+        return arrow.get(dt).humanize(locale='es')

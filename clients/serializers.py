@@ -1,7 +1,6 @@
 import logging
 from typing import List
 
-import arrow
 from django.contrib.auth.base_user import BaseUserManager
 from django.db import transaction
 from drf_dynamic_fields import DynamicFieldsMixin
@@ -16,7 +15,7 @@ from apps.users.models import (
     Punto,
     UserSettings,
 )
-from clients.utils import notify_telegram
+from clients.utils import notify_telegram, humanize
 
 logger = logging.getLogger(__name__)
 
@@ -67,7 +66,7 @@ class BidListSerializer(DynamicFieldsMixin, serializers.ModelSerializer):
 
     # noinspection PyMethodMayBeStatic
     def get_pretty_created_at(self, instance: Bid):
-        return arrow.get(instance.created_at).humanize(locale=self.context["request"].LANGUAGE_CODE)
+        return humanize(instance.created_at, locale=self.context["request"].LANGUAGE_CODE)
 
     def get_status(self, bid: Bid):
         return bid.get_status(by=self.context["request"].user)

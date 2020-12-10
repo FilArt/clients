@@ -1,6 +1,6 @@
-import arrow
 from rest_framework import serializers
 
+from clients.utils import humanize
 from .models import ChatMessage, UnreadMessage
 
 
@@ -14,7 +14,7 @@ class ChatMessageSerializer(serializers.ModelSerializer):
         fields = "__all__"
 
     def get_created(self, instance: ChatMessage):
-        return arrow.get(instance.created).humanize(locale=self.context["request"].LANGUAGE_CODE)
+        return humanize(instance.created, locale=self.context["request"].LANGUAGE_CODE)
 
     def get_is_read(self, instance: ChatMessage):
         user = self.context["request"].user
