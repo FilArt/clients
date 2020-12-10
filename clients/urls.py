@@ -12,7 +12,7 @@ urlpatterns = [
     path("api/chat/", include("apps.chat.urls")),
     path("api/info/", include("apps.info.urls")),
     path("api/logs/", include("apps.logs.urls")),
-    path('api/inbox/notifications/', include(notifications.urls, namespace='notifications')),
+    path("api/inbox/notifications/", include(notifications.urls, namespace="notifications")),
 ]
 
 if settings.DEBUG:
