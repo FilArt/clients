@@ -1,6 +1,5 @@
 import logging
 
-import arrow
 from django.conf import settings
 from django.contrib.auth.base_user import BaseUserManager
 from django.contrib.auth.models import Group
@@ -17,7 +16,7 @@ from rest_framework_tracking.models import APIRequestLog
 
 from apps.bids.models import Bid
 from clients.serializers import BidListSerializer
-from clients.utils import notify_telegram
+from clients.utils import notify_telegram, humanize
 from .models import Attachment, CustomUser, Punto
 
 logger = logging.getLogger(__name__)
@@ -90,7 +89,7 @@ class RegisterByAdminSerializer(RegisterSerializer):
 
 class PrettyDateTimeField(serializers.DateTimeField, serializers.ReadOnlyField):
     def to_representation(self, value):
-        return arrow.get(value).humanize(locale=self.context["request"].LANGUAGE_CODE) if value else "-"
+        return humanize(value, locale=self.context["request"].LANGUAGE_CODE)
 
 
 class DateTimeToDateField(serializers.CharField, serializers.ReadOnlyField):
