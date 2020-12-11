@@ -267,9 +267,7 @@ class LoadFacturasSerializer(serializers.Serializer):
         bid = Bid.objects.create(user=user)
         punto = Punto.objects.create(bid=bid, user=user)
         Attachment.objects.create(
-            punto=punto,
-            attachment_type="factura",
-            attachment=factura,
+            punto=punto, attachment_type="factura", attachment=factura,
         )
         _ = Attachment.objects.create(punto=punto, attachment_type="factura_1", attachment=factura_1)
         return _
@@ -316,11 +314,9 @@ class CreateClientSerializer(RegisterSerializer):
     class Meta:
         model = CustomUser
         fields = [
-            'id',
-            'email',
-            'company_name',
-            'phone',
+            "id",
+            "email",
+            "company_name",
+            "phone",
         ]
-        extra_kwargs = {
-            'id': {'read_only': True}
-        }
+        extra_kwargs = {"id": {"read_only": True}}

@@ -14,20 +14,20 @@ class PositiveNullableFloatField(models.FloatField):
 
 
 def notify_telegram(premessage: str = "Nuevo usuario - ...", **kwargs):
-    kwargs = {k: v for k, v in kwargs.items() if k != 'password'}
+    kwargs = {k: v for k, v in kwargs.items() if k != "password"}
     bot = Bot(settings.TELEGRAM_TOKEN)
     chat_id = settings.TELEGRAM_CHAT_ID
 
     for k, v in kwargs.items():
-        if hasattr(v, 'fullname'):
+        if hasattr(v, "fullname"):
             kwargs[k] = v.fullname
 
     text = f"{premessage}\n{yaml.dump(kwargs)}"
     bot.send_message(chat_id=chat_id, text=text, timeout=2)
 
 
-def humanize(dt, locale='es'):
+def humanize(dt, locale="es"):
     try:
         return arrow.get(dt).humanize(locale=locale)
     except Exception:
-        return arrow.get(dt).humanize(locale='es')
+        return arrow.get(dt).humanize(locale="es")
