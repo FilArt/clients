@@ -5,12 +5,29 @@
     </v-card-text>
 
     <v-card-text>
+      <v-row>
+        <v-col>
+          <v-progress-linear v-show="loading" indeterminate />
+        </v-col>
+      </v-row>
       <v-row align="top">
         <v-col>
           <date-time-filter
-            v-model="datesFilter"
+            v-model="fechaRegistro"
+            label="Fecha de registro"
             format="YYYY-MM-DD HH:mm"
             formatted="DD/MM/YYYY HH:mm"
+            range
+            @input="refresh"
+          />
+        </v-col>
+
+        <v-col>
+          <date-time-filter
+            v-model="fechaFirma"
+            label="Fecha de firma"
+            format="YYYY-MM-DD"
+            formatted="DD/MM/YYYY"
             range
             @input="refresh"
           />
@@ -54,17 +71,17 @@
 <script>
 import { eachDayOfInterval, addDays, format } from 'date-fns'
 import constants from '@/lib/constants'
-import AddNewClientDialog from '@/components/dialogs/AddNewClientDialog'
-
 export default {
   components: {
-    AddNewClientDialog,
+    AddNewClientDialog: () => import('@/components/dialogs/AddNewClientDialog'),
     DateTimeFilter: () => import('~/components/DateTimeFilter'),
   },
   data() {
     const fdates = [addDays(new Date(), -30), new Date()].map((d) => format(d, 'yyyy-MM-dd HH:mm'))
     return {
-      datesFilter: { start: fdates[0], end: fdates[1] },
+      loading: false,
+      fechaRegistro: { start: fdates[0], end: fdates[1] },
+      fechaFirma: { start: null, end: null },
       agentsFilter: [],
       chartOptions: {
         chart: {
@@ -176,25 +193,43 @@ export default {
 
   methods: {
     async refresh() {
+      this.loading = true
       const params = {
         responsible__in: this.agentsFilter.join(','),
         role__isnull: true,
         statuses_in: [...Object.values(constants.statuses)],
         ordering: 'date_joined',
-        fields: 'status',
+        fields: 'status,bids_count',
       }
-      if (this.datesFilter && this.datesFilter.end) {
-        const { start, end } = this.datesFilter
+      if (this.fechaRegistro && this.fechaRegistro.end) {
+        const { start, end } = this.fechaRegistro
         params.date_joined__range = `${start},${end}`
+      }
+      if (this.fechaFirma && this.fechaFirma.end) {
+        const { start, end } = this.fechaFirma
+        params.fecha_firma__range = `${start},${end}`
       }
       const paramsStr = Object.keys(params)
         .map((k) => k + '=' + params[k])
         .join('&')
-      const clients = await this.$axios.$get(`users/users/?${paramsStr}`)
-      this.chartOptions.xAxis.categories = clients.map((c) => c.status).filter(constants.onlyUnique)
-      this.chartOptions.series[0].data = this.chartOptions.xAxis.categories.map(
-        (status) => clients.filter((c) => c.status === status).length,
-      )
+      try {
+        const totalName = 'TOTAL CLIENTES'
+        const totalBidName = 'TOTAL SOLICITUDES'
+        const clients = await this.$axios.$get(`users/users/?${paramsStr}`)
+        this.chartOptions.xAxis.categories = clients
+          .map((c) => c.status)
+          .filter(constants.onlyUnique)
+          .concat([totalName, totalBidName])
+        this.chartOptions.series[0].data = this.chartOptions.xAxis.categories.map((status) =>
+          status === totalBidName
+            ? clients.map((c) => c.bids_count).reduce((a, b) => a + b)
+            : status === totalName
+            ? clients.length
+            : clients.filter((c) => c.status === status).length,
+        )
+      } finally {
+        this.loading = false
+      }
     },
     async fetchRegistrationsAndCalculos() {
       const monthAgo = addDays(new Date(), -30)
