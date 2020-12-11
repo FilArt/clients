@@ -140,11 +140,10 @@
             >
               <date-time-filter
                 v-model="fechaFirmaFilter"
-                label="Fecha firma"
+                label="Fecha de firma"
                 format="YYYY-MM-DD"
                 formatted="DD/MM/YYYY"
                 range
-                color="ingido"
                 @input="updateFechaFirmaFilter"
               />
             </v-col>
