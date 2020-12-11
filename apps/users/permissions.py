@@ -29,9 +29,7 @@ class UsersPermission(BasePermission):
         return hasattr(request.user, "role") and request.user.role in ("admin", "support", "agent")
 
     def has_object_permission(self, request, view, obj: CustomUser):
-        if request.user.role == "support":
-            return obj.client_role != "leed"
-        elif request.user.role == "agent":
+        if request.user.role == "agent":
             permitted_ids = (
                 obj.responsible.canal_id if obj.responsible else None,
                 obj.responsible_id,
