@@ -9,12 +9,13 @@
         </template>
 
         <v-card>
-          <v-card-text>
+          <v-card-title>
             <v-row align="center">
               <v-col>
-                <v-card-title>
-                  {{ kind === 'luz' ? punto.cups_luz : punto.cups_gas }}
-                </v-card-title>
+                {{ kind === 'luz' ? punto.cups_luz : punto.cups_gas }}
+              </v-col>
+              <v-col class="flex-grow-0">
+                <delete-button @click="deletePunto(punto)" />
               </v-col>
               <v-col class="flex-grow-0">
                 <close-button @click="puntoDialog = false" />
@@ -124,7 +125,7 @@
                 </v-flex>
               </v-col>
             </v-row>
-          </v-card-text>
+          </v-card-title>
         </v-card>
       </v-dialog>
     </v-list-item>
@@ -133,12 +134,12 @@
 
 <script>
 import constants from '@/lib/constants'
-import CloseButton from '@/components/buttons/closeButton'
 
 export default {
   name: 'PuntosList',
   components: {
-    CloseButton,
+    DeleteButton: () => import('@/components/buttons/deleteButton'),
+    CloseButton: () => import('@/components/buttons/closeButton'),
     CompanySelect: () => import('~/components/selects/CompanySelect'),
   },
   props: {
@@ -190,8 +191,18 @@ export default {
     }
   },
   methods: {
-    puntoName(punto) {
-      return punto.kind === 'luz' ? punto.cups_luz : punto.cups_gas
+    async deletePunto(punto) {
+      const willDelete = await this.$swal({
+        title: `Eliminar punto ${punto.cups}?`,
+        text: 'Una vez borrado, no podrás recuperar este punto!',
+        icon: 'warning',
+        buttons: true,
+        dangerMode: true,
+      })
+      if (!willDelete) return
+      await this.$axios.$delete(`/users/puntos/${punto.id}/`)
+      this.puntoDialog = false
+      this.$emit('punto-updated')
     },
     getColor(attachmentId) {
       const q = this.$route.query

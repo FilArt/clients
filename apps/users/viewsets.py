@@ -38,6 +38,7 @@ from .permissions import (
     AdminPermission,
     AttachmentPermissions,
     NotyPermissions,
+    PuntoPermissions,
 )
 from .serializers import (
     LoadFacturasSerializer,
@@ -51,7 +52,8 @@ from .serializers import (
     AgentClientsSerializer,
     CanalAgentesSerializer,
     NotificationSerializer,
-    GroupSerializer, CreateClientSerializer,
+    GroupSerializer,
+    CreateClientSerializer,
 )
 
 logger = logging.getLogger(__name__)
@@ -77,11 +79,7 @@ class RegisterViewSet(LoggingMixin, viewsets.GenericViewSet, mixins.CreateModelM
 
 
 class AccountViewSet(
-    LoggingMixin,
-    viewsets.GenericViewSet,
-    mixins.RetrieveModelMixin,
-    mixins.UpdateModelMixin,
-    mixins.DestroyModelMixin,
+    LoggingMixin, viewsets.GenericViewSet, mixins.RetrieveModelMixin, mixins.UpdateModelMixin, mixins.DestroyModelMixin,
 ):
     queryset = CustomUser.objects.all()
     serializer_class = AccountSerializer
@@ -189,6 +187,7 @@ class ManageUsersViewSet(LoggingMixin, viewsets.ModelViewSet):
 class PuntoViewSet(LoggingMixin, viewsets.ModelViewSet):
     queryset = Punto.objects.all()
     serializer_class = DetailPuntoSerializer
+    permission_classes = (PuntoPermissions,)
     filterset_fields = ["bid", "user"]
     ordering = ["id"]
 

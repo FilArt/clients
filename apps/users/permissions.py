@@ -5,7 +5,7 @@ from notifications.models import Notification
 from rest_framework.permissions import BasePermission
 from rest_framework.request import Request
 
-from .models import CustomUser, Attachment
+from .models import CustomUser, Attachment, Punto
 
 
 class AdminPermission(BasePermission):
@@ -67,3 +67,10 @@ class NotyPermissions(BasePermission):
     def has_object_permission(self, request, view, obj: Notification) -> bool:
         requester = request.user
         return requester == obj.recipient
+
+
+class PuntoPermissions(BasePermission):
+    def has_object_permission(self, request, view, obj: Punto) -> bool:
+        if view.action == "destroy":
+            return hasattr(request.user, "role") and request.user.role in ("admin", "support")
+        return True
