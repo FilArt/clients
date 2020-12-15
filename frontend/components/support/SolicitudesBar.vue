@@ -11,7 +11,7 @@
         <v-divider />
 
         <v-list dense nav>
-          <v-list-item v-for="bid in bids" :key="bid.id" nuxt :to="getNewUrl(bid.id)">
+          <v-list-item v-for="bid in bids" :key="bid.id" nuxt :to="getNewUrl(bid.id)" exact>
             <v-icon v-if="bid.offer_kind === 'luz'" color="warning">mdi-flash</v-icon>
             <v-icon v-else color="blue">mdi-fire</v-icon>
             <v-list-item-title>
