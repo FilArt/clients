@@ -16,16 +16,7 @@ export default {
   asyncData() {
     return {
       statuses: [constants.statuses.PAGADO, constants.statuses.PENDIENTE_PAGO],
-      headers: [
-        { text: 'ID', value: 'id' },
-        { text: 'Fecha de registro', value: 'date_joined' },
-        { text: 'Fecha firma', value: 'fecha_firma' },
-        { text: 'Nombre/Razon social', value: 'fullname', sortable: false },
-        // { text: 'Origin', value: 'affiliate' },
-        { text: 'Solicitud', value: 'bids_count', sortable: false },
-        { text: 'Comisiones', value: 'paid_count' },
-        { text: 'Ultima entrada', value: 'last_login' },
-      ],
+      headers: ['id', 'date_joined', 'fecha_firma', 'fullname', 'bids_count', 'paid_count', 'last_login'],
     }
   },
 }

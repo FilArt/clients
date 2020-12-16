@@ -2,7 +2,7 @@
   <div>
     <v-data-table
       :loading="loading"
-      :headers="role && role !== 'agent' ? headers.filter((h) => h.value !== 'agent_type') : headers"
+      :headers="activeHeaders"
       :items="users"
       :options.sync="query"
       :server-items-length="total"
@@ -95,7 +95,7 @@
             <!--            </v-col>-->
 
             <v-col
-              v-if="headers.some((h) => h.value.includes('responsible'))"
+              v-if="headers.some((h) => h.includes('responsible'))"
               :cols="flexs.cols"
               :xl="flexs.xl"
               :lg="flexs.lg"
@@ -115,7 +115,7 @@
             </v-col>
 
             <v-col
-              v-if="showDateFilters || headers.some((h) => h.value.includes('date_joined'))"
+              v-if="showDateFilters || headers.some((h) => h.includes('date_joined'))"
               :cols="flexs.cols"
               :xl="flexs.xl"
               :lg="flexs.lg"
@@ -131,7 +131,7 @@
             </v-col>
 
             <v-col
-              v-if="headers.some((h) => h.value === 'fecha_firma')"
+              v-if="headers.some((h) => h === 'fecha_firma')"
               :cols="flexs.cols"
               :xl="flexs.xl"
               :lg="flexs.lg"
@@ -149,7 +149,7 @@
             </v-col>
 
             <v-col
-              v-if="headers.some((h) => h.value === 'status')"
+              v-if="headers.some((h) => h === 'status')"
               :cols="flexs.cols"
               :xl="flexs.xl"
               :lg="flexs.lg"
@@ -169,12 +169,13 @@
               />
             </v-col>
 
-            <template v-if="headers.some((h) => h.value === 'status') && isSupport">
+            <template v-if="headers.some((h) => h === 'status') && isSupport">
               <v-col
                 v-for="q in [
                   { text: 'Doc', value: 'bids__doc' },
                   { text: 'Scoring', value: 'bids__scoring' },
                   { text: 'Llamada', value: 'bids__call' },
+                  { text: 'Estado de oferta', value: 'bids__offer_status' },
                 ]"
                 :key="q.value"
               >
@@ -182,7 +183,7 @@
                   v-model="query[q.value]"
                   :label="q.text"
                   clearable
-                  :items="booleanItems"
+                  :items="q.value === 'bids__offer_status' ? offerStatusItems : booleanItems"
                   @change="
                     query[q.value] === 'None'
                       ? updateQuery({ [`${q.value}__isnull`]: 'true', [q.value]: null })
@@ -367,6 +368,20 @@ export default {
           value: 'None',
         },
       ],
+      offerStatusItems: [
+        {
+          text: 'FIRMADA',
+          value: '0',
+        },
+        {
+          text: 'PTE FIRMAR',
+          value: '1',
+        },
+        {
+          text: '-',
+          value: 'None',
+        },
+      ],
       flexs: { cols: 12, xl: 3, lg: 3, md: 3, sm: 3, xs: 12 },
       dateJoinedFilter,
       fechaFirmaFilter,
@@ -398,11 +413,39 @@ export default {
   computed: {
     ...mapState({ responsibles: (state) => state.responsibles }),
     showChat() {
-      return this.headers.some((h) => h.value === 'new_messages_count')
+      return this.headers.some((h) => h === 'new_messages_count')
+    },
+    activeHeaders() {
+      const headers = [
+        { text: 'ID', value: 'id' },
+        { text: 'Fecha de registro', value: 'date_joined' },
+        { text: 'Fecha firma', value: 'fecha_firma' },
+        { text: 'Nombre/Razon social', value: 'fullname', sortable: false },
+        { text: 'Tipo de agente', value: 'agent_type' },
+        { text: 'Telefono', value: 'phone' },
+        { text: 'Ultima entrada', value: 'last_login' },
+        { text: 'Responsable', value: 'responsible_fn' },
+        { text: 'Canal', value: 'canal_fn' },
+        { text: 'Solicitud', value: 'bids_count', sortable: false },
+        { text: 'Comisiones agente', value: 'paid_count' },
+        { text: 'Comisiones canal', value: 'canal_paid_count' },
+        { text: 'Estado', value: 'status' },
+        { text: 'Doc', value: 'docs', sortable: false },
+        { text: 'Scoring', value: 'scorings', sortable: false },
+        { text: 'Llamadas', value: 'calls', sortable: false },
+        { text: 'Estado de oferta', value: 'offer_status', sortable: false },
+        { text: '', value: 'new_messages_count', sortable: false },
+        { value: 'actions', sortable: false },
+      ].filter((header) => this.headers.includes(header.value))
+
+      if (this.role && this.role !== 'agent') {
+        return headers.filter((h) => h.value !== 'agent_type')
+      }
+      return headers
     },
   },
   async created() {
-    if (this.headers.some((header) => header.value.includes('responsible')) && !this.responsibles.length) {
+    if (this.headers.some((header) => header.includes('responsible')) && !this.responsibles.length) {
       await this.$store.dispatch('fetchResponsibles')
     }
     if (this.role) this.query.role = this.role
@@ -446,13 +489,15 @@ export default {
       }
     },
     getQuery() {
+      console.log(this.query)
       const query = constants.cleanEmpty({
         statuses_in: this.statuses && this.statuses.length ? this.statuses.join(',') : null,
         ...this.query,
-        ordering: this.query.sortBy.length
-          ? this.query.sortBy.map((sortBy, idx) => (this.query.sortDesc[idx] ? '+' : '-') + sortBy).join()
-          : null,
-        fields: this.headers.map((header) => header.value).join(),
+        ordering:
+          this.query.sortBy instanceof Array
+            ? this.query.sortBy.map((sortBy, idx) => (this.query.sortDesc[idx] ? '+' : '-') + sortBy).join()
+            : null,
+        fields: this.headers.join(),
         role__isnull: this.role === 'null' ? true : null,
       })
       return Object.keys(query)

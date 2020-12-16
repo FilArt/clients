@@ -2,19 +2,7 @@
   <v-card>
     <v-card-text>
       <users-table
-        :headers="[
-          { text: 'ID', value: 'id' },
-          { text: 'Nombre', value: 'fullname', sortable: false },
-          {
-            text: 'Telefono',
-            value: 'phone',
-          },
-          { text: 'Clientes', value: 'clients_count' },
-          {
-            text: 'Ultima entrada',
-            value: 'last_login',
-          },
-        ]"
+        :headers="['id', 'fullname', 'phone', 'clients_count', 'last_login']"
         hide-chat
         list-url="users/canal_agents"
         detail-url="/agente/agentes"

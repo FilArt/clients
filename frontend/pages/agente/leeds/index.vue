@@ -16,30 +16,7 @@ export default {
   data() {
     return {
       statuses: [constants.statuses.LEED],
-      headers: [
-        {
-          text: 'ID',
-          value: 'id',
-        },
-        {
-          text: 'Fecha de registro',
-          value: 'date_joined',
-        },
-        {
-          text: 'Nombre/Razon social',
-          value: 'fullname',
-          sortable: false,
-        },
-        {
-          text: 'Ultima entrada',
-          value: 'last_login',
-        },
-        {
-          text: 'Solicitud',
-          value: 'bids_count',
-          sortable: false,
-        },
-      ],
+      headers: ['id', 'date_joined', 'fullname', 'last_login', 'bids_count'],
     }
   },
 }

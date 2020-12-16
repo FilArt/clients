@@ -27,16 +27,7 @@ export default {
         constants.statuses.PENDIENTE_TRAMITACION,
         constants.statuses.TRAMITACION_EN_PROCESSO,
       ],
-      headers: [
-        { text: 'ID', value: 'id' },
-        { text: 'Fecha de registro', value: 'date_joined' },
-        { text: 'Nombre/Razon social', value: 'fullname', sortable: false },
-        { text: 'Solicitud', value: 'bids_count', sortable: false },
-        { text: 'Estado', value: 'status' },
-        { text: 'Doc', value: 'docs', sortable: false },
-        { text: 'Scoring', value: 'scorings', sortable: false },
-        { text: 'Llamadas', value: 'calls', sortable: false },
-      ],
+      headers: ['id', 'date_joined', 'fullname', 'bids_count', 'status', 'docs', 'scorings', 'calls', 'offer_status'],
     }
   },
 }

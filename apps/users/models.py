@@ -91,10 +91,10 @@ class CustomUser(AbstractUser):
         models.CharField(choices=PERMISSIONS_CHOICES, max_length=30),
         default=get_default_user_permissions,
         help_text="%s %s"
-                  % (
-                      pgettext_lazy("help text for user permissions field", "Possible values:"),
-                      ", ".join(get_default_user_permissions()),
-                  ),
+        % (
+            pgettext_lazy("help text for user permissions field", "Possible values:"),
+            ", ".join(get_default_user_permissions()),
+        ),
     )
     agent_type = models.CharField(max_length=20, choices=AGENT_TYPE_CHOICES, blank=True, null=True)
     fixed_salary = models.BooleanField(blank=True, null=True)
@@ -124,7 +124,7 @@ class CustomUser(AbstractUser):
     @property
     def profile_filled(self) -> bool:
         return (self.phone or self.phone_city) and (
-                self.company_name is not None or (self.first_name is not None and self.last_name is not None)
+            self.company_name is not None or (self.first_name is not None and self.last_name is not None)
         )
 
     @cached_property
@@ -157,6 +157,13 @@ class CustomUser(AbstractUser):
             return "KO"
         elif self.bids.filter(call=True).exists():
             return "OK"
+        return "-"
+
+    @property
+    def offer_status(self) -> str:
+        for status, name in self.bids.model.OFFER_STATUS_CHOICES:
+            if self.bids.filter(offer_status=status).exists():
+                return name
         return "-"
 
     @property

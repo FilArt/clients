@@ -115,6 +115,7 @@ class UserViewSet(
         "bids__doc": ["exact", "isnull"],
         "bids__scoring": ["exact", "isnull"],
         "bids__call": ["exact", "isnull"],
+        "bids__offer_status": ["exact", "isnull"],
     }
     ordering = ("-id",)
 

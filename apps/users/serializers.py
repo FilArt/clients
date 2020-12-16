@@ -119,6 +119,7 @@ class UserListSerializer(DynamicFieldsMixin, serializers.ModelSerializer):
             "docs",
             "scorings",
             "calls",
+            "offer_status",
             "paid_count",
             "canal_paid_count",
             "fixed_salary",

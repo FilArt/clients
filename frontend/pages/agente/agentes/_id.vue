@@ -17,33 +17,7 @@
         detail-url="/agente/clientes"
         :statuses="statuses"
         :responsible="$route.params.id"
-        :headers="[
-          {
-            text: 'ID',
-            value: 'id',
-          },
-          {
-            text: 'Nombre',
-            value: 'fullname',
-            sortable: false,
-          },
-          {
-            text: 'Estado',
-            value: 'status',
-          },
-          {
-            text: 'Solicitudes',
-            value: 'bids_count',
-          },
-          {
-            text: 'Agente comisiones',
-            value: 'paid_count',
-          },
-          {
-            text: 'Canal comisiones',
-            value: 'canal_paid_count',
-          },
-        ]"
+        :headers="['id', 'fullname', 'status', 'bids_count', 'paid_count', 'canal_paid_count']"
       />
     </v-card-text>
   </v-card>

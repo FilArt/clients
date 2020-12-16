@@ -21,37 +21,7 @@ export default {
   },
   data() {
     return {
-      headers: [
-        {
-          text: 'ID',
-          value: 'id',
-        },
-        {
-          text: 'Nombre',
-          value: 'fullname',
-          sortable: false,
-        },
-        {
-          text: 'Tipo de agente',
-          value: 'agent_type',
-        },
-        {
-          text: 'Telefono',
-          value: 'phone',
-        },
-        {
-          text: 'Fecha de registro',
-          value: 'date_joined',
-        },
-        {
-          text: 'Ultima entrada',
-          value: 'last_login',
-        },
-        {
-          value: 'actions',
-          sortable: false,
-        },
-      ],
+      headers: ['id', 'fullname', 'agent_type', 'phone', 'date_joined', 'last_login', 'actions'],
     }
   },
 }

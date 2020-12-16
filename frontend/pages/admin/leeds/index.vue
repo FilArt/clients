@@ -17,41 +17,14 @@ export default {
     return {
       statuses: [constants.statuses.LEED],
       headers: [
-        {
-          text: 'ID',
-          value: 'id',
-        },
-        {
-          text: 'Fecha de registro',
-          value: 'date_joined',
-        },
-        {
-          text: 'Nombre/Razon social',
-          value: 'fullname',
-          sortable: false,
-        },
-        {
-          text: 'Responsable',
-          value: 'responsible_fn',
-        },
-        {
-          text: 'Ultima entrada',
-          value: 'last_login',
-        },
-        {
-          text: 'Solicitud',
-          value: 'bids_count',
-          sortable: false,
-        },
-        {
-          text: 'Nuevo mensajes',
-          value: 'new_messages_count',
-          sortable: false,
-        },
-        {
-          value: 'actions',
-          sortable: false,
-        },
+        'id',
+        'date_joined',
+        'fullname',
+        'responsible_fn',
+        'last_login',
+        'bids_count',
+        'new_messages_count',
+        'actions',
       ],
     }
   },

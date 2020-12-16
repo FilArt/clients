@@ -23,14 +23,7 @@ export default {
   data() {
     return {
       statuses: [constants.statuses.KO_PAPELLERA],
-      headers: [
-        { text: 'ID', value: 'id' },
-        { text: 'Fecha de registro', value: 'date_joined' },
-        { text: 'Nombre/Razon social', value: 'fullname', sortable: false },
-        { text: 'Responsable', value: 'responsible_fn' },
-        { text: 'Solicitud', value: 'bids_count', sortable: false },
-        { text: '', value: 'new_messages_count' },
-      ],
+      headers: ['id', 'date_joined', 'fullname', 'responsible_fn', 'bids_count', 'new_messages_count'],
     }
   },
 }
