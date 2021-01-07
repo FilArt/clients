@@ -33,6 +33,7 @@ pyaml = "^20.4.0"
 ujson = "^4.0.1"
 pdfkit = "^0.6.1"
 requests = "^2.25.1"
+poetry = "^1.1.4"
 
 [tool.poetry.dev-dependencies]
 flake8 = "^3.8.3"
