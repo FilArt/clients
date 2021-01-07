@@ -294,4 +294,22 @@ export default Object.freeze({
   trans: {
     Attachment: 'Archivos',
   },
+  cvStatuses: {
+    OLDMAN: 'Persona major',
+    RECALL: 'Volver a llamar',
+    NOT_RESPOND: 'El numero no responde',
+    PROCESSING: 'En proceso',
+    SUCCESS: 'Firmado',
+    AGENT_FAIL: 'No firmado',
+    OPERATOR_FAIL: 'No le interesa',
+    NOT_LOCATED: 'No localizado',
+    INVALID_NUMBER: 'Número inválido',
+    OPEN: 'Pendiente',
+    PERMANENT_BUSY: 'Permanentemente empleado',
+    MEETING: 'Reunion',
+    RESCHEDULE_MEETING: 'Aplazada con fecha',
+    RENEW: 'Renovaciones',
+    BAD_CONTACT: 'Mal contacto',
+    ACEPT: 'Proceso aceptacion',
+  },
 })

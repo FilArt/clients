@@ -1,7 +1,7 @@
 <template>
   <v-card>
     <v-card-text>
-      <users-table :statuses="statuses" :headers="headers" detail-url="/admin/clientes" use-full-name />
+      <users-table selectable :statuses="statuses" :headers="headers" detail-url="/admin/clientes" use-full-name />
     </v-card-text>
   </v-card>
 </template>

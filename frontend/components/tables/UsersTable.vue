@@ -1,6 +1,76 @@
 <template>
   <div>
+    <v-snackbar v-model="actionsSnackbar" :timeout="-1">
+      <v-card>
+        <v-card-title>
+          <v-toolbar>
+            <v-toolbar-title>{{ selected.length }} clientes </v-toolbar-title>
+            <v-spacer />
+            <v-toolbar-items>
+              <v-tooltip bottom>
+                <template v-slot:activator="{ on, attrs }">
+                  <v-btn
+                    icon
+                    color="#004680"
+                    v-bind="attrs"
+                    e
+                    v-on="on"
+                    @click="
+                      uploadToCallVisitDialog = true
+                      actionsSnackbar = false
+                    "
+                  >
+                    <v-icon>mdi-cloud-upload</v-icon>
+                  </v-btn>
+                </template>
+                <span>Enviar en Call&Visit.</span>
+              </v-tooltip>
+            </v-toolbar-items>
+          </v-toolbar>
+        </v-card-title>
+
+        <v-card-text>
+          <v-virtual-scroll :items="selected" height="300" item-height="64">
+            <template v-slot:default="{ item }">
+              <v-list-item :key="item.id">
+                <v-list-item-content>
+                  <v-list-item-subtitle>{{ item.id }}</v-list-item-subtitle>
+                  <v-list-item-title>{{ item.fullname }}</v-list-item-title>
+                </v-list-item-content>
+              </v-list-item>
+              <v-divider></v-divider>
+            </template>
+          </v-virtual-scroll>
+        </v-card-text>
+      </v-card>
+    </v-snackbar>
+
+    <v-dialog v-model="uploadToCallVisitDialog" persistent>
+      <v-card>
+        <v-card-title>
+          <span> Enviar en Call&Visit </span>
+          <v-spacer />
+          <close-button
+            @click="
+              uploadToCallVisitDialog = false
+              actionsSnackbar = true
+            "
+          />
+        </v-card-title>
+        <v-card-text>
+          <v-form @submit.prevent="uploadToCallVisit">
+            <cv-user-select v-model="form.manager" type="manager" />
+            <cv-user-select v-model="form.operator" type="operator" />
+            <cv-user-select v-model="form.tele" type="tele" />
+            <v-select v-model="form.status" label="Estado" :items="Object.values(constants.cvStatuses)" />
+            <submit-button label="Enviar" block />
+          </v-form>
+        </v-card-text>
+      </v-card>
+    </v-dialog>
+
     <v-data-table
+      :show-select="selectable"
       :loading="loading"
       :headers="activeHeaders"
       :items="users"
@@ -16,6 +86,8 @@
       }"
       class="elevation-1"
       @update:options="fetchUsers"
+      @toggle-select-all="onSelect"
+      @item-selected="onSelect"
     >
       <template v-slot:top>
         <div class="pa-3">
@@ -282,12 +354,19 @@ import { mapState } from 'vuex'
 export default {
   name: 'UsersTable',
   components: {
+    CvUserSelect: () => import('@/components/cv_components/selects/cvUserSelect'),
+    CloseButton: () => import('~/components/buttons/closeButton'),
+    SubmitButton: () => import('~/components/buttons/submitButton'),
     AddNewEmployee: () => import('@/components/forms/AddNewEmployee'),
     DeleteButton: () => import('@/components/buttons/deleteButton'),
     Chat: () => import('~/components/chat/Chat'),
     DateTimeFilter: () => import('~/components/DateTimeFilter'),
   },
   props: {
+    selectable: {
+      type: Boolean,
+      default: false,
+    },
     statuses: {
       type: Array,
       default: () => null,
@@ -354,6 +433,16 @@ export default {
       }
     }
     return {
+      constants,
+      uploadToCallVisitDialog: false,
+      actionsSnackbar: false,
+      selected: [],
+      form: {
+        manager: null,
+        operator: null,
+        tele: null,
+        status: null,
+      },
       booleanItems: [
         {
           text: 'OK',
@@ -444,6 +533,25 @@ export default {
       return headers
     },
   },
+  watch: {
+    uploadToCallVisitDialog: {
+      handler: async function (val) {
+        if (!val) return
+        if (!this.$store.state.cvusers.length) {
+          try {
+            await this.$store.dispatch('fetchCvUsers')
+          } catch (e) {
+            await this.$swal({
+              title: 'Error',
+              icon: 'error',
+              text: 'No autorizado en Call&Visit. Ir al perfil',
+            })
+            this.uploadToCallVisitDialog = false
+          }
+        }
+      },
+    },
+  },
   async created() {
     if (this.headers.some((header) => header.includes('responsible')) && !this.responsibles.length) {
       await this.$store.dispatch('fetchResponsibles')
@@ -451,6 +559,36 @@ export default {
     if (this.role) this.query.role = this.role
   },
   methods: {
+    async uploadToCallVisit() {
+      this.loading = true
+      try {
+        await this.$axios.$post('/cv_integration/upload_cards/', {
+          ...this.form,
+          clients: this.selected.map((c) => c.id),
+        })
+        this.uploadToCallVisitDialog = false
+      } catch (e) {
+        await this.$swal({
+          title: 'Error',
+          icon: 'error',
+          text: JSON.stringify(e.response.data),
+        })
+      } finally {
+        this.loading = false
+      }
+    },
+    onSelect({ item, items, value }) {
+      if (!value) {
+        if (item) {
+          this.selected = this.selected.filter((selectedItem) => selectedItem.id !== item.id)
+        } else {
+          this.selected = []
+        }
+      } else {
+        this.selected = item ? [...this.selected, item] : items
+      }
+      this.actionsSnackbar = this.selected.length > 0
+    },
     async editResponsible() {
       await this.$axios.$patch(`users/manage_users/${this.reserved_userId}/`, {
         responsible: this.reserved_responsible || null,
@@ -489,7 +627,6 @@ export default {
       }
     },
     getQuery() {
-      console.log(this.query)
       const query = constants.cleanEmpty({
         statuses_in: this.statuses && this.statuses.length ? this.statuses.join(',') : null,
         ...this.query,

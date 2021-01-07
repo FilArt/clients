@@ -13,6 +13,7 @@ urlpatterns = [
     path("api/info/", include("apps.info.urls")),
     path("api/logs/", include("apps.logs.urls")),
     path("api/inbox/notifications/", include(notifications.urls, namespace="notifications")),
+    path("api/cv_integration/", include("apps.cv_integration.urls")),
 ]
 
 if settings.DEBUG:

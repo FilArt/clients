@@ -12,9 +12,13 @@ export const state = () => ({
   responsibles: [],
   names: [],
   bidToChange: null,
+  cvusers: [],
 })
 
 export const actions = {
+  async fetchCvUsers({ commit }) {
+    commit('setCvUsers', await this.$axios.$post('cv_integration/x', { url: `https://app.call-visit.com/api/users/` }))
+  },
   async fetchResponsibles({ commit }) {
     const users = (await this.$axios.$get('users/users/?role=agent&fields=id,fullname&itemsPerPage=100')).results
     commit('setResponsibles', users)
@@ -30,6 +34,9 @@ export const actions = {
 }
 
 export const mutations = {
+  setCvUsers(state, cvusers) {
+    state.cvusers = cvusers
+  },
   resetCalculator(state) {
     state.calculatorForm = {
       kind: 'luz',
@@ -58,9 +65,6 @@ export const mutations = {
   },
   setPuntoCategories(state, c) {
     state.puntoCategories = c
-  },
-  setTarif(state, tarif) {
-    state.tarif = tarif
   },
   setCalculatedOffers(state, offers) {
     state.calculatedOffers = offers

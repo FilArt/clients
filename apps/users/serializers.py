@@ -321,3 +321,9 @@ class CreateClientSerializer(RegisterSerializer):
             "phone",
         ]
         extra_kwargs = {"id": {"read_only": True}}
+
+
+class UploadToCallVisitSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = CustomUser
+        fields = ("id",)

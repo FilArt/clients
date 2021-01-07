@@ -50,6 +50,7 @@ INSTALLED_APPS = [
     "apps.logs",
     "rest_framework_tracking",
     "notifications",
+    "apps.cv_integration",
 ]
 
 MIDDLEWARE = [

@@ -54,6 +54,7 @@ from .serializers import (
     NotificationSerializer,
     GroupSerializer,
     CreateClientSerializer,
+    UploadToCallVisitSerializer,
 )
 
 logger = logging.getLogger(__name__)
@@ -183,6 +184,13 @@ class ManageUsersViewSet(LoggingMixin, viewsets.ModelViewSet):
 
     def perform_create(self, serializer) -> None:
         serializer.save(invited_by=self.request.user)
+
+    @action(methods=["POST"], detail=False, permission_classes=(AdminPermission,))
+    def upload_to_call_visit(self, request: Request):
+        ser = UploadToCallVisitSerializer(data=request.data, many=True)
+        ser.is_valid(raise_exception=True)
+        clients = ser.data
+        return Response("OK")
 
 
 class PuntoViewSet(LoggingMixin, viewsets.ModelViewSet):
