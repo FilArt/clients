@@ -42,7 +42,7 @@
           />
           <v-select
             v-model="settings.role"
-            label="Role"
+            label="Rol"
             :error-messages="errorMessages.role"
             :items="[
               { text: 'Admin', value: 'admin' },

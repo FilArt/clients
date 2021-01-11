@@ -107,7 +107,7 @@
       </v-row>
 
       <v-btn :disabled="!newOffer || newOffer.id === offer.id" block color="success" @click="changeOffer">
-        Salvar
+        Guardar
       </v-btn>
     </v-card-text>
 

@@ -38,7 +38,7 @@
                   <v-card-text>
                     <v-textarea v-model="file.description" label="Observaciones" />
                     <v-btn block color="success" @click="updateFile(file.id, 'description', file.description)">
-                      Salvar
+                      Guardar
                     </v-btn>
                   </v-card-text>
                 </div>

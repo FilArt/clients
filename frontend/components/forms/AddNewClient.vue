@@ -4,7 +4,7 @@
     <email-field v-model="user.email" :error-messages="errorMessages.email" />
     <phone-field v-model="user.phone" :error-messages="errorMessages.phone" />
 
-    <submit-button block label="Salvar" />
+    <submit-button block label="Guardar" />
   </v-form>
 </template>
 

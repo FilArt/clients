@@ -7,7 +7,7 @@
     </template>
     <v-card>
       <v-card-title>
-        Añadir nuevo employee
+        Añadir nuevo empleado
         <v-spacer />
         <close-button @click="dialog = false" />
       </v-card-title>
@@ -23,12 +23,12 @@
             label="Role"
             :items="[
               { text: 'Admin', value: 'admin' },
-              { text: 'Agent', value: 'agent' },
+              { text: 'Agente', value: 'agent' },
               { text: 'Tramitacion', value: 'support' },
             ]"
             :error-messages="errorMessages.role"
           />
-          <submit-button block label="Salvar" />
+          <submit-button block label="Guardar" />
         </v-form>
       </v-card-text>
     </v-card>
