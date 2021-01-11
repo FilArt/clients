@@ -52,143 +52,36 @@
 
     <v-divider />
 
-    <v-card-text>
-      <highchart :options="chartOptions" />
-    </v-card-text>
-
-    <v-divider />
-
-    <v-card-text>
-      <highchart :options="options" />
-    </v-card-text>
-
-    <v-card-text v-if="usersLoaded">
-      <highchart :options="usersOptions" />
+    <v-card-text v-if="analytics">
+      <v-list v-for="analytic in Object.keys(analytics)" :key="analytic">
+        <v-list-item>
+          <v-list-item-title>{{ analytic }}</v-list-item-title>
+          <v-list-item-subtitle>{{ analytics[analytic] }}</v-list-item-subtitle>
+        </v-list-item>
+      </v-list>
     </v-card-text>
   </v-card>
 </template>
 
 <script>
-import { eachDayOfInterval, addDays, format } from 'date-fns'
-import constants from '@/lib/constants'
 export default {
   components: {
     AddNewClientDialog: () => import('@/components/dialogs/AddNewClientDialog'),
     DateTimeFilter: () => import('~/components/DateTimeFilter'),
   },
   data() {
-    const fdates = [addDays(new Date(), -30), new Date()].map((d) => format(d, 'yyyy-MM-dd HH:mm'))
     return {
       loading: false,
-      fechaRegistro: { start: fdates[0], end: fdates[1] },
+      analytics: null,
+      fechaRegistro: { start: null, end: null },
       fechaFirma: { start: null, end: null },
       agentsFilter: [],
-      chartOptions: {
-        chart: {
-          // backgroundColor: 'yellow',
-          // plotBackgroundColor: 'indigo',
-          plotBorderWidth: 1,
-          plotShadow: true,
-          type: 'bar',
-        },
-        title: {
-          text: 'Estados',
-        },
-        xAxis: {
-          categories: [],
-        },
-        yAxis: {
-          title: {
-            text: 'Cantidad',
-          },
-          step: 1,
-        },
-        series: [
-          {
-            name: 'Fichas',
-            data: [],
-          },
-        ],
-      },
-      options: {
-        title: {
-          text: 'Registros de usuarios y calculos en los últimos 30 días',
-        },
-        xAxis: {
-          categories: [],
-        },
-        yAxis: {
-          title: {
-            text: 'Número',
-          },
-        },
-        series: [
-          {
-            data: [],
-          },
-          {
-            data: [],
-          },
-        ],
-      },
-      usersOptions: {
-        chart: {
-          plotBackgroundColor: null,
-          plotBorderWidth: null,
-          plotShadow: false,
-          type: 'pie',
-        },
-        tooltip: {
-          pointFormat: '{series.name}: <b>{point.percentage:.1f}%</b>',
-        },
-        accessibility: {
-          point: {
-            valueSuffix: '%',
-          },
-        },
-        plotOptions: {
-          pie: {
-            allowPointSelect: true,
-            cursor: 'pointer',
-            dataLabels: {
-              enabled: true,
-              format: '<b>{point.name}</b>: {point.y}',
-            },
-          },
-        },
-        title: {
-          text: 'Análisis de usuario',
-        },
-        series: [
-          {
-            name: 'Usuarios',
-            colorByPoint: true,
-            data: [
-              {
-                name: 'Clientes',
-                sliced: true,
-                selected: true,
-              },
-              {
-                name: 'Leeds',
-              },
-              {
-                name: 'Visitors',
-              },
-            ],
-          },
-        ],
-      },
-      usersLoaded: false,
     }
   },
 
   async created() {
     await this.$store.dispatch('fetchResponsibles')
     await this.refresh()
-
-    await this.fetchRegistrationsAndCalculos()
-    await this.fetchUsers()
   },
 
   methods: {
@@ -208,47 +101,10 @@ export default {
         .map((k) => k + '=' + params[k])
         .join('&')
       try {
-        const analytics = await this.$axios.$get(`users/manage_users/analytic/?${paramsStr}`)
-        this.chartOptions.xAxis.categories = Object.keys(analytics)
-        this.chartOptions.series[0].data = Object.values(analytics)
+        this.analytics = await this.$axios.$get(`users/manage_users/analytic/?${paramsStr}`)
       } finally {
         this.loading = false
       }
-    },
-    async fetchRegistrationsAndCalculos() {
-      const monthAgo = addDays(new Date(), -30)
-      const monthAgoStr = format(monthAgo, 'yyyy-MM-dd 00:00')
-      const usersData = await this.$axios.$get(
-        `users/users/?fields=date_joined&ordering=date_joined&date_joined__gte=${monthAgoStr}`,
-      )
-      const logsData = await this.$axios.$get(`users/logs/?fields=requested_at&requested_at__gte=${monthAgoStr}`)
-
-      const days = eachDayOfInterval({ start: monthAgo, end: new Date() }).map((d) => format(d, 'dd/MM/yyyy'))
-
-      this.options.series = [
-        {
-          name: `Nuevo usuarios (${usersData.length})`,
-          data: days.map((day) => usersData.filter((item) => item.date_joined === day).length),
-        },
-        {
-          name: `Calculos (${logsData.length})`,
-          data: days.map((day) => logsData.filter((item) => item.requested_at === day).length),
-        },
-      ]
-      this.options.xAxis.categories = days.filter(constants.onlyUnique)
-      // this.options.subtitle.text = `Total: ${usersData.length} usuarios y ${logsData.length} calculos`
-    },
-    async fetchUsers() {
-      const clientsStatuses = [...Object.values(constants.statuses.client)].join(',')
-      const clients = await this.$axios.$get(`users/users/?statuses_in=${clientsStatuses}&page=1&itemsPerPage=1`)
-      const leeds = await this.$axios.$get(`users/users/?statuses_in=${constants.statuses.LEED}&page=1&itemsPerPage=1`)
-      const visitorsCount = (await this.$axios.$get('users/logs/?fields=remote_addr&distinct=remote_addr'))
-        .map((i) => i.remote_addr)
-        .filter(constants.onlyUnique).length
-      this.usersOptions.series[0].data[0].y = clients.count
-      this.usersOptions.series[0].data[1].y = leeds.count
-      this.usersOptions.series[0].data[2].y = visitorsCount
-      this.usersLoaded = true
     },
   },
 }

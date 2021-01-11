@@ -3,6 +3,7 @@ import re
 from typing import Tuple
 
 from django.contrib.auth.models import Group
+from django.db.models import Count, Q
 from drf_dynamic_fields import DynamicFieldsMixin
 from notifications.models import Notification
 from notifications.signals import notify
@@ -56,7 +57,7 @@ from .serializers import (
     CreateClientSerializer,
     UploadToCallVisitSerializer,
 )
-from .utils import ALL_STATUSES
+from .utils import TRAMITACION, PENDIENTE_TRAMITACION, KO, PAGADO, PENDIENTE_PAGO, KO_PAPELLERA
 
 logger = logging.getLogger(__name__)
 
@@ -195,13 +196,21 @@ class ManageUsersViewSet(UserViewSet, mixins.DestroyModelMixin):
 
     @action(methods=["GET"], detail=False, permission_classes=(AdminPermission,))
     def analytic(self, request: Request):
-        clients = CustomUser.objects.with_statuses().filter(role__isnull=True)
-        clients = self.filter_queryset(clients)
-
-        total_bids = "TOTAL SOLICITUDES", sum(client.bids_count for client in clients)
+        clients = self.filter_queryset(CustomUser.objects.with_statuses().filter(role__isnull=True))
+        filters = {
+            "Total en tramitacion": [TRAMITACION, PENDIENTE_TRAMITACION],
+            "Total tramitacion en processo": [TRAMITACION],
+            "Total pendiente tramitacion": [PENDIENTE_TRAMITACION],
+            "Total KO tramitacion": [KO],
+            "Total en facturacion": [PAGADO, PENDIENTE_PAGO],
+            "Total pendiente pago": [PENDIENTE_PAGO],
+            "Total pagado": [PAGADO],
+            "Total en papelera": [KO_PAPELLERA],
+        }
         data = {
-            **{status: clients.filter(status=status).count() for status in ALL_STATUSES},
-            total_bids[0]: total_bids[1],
+            "Total clientes": clients.count(),
+            "Total solicitudes": sum(i.bids_count for i in clients),
+            **{item: clients.filter(status__in=statuses).count() for item, statuses in filters.items()},
         }
         return Response(data)
 
