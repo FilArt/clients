@@ -173,7 +173,7 @@ class UserViewSet(
         return Response(AttachmentSerializer(attachments, many=True).data)
 
 
-class ManageUsersViewSet(UserViewSet, mixins.DestroyModelMixin):
+class ManageUsersViewSet(UserViewSet, mixins.CreateModelMixin, mixins.DestroyModelMixin):
     queryset = CustomUser.objects.all()
     permission_classes = (IsAuthenticated, ManageUserPermission)
 
