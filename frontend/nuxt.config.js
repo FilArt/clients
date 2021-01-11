@@ -71,7 +71,6 @@ export default {
       },
     ],
     'nuxt-compress',
-    ['nuxt-highcharts', { exporting: true }],
     '@nuxtjs/toast',
   ],
   /*
