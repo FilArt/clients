@@ -56,6 +56,7 @@ from .serializers import (
     CreateClientSerializer,
     UploadToCallVisitSerializer,
 )
+from .utils import ALL_STATUSES
 
 logger = logging.getLogger(__name__)
 
@@ -171,7 +172,7 @@ class UserViewSet(
         return Response(AttachmentSerializer(attachments, many=True).data)
 
 
-class ManageUsersViewSet(LoggingMixin, viewsets.ModelViewSet):
+class ManageUsersViewSet(UserViewSet, mixins.DestroyModelMixin):
     queryset = CustomUser.objects.all()
     permission_classes = (IsAuthenticated, ManageUserPermission)
 
@@ -191,6 +192,18 @@ class ManageUsersViewSet(LoggingMixin, viewsets.ModelViewSet):
         ser.is_valid(raise_exception=True)
         clients = ser.data
         return Response("OK")
+
+    @action(methods=["GET"], detail=False, permission_classes=(AdminPermission,))
+    def analytic(self, request: Request):
+        clients = CustomUser.objects.with_statuses().filter(role__isnull=True)
+        clients = self.filter_queryset(clients)
+
+        total_bids = "TOTAL SOLICITUDES", sum(client.bids_count for client in clients)
+        data = {
+            **{status: clients.filter(status=status).count() for status in ALL_STATUSES},
+            total_bids[0]: total_bids[1],
+        }
+        return Response(data)
 
 
 class PuntoViewSet(LoggingMixin, viewsets.ModelViewSet):

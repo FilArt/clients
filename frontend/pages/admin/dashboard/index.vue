@@ -194,13 +194,8 @@ export default {
   methods: {
     async refresh() {
       this.loading = true
-      const params = {
-        responsible__in: this.agentsFilter.join(','),
-        role__isnull: true,
-        statuses_in: [...Object.values(constants.statuses)],
-        ordering: 'date_joined',
-        fields: 'status,bids_count',
-      }
+      const params = {}
+      if (this.agentsFilter && this.agentsFilter.length) params.responsible__in = this.agentsFilter.join(',')
       if (this.fechaRegistro && this.fechaRegistro.end) {
         const { start, end } = this.fechaRegistro
         params.date_joined__range = `${start},${end}`
@@ -213,20 +208,9 @@ export default {
         .map((k) => k + '=' + params[k])
         .join('&')
       try {
-        const totalName = 'TOTAL CLIENTES'
-        const totalBidName = 'TOTAL SOLICITUDES'
-        const clients = await this.$axios.$get(`users/users/?${paramsStr}`)
-        this.chartOptions.xAxis.categories = clients
-          .map((c) => c.status)
-          .filter(constants.onlyUnique)
-          .concat([totalName, totalBidName])
-        this.chartOptions.series[0].data = this.chartOptions.xAxis.categories.map((status) =>
-          status === totalBidName
-            ? clients.map((c) => c.bids_count).reduce((a, b) => a + b)
-            : status === totalName
-            ? clients.length
-            : clients.filter((c) => c.status === status).length,
-        )
+        const analytics = await this.$axios.$get(`users/manage_users/analytic/?${paramsStr}`)
+        this.chartOptions.xAxis.categories = Object.keys(analytics)
+        this.chartOptions.series[0].data = Object.values(analytics)
       } finally {
         this.loading = false
       }

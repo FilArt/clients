@@ -4,6 +4,8 @@ from django.db.models.aggregates import Count
 from django.db.models.fields import CharField
 from django.utils.translation import gettext_lazy as _
 
+from .utils import KO, PENDIENTE_PAGO, PENDIENTE_TRAMITACION, PAGADO, KO_PAPELLERA
+
 
 class CustomUserManager(BaseUserManager):
     """
@@ -51,18 +53,12 @@ class CustomUserManager(BaseUserManager):
         ).annotate(
             status=Case(
                 # When(client_role="leed", then=Value("Leed")), # When(total_bids=0, then=Value("Leed")),
-                When(ko=True, then=Value("KO (papellera)")),
-                When(ko_bids__gt=0, then=Value("KO")),
-                When(touched_bids=0, then=Value("Pendiente tramitacion")),
+                When(ko=True, then=Value(KO_PAPELLERA)),
+                When(ko_bids__gt=0, then=Value(KO)),
+                When(touched_bids=0, then=Value(PENDIENTE_TRAMITACION)),
                 When(ok_bids=0, then=Value("Tramitacion en processo")),
-                When(
-                    Q(unpaid_bids_for_agent__gt=0) | Q(unpaid_bids_for_canal__gt=0),
-                    then=Value("Pendiente Pago"),
-                ),
-                When(
-                    Q(unpaid_bids_for_canal=0) & Q(unpaid_bids_for_agent=0),
-                    then=Value("Pagado"),
-                ),
+                When(Q(unpaid_bids_for_agent__gt=0) | Q(unpaid_bids_for_canal__gt=0), then=Value(PENDIENTE_PAGO),),
+                When(Q(unpaid_bids_for_canal=0) & Q(unpaid_bids_for_agent=0), then=Value(PAGADO),),
                 output_field=CharField(),
             ),
         )
