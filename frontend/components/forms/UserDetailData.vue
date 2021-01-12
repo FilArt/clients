@@ -205,7 +205,7 @@ export default {
       return maybeDate ? parse(maybeDate, DATE_FORMAT, new Date()).toISOString() : null
     },
     formatDate(dt) {
-      if (!dt) return
+      if (!dt || dt.includes('/')) return dt
       try {
         return format(parseISO(dt), DATE_FORMAT)
       } catch (e) {
