@@ -42,7 +42,7 @@ class CustomUser(AbstractUser):
         (None, _("Client")),
         ("support", _("Support")),
         ("admin", _("Admin")),
-        ("agent", _("Agente")),
+        ("agent", _("Agent")),
         ("affiliate", _("Affiliate")),
     )
     SOURCES_CHOICES = (
