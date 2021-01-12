@@ -229,15 +229,15 @@
               :xs="flexs.xs"
             >
               <v-select
-                v-model="statusesIn"
+                v-model="query.statuses_in"
                 label="Estado"
                 :items="statuses"
                 multiple
-                @change="
-                  $event && $event.length
-                    ? updateQuery({ statuses_in: $event })
-                    : updateQuery({ statuses_in: statuses })
-                "
+                chips
+                deletable-chips
+                small-chips
+                clearable
+                @change="updateQuery({ statuses_in: $event })"
               />
             </v-col>
 
@@ -474,7 +474,6 @@ export default {
       flexs: { cols: 12, xl: 3, lg: 3, md: 3, sm: 3, xs: 12 },
       dateJoinedFilter,
       fechaFirmaFilter,
-      statusesIn: [],
       userRoles: Object.values(constants.userRoles),
       role: this.defaultRole,
       users: [],
@@ -487,7 +486,7 @@ export default {
       search: query.search || '',
       query: {
         ...query,
-        statuses_in: this.statuses,
+        statuses_in: query.statuses_in ? query.statuses_in.split(',') : [],
         mustSort: null,
         multiSort: null,
         bids__call: null,
@@ -628,7 +627,6 @@ export default {
     },
     getQuery() {
       const query = constants.cleanEmpty({
-        statuses_in: this.statuses && this.statuses.length ? this.statuses.join(',') : null,
         ...this.query,
         ordering:
           this.query.sortBy instanceof Array
@@ -637,6 +635,7 @@ export default {
         fields: this.headers.join(),
         role__isnull: this.role === 'null' ? true : null,
       })
+      if (!query.statuses_in && this.statuses.length) query.statuses_in = this.statuses.join(',')
       return Object.keys(query)
         .filter((k) => query[k] !== null)
         .map((k) => {
@@ -660,6 +659,7 @@ export default {
       }
     },
     async updateQuery(options) {
+      console.log(options)
       this.query.page = 1
       Object.keys(options).forEach((key) => {
         const value = options[key]
