@@ -1,5 +1,6 @@
 from decimal import Decimal
 
+from django.contrib.auth import get_user_model
 from django.db import transaction
 from django.utils import timezone
 from rest_framework import serializers
@@ -8,6 +9,7 @@ from rest_framework.exceptions import PermissionDenied
 from clients.serializers import BidListSerializer, DetailOfferSerializer, PuntoSerializer
 from clients.utils import humanize
 from .models import Bid, BidStory
+from ..users.utils import PENDIENTE_PAGO
 
 
 class CommissionField(serializers.DecimalField):
@@ -69,6 +71,13 @@ class BidSerializer(BidListSerializer):
             offer = validated_data.pop("offer")
             bid.offer = offer
             bid.save(update_fields=["offer"])
+
+        bid_user = get_user_model().objects.with_statuses().get(id=bid.user_id)
+        status = bid_user.status
+        if status == PENDIENTE_PAGO:
+            bid_user.fecha_firma = timezone.now().date()
+            bid_user.save(update_fields=["fecha_firma"])
+
         return super().update(bid, validated_data)
 
     def save(self, **kwargs):
