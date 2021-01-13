@@ -50,12 +50,12 @@ class SendOfferView(LoggingMixin, views.APIView):
         old["tax"] = tax or "-"
         old["rental"] = rental or "-"
         old["company_name"] = serializer.validated_data["company"].name
-        old["st_c1"] = round(reduce(mul, map(float, (old.get("c1") or 0, old.get("c1_offer") or 0))), 2)
-        old["st_c2"] = round(reduce(mul, map(float, (old.get("c2") or 0, old.get("c2_offer") or 0))), 2)
-        old["st_c3"] = round(reduce(mul, map(float, (old.get("c3") or 0, old.get("c3_offer") or 0))), 2)
-        old["st_p1"] = round(reduce(mul, map(float, (old.get("p1") or 0, old.get("p1_offer") or 0, old["period"]))), 2)
-        old["st_p2"] = round(reduce(mul, map(float, (old.get("p2") or 0, old.get("p2_offer") or 0, old["period"]))), 2)
-        old["st_p3"] = round(reduce(mul, map(float, (old.get("p3") or 0, old.get("p3_offer") or 0, old["period"]))), 2)
+        old["st_c1"] = round(reduce(mul, map(float, (old.get("c1", 1), old.get("c1_offer", 1)))), 2)
+        old["st_c2"] = round(reduce(mul, map(float, (old.get("c2", 1), old.get("c2_offer", 1)))), 2)
+        old["st_c3"] = round(reduce(mul, map(float, (old.get("c3", 1), old.get("c3_offer", 1)))), 2)
+        old["st_p1"] = round(reduce(mul, map(float, (old.get("p1", 1), old.get("p1_offer", 1), old["period"]))), 2)
+        old["st_p2"] = round(reduce(mul, map(float, (old.get("p2", 1), old.get("p2_offer", 1), old["period"]))), 2)
+        old["st_p3"] = round(reduce(mul, map(float, (old.get("p3", 1), old.get("p3_offer", 1), old["period"]))), 2)
         old["st_c"] = sum(map(float, filter(None, [old.get("st_c1"), old.get("st_c2"), old.get("st_c3")])))
         old["st_p"] = sum(map(float, filter(None, [old.get("st_p1"), old.get("st_p2"), old.get("st_p3")])))
         old["oc"] = sum(map(float, filter(None, [old["reactive"], tax, rental, old.get("otros", 0)])))
@@ -83,12 +83,7 @@ class SendOfferView(LoggingMixin, views.APIView):
         new_st_p = round(calculated["st_p1"] + calculated["st_p2"] + calculated["st_p3"], 2)
         new_st_c = round(calculated["st_c1"] + calculated["st_c2"] + calculated["st_c3"], 2)
         new_oc = round(
-            sum(
-                map(
-                    float,
-                    filter(None, [calculated["reactive"], calculated["tax"]["value"], calculated["rental"]]),
-                )
-            ),
+            sum(map(float, filter(None, [calculated["reactive"], calculated["tax"]["value"], calculated["rental"]]),)),
             2,
         )
         ctx = {
@@ -163,13 +158,7 @@ class SendOfferView(LoggingMixin, views.APIView):
                 subject = "Estudio comparativo"
                 plain_message = subject  # strip_tags(html_message)
 
-                email = EmailMessage(
-                    subject,
-                    plain_message,
-                    settings.EMAIL_HOST_USER,
-                    [email_to],
-                    cc=[agent_email],
-                )
+                email = EmailMessage(subject, plain_message, settings.EMAIL_HOST_USER, [email_to], cc=[agent_email],)
                 email.attach_file(pdf_path)
                 email.send()
                 response = HttpResponse("OK")
@@ -178,7 +167,7 @@ class SendOfferView(LoggingMixin, views.APIView):
                 pdf_name = filename.replace("html", "pdf")
                 new_pdf_path = os.path.join(settings.MEDIA_ROOT, pdf_name)
                 shutil.move(pdf_path, new_pdf_path)
-                response = HttpResponse(f'media{new_pdf_path[len(settings.MEDIA_ROOT):]}')
+                response = HttpResponse(f"media{new_pdf_path[len(settings.MEDIA_ROOT):]}")
 
             os.remove(filepath)
 
