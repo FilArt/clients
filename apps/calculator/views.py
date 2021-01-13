@@ -50,10 +50,10 @@ class SendOfferView(LoggingMixin, views.APIView):
         old["tax"] = tax or "-"
         old["rental"] = rental or "-"
         old["company_name"] = serializer.validated_data["company"].name
-        old["st_c1"] = round(reduce(mul, map(float, (old.get("c1", 1), old.get("c1_offer", 1)))), 2)
+        old["st_c1"] = round(reduce(mul, map(float, (old.get("c1", 0), old.get("c1_offer", 0)))), 2)
         old["st_c2"] = round(reduce(mul, map(float, (old.get("c2", 0), old.get("c2_offer", 0)))), 2)
         old["st_c3"] = round(reduce(mul, map(float, (old.get("c3", 0), old.get("c3_offer", 0)))), 2)
-        old["st_p1"] = round(reduce(mul, map(float, (old.get("p1", 1), old.get("p1_offer", 1), old["period"]))), 2)
+        old["st_p1"] = round(reduce(mul, map(float, (old.get("p1", 0), old.get("p1_offer", 0), old["period"]))), 2)
         old["st_p2"] = round(reduce(mul, map(float, (old.get("p2", 0), old.get("p2_offer", 0), old["period"]))), 2)
         old["st_p3"] = round(reduce(mul, map(float, (old.get("p3", 0), old.get("p3_offer", 0), old["period"]))), 2)
         old["st_c"] = sum(map(float, filter(None, [old.get("st_c1"), old.get("st_c2"), old.get("st_c3")])))
