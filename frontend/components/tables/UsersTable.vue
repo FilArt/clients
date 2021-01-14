@@ -369,7 +369,7 @@ export default {
     },
     statuses: {
       type: Array,
-      default: () => null,
+      default: () => [],
     },
     listUrl: {
       type: String,
@@ -635,7 +635,7 @@ export default {
         fields: this.headers.join(),
         role__isnull: this.role === 'null' ? true : null,
       })
-      if (!query.statuses_in && this.statuses.length) query.statuses_in = this.statuses.join(',')
+      if (!query.statuses_in && this.statuses && this.statuses.length) query.statuses_in = this.statuses.join(',')
       return Object.keys(query)
         .filter((k) => query[k] !== null)
         .map((k) => {
