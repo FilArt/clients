@@ -1,4 +1,5 @@
 import logging
+from datetime import datetime
 
 from django.conf import settings
 from django.contrib.auth.base_user import BaseUserManager
@@ -92,9 +93,12 @@ class PrettyDateTimeField(serializers.DateTimeField, serializers.ReadOnlyField):
         return humanize(value, locale=self.context["request"].LANGUAGE_CODE)
 
 
-class DateTimeToDateField(serializers.CharField, serializers.ReadOnlyField):
+class DateTimeToDateField(serializers.CharField, serializers.Field):
     def to_representation(self, value):
         return value.strftime("%d/%m/%Y") if value else "-"
+
+    def to_internal_value(self, data):
+        return datetime.strptime(data, "%d/%m/%Y")
 
 
 class UserListSerializer(DynamicFieldsMixin, serializers.ModelSerializer):

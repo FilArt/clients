@@ -37,7 +37,7 @@
             :append-icon="readonly ? null : 'mdi-content-save'"
             :readonly="readonly"
             dense
-            @click:append="updateUser(date.field, unformatDate(date.value))"
+            @click:append="updateUser(date.field, date.value.includes('/') ? date.value : unformatDate(date.value))"
           />
 
           <!--        <v-select-->
@@ -150,16 +150,16 @@ export default {
           value: user.email,
           field: 'email',
         },
-      ]
-    },
-    datesInfo() {
-      const { user } = this
-      return [
         {
           text: 'CIF/NIF',
           field: 'cif_nif',
           value: user.cif_nif,
         },
+      ]
+    },
+    datesInfo() {
+      const { user } = this
+      return [
         {
           icon: 'mdi-calendar',
           text: 'Ultima entrada',
