@@ -56,6 +56,8 @@ class Command(BaseCommand):
 
                 if not user.email:
                     user.email = f"{cif_nif}@gestiongroup.es"
+                    for line in client_lines:
+                        line["email"] = user.email
 
                 password = BaseUserManager().make_random_password()
                 for line in client_lines:
