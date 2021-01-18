@@ -238,7 +238,7 @@ class UserSerializer(UserListSerializer):
             "phone_city",
             "email",
             "dni",
-            "cif_dni",
+            "cif_nif",
             "legal_representative",
             "date_joined",
             "last_modified",

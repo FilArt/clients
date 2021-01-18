@@ -96,7 +96,7 @@ class AccountSerializer(serializers.ModelSerializer):
             "permissions",
             "role",
             "dni",
-            "cif_dni",
+            "cif_nif",
             "legal_representative",
             "client_role",
             "agent_type",

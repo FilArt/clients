@@ -156,6 +156,11 @@ export default {
       const { user } = this
       return [
         {
+          text: 'CIF/NIF',
+          field: 'cif_nif',
+          value: user.cif_nif,
+        },
+        {
           icon: 'mdi-calendar',
           text: 'Ultima entrada',
           field: 'last_login',
@@ -190,6 +195,7 @@ export default {
       'last_modified',
       'fecha_firma',
       'company_name',
+      'cif_nif',
     ]
     const user = await this.$axios.$get(`users/users/${this.userId}/?fields=${fields}`)
     this.user = user

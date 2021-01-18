@@ -77,7 +77,7 @@ class CustomUser(AbstractUser):
     company_changed_at = models.DateTimeField(verbose_name=_("Company changed at"), null=True, blank=True)
 
     dni = models.CharField(verbose_name=_("DNI"), max_length=255, blank=True, null=True)
-    cif_dni = models.CharField(verbose_name=_("CIF/DNI"), max_length=255, blank=True, null=True, unique=True)
+    cif_nif = models.CharField(verbose_name=_("CIF/NIF"), max_length=255, blank=True, null=True, unique=True)
     legal_representative = models.CharField(
         verbose_name=_("Legal representative"), max_length=255, blank=True, null=True
     )
