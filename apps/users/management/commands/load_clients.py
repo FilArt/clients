@@ -39,6 +39,8 @@ class Command(BaseCommand):
                 if offers.count() > 1 and offers.filter(name__icontains=offer_name).count() == 1:
                     offers = offers.filter(name__icontains=offer_name)
                 offer = offers.first()
+                if not offer:
+                    raise Exception("No hay oferta con este nombre")
 
                 user = CustomUser()
                 keys = [field.name for field in getattr(CustomUser, "_meta").fields if field.name in client_lines[0]]
