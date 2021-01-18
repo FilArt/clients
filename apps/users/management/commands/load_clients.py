@@ -14,6 +14,7 @@ class Command(BaseCommand):
 
     def add_arguments(self, parser):
         parser.add_argument("file", type=str)
+        parser.add_argument("update", type=bool)
 
     def handle(self, *args, **options):
         with open(options["file"]) as f:
@@ -43,6 +44,16 @@ class Command(BaseCommand):
                     raise Exception("No hay oferta con este nombre")
 
                 user = CustomUser()
+                agent = {line["agent"] for line in client_lines}.pop()
+                try:
+                    agent = CustomUser.objects.get(role="agent", id=agent)
+                except CustomUser.DoesNotExist:
+                    agent = CustomUser.objects.create_user(
+                        email=f"ne-{agent}@gestiongroup.es",
+                        password=BaseUserManager().make_random_password(),
+                        role="agent",
+                    )
+                user.responsible = agent
                 keys = [field.name for field in getattr(CustomUser, "_meta").fields if field.name in client_lines[0]]
                 for key in keys:
                     for line in client_lines:
