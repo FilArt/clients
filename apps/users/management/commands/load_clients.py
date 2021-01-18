@@ -113,7 +113,7 @@ class Command(BaseCommand):
                         if company == repsol:
                             offer = repsol_offer
                         elif duplicate:
-                            offer = duplicate.puntos.first().offer
+                            offer = duplicate.puntos.first().bid.first().offer
                         else:
                             raise Exception(f"No hay oferta con este nombre: {offer_name}")
 
