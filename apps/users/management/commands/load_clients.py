@@ -24,7 +24,7 @@ class Command(BaseCommand):
             lines = list(reader)
 
         result_lines = []
-        cif_nif_list = set([line["cif_nif"] for line in lines if line.get("cif_nif")][:500])
+        cif_nif_list = set([line["cif_nif"] for line in lines if line.get("cif_nif")])
 
         repsol, _ = Company.objects.get_or_create(name="REPSOL")
         try:
@@ -47,7 +47,7 @@ class Command(BaseCommand):
                 else:
                     user = CustomUser()
 
-                    agent = {line["agent"] for line in client_lines if line["agent"] != "16"}
+                    agent = {line["agent"] for line in client_lines if line["agent"]}
                     if len(agent) != 1 and len(agent) != 0:
                         raise Exception("Different agents")
                     if agent:
