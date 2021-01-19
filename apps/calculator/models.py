@@ -161,13 +161,11 @@ class Offer(models.Model):
     canal_commission = models.DecimalField(max_digits=6, decimal_places=2, default=0)
     agent_commission = models.DecimalField(max_digits=6, decimal_places=2, default=0)
     required_fields = ArrayField(
-        models.CharField(max_length=30, choices=REQUIRED_FIELD_CHOICES),
-        blank=True,
-        null=True,
+        models.CharField(max_length=30, choices=REQUIRED_FIELD_CHOICES), blank=True, null=True,
     )
 
     def __str__(self) -> str:
-        return self.name
+        return f'{self.name} ({self.id if hasattr(self, "id") else ""})'
 
     @staticmethod
     def get_blank_offer():
