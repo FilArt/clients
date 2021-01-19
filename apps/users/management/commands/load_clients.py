@@ -5,6 +5,7 @@ from typing import Optional
 from django.contrib.auth.base_user import BaseUserManager
 from django.core.management.base import BaseCommand
 from django.db.models import Q
+from tqdm import tqdm
 
 from apps.bids.models import Bid
 from apps.calculator.models import Offer, Company
@@ -25,7 +26,9 @@ class Command(BaseCommand):
 
         result_lines = []
         cif_nif_list = set([line["cif_nif"] for line in lines if line.get("cif_nif")])
+        pb = tqdm(total=len(cif_nif_list))
 
+        blank_offer: Offer = Offer.get_blank_offer()
         repsol, _ = Company.objects.get_or_create(name="REPSOL")
         try:
             repsol_offer = Offer.objects.get(id=5002)
@@ -36,7 +39,7 @@ class Command(BaseCommand):
             client_lines = [{**line, "error": "", "password": ""} for line in lines if line["cif_nif"] == cif_nif]
 
             duplicate: Optional[CustomUser] = None
-            emails = [line["email"] for line in client_lines]
+            emails = [em for em in [line["email"] for line in client_lines] if em]
             duplicates, already_present = CustomUser.objects.filter(Q(cif_nif=cif_nif) | Q(email__in=emails)), False
             if duplicates.exists():
                 duplicate = duplicates.first()
@@ -48,19 +51,16 @@ class Command(BaseCommand):
                     user = CustomUser()
 
                     agents = {
-                        agent
-                        for agent in {line["agent"] for line in client_lines}
-                        if agent and str(agent).isdigit()
+                        agent for agent in {line["agent"] for line in client_lines} if agent and str(agent).isdigit()
                     }
                     if agents:
-                        agent = agent.pop()
+                        agent = agents.pop()
+                        email = f"ne-{agent}@gestiongroup.es"
                         try:
-                            agent = CustomUser.objects.get(role="agent", id=agent)
+                            agent = CustomUser.objects.get(Q(id=agent) | Q(email=email), role="agent")
                         except CustomUser.DoesNotExist:
                             agent = CustomUser.objects.create_user(
-                                email=f"ne-{agent}@gestiongroup.es",
-                                password=BaseUserManager().make_random_password(),
-                                role="agent",
+                                email=email, password=BaseUserManager().make_random_password(), role="agent",
                             )
                     else:
                         agent = None
@@ -99,7 +99,8 @@ class Command(BaseCommand):
                     try:
                         company = Company.objects.get(name__icontains=company_name)
                     except Company.DoesNotExist:
-                        raise Exception(f"No hay comercializadora con este nombre: {company_name}")
+                        company = blank_offer.company
+
                     offer_name = line["offer"]
                     if offer_name:
                         tarif = line["tarif_luz"]
@@ -114,11 +115,13 @@ class Command(BaseCommand):
                     if not offer:
                         if company == repsol:
                             offer = repsol_offer
-                        elif duplicate:
-                            offer = duplicate.puntos.first().bid.first().offer
-                        else:
-                            offer = Offer.get_blank_offer()
-                            # raise Exception(f"No hay oferta con este nombre: {offer_name}")
+                        elif duplicate and duplicate.puntos.count():
+                            for punto in duplicate.puntos.all():
+                                for bid in punto.bid.all():
+                                    if bid.offer:
+                                        offer = bid.offer
+                    if not offer:
+                        offer = blank_offer
 
                     bid = Bid(user=user, offer=offer, doc=True, scoring=True, call=True, paid=True, canal_paid=True)
                     if offer.company.offer_status_used:
@@ -130,6 +133,10 @@ class Command(BaseCommand):
                     postalcode = punto_data["postalcode"]
                     if len(postalcode) == 4:
                         punto_data["postalcode"] = f"0{postalcode}"
+
+                    for n in range(1, 4):
+                        pn = punto_data[f"p{n}"]
+                        punto_data[f"p{n}"] = pn or None
 
                     cupses = [cups for cups in [line["cups_luz"], line["cups_gas"]] if cups]
 
@@ -147,6 +154,8 @@ class Command(BaseCommand):
                     line["error"] = str(e)
 
             result_lines.extend(client_lines)
+
+            pb.update()
 
         fieldnames = list(result_lines[0].keys())
         with open("result.csv", "w") as f:
