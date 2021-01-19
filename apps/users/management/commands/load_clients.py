@@ -115,7 +115,8 @@ class Command(BaseCommand):
                         elif duplicate:
                             offer = duplicate.puntos.first().bid.first().offer
                         else:
-                            raise Exception(f"No hay oferta con este nombre: {offer_name}")
+                            offer = Offer.get_blank_offer()
+                            #raise Exception(f"No hay oferta con este nombre: {offer_name}")
 
                     bid = Bid(user=user, offer=offer, doc=True, scoring=True, call=True, paid=True, canal_paid=True)
                     if offer.company.offer_status_used:
