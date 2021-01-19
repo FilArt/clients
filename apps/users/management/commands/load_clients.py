@@ -47,10 +47,12 @@ class Command(BaseCommand):
                 else:
                     user = CustomUser()
 
-                    agent = {line["agent"] for line in client_lines if line["agent"]}
-                    if len(agent) != 1 and len(agent) != 0:
-                        raise Exception("Different agents")
-                    if agent:
+                    agents = {
+                        agent
+                        for agent in {line["agent"] for line in client_lines}
+                        if agent and str(agent).isdigit()
+                    }
+                    if agents:
                         agent = agent.pop()
                         try:
                             agent = CustomUser.objects.get(role="agent", id=agent)
@@ -116,7 +118,7 @@ class Command(BaseCommand):
                             offer = duplicate.puntos.first().bid.first().offer
                         else:
                             offer = Offer.get_blank_offer()
-                            #raise Exception(f"No hay oferta con este nombre: {offer_name}")
+                            # raise Exception(f"No hay oferta con este nombre: {offer_name}")
 
                     bid = Bid(user=user, offer=offer, doc=True, scoring=True, call=True, paid=True, canal_paid=True)
                     if offer.company.offer_status_used:
