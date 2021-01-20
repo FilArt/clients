@@ -21,12 +21,16 @@
 
     <v-card-text>
       <v-tabs v-model="tabs" centered>
+        <v-tab>Tramitacion</v-tab>
         <v-tab :disabled="!bids.length">Solicitud ({{ bids.length }})</v-tab>
         <v-tab :disabled="!calls.length"> Llamadas ({{ calls.length }}) </v-tab>
         <v-tab :disabled="!history.length">Historia ({{ history.length }})</v-tab>
         <v-tab :disabled="!puntos.length"> Puntos suministros ({{ puntos.length }}) </v-tab>
 
         <v-tabs-items v-model="tabs">
+          <v-tab-item>
+            <solicitudes-process :user="user" @bid-added="refresh" @tramitate="refresh" />
+          </v-tab-item>
           <v-tab-item>
             <v-container>
               <v-toolbar>
@@ -83,6 +87,7 @@
 <script>
 export default {
   components: {
+    SolicitudesProcess: () => import('@/components/SolicitudesProcess'),
     AddNewBidDialog: () => import('@/components/dialogs/AddNewBidDialog'),
     Chat: () => import('~/components/chat/Chat'),
     PuntosList: () => import('~/components/puntos/PuntosList'),
@@ -114,6 +119,11 @@ export default {
     }
   },
   methods: {
+    async refresh() {
+      const user = await this.$axios.$get(`/users/users/${this.$route.params.id}/`)
+      this.user = user
+      this.bids = user.bids
+    },
     async fetchPuntos() {
       this.puntos = await this.$axios.$get(`/users/puntos/?user=${this.$route.params.id}`)
     },
