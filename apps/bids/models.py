@@ -19,8 +19,8 @@ class Bid(models.Model):
     DEFAULT_STATUS = "Pendiente tramitacion"
     IN_TRAMITACION = "Tramitacion en processo"
     OFFER_STATUS_CHOICES = (
-        (0, 'FIRMADA'),
-        (1, 'PTE FIRMAR'),
+        (0, "FIRMADA"),
+        (1, "PTE FIRMAR"),
     )
 
     user = models.ForeignKey(get_user_model(), on_delete=models.CASCADE, related_name="bids")
@@ -55,7 +55,7 @@ class Bid(models.Model):
             if not by.is_client:
                 if not self.paid:
                     return "Pendiente Pago (agente)"
-                elif self.user.responsible.canal and not self.canal_paid:
+                elif self.user.responsible and self.user.responsible.canal and not self.canal_paid:
                     return "Pendiente Pago (canal)"
             return "OK" if by.is_client else "Pagado"
 
