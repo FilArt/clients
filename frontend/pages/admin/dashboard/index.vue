@@ -79,13 +79,13 @@ export default {
     }
   },
 
-  async created() {
+  async mounted() {
     await this.$store.dispatch('fetchResponsibles')
     await this.refresh()
   },
-
   methods: {
     async refresh() {
+      if (this.loading) return
       this.loading = true
       const params = {}
       if (this.agentsFilter && this.agentsFilter.length) params.responsible__in = this.agentsFilter.join(',')
