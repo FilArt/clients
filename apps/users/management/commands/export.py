@@ -8,7 +8,7 @@ from apps.users.models import CustomUser, Punto
 
 HEADERS = (
     "type",
-    "cif_dni",
+    "cif_nif",
     "user_id",
     "id",
     "name",
