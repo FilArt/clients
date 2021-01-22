@@ -66,8 +66,7 @@ class Command(BaseCommand):
         for client in clients:
             client_puntos: List[Punto] = client.puntos.all()
             rows = [
-                {"type": "user",
-                 **{header: getattr(client, header) for header in HEADERS if hasattr(client, header)}, },
+                {"type": "user", **{header: getattr(client, header) for header in HEADERS if hasattr(client, header)},},
                 *[
                     {
                         "type": "punto",
