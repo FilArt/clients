@@ -107,7 +107,17 @@ class UserViewSet(
 ):
     queryset = CustomUser.objects.all()
     permission_classes = (IsAuthenticated, UsersPermission)
-    search_fields = ("company_name", "first_name", "last_name", "email", "phone")
+    search_fields = (
+        "id",
+        "company_name",
+        "first_name",
+        "last_name",
+        "email",
+        "phone",
+        "puntos__cups_luz",
+        "puntos__cups_gas",
+        "cif_nif",
+    )
     pagination_class = UsersPagination
     filterset_fields = {
         "role": ["exact", "isnull", "in"],

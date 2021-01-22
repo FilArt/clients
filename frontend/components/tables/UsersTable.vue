@@ -98,7 +98,7 @@
                 :disabled="loading"
                 append-icon="mdi-database-search"
                 label="Buscar"
-                hint="buscar por nombre, número de teléfono o correo electrónico"
+                hint="Buscar por id, cups, CIF/DNI, número de teléfono o correo electrónico"
                 persistent-hint
                 single-line
                 @click:append="updateQuery({ search: search })"
@@ -659,7 +659,6 @@ export default {
       }
     },
     async updateQuery(options) {
-      console.log(options)
       this.query.page = 1
       Object.keys(options).forEach((key) => {
         const value = options[key]
