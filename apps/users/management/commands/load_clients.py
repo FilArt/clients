@@ -1,3 +1,5 @@
+import csv
+from itertools import groupby
 from operator import itemgetter
 
 import pandas
@@ -33,24 +35,28 @@ class Command(BaseCommand):
         parser.add_argument("file", type=str)
 
     def handle(self, *args, **options):
-        df = pandas.read_excel(options["file"], dtype={"postalcode": str}, parse_dates=True)
+        errors = []
+
+        df: pandas.DataFrame = pandas.read_excel(options["file"], dtype={"postalcode": str}, parse_dates=True)
         df.dropna(axis=0, how="all", thresh=None, subset=None, inplace=True)
         df.fillna(value="", inplace=True)
+        df.sort_values("cif_nif", inplace=True)
+        lines = df.to_dict(orient="records")[:100]
 
-        lines = df.to_dict(orient="records")
-        users_lines = [_l for _l in lines if _l["type"] == "user"]
-        puntos_lines = [_l for _l in lines if _l["type"] == "punto"]
-        del lines
+        getter = itemgetter("cif_nif")
+        objects = {cif_nif: list(g) for cif_nif, g in groupby(lines, key=getter)}
 
-        pb = tqdm(total=len(users_lines))
+        pb = tqdm(total=len(objects))
 
-        for user_line in users_lines:
-            user_lines = [_l for _l in puntos_lines if _l["cif_nif"] == user_line["cif_nif"]]
+        for cif_nif, items in objects.items():
+            user_items = [i for i in items if i["type"] == "user"]
+            if len(user_items) != 1:
+                user_items = [items[0]]
 
             with transaction.atomic():
-                user = self._create_user(user_line)
+                user = self._create_user(user_items[0])
 
-                for punto_data in user_lines:
+                for punto_data in [i for i in items if i["type"] == "punto"]:
                     offer_id = punto_data.get("oferta_gas_id") or punto_data.get("oferta_luz_id")
                     offer = Offer.objects.get(id=int(offer_id))
                     bid = create_bid(user, offer)
@@ -58,8 +64,14 @@ class Command(BaseCommand):
 
             pb.update()
 
+        if errors:
+            with open("errors.csv", "w") as f:
+                w = csv.DictWriter(f, fieldnames=["cif_nif", "error"])
+                w.writeheader()
+                w.writerows(errors)
+
     def _create_user(self, user_data: dict) -> CustomUser:
-        user_id, cif_nif = user_data.pop("id"), user_data.pop("cif_nif")
+        user_id, cif_nif = user_data.get("id"), user_data.get("cif_nif")
         email = user_data.get("email")
         auto_email = f"{cif_nif}@gestiongroup.es"
         user = None
@@ -98,7 +110,7 @@ class Command(BaseCommand):
                     continue
                 elif field.endswith("_id"):
                     if field in ("responsible_id", "canal_id", "invited_by_id"):
-                        value = CustomUser.objects.get(**{field: value})
+                        value = CustomUser.objects.get(id=value)
                     elif field.startswith("company"):
                         value = Company.objects.get(id=value)
                     elif field.startswith("oferta"):
