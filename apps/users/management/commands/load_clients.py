@@ -1,3 +1,5 @@
+from operator import itemgetter
+
 import pandas
 from django.contrib.auth.base_user import BaseUserManager
 from django.core.management.base import BaseCommand
@@ -31,29 +33,26 @@ class Command(BaseCommand):
         parser.add_argument("file", type=str)
 
     def handle(self, *args, **options):
-        df = pandas.read_excel(options["file"], parse_dates=True)
+        df = pandas.read_excel(options["file"], dtype={"postalcode": str}, parse_dates=True)
         df.dropna(axis=0, how="all", thresh=None, subset=None, inplace=True)
         df.fillna(value="", inplace=True)
 
         lines = df.to_dict(orient="records")
-        users_cifs = {line["cif_nif"] for line in lines if line["type"] == "user" if line["cif_nif"]}
-        pb = tqdm(total=len(users_cifs))
+        users_lines = [_l for _l in lines if _l["type"] == "user"]
+        puntos_lines = [_l for _l in lines if _l["type"] == "punto"]
+        del lines
 
-        for cif_nif in users_cifs:
-            user_lines = [line for line in lines if cif_nif == line["cif_nif"]]
-            user_line = None
-            for index, line in enumerate(user_lines):
-                if line["type"] == "user":
-                    user_line = user_lines.pop(index)
-            if not user_line:
-                raise Exception("no user line...")
+        pb = tqdm(total=len(users_lines))
+
+        for user_line in users_lines:
+            user_lines = [_l for _l in puntos_lines if _l["cif_nif"] == user_line["cif_nif"]]
 
             with transaction.atomic():
                 user = self._create_user(user_line)
 
                 for punto_data in user_lines:
-                    offer_id = punto_data.get("oferta_luz_id", punto_data.get("oferta_gas_id"))
-                    offer = Offer.objects.get(id=offer_id)
+                    offer_id = punto_data.get("oferta_gas_id") or punto_data.get("oferta_luz_id")
+                    offer = Offer.objects.get(id=int(offer_id))
                     bid = create_bid(user, offer)
                     self._create_punto(user, bid, punto_data)
 
@@ -104,6 +103,8 @@ class Command(BaseCommand):
                         value = Company.objects.get(id=value)
                     elif field.startswith("oferta"):
                         value = Offer.objects.get(id=value)
+                elif isinstance(value, str) and "\xa0" in value:
+                    value = value.replace("\xa0", "")
 
                 setattr(user, field, value)
 
@@ -156,8 +157,10 @@ class Command(BaseCommand):
                 value = punto_data.get(field)
 
             if value:
-                if "consumo" in field and "kw" in value.lower():
-                    value = value.lower().strip(" kw")
+                if "consumo" in field and "k" in value.lower():
+                    value = value.lower().strip(" kwm")
+                if field in ("p1", "p2", "p3", "c1", "c2", "c3"):
+                    value = value.replace(" ", "").replace("\xa0", "")
                 setattr(punto, field, value)
 
         try:
