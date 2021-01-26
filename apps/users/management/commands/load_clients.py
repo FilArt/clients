@@ -177,8 +177,8 @@ class Command(BaseCommand):
                 value = punto_data.get(field)
 
             if value:
-                if "consumo" in field and "k" in value.lower():
-                    value = value.lower().strip(" kwm")
+                if "consumo" in field and "k" in value.lower() or "w" in value.lower():
+                    value = value.lower().rstrip(" kwm")
                 if field in ("p1", "p2", "p3", "c1", "c2", "c3"):
                     value = value.replace(" ", "").replace("\xa0", "")
                 setattr(punto, field, value)
