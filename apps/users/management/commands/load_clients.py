@@ -132,9 +132,11 @@ class Command(BaseCommand):
 
         punto_fields = [field.name for field in getattr(Punto, "_meta").fields if field.name != "id"]
         punto_data = {k: v for k, v in punto_data.items() if k in punto_fields}
-        postalcode = str(int(punto_data["postalcode"]))
-        if len(postalcode) == 4:
-            punto_data["postalcode"] = f"0{postalcode}"
+        postalcode = punto_data["postalcode"]
+        if postalcode and postalcode.isdigit():
+            postalcode = str(int())
+            if len(postalcode) == 4:
+                punto_data["postalcode"] = f"0{postalcode}"
 
         cupses = [cups for cups in [punto_data["cups_luz"], punto_data["cups_gas"]] if cups]
 
