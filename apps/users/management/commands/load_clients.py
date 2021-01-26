@@ -92,13 +92,7 @@ class Command(BaseCommand):
             user_fields = [field.name for field in getattr(CustomUser, "_meta").fields if field.name != "id"]
             user = CustomUser()
             for field in user_fields:
-                value = user_data.get(field)
-                if not value:
-                    if field == "email":
-                        value = auto_email
-                    else:
-                        continue
-                elif field in (
+                if field in (
                     "responsible",
                     "canal",
                     "invited_by",
@@ -107,7 +101,15 @@ class Command(BaseCommand):
                     "oferta_luz",
                     "oferta_gas",
                 ):
-                    continue
+                    field += "_id"
+
+                value = user_data.get(field)
+                if not value:
+                    if field == "email":
+                        value = auto_email
+                    else:
+                        continue
+
                 elif field.endswith("_id"):
                     if field in ("responsible_id", "canal_id", "invited_by_id"):
                         value = CustomUser.objects.get(id=value)
@@ -115,6 +117,8 @@ class Command(BaseCommand):
                         value = Company.objects.get(id=value)
                     elif field.startswith("oferta"):
                         value = Offer.objects.get(id=value)
+                    field = field[:-3]
+
                 elif isinstance(value, str) and "\xa0" in value:
                     value = value.replace("\xa0", "")
 
