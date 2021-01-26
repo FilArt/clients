@@ -56,11 +56,15 @@ class Command(BaseCommand):
             with transaction.atomic():
                 user = self._create_user(user_items[0])
 
-                for punto_data in [i for i in items if i["type"] == "punto"]:
+                puntos_items = [i for i in items if i["type"] == "punto"]
+                if not puntos_items:
+                    puntos_items = user_items
+                for punto_data in puntos_items:
                     offer_id = punto_data.get("oferta_gas_id") or punto_data.get("oferta_luz_id")
-                    offer = Offer.objects.get(id=int(offer_id))
-                    bid = create_bid(user, offer)
-                    self._create_punto(user, bid, punto_data)
+                    if offer_id:
+                        offer = Offer.objects.get(id=int(offer_id))
+                        bid = create_bid(user, offer)
+                        self._create_punto(user, bid, punto_data)
 
             pb.update()
 
