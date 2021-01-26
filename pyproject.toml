@@ -36,6 +36,8 @@ requests = "^2.25.1"
 poetry = "^1.1.4"
 setuptools = "^51.1.2"
 tqdm = "^4.56.0"
+pandas = "^1.2.1"
+openpyxl = "^3.0.6"
 
 [tool.poetry.dev-dependencies]
 flake8 = "^3.8.3"

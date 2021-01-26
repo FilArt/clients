@@ -371,6 +371,7 @@ class FastContractSerializer(serializers.ModelSerializer):
             else:
                 invited_by = CustomUser.objects.get(email=from_user)
 
+            # TODO: добавить обработку старых клиентов (обновление)
             user = user_ser.save(
                 password=BaseUserManager().make_random_password(),
                 invited_by=invited_by,
