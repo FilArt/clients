@@ -42,12 +42,7 @@ class CalculatorSerializer(serializers.ModelSerializer):
     p2 = PotenciaField()
     p3 = PotenciaField()
     current_price = serializers.FloatField(min_value=0, validators=[positive_number])
-    reactive = serializers.FloatField(
-        min_value=0,
-        allow_null=True,
-        required=False,
-        validators=[casi_positive_number],
-    )
+    reactive = serializers.FloatField(min_value=0, allow_null=True, required=False, validators=[casi_positive_number],)
     igic = serializers.BooleanField(write_only=True)
 
     c_st_c1 = ConsumoCalculationField()
@@ -155,7 +150,7 @@ class CalculatorSerializer(serializers.ModelSerializer):
         current_price = Value(new_current_price or data["current_price"], output_field=models.FloatField())
         reactive = Value(data.get("reactive", 0), output_field=models.FloatField())
 
-        offers = Offer.objects.exclude(company=data["company"])
+        offers = Offer.objects.exclude(company=data["company"]).filter(c1__isnull=False, p1__isnull=False)
         many = True
         if data.get("id"):
             many = False
@@ -170,9 +165,7 @@ class CalculatorSerializer(serializers.ModelSerializer):
             client_type=data["client_type"],
             tarif=data["tarif"],
             kind=kind,
-        ).annotate(
-            st_c1=F("c1") * Value(c1),
-        )
+        ).annotate(st_c1=F("c1") * Value(c1),)
         if is_luz:
             qs = (
                 qs.filter(
@@ -192,28 +185,18 @@ class CalculatorSerializer(serializers.ModelSerializer):
             )
         else:
             qs = qs.annotate(
-                st_p1=F("p1") * Value(data["period"]),
-                st_c2=zero,
-                st_c3=zero,
-                st_p2=zero,
-                st_p3=zero,
+                st_p1=F("p1") * Value(data["period"]), st_c2=zero, st_c3=zero, st_p2=zero, st_p3=zero,
             ).annotate(subtotal=F("st_c1") + F("st_p1"))
 
         qs = (
-            qs.annotate(
-                after_rental=F("subtotal") + Value(rental),
-            )
+            qs.annotate(after_rental=F("subtotal") + Value(rental),)
             .annotate(
                 tax=F("subtotal") * Value(calculator_settings.tax if is_luz else calculator_settings.carbon_tax),
                 iva=F("after_rental") * nds,
             )
-            .annotate(
-                pre_total=F("after_rental") + F("iva") + F("tax"),
-            )
+            .annotate(pre_total=F("after_rental") + F("iva") + F("tax"),)
             .annotate(total=F("pre_total") + reactive if is_luz else F("pre_total"))
-            .annotate(
-                profit=-F("total") + current_price,
-            )
+            .annotate(profit=-F("total") + current_price,)
             .annotate(
                 annual_profit=F("profit") / Value(data["period"]) * Value(365),
                 profit_percent=F("profit") / current_price * Value(100),
