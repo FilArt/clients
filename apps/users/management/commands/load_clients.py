@@ -181,7 +181,7 @@ class Command(BaseCommand):
                     value = str(value).lower()
                     if "k" in value or "w" in value:
                         value = value.rstrip(" kwm")
-                    value = float(value)
+                    value = float(value.replace("\xa0", ""))
                 if field in ("p1", "p2", "p3", "c1", "c2", "c3"):
                     value = value.replace(" ", "").replace("\xa0", "")
                 setattr(punto, field, value)
