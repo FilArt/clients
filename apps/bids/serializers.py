@@ -130,15 +130,11 @@ class CreateBidSerializer(serializers.ModelSerializer):
 
 
 class BidStorySerializer(serializers.ModelSerializer):
-    dt = serializers.SerializerMethodField()
     user = serializers.SerializerMethodField()
 
     class Meta:
         model = BidStory
         fields = "__all__"
-
-    def get_dt(self, instance: BidStory):
-        return humanize(instance.dt, locale=self.context["request"].LANGUAGE_CODE)
 
     def get_user(self, instance: BidStory):
         if instance.user == self.context["request"].user:
