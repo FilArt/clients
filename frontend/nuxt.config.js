@@ -80,6 +80,11 @@ export default {
   axios: {
     browserBaseURL: !DEV ? 'https://areaclientes.gestiongroup.es/api' : `${BACKEND_HOST}/api`,
     proxy: true,
+    headers: {
+      common: {
+        'Django-Timezone': Intl.DateTimeFormat().resolvedOptions().timeZone,
+      },
+    },
   },
   proxy: {
     '/api/': !DEV ? 'https://areaclientes.gestiongroup.es/' : BACKEND_HOST,

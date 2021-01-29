@@ -47,6 +47,7 @@ djangorestframework-stubs = "^1.2.0"
 lxml = "^4.5.2"
 black = {version = "^20.8b1", allow-prereleases = true}
 flake8-mypy = "^17.8.0"
+Cython = "^0.29.21"
 
 [tool.black]
 line-length = 120

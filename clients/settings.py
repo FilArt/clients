@@ -15,6 +15,8 @@ import os
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 from datetime import timedelta
 
+from corsheaders.defaults import default_headers
+
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 # Quick-start development settings - unsuitable for production
@@ -63,6 +65,7 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
+    "clients.middleware.TimezoneMiddleware",
 ]
 
 LOCALE_PATHS = (
@@ -153,6 +156,9 @@ SIMPLE_JWT = {
 }
 
 CORS_ORIGIN_ALLOW_ALL = True
+CORS_ALLOW_HEADERS = list(default_headers) + [
+    "django-timezone",
+]
 
 OFFERS_SHEET_URL = ""
 GOOGLE_SERVICE_ACCOUNT_CREDS = "~/.config/gspread/service_account.json"
@@ -176,7 +182,6 @@ TELEGRAM_CHAT_ID = ""
 
 # drf tracking
 DRF_TRACKING_ADMIN_LOG_READONLY = False
-
 
 # calls
 CALLS_STORAGE_PATH = "/freeswitch_recordings"
