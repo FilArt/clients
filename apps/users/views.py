@@ -2,6 +2,7 @@ import os
 
 from django.conf import settings
 from rest_framework.decorators import api_view
+from rest_framework.exceptions import PermissionDenied
 from rest_framework.generics import get_object_or_404
 from rest_framework.request import Request
 from rest_framework.response import Response
@@ -19,6 +20,8 @@ def get_me(request: Request):
 
 @api_view()
 def get_calls(request: Request, user_id):
+    if not request.user.role == "admin":
+        raise PermissionDenied
     user = get_object_or_404(CustomUser, pk=user_id)
     phones = [phone for phone in [user.phone, user.phone_city] if phone]
 
