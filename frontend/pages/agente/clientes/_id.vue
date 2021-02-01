@@ -22,7 +22,6 @@
     <v-card-text>
       <v-tabs v-model="tabs" centered>
         <v-tab :disabled="!bids.length">Solicitud ({{ bids.length }})</v-tab>
-        <v-tab :disabled="!calls.length">Llamadas ({{ calls.length }})</v-tab>
         <v-tab :disabled="!history.length">Historia ({{ history.length }})</v-tab>
         <v-tab :disabled="!puntos.length">Puntos suministros ({{ puntos.length }})</v-tab>
 
@@ -56,16 +55,6 @@
           </v-tab-item>
 
           <v-tab-item>
-            <v-list>
-              <v-list-item v-for="call in calls" :key="call.id">
-                <v-list-item-content>
-                  <audio :src="call" type="audio/mp3" controls></audio>
-                </v-list-item-content>
-              </v-list-item>
-            </v-list>
-          </v-tab-item>
-
-          <v-tab-item>
             <history-list :history="history" />
           </v-tab-item>
 
@@ -92,12 +81,6 @@ export default {
   async asyncData({ params, $axios }) {
     const user = await $axios.$get(`/users/users/${params.id}/?fields=phone,phone_city,email,avatar,bids`)
 
-    const phoneNumbers = [user.phone, user.phone_city].filter((p) => p)
-    let calls = []
-    if (phoneNumbers.length) {
-      calls = await $axios.$get(`users/calls/${params.id}`)
-    }
-
     const participant = {
       id: params.id,
       name: user.email,
@@ -106,7 +89,6 @@ export default {
     return {
       user,
       participant,
-      calls,
       bids: user.bids,
       puntos: await $axios.$get(`/users/puntos/?user=${params.id}`),
       history: await $axios.$get(`/bids/history/?user=${params.id}`),
