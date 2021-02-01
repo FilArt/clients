@@ -26,7 +26,6 @@ from clients.serializers import (
     DetailPuntoSerializer,
     WithFacturaContractOnlineSerializer,
     FastContractSerializer,
-    FastContractAttachmentsSerializer,
     AgentContractSerializer,
 )
 from .models import Attachment, CustomUser, Punto
@@ -410,12 +409,6 @@ class AgentContractViewSet(LoggingMixin, viewsets.ModelViewSet):
 
         initial_data["puntos"] = list(puntos_by_idx.values())
         return initial_data
-
-
-class FastContractImagesViewSet(LoggingMixin, viewsets.ModelViewSet):
-    queryset = Attachment.objects.all()
-    permission_classes: Tuple = tuple()
-    serializer_class = FastContractAttachmentsSerializer
 
 
 class RequestLogViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):

@@ -8,32 +8,10 @@ class CustomUserAdmin(UserAdmin):
     fieldsets = (
         (
             None,
-            {
-                "fields": (
-                    "email",
-                    "password",
-                    "role",
-                    "client_role",
-                    "avatar",
-                    "responsible",
-                    "source",
-                    "invited_by",
-                )
-            },
+            {"fields": ("email", "password", "role", "client_role", "avatar", "responsible", "source", "invited_by",)},
         ),
         (_("Personal info"), {"fields": ("company_name", "first_name", "last_name", "phone")}),
-        (
-            _("Permissions"),
-            {
-                "fields": (
-                    "is_active",
-                    "is_staff",
-                    "is_superuser",
-                    "groups",
-                    "user_permissions",
-                )
-            },
-        ),
+        (_("Permissions"), {"fields": ("is_active", "is_staff", "is_superuser", "groups", "user_permissions",)},),
         (_("Important dates"), {"fields": ("last_login", "date_joined")}),
     )
     add_fieldsets = (
@@ -52,7 +30,7 @@ class CustomUserAdmin(UserAdmin):
         "date_joined",
     )
     list_filter = ("is_staff", "is_superuser", "is_active", "groups", "role", "client_role")
-    search_fields = ("company_name", "first_name", "last_name", "email", "phone")
+    search_fields = ("company_name", "first_name", "last_name", "email", "phone", "cif_nif")
     ordering = ("-date_joined",)
 
 

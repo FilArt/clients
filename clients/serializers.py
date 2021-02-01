@@ -400,49 +400,6 @@ class FastContractSerializer(serializers.ModelSerializer):
         return rep
 
 
-class FastContractAttachmentsSerializer(serializers.ModelSerializer):
-    factura = serializers.FileField(write_only=True, required=False, allow_null=True)
-    factura_1 = serializers.FileField(write_only=True, required=False, allow_null=True)
-    dni1 = serializers.FileField(write_only=True, required=False, allow_null=True)
-    dni2 = serializers.FileField(write_only=True, required=False, allow_null=True)
-    cif1 = serializers.FileField(write_only=True, required=False, allow_null=True)
-    factura_gas_1 = serializers.FileField(write_only=True, required=False, allow_null=True)
-    factura_gas_2 = serializers.FileField(write_only=True, required=False, allow_null=True)
-
-    class Meta:
-        model = Punto
-        fields = "__all__"
-
-    def create(self, validated_data):
-        factura = validated_data.get("factura")
-        factura_1 = validated_data.get("factura_1")
-        dni1 = validated_data.get("dni1")
-        dni2 = validated_data.get("dni2")
-        cif1 = validated_data.get("cif1")
-        factura_gas_1 = validated_data.get("factura_gas_1")
-        factura_gas_2 = validated_data.get("factura_gas_2")
-
-        punto_fields = [f.name for f in getattr(Punto, "_meta").fields]
-        punto = super().create({k: v for k, v in validated_data.items() if k in punto_fields})
-
-        if factura:
-            Attachment.objects.create(punto=punto, attachment_type="factura", attachment=factura)
-        if factura_1:
-            Attachment.objects.create(punto=punto, attachment_type="factura_1", attachment=factura_1)
-        if cif1:
-            Attachment.objects.create(punto=punto, attachment_type="cif1", attachment=cif1)
-        if dni1:
-            Attachment.objects.create(punto=punto, attachment_type="dni1", attachment=dni1)
-        if dni2:
-            Attachment.objects.create(punto=punto, attachment_type="dni2", attachment=dni2)
-        if factura_gas_1:
-            Attachment.objects.create(punto=punto, attachment_type="factura_gas_1", attachment=factura_gas_1)
-        if factura_gas_2:
-            Attachment.objects.create(punto=punto, attachment_type="factura_gas_2", attachment=factura_gas_2)
-
-        return punto
-
-
 class ResponsibleField(serializers.EmailField):
     def to_internal_value(self, data):
         try:
