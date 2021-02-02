@@ -1,15 +1,18 @@
 <template>
   <v-card>
+    <v-card-text v-if="$auth.user.email === 'smpmrus@gmail.com'">
+      <v-btn link to="/admin/agents_analytics"> New analytic </v-btn>
+    </v-card-text>
+
+    <v-card-text v-if="loading">
+      <v-progress-linear indeterminate />
+    </v-card-text>
+
     <v-card-text>
       <add-new-client-dialog />
     </v-card-text>
 
     <v-card-text>
-      <v-row>
-        <v-col>
-          <v-progress-linear v-show="loading" indeterminate />
-        </v-col>
-      </v-row>
       <v-row align="top">
         <v-col>
           <date-time-filter

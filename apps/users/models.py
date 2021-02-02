@@ -82,7 +82,7 @@ class CustomUser(AbstractUser):
     legal_representative = models.CharField(
         verbose_name=_("Legal representative"), max_length=255, blank=True, null=True
     )
-    company_name = models.CharField(_("Company name"), max_length=255, blank=True, null=True)
+    company_name = CICharField(_("Company name"), max_length=255, blank=True, null=True)
 
     created_at = models.DateTimeField(auto_now_add=True)
     last_modified = models.DateTimeField(auto_now=True)

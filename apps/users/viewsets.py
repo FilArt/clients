@@ -223,6 +223,25 @@ class ManageUsersViewSet(UserViewSet, mixins.CreateModelMixin, mixins.DestroyMod
         }
         return Response(data)
 
+    @action(methods=["GET"], detail=False, permission_classes=(AdminPermission,))
+    def analytic_new(self, request: Request):
+        agents = CustomUser.objects.filter(role="agent")
+        statuses = CustomUser.objects.with_statuses().values_list("status", flat=True).distinct()
+        data = []
+        for agent in agents:
+            clients = CustomUser.objects.with_statuses().filter(responsible=agent)
+            bids = [bid for client in clients for bid in client.bids.all()]
+            by_statuses = {s: clients.filter(status=s).count() for s in statuses}
+            item = {
+                "ID": agent.id,
+                "Name": agent.fullname,
+                "Clientes": clients.count(),
+                "Solicitudes": len(bids),
+                **by_statuses,
+            }
+            data.append(item)
+        return Response(data)
+
 
 class PuntoViewSet(LoggingMixin, viewsets.ModelViewSet):
     queryset = Punto.objects.all()

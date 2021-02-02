@@ -92,8 +92,12 @@ class Command(BaseCommand):
             except CustomUser.DoesNotExist:
                 ...
 
-        if not user:
-            user_fields = [field.name for field in getattr(CustomUser, "_meta").fields if field.name != "id"]
+        user_fields = [field.name for field in getattr(CustomUser, "_meta").fields if field.name != "id"]
+        if user:
+            # TODO: обновление челика
+            ...
+
+        else:
             user = CustomUser()
             for field in user_fields:
                 if field in (
