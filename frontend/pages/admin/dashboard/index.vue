@@ -1,6 +1,6 @@
 <template>
   <v-card>
-    <v-card-text v-if="$auth.user.email === 'smpmrus@gmail.com'">
+    <v-card-text v-if="$auth.user.role === 'admin'">
       <v-btn link to="/admin/agents_analytics"> New analytic </v-btn>
     </v-card-text>
 
