@@ -1,9 +1,9 @@
 import logging
 import re
+from datetime import datetime
 from typing import Tuple
 
 from django.contrib.auth.models import Group
-from django.db.models import Count, Q
 from drf_dynamic_fields import DynamicFieldsMixin
 from notifications.models import Notification
 from notifications.signals import notify
@@ -148,7 +148,7 @@ class UserViewSet(
 
         user: CustomUser = self.request.user
         if user.role == "agent" and not self.detail:
-            queryset = queryset.filter(responsible=user)
+            queryset = queryset.filter(responsible=user, fecha_firma__gt=datetime(2020, 10, 13))
 
         return queryset
 
