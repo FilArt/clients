@@ -106,17 +106,20 @@ class Command(BaseCommand):
                 condition |= Q(id=user_id)
             if cif_nif:
                 condition |= Q(cif_nif=cif_nif)
-            try:
-                user = CustomUser.objects.filter(condition, role__isnull=True)
-                if user.count() > 1:
-                    ids_string = ", ".join(map(str, user.values_list("id", flat=True)))
-                    raise ParseError(f"Found duplicates: {ids_string}")
-                user = user.first()
-                self.stdout.write(self.style.SUCCESS(f"~ user {user} exists"))
-            except CustomUser.DoesNotExist:
+
+            user = CustomUser.objects.filter(condition, role__isnull=True)
+            if user.count() == 0:
                 user = CustomUser()
                 password = BaseUserManager().make_random_password()
                 user.set_password(password)
+                self.stdout.write(self.style.SUCCESS(f"➕ user {user}"))
+            elif user.count() == 1:
+                user = user.first()
+                self.stdout.write(self.style.SUCCESS(f"~ user {user} exists"))
+            else:
+                ids_string = ", ".join(map(str, user.values_list("id", flat=True)))
+                self.stdout.write(self.style.ERROR(f"{cif_nif} duplicates found"))
+                raise ParseError(f"Found duplicates: {ids_string}")
 
         if not user:
             raise ParseError("no cif nif")
@@ -164,7 +167,6 @@ class Command(BaseCommand):
             print(user_data)
             raise
 
-        self.stdout.write(self.style.SUCCESS(f"➕ user {user}"))
         return user
 
     def _create_punto(self, user: CustomUser, bid: Bid, punto_data: dict) -> Punto:
