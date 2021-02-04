@@ -211,6 +211,8 @@ class Command(BaseCommand):
             if value:
                 if "consumo" in field or field in ("p1", "p2", "p3", "c1", "c2", "c3"):
                     value = "".join(c for c in str(value).lower() if c.isdigit() or c in ".,").replace(",", ".")
+                elif "cups" in field:
+                    value = value[:22]
 
                 setattr(punto, field, value)
 
