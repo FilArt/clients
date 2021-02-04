@@ -65,18 +65,19 @@ class Command(BaseCommand):
         writer.writeheader()
         for client in clients:
             client_puntos: List[Punto] = client.puntos.all()
+            user_item = {
+                "type": "user",
+                **{header: getattr(client, header) for header in HEADERS if hasattr(client, header)},
+                "fecha_firma": client.fecha_firma.strftime("%d/%m/%Y") if client.fecha_firma else "",
+                "name": client.fullname,
+            }
             rows = [
-                {
-                    "type": "user",
-                    **{header: getattr(client, header) for header in HEADERS if hasattr(client, header)},
-                    "fecha_firma": client.fecha_firma.strftime("%d/%m/%Y") if client.fecha_firma else "",
-                },
+                user_item,
                 *[
                     {
                         "type": "punto",
                         **{header: getattr(punto, header) for header in HEADERS if hasattr(punto, header)},
-                        "name": client.fullname,
-                        "cif_nif": client.cif_nif,
+                        **user_item,
                     }
                     for punto in client_puntos
                 ],
