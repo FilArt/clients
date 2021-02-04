@@ -53,6 +53,8 @@ class Command(BaseCommand):
 
         pb = tqdm(total=len(objects))
 
+        print("going to process", len(objects), "objects")
+
         for cif_nif, items in objects.items():
             user_items = [i for i in items if i["type"] == "user"]
             if len(user_items) != 1:
@@ -194,7 +196,7 @@ class Command(BaseCommand):
         punto = user.puntos.filter(Q(cups_luz__in=cupses) | Q(cups_gas__in=cupses))
         if punto.exists():
             punto = punto.first()
-            self.stdout.write(self.style.SUCCESS(f"~ punto {punto} exists"))
+            self.stdout.write(self.style.SUCCESS(f"~~ punto {punto} exists"))
             return punto
 
         punto = Punto(user=user)
