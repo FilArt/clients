@@ -66,7 +66,7 @@ class BidListSerializer(DynamicFieldsMixin, serializers.ModelSerializer):
 
     # noinspection PyMethodMayBeStatic
     def get_created_at(self, instance: Bid):
-        return instance.created_at.strftime("%d/%m/%Y %H:%M")
+        return instance.created_at.strftime("%d.%m.%Y %H:%M")
 
     def get_status(self, bid: Bid):
         return bid.get_status(by=self.context["request"].user)
