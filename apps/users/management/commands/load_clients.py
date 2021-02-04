@@ -108,7 +108,7 @@ class Command(BaseCommand):
                 condition |= Q(cif_nif=cif_nif)
             try:
                 user = CustomUser.objects.filter(condition, role__isnull=True)
-                if user.count() != 1:
+                if user.count() > 1:
                     ids_string = ", ".join(map(str, user.values_list("id", flat=True)))
                     raise ParseError(f"Found duplicates: {ids_string}")
                 user = user.first()
