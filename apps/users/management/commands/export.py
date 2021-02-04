@@ -13,8 +13,8 @@ HEADERS = (
     "id",
     "name",
     "email",
-    "phone1",
-    "phone2",
+    "phone",
+    "phone_city",
     "dni",
     "legal_representative",
     "created_at",
@@ -66,11 +66,17 @@ class Command(BaseCommand):
         for client in clients:
             client_puntos: List[Punto] = client.puntos.all()
             rows = [
-                {"type": "user", **{header: getattr(client, header) for header in HEADERS if hasattr(client, header)},},
+                {
+                    "type": "user",
+                    **{header: getattr(client, header) for header in HEADERS if hasattr(client, header)},
+                    "fecha_firma": client.fecha_firma.strftime("%d/%m/%Y") if client.fecha_firma else "",
+                },
                 *[
                     {
                         "type": "punto",
                         **{header: getattr(punto, header) for header in HEADERS if hasattr(punto, header)},
+                        "name": client.fullname,
+                        "cif_nif": client.cif_nif,
                     }
                     for punto in client_puntos
                 ],
