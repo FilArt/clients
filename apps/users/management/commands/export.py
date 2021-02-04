@@ -75,9 +75,9 @@ class Command(BaseCommand):
                 user_item,
                 *[
                     {
-                        "type": "punto",
-                        **{header: getattr(punto, header) for header in HEADERS if hasattr(punto, header)},
                         **user_item,
+                        **{header: getattr(punto, header) for header in HEADERS if hasattr(punto, header)},
+                        "type": "punto",
                     }
                     for punto in client_puntos
                 ],
