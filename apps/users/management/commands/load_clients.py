@@ -118,6 +118,9 @@ class Command(BaseCommand):
                 password = BaseUserManager().make_random_password()
                 user.set_password(password)
 
+        if not user:
+            raise ParseError("no cif nif")
+
         user_fields = [field.name for field in getattr(CustomUser, "_meta").fields if field.name != "id"]
         for field in user_fields:
             if field in (
