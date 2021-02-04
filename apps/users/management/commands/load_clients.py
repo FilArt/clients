@@ -3,6 +3,7 @@ from itertools import groupby
 from operator import itemgetter
 
 import pandas
+import pytz
 from django.contrib.auth.base_user import BaseUserManager
 from django.core.management.base import BaseCommand
 from django.db import transaction
@@ -12,6 +13,10 @@ from tqdm import tqdm
 from apps.bids.models import Bid
 from apps.calculator.models import Offer, Company
 from apps.users.models import CustomUser, Punto
+
+
+class ParseError(BaseException):
+    ...
 
 
 def create_bid(user: CustomUser, offer: Offer) -> Bid:
@@ -53,20 +58,35 @@ class Command(BaseCommand):
             if len(user_items) != 1:
                 user_items = [items[0]]
 
-            with transaction.atomic():
-                user = self._create_user(user_items[0])
+            try:
+                with transaction.atomic():
+                    user = self._create_user(user_items[0])
 
-                puntos_items = [i for i in items if i["type"] == "punto"]
-                if not puntos_items:
-                    puntos_items = user_items
-                for punto_data in puntos_items:
-                    offer_id = punto_data.get("oferta_gas_id") or punto_data.get("oferta_luz_id")
-                    if offer_id:
-                        offer = Offer.objects.get(id=int(offer_id))
-                        bid = create_bid(user, offer)
-                        self._create_punto(user, bid, punto_data)
+                    puntos_items = [i for i in items if i["type"] == "punto"]
+                    if not puntos_items:
+                        puntos_items = user_items
 
-            pb.update()
+                    last_ff, last_resp_id = None, None
+                    for punto_data in puntos_items:
+                        offer_id = punto_data.get("oferta_gas_id") or punto_data.get("oferta_luz_id")
+                        if offer_id:
+                            offer = Offer.objects.get(id=int(offer_id))
+                            bid = create_bid(user, offer)
+                            self._create_punto(user, bid, punto_data)
+
+                            ff = punto_data.get("fecha_firma")
+                            if ff and (not last_ff or ff > last_ff):
+                                last_ff = ff
+                                last_resp_id = punto_data["responsible_id"]
+
+                    if last_resp_id:
+                        user.fecha_firma = ff.replace(tzinfo=pytz.timezone("Europe/Madrid")).date()
+                        user.responsible_id = int(last_resp_id)
+                        user.save(update_fields=["responsible_id", "fecha_firma"])
+
+                pb.update()
+            except ParseError as e:
+                errors.append({"cif_nif": cif_nif, "error": str(e)})
 
         if errors:
             with open("errors.csv", "w") as f:
@@ -87,60 +107,61 @@ class Command(BaseCommand):
             if cif_nif:
                 condition |= Q(cif_nif=cif_nif)
             try:
-                user = CustomUser.objects.get(condition, role__isnull=True)
+                user = CustomUser.objects.filter(condition, role__isnull=True)
+                if user.count() != 1:
+                    ids_string = ", ".join(map(str, user.values_list("id", flat=True)))
+                    raise ParseError(f"Found duplicates: {ids_string}")
+                user = user.first()
                 self.stdout.write(self.style.SUCCESS(f"~ user {user} exists"))
             except CustomUser.DoesNotExist:
-                ...
+                user = CustomUser()
+                password = BaseUserManager().make_random_password()
+                user.set_password(password)
 
         user_fields = [field.name for field in getattr(CustomUser, "_meta").fields if field.name != "id"]
-        if user:
-            # TODO: обновление челика
-            ...
+        for field in user_fields:
+            if field in (
+                "responsible",
+                "canal",
+                "invited_by",
+                "company_luz",
+                "company_gas",
+                "oferta_luz",
+                "oferta_gas",
+            ):
+                field += "_id"
 
-        else:
-            user = CustomUser()
-            for field in user_fields:
-                if field in (
-                    "responsible",
-                    "canal",
-                    "invited_by",
-                    "company_luz",
-                    "company_gas",
-                    "oferta_luz",
-                    "oferta_gas",
-                ):
-                    field += "_id"
+            value = user_data.get(field)
 
-                value = user_data.get(field)
-                if not value:
-                    if field == "email":
-                        value = auto_email
-                    else:
-                        continue
+            if field == "date_joined" and user_data.get("fecha_firma"):
+                value = user_data["fecha_firma"].replace(tzinfo=pytz.timezone("Europe/Madrid"))
+            elif not value:
+                if field == "email":
+                    value = auto_email
+                else:
+                    continue
 
-                elif field.endswith("_id"):
-                    if field in ("responsible_id", "canal_id", "invited_by_id"):
-                        value = CustomUser.objects.get(id=value)
-                    elif field.startswith("company"):
-                        value = Company.objects.get(id=value)
-                    elif field.startswith("oferta"):
-                        value = Offer.objects.get(id=value)
-                    field = field[:-3]
+            elif field.endswith("_id"):
+                if field in ("responsible_id", "canal_id", "invited_by_id"):
+                    value = CustomUser.objects.get(id=value)
+                elif field.startswith("company"):
+                    value = Company.objects.get(id=value)
+                elif field.startswith("oferta"):
+                    value = Offer.objects.get(id=value)
+                field = field[:-3]
 
-                elif isinstance(value, str) and "\xa0" in value:
-                    value = value.replace("\xa0", "")
+            elif isinstance(value, str) and "\xa0" in value:
+                value = value.replace("\xa0", "")
 
-                setattr(user, field, value)
+            setattr(user, field, value)
 
-            password = BaseUserManager().make_random_password()
-            user.set_password(password)
-            try:
-                user.save()
-            except Exception:
-                print(user_data)
-                raise
-            self.stdout.write(self.style.SUCCESS(f"➕ user {user}"))
+        try:
+            user.save()
+        except Exception:
+            print(user_data)
+            raise
 
+        self.stdout.write(self.style.SUCCESS(f"➕ user {user}"))
         return user
 
     def _create_punto(self, user: CustomUser, bid: Bid, punto_data: dict) -> Punto:
@@ -181,13 +202,9 @@ class Command(BaseCommand):
                 value = punto_data.get(field)
 
             if value:
-                if "consumo" in field:
-                    value = str(value).lower()
-                    if "k" in value or "w" in value:
-                        value = value.rstrip(" kwm")
-                    value = float(value.replace("\xa0", ""))
-                if field in ("p1", "p2", "p3", "c1", "c2", "c3"):
-                    value = value.replace(" ", "").replace("\xa0", "")
+                if "consumo" in field or field in ("p1", "p2", "p3", "c1", "c2", "c3"):
+                    value = "".join(c for c in str(value).lower() if c.isdigit() or c in ".,").replace(",", ".")
+
                 setattr(punto, field, value)
 
         try:
