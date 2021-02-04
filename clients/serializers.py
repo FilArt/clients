@@ -57,16 +57,16 @@ class DetailPuntoSerializer(serializers.ModelSerializer):
 class BidListSerializer(DynamicFieldsMixin, serializers.ModelSerializer):
     offer_name = serializers.CharField(read_only=True, source="offer.name")
     offer_kind = serializers.CharField(read_only=True, source="offer.kind")
-    pretty_created_at = serializers.SerializerMethodField()
+    created_at = serializers.SerializerMethodField()
     status = serializers.SerializerMethodField()
 
     class Meta:
         model = Bid
-        fields = ["id", "pretty_created_at", "created_at", "offer_name", "status", "offer_kind"]
+        fields = ["id", "created_at", "offer_name", "status", "offer_kind"]
 
     # noinspection PyMethodMayBeStatic
-    def get_pretty_created_at(self, instance: Bid):
-        return humanize(instance.created_at, locale=self.context["request"].LANGUAGE_CODE)
+    def get_created_at(self, instance: Bid):
+        return instance.created_at.strftime("%d/%m/%Y %H:%M")
 
     def get_status(self, bid: Bid):
         return bid.get_status(by=self.context["request"].user)

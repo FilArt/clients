@@ -30,7 +30,7 @@
             </v-list-item-title>
 
             <v-list-item-title>
-              {{ bid.pretty_created_at }}
+              {{ bid.created_at }}
             </v-list-item-title>
 
             <v-list-item-title>{{ bid.status }}</v-list-item-title>

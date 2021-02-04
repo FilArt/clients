@@ -131,11 +131,11 @@ export default {
             title: 'FACTURACIÓN',
             to: '/agente/facturacion',
           },
-          {
-            icon: 'mdi-briefcase-account-outline',
-            title: 'CLIENTES',
-            to: '/agente/clientes',
-          },
+          // {
+          //   icon: 'mdi-briefcase-account-outline',
+          //   title: 'CLIENTES',
+          //   to: '/agente/clientes',
+          // },
           {
             icon: 'mdi-call-merge',
             title: 'Call&Visit',
