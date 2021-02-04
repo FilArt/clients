@@ -64,12 +64,8 @@ class Command(BaseCommand):
                 with transaction.atomic():
                     user = self._create_user(user_items[0])
 
-                    puntos_items = [i for i in items if i["type"] == "punto"]
-                    if not puntos_items:
-                        puntos_items = user_items
-
                     last_ff, last_resp_id = None, None
-                    for punto_data in puntos_items:
+                    for punto_data in user_items:
                         offer_id = punto_data.get("oferta_gas_id") or punto_data.get("oferta_luz_id")
                         if offer_id:
                             offer = Offer.objects.get(id=int(offer_id))
