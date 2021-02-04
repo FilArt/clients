@@ -148,7 +148,7 @@ class UserViewSet(
 
         user: CustomUser = self.request.user
         if user.role == "agent" and not self.detail:
-            queryset = queryset.filter(responsible=user, fecha_firma__gt=datetime(2020, 10, 13))
+            queryset = queryset.filter(responsible=user, fecha_firma__gte=datetime(2020, 10, 13))
 
         return queryset
 
