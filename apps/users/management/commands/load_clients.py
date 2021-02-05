@@ -19,17 +19,27 @@ class ParseError(BaseException):
     ...
 
 
-def create_bid(user: CustomUser, offer: Offer) -> Bid:
-    existed_bid = getattr(user, "bids").filter(offer=offer)
+def create_bid(user: CustomUser, offer: Offer, fecha_firma) -> Bid:
+    update_ff = False
+    existed_bid = getattr(user, "bids").filter(
+        Q(created_at__date=fecha_firma.date()) if fecha_firma else Q(offer=offer)
+    )
     if existed_bid.exists():
         bid = existed_bid.first()
         bid.doc = bid.scoring = bid.call = bid.paid = bid.canal_paid = True
     else:
         bid = Bid(user=user, offer=offer, doc=True, scoring=True, call=True, paid=True, canal_paid=True)
+        if fecha_firma:
+            update_ff = True
 
     if offer.company.offer_status_used:
         bid.offer_status = 0
     bid.save()
+
+    if update_ff:
+        bid.created_at = fecha_firma.replace(tzinfo=pytz.timezone("Europe/Madrid"))
+        bid.save(update_fields=["created_at"])
+
     return bid
 
 
@@ -46,7 +56,7 @@ class Command(BaseCommand):
         df.dropna(axis=0, how="all", thresh=None, subset=None, inplace=True)
         df.fillna(value="", inplace=True)
         df.sort_values("cif_nif", inplace=True)
-        lines = [i for i in df.to_dict(orient="records") if i["responsible_id"] == float(684)]
+        lines = [i for i in df.to_dict(orient="records") if i["cif_nif"] == "46126612C"]
 
         getter = itemgetter("cif_nif")
         objects = {cif_nif: list(g) for cif_nif, g in groupby(lines, key=getter)}
@@ -60,16 +70,21 @@ class Command(BaseCommand):
 
                     last_ff, last_resp_id = None, None
                     for punto_data in items:
-                        offer_id = punto_data.get("oferta_gas_id") or punto_data.get("oferta_luz_id")
-                        if offer_id:
-                            offer = Offer.objects.get(id=int(offer_id))
-                            bid = create_bid(user, offer)
-                            self._create_punto(user, bid, punto_data)
+                        offer_ids = punto_data.get("oferta_gas_id"), punto_data.get("oferta_luz_id")
+                        for offer_id in offer_ids:
+                            if offer_id:
+                                ff = punto_data.get("fecha_firma")
+                                if ff and (not last_ff or ff > last_ff):
+                                    last_ff = ff
+                                    last_resp_id = punto_data["responsible_id"]
 
-                            ff = punto_data.get("fecha_firma")
-                            if ff and (not last_ff or ff > last_ff):
-                                last_ff = ff
-                                last_resp_id = punto_data["responsible_id"]
+                                offer = Offer.objects.get(id=int(offer_id))
+                                bid = create_bid(user, offer, ff)
+                                punto = user.puntos.filter(bid=bid)
+                                if not punto.exists():
+                                    self._create_punto(user, bid, punto_data, is_luz=offer.kind == "luz")
+                                else:
+                                    self.stdout.write(self.style.SUCCESS(f"~~ punto {punto.first()} exists"))
 
                     if last_resp_id:
                         user.fecha_firma = ff.replace(tzinfo=pytz.timezone("Europe/Madrid")).date()
@@ -161,18 +176,7 @@ class Command(BaseCommand):
 
         return user
 
-    def _create_punto(self, user: CustomUser, bid: Bid, punto_data: dict) -> Punto:
-        punto_id = punto_data.get("id")
-        if punto_id:
-            try:
-                punto = Punto.objects.get(id=punto_id)
-                if not bid.puntos.filter(id=punto.id):
-                    bid.puntos.add(punto)
-                return punto
-
-            except Punto.DoesNotExist:
-                pass
-
+    def _create_punto(self, user: CustomUser, bid: Bid, punto_data: dict, is_luz: bool = True):
         punto_fields = [field.name for field in getattr(Punto, "_meta").fields if field.name != "id"]
         punto_data = {k: v for k, v in punto_data.items() if k in punto_fields}
         postalcode = punto_data["postalcode"]
@@ -181,40 +185,29 @@ class Command(BaseCommand):
             if len(postalcode) == 4:
                 punto_data["postalcode"] = f"0{postalcode}"
 
-        for cups_field in ["cups_luz", "cups_gas"]:
-            cups = punto_data[cups_field]
-            if not cups:
+        punto = Punto(user=user)
+
+        for field in punto_fields:
+            if field == "id":
                 continue
+            elif field in ("company_luz", "company_gas",):
+                value = punto_data.get(f"{field}_id")
+            else:
+                value = punto_data.get(field)
 
-            punto = user.puntos.filter(**{cups_field: cups})
-            if punto.exists():
-                punto = punto.first()
-                self.stdout.write(self.style.SUCCESS(f"~~ punto {punto} exists"))
-                return punto
+            if value:
+                if "consumo" in field or field in ("p1", "p2", "p3", "c1", "c2", "c3"):
+                    value = "".join(c for c in str(value).lower() if c.isdigit() or c in ".,").replace(",", ".")
+                elif "cups" in field:
+                    value = value[:22]
 
-            punto = Punto(user=user)
-            for field in punto_fields:
-                if field == "id":
-                    continue
-                elif field in ("company_luz", "company_gas",):
-                    value = punto_data.get(f"{field}_id")
-                else:
-                    value = punto_data.get(field)
+                setattr(punto, field, value)
 
-                if value:
-                    if "consumo" in field or field in ("p1", "p2", "p3", "c1", "c2", "c3"):
-                        value = "".join(c for c in str(value).lower() if c.isdigit() or c in ".,").replace(",", ".")
-                    elif "cups" in field:
-                        value = value[:22]
+        try:
+            punto.save()
+        except Exception:
+            print(punto_data)
+            raise
 
-                    setattr(punto, field, value)
-
-            try:
-                punto.save()
-            except Exception:
-                print(punto_data)
-                raise
-
-            bid.puntos.add(punto)
-
-            self.stdout.write(self.style.SUCCESS(f"➕➕ punto {punto}"))
+        bid.puntos.add(punto)
+        self.stdout.write(self.style.SUCCESS(f"➕➕ punto {punto}"))
