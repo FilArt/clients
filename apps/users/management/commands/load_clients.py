@@ -56,21 +56,18 @@ class Command(BaseCommand):
         print("going to process", len(objects), "objects")
 
         for cif_nif, items in objects.items():
-            user_items = [i for i in items if i["type"] == "user"]
-            if len(user_items) != 1:
-                user_items = [items[0]]
-
             try:
                 with transaction.atomic():
-                    user = self._create_user(user_items[0])
+                    user = self._create_user(items[0])
 
                     last_ff, last_resp_id = None, None
-                    for punto_data in user_items:
+                    for punto_data in items:
                         offer_id = punto_data.get("oferta_gas_id") or punto_data.get("oferta_luz_id")
                         if offer_id:
                             offer = Offer.objects.get(id=int(offer_id))
                             bid = create_bid(user, offer)
-                            self._create_punto(user, bid, punto_data)
+                            punto = self._create_punto(user, bid, punto_data)
+                            assert bid.puntos.filter(id=punto.id).exists()
 
                             ff = punto_data.get("fecha_firma")
                             if ff and (not last_ff or ff > last_ff):
