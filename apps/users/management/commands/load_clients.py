@@ -66,8 +66,7 @@ class Command(BaseCommand):
                         if offer_id:
                             offer = Offer.objects.get(id=int(offer_id))
                             bid = create_bid(user, offer)
-                            punto = self._create_punto(user, bid, punto_data)
-                            assert bid.puntos.filter(id=punto.id).exists()
+                            self._create_punto(user, bid, punto_data)
 
                             ff = punto_data.get("fecha_firma")
                             if ff and (not last_ff or ff > last_ff):
