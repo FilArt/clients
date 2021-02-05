@@ -46,14 +46,12 @@ class Command(BaseCommand):
         df.dropna(axis=0, how="all", thresh=None, subset=None, inplace=True)
         df.fillna(value="", inplace=True)
         df.sort_values("cif_nif", inplace=True)
-        lines = df.to_dict(orient="records")
+        lines = [i for i in df.to_dict(orient="records") if i["responsible_id"] == float(684)]
 
         getter = itemgetter("cif_nif")
         objects = {cif_nif: list(g) for cif_nif, g in groupby(lines, key=getter)}
 
         pb = tqdm(total=len(objects))
-
-        print("going to process", len(objects), "objects")
 
         for cif_nif, items in objects.items():
             try:
@@ -183,36 +181,40 @@ class Command(BaseCommand):
             if len(postalcode) == 4:
                 punto_data["postalcode"] = f"0{postalcode}"
 
-        cupses = [cups for cups in [punto_data["cups_luz"], punto_data["cups_gas"]] if cups]
-
-        punto = user.puntos.filter(Q(cups_luz__in=cupses) | Q(cups_gas__in=cupses))
-        if punto.exists():
-            punto = punto.first()
-            self.stdout.write(self.style.SUCCESS(f"~~ punto {punto} exists"))
-            return punto
-
-        punto = Punto(user=user)
-        for field in punto_fields:
-            if field == "id":
+        for cups_field in ["cups_luz", "cups_gas"]:
+            cups = punto_data[cups_field]
+            if not cups:
                 continue
-            elif field in ("company_luz", "company_gas",):
-                value = punto_data.get(f"{field}_id")
-            else:
-                value = punto_data.get(field)
 
-            if value:
-                if "consumo" in field or field in ("p1", "p2", "p3", "c1", "c2", "c3"):
-                    value = "".join(c for c in str(value).lower() if c.isdigit() or c in ".,").replace(",", ".")
-                elif "cups" in field:
-                    value = value[:22]
+            punto = user.puntos.filter(**{cups_field: cups})
+            if punto.exists():
+                punto = punto.first()
+                self.stdout.write(self.style.SUCCESS(f"~~ punto {punto} exists"))
+                return punto
 
-                setattr(punto, field, value)
+            punto = Punto(user=user)
+            for field in punto_fields:
+                if field == "id":
+                    continue
+                elif field in ("company_luz", "company_gas",):
+                    value = punto_data.get(f"{field}_id")
+                else:
+                    value = punto_data.get(field)
 
-        try:
-            punto.save()
-        except Exception:
-            print(punto_data)
-            raise
-        bid.puntos.add(punto)
-        self.stdout.write(self.style.SUCCESS(f"➕➕ punto {punto}"))
-        return punto
+                if value:
+                    if "consumo" in field or field in ("p1", "p2", "p3", "c1", "c2", "c3"):
+                        value = "".join(c for c in str(value).lower() if c.isdigit() or c in ".,").replace(",", ".")
+                    elif "cups" in field:
+                        value = value[:22]
+
+                    setattr(punto, field, value)
+
+            try:
+                punto.save()
+            except Exception:
+                print(punto_data)
+                raise
+
+            bid.puntos.add(punto)
+
+            self.stdout.write(self.style.SUCCESS(f"➕➕ punto {punto}"))
