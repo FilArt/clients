@@ -56,7 +56,8 @@ class Command(BaseCommand):
         df.dropna(axis=0, how="all", thresh=None, subset=None, inplace=True)
         df.fillna(value="", inplace=True)
         df.sort_values("cif_nif", inplace=True)
-        lines = [i for i in df.to_dict(orient="records") if i["cif_nif"] == "46126612C"]
+        # lines = [i for i in df.to_dict(orient="records") if i["cif_nif"] == "46126612C"]
+        lines = df.to_dict(orient="records")
 
         getter = itemgetter("cif_nif")
         objects = {cif_nif: list(g) for cif_nif, g in groupby(lines, key=getter)}
