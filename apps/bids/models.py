@@ -25,7 +25,7 @@ class Bid(models.Model):
 
     user = models.ForeignKey(get_user_model(), on_delete=models.CASCADE, related_name="bids")
     offer = models.ForeignKey("calculator.Offer", on_delete=models.CASCADE)
-    punto = models.ForeignKey("users.Punto", on_delete=models.CASCADE)
+    punto = models.ForeignKey("users.Punto", on_delete=models.CASCADE, related_name="temp")
     created_at = models.DateTimeField(auto_now_add=True)
     fecha_firma = models.DateTimeField(blank=True, null=True)
     commission = models.DecimalField(max_digits=6, decimal_places=2, default=0)

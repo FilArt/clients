@@ -4,6 +4,15 @@ from django.db import migrations, models
 import django.db.models.deletion
 
 
+def migrate_puntos(apps, _):
+    Bid = apps.get_model("bids", "Bid")
+    for bid in Bid.objects.all():
+        puntos = bid.puntos.all()
+        if puntos.count() == 1:
+            bid.punto = puntos.first()
+            bid.save()
+
+
 class Migration(migrations.Migration):
 
     dependencies = [
@@ -23,4 +32,5 @@ class Migration(migrations.Migration):
                 to="users.punto",
             ),
         ),
+        migrations.RunPython(migrate_puntos, reverse_code=migrations.RunPython.noop),
     ]
