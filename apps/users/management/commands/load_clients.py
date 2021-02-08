@@ -8,7 +8,8 @@ import pytz
 from django.contrib.auth.base_user import BaseUserManager
 from django.core.management.base import BaseCommand
 from django.db import transaction
-from django.db.models import Q, Count
+from django.db.models import Q
+from tqdm import tqdm
 
 from apps.bids.models import Bid
 from apps.calculator.models import Offer, Company
@@ -32,31 +33,20 @@ def deal_with_dups(first, second):
 
 
 def create_user(user_data: dict) -> CustomUser:
-    user_id, cif_nif = user_data.get("id"), user_data.get("cif_nif")
+    cif_nif = user_data.get("cif_nif")
     email = user_data.get("email")
     auto_email = f"{cif_nif}@gestiongroup.es"
-    user = None
-
-    if user_id or cif_nif:
+    try:
         condition = Q(email__in=[e for e in [email, auto_email] if e])
-        if user_id:
-            condition |= Q(id=user_id)
         if cif_nif:
             condition |= Q(cif_nif=cif_nif)
-
-        user = CustomUser.objects.filter(condition, role__isnull=True)
-        if user.count() == 0:
-            user = CustomUser()
-            password = BaseUserManager().make_random_password()
-            user.set_password(password)
-        elif user.count() == 1:
-            user = user.first()
-        else:
-            ids_string = ", ".join(map(str, user.values_list("id", flat=True)))
-            raise ParseError(f"Found duplicates: {ids_string}")
-
-    if not user:
-        raise ParseError("no cif nif")
+        user = CustomUser.objects.get(condition, role__isnull=True)
+    except CustomUser.DoesNotExist:
+        user = CustomUser()
+        password = BaseUserManager().make_random_password()
+        user.set_password(password)
+    except CustomUser.MultipleObjectsReturned:
+        raise ParseError(f"cif {cif_nif} has duplicates")
 
     user_fields = [field.name for field in getattr(CustomUser, "_meta").fields if field.name != "id"]
     for field in user_fields:
@@ -87,12 +77,7 @@ def create_user(user_data: dict) -> CustomUser:
 
         setattr(user, field, value)
 
-    try:
-        user.save()
-    except Exception:
-        print(user_data)
-        raise
-
+    user.save()
     return user
 
 
@@ -144,20 +129,7 @@ def create_bid(user: CustomUser, offer: Offer, punto: Punto, fecha_firma):
 
 
 def process_user(lines: List[dict]):
-    cif_nif_set = set((_l["cif_nif"] for _l in lines))
-    if len(cif_nif_set) != 1:
-        raise ParseError(cif_nif_set)
-    cif_nif = cif_nif_set.pop()
-
-    try:
-        user = CustomUser.objects.get(cif_nif=cif_nif)
-    except CustomUser.DoesNotExist:
-        user = create_user(lines[0])
-    print("processing user", user.id)
-
-    if user.cif_nif != cif_nif:
-        user.cif_nif = cif_nif
-        user.save(update_fields=["cif_nif"])
+    user = create_user(lines[0])
 
     if len(lines) == user.puntos.count() == user.bids.count():
         return
@@ -180,11 +152,16 @@ def process_user(lines: List[dict]):
         except Punto.DoesNotExist:
             create_punto(user, line, offer, ff)
         except Punto.MultipleObjectsReturned:
-            first, second = user.puntos.filter(**{cups_field: cups})
-            deal_with_dups(first, second)
+            puntos = user.puntos.filter(**{cups_field: cups})
+            if puntos.count() > 2:
+                first, *others = puntos
+                for second in others:
+                    deal_with_dups(first, second)
+            else:
+                first, second = puntos
+                deal_with_dups(first, second)
             create_bid(user, offer, first, ff)
 
-    print(f"after: lines_count: {len(lines)}, bids_count: {user.bids.count()}, puntos_count: {user.puntos.count()}")
     assert len(lines) == user.bids.count()
 
 
@@ -196,7 +173,6 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         errors = []
-
         df: pandas.DataFrame = pandas.read_excel(options["file"], dtype={"postalcode": str}, parse_dates=True)
         df.dropna(axis=0, how="all", thresh=None, subset=None, inplace=True)
         df.fillna(value="", inplace=True)
@@ -207,21 +183,6 @@ class Command(BaseCommand):
         # delete empty puntos
         for _p in [p for p in Punto.objects.prefetch_related("attachments") if p.attachments.count() == 0]:
             _p.delete()
-
-        # unite puntos
-        puntos_dups = (
-            Punto.objects.filter(cups_luz__isnull=False)
-            .values("cups_luz")
-            .annotate(Count("id"))
-            .order_by()
-            .filter(id__count__gt=1)
-            .values_list("cups_luz", flat=True)
-        )
-        for cups in puntos_dups:
-            if not cups:
-                continue
-            d_puntos = Punto.objects.filter(cups_luz=cups)
-            deal_with_dups(*d_puntos)
 
         # fix 0f
         for _p in Punto.objects.filter(Q(cups_luz__endswith="0f") | Q(cups_gas__endswith="0f")):
@@ -234,13 +195,16 @@ class Command(BaseCommand):
 
         getter = itemgetter("cif_nif")
         objects = {cif_nif: list(g) for cif_nif, g in groupby(lines, key=getter)}
+        pb = tqdm(total=len(objects))
         for cif_nif, user_lines in objects.items():
-            print("cif:", cif_nif)
+            pb.set_description(cif_nif)
             with transaction.atomic():
                 try:
                     process_user(user_lines)
                 except (ParseError, AssertionError) as e:
                     errors.append({"cif": cif_nif, "error": str(e)})
+
+            pb.update()
 
         with open("errors.csv", "w") as f:
             w = csv.DictWriter(f, fieldnames=["cif", "error"])

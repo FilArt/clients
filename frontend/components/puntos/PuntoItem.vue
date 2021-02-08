@@ -1,131 +1,134 @@
 <template>
-  <v-dialog v-model="puntoDialog" max-width="1500">
-    <template v-slot:activator="{ on }">
-      <v-list-item-title>
-        <v-btn v-on="on"> (id: {{ punto.id }}) {{ punto.cups_luz || punto.cups_gas }} </v-btn>
-      </v-list-item-title>
-    </template>
+  <div>
+    <v-dialog v-if="punto" v-model="puntoDialog" max-width="1500">
+      <template v-slot:activator="{ on }">
+        <v-list-item-title>
+          <v-btn v-on="on"> (id: {{ punto.id }}) {{ punto.cups_luz || punto.cups_gas }} </v-btn>
+        </v-list-item-title>
+      </template>
 
-    <v-card>
-      <v-card-title>
-        <v-row align="center">
-          <v-col>
-            {{ punto.cups_luz || punto.cups_gas }}
-          </v-col>
-          <v-col class="flex-grow-0">
-            <delete-button @click="deletePunto(punto)" />
-          </v-col>
-          <v-col class="flex-grow-0">
-            <close-button @click="puntoDialog = false" />
-          </v-col>
-        </v-row>
+      <v-card>
+        <v-card-title>
+          <v-row align="center">
+            <v-col>
+              {{ punto.cups_luz || punto.cups_gas }}
+            </v-col>
+            <v-col class="flex-grow-0">
+              <delete-button @click="deletePunto(punto)" />
+            </v-col>
+            <v-col class="flex-grow-0">
+              <close-button @click="puntoDialog = false" />
+            </v-col>
+          </v-row>
 
-        <v-row class="flex-wrap">
-          <v-col v-for="group in groups" :key="group.text" flat class="pa-3 mx-auto">
-            <v-card-title>{{ group.text }}</v-card-title>
+          <v-row class="flex-wrap">
+            <v-col v-for="group in groups" :key="group.text" flat class="pa-3 mx-auto">
+              <v-card-title>{{ group.text }}</v-card-title>
 
-            <v-card-text v-for="header in group.headers" :key="header.value">
-              <company-select
-                v-if="header.value === 'company_luz'"
-                :value="punto.company_luz"
-                @input="
-                  save({
-                    id: punto.id,
-                    field: 'company_luz',
-                    value: $event,
-                  })
-                "
-              />
+              <v-card-text v-for="header in group.headers" :key="header.value">
+                <company-select
+                  v-if="header.value === 'company_luz'"
+                  :value="punto.company_luz"
+                  @input="
+                    save({
+                      id: punto.id,
+                      field: 'company_luz',
+                      value: $event,
+                    })
+                  "
+                />
 
-              <v-select
-                v-else-if="header.value === 'category'"
-                :label="header.text"
-                :items="categories"
-                :value="punto.category"
-                @input="save({ id: punto.id, field: 'category', value: $event })"
-              />
+                <v-select
+                  v-else-if="header.value === 'category'"
+                  :label="header.text"
+                  :items="categories"
+                  :value="punto.category"
+                  @input="save({ id: punto.id, field: 'category', value: $event })"
+                />
 
-              <v-switch
-                v-else-if="header.type === 'switch'"
-                v-model="punto[header.value]"
-                dense
-                :label="header.text"
-                append-icon="mdi-content-save"
-                @change="values[header.value] = $event"
-                @click:append="save({ id: punto.id, field: header.value })"
-              />
+                <v-switch
+                  v-else-if="header.type === 'switch'"
+                  v-model="punto[header.value]"
+                  dense
+                  :label="header.text"
+                  append-icon="mdi-content-save"
+                  @change="values[header.value] = $event"
+                  @click:append="save({ id: punto.id, field: header.value })"
+                />
 
-              <v-text-field
-                v-else
-                v-model="punto[header.value]"
-                dense
-                :label="header.text"
-                append-icon="mdi-content-save"
-                @input="values[header.value] = $event"
-                @click:append="save({ id: punto.id, field: header.value })"
-              />
-            </v-card-text>
+                <v-text-field
+                  v-else
+                  v-model="punto[header.value]"
+                  dense
+                  :label="header.text"
+                  append-icon="mdi-content-save"
+                  @input="values[header.value] = $event"
+                  @click:append="save({ id: punto.id, field: header.value })"
+                />
+              </v-card-text>
 
-            <v-row
-              v-if="group.text === 'Documentacion' && punto.attachments.length"
-              align="center"
-              class="flex-wrap"
-              style="max-width: 500px"
-            >
-              <v-col>
-                <v-menu v-for="attachment in punto.attachments" :key="attachment.id" offset-y>
+              <v-row
+                v-if="group.text === 'Documentacion' && punto.attachments.length"
+                align="center"
+                class="flex-wrap"
+                style="max-width: 500px"
+              >
+                <v-col>
+                  <v-menu v-for="attachment in punto.attachments" :key="attachment.id" offset-y>
+                    <template v-slot:activator="{ on }">
+                      <v-chip exact :color="getColor(attachment.id)" v-on="on">
+                        {{ attachment.type_verbose_name }} - ({{ attachment.id }})
+                      </v-chip>
+                    </template>
+                    <v-list>
+                      <v-list-item link target="_blank" :href="attachment.attachment">
+                        <v-list-item-title>Abrir archivo</v-list-item-title>
+                      </v-list-item>
+                      <v-list-item color="error" @click="deleteFile(attachment.id)">
+                        <v-list-item-title>Eliminar archivo</v-list-item-title>
+                      </v-list-item>
+                    </v-list>
+                  </v-menu>
+                </v-col>
+              </v-row>
+
+              <v-flex v-if="group.text === 'Documentacion'">
+                <v-dialog v-model="uploadFileDialog" max-width="500">
                   <template v-slot:activator="{ on }">
-                    <v-chip exact :color="getColor(attachment.id)" v-on="on">
-                      {{ attachment.type_verbose_name }} - ({{ attachment.id }})
-                    </v-chip>
+                    <v-btn icon color="success" v-on="on">
+                      <v-icon>mdi-file</v-icon>
+                    </v-btn>
                   </template>
-                  <v-list>
-                    <v-list-item link target="_blank" :href="attachment.attachment">
-                      <v-list-item-title>Abrir archivo</v-list-item-title>
-                    </v-list-item>
-                    <v-list-item color="error" @click="deleteFile(attachment.id)">
-                      <v-list-item-title>Eliminar archivo</v-list-item-title>
-                    </v-list-item>
-                  </v-list>
-                </v-menu>
-              </v-col>
-            </v-row>
-
-            <v-flex v-if="group.text === 'Documentacion'">
-              <v-dialog v-model="uploadFileDialog" max-width="500">
-                <template v-slot:activator="{ on }">
-                  <v-btn icon color="success" v-on="on">
-                    <v-icon>mdi-file</v-icon>
-                  </v-btn>
-                </template>
-                <v-card>
-                  <v-card-text>
-                    <v-card-title>
-                      <v-row>
-                        <v-col>
-                          <span class="title headline">Añadir archivo</span>
-                        </v-col>
-                        <v-col class="flex-grow-0">
-                          <v-btn icon color="error" @click="uploadFileDialog = false">
-                            <v-icon>mdi-close</v-icon>
-                          </v-btn>
-                        </v-col>
-                      </v-row>
-                    </v-card-title>
-                    <v-form @submit.prevent="uploadFile(punto.id)">
-                      <v-select v-model="fileType" :items="attachmentsItems" />
-                      <v-file-input v-model="file" />
-                      <v-btn type="submit" block color="success">Enviar</v-btn>
-                    </v-form>
-                  </v-card-text>
-                </v-card>
-              </v-dialog>
-            </v-flex>
-          </v-col>
-        </v-row>
-      </v-card-title>
-    </v-card>
-  </v-dialog>
+                  <v-card>
+                    <v-card-text>
+                      <v-card-title>
+                        <v-row>
+                          <v-col>
+                            <span class="title headline">Añadir archivo</span>
+                          </v-col>
+                          <v-col class="flex-grow-0">
+                            <v-btn icon color="error" @click="uploadFileDialog = false">
+                              <v-icon>mdi-close</v-icon>
+                            </v-btn>
+                          </v-col>
+                        </v-row>
+                      </v-card-title>
+                      <v-form @submit.prevent="uploadFile(punto.id)">
+                        <v-select v-model="fileType" :items="attachmentsItems" />
+                        <v-file-input v-model="file" />
+                        <v-btn type="submit" block color="success">Enviar</v-btn>
+                      </v-form>
+                    </v-card-text>
+                  </v-card>
+                </v-dialog>
+              </v-flex>
+            </v-col>
+          </v-row>
+        </v-card-title>
+      </v-card>
+    </v-dialog>
+    <v-alert type="error">No hay punto</v-alert>
+  </div>
 </template>
 
 <script>
