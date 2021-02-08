@@ -21,6 +21,7 @@ class Migration(migrations.Migration):
     ]
 
     operations = [
+        migrations.RunPython(migrate_puntos, reverse_code=migrations.RunPython.noop),
         migrations.AddField(
             model_name="bid",
             name="punto",
@@ -32,5 +33,4 @@ class Migration(migrations.Migration):
                 to="users.punto",
             ),
         ),
-        migrations.RunPython(migrate_puntos, reverse_code=migrations.RunPython.noop),
     ]
