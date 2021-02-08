@@ -2,7 +2,7 @@
   <v-dialog v-model="puntoDialog" max-width="1500">
     <template v-slot:activator="{ on }">
       <v-list-item-title>
-        <v-btn v-on="on"> (id: {{ punto.id }}) {{ punto.kind === 'luz' ? punto.cups_luz : punto.cups_gas }} </v-btn>
+        <v-btn v-on="on"> (id: {{ punto.id }}) {{ punto.cups_luz || punto.cups_gas }} </v-btn>
       </v-list-item-title>
     </template>
 
@@ -10,7 +10,7 @@
       <v-card-title>
         <v-row align="center">
           <v-col>
-            {{ punto.kind === 'luz' ? punto.cups_luz : punto.cups_gas }}
+            {{ punto.cups_luz || punto.cups_gas }}
           </v-col>
           <v-col class="flex-grow-0">
             <delete-button @click="deletePunto(punto)" />
