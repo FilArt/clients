@@ -272,8 +272,11 @@ class PuntoViewSet(LoggingMixin, viewsets.ModelViewSet):
             raise ValidationError({"profileNotFilled": True})
         bid_id = self.request.data.get("bid")
         bid = get_object_or_404(Bid, id=bid_id)
+        if bid.punto:
+            raise ValidationError("Solicitud tiene punto")
         punto = serializer.save(user=bid.user)
-        bid.puntos.add(punto)
+        bid.punto = punto
+        bid.save()
 
     @action(methods=["GET"], detail=False)
     def get_categories(self, _):

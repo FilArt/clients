@@ -22,7 +22,7 @@ class CommissionField(serializers.DecimalField):
 
 class BidSerializer(BidListSerializer):
     offer = DetailOfferSerializer()
-    puntos = serializers.ListSerializer(child=PuntoSerializer())
+    punto = PuntoSerializer()
     responsible = serializers.CharField(source="user.responsible", read_only=True)
     canal = serializers.CharField(source="user.responsible.canal", read_only=True)
     agent_type = serializers.CharField(source="user.agent_type", read_only=True)
@@ -37,10 +37,9 @@ class BidSerializer(BidListSerializer):
         fields = [
             "id",
             "offer",
-            "puntos_count",
             "status",
             "new_status",
-            "puntos",
+            "punto",
             "agent_type",
             "doc",
             "scoring",
@@ -72,13 +71,14 @@ class BidSerializer(BidListSerializer):
             bid.offer = offer
             bid.save(update_fields=["offer"])
 
-        bid_user = get_user_model().objects.with_statuses().get(id=bid.user_id)
-        status = bid_user.status
-        if status == PENDIENTE_PAGO:
-            bid_user.fecha_firma = timezone.now().date()
-            bid_user.save(update_fields=["fecha_firma"])
-
-        return super().update(bid, validated_data)
+        bid_succeeded = bid.success
+        _super = super().update(bid, validated_data)
+        if not bid_succeeded:
+            bid.refresh_from_db()
+            if bid.success:
+                bid.fecha_firma = timezone.now()
+                bid.save()
+        return _super
 
     def save(self, **kwargs):
         user = self.context["request"].user
@@ -94,29 +94,6 @@ class BidSerializer(BidListSerializer):
                     message=self.validated_data.get("message"),
                     internal_message=self.validated_data.get("internal_message") or None,
                 )
-
-            bid_user = bid.user
-            bid_user_client_role = bid_user.client_role
-
-            if bid_user_client_role == "leed":
-                ...
-
-            elif bid_user_client_role == "tramitacion":
-                # если у клиента не осталось неоттрамитареных бидов, то переводим его в фактурасьон
-                if bid_user.bids.exclude(doc=True, call=True, scoring=True).exists() is False:
-                    bid_user.client_role = "facturacion"
-                    bid_user.fecha_firma = timezone.now().date()
-                    bid_user.save(update_fields=["client_role", "fecha_firma"])
-
-            elif bid_user_client_role == "facturacion":
-                # если у клиента появились неоттрамитаренные биды, возвращаем его в трамитасьон
-                if bid_user.bids.exclude(doc=True, call=True, scoring=True).exists() is True:
-                    bid_user.client_role = "tramitacion"
-                    bid_user.save(update_fields=["client_role"])
-
-            elif bid_user_client_role == "client":
-                ...
-
         return bid
 
 

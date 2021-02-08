@@ -1,8 +1,8 @@
-import csv
 import sys
 from typing import List
 
 from django.core.management.base import BaseCommand
+from django.db.models.functions import Concat
 
 from apps.users.models import CustomUser, Punto
 
@@ -55,11 +55,45 @@ HEADERS = (
     "category",
 )
 
+import csv
+from django.db.models import F, Value
+from apps.users.models import CustomUser as cu
+
 
 class Command(BaseCommand):
     help = "Export clients"
 
     def handle(self, *args, **options):
+        qs = (
+            cu.objects
+            # .filter(responsible_id=684)
+            .annotate(agent_id=F("responsible_id"))
+            .annotate(agent=Concat(F("responsible__first_name"), Value(" "), F("responsible__last_name")))
+            .filter(role__isnull=True)
+            .order_by("responsible")
+        )
+        with open("test.csv", "w") as f:
+            w = csv.DictWriter(
+                f, fieldnames=["type", "id", "name", "cif", "agent", "agent_id", "fecha_firma", "phone", "phone_city"]
+            )
+            w.writeheader()
+
+            for c in qs:
+                for i, bid in enumerate(c.bids.all()):
+                    p = bid.punto
+                    item = {
+                        "id": c.id if i == 0 else p.id,
+                        "name": c.fullname,
+                        "cif": c.cif_nif,
+                        "agent": c.responsible,
+                        "agent_id": c.responsible_id,
+                        "fecha_firma": (c.fecha_firma if i == 0 else bid.created_at).strftime("%d.%m.%Y"),
+                        "phone": c.phone,
+                        "phone_city": c.phone_city,
+                    }
+                    w.writerow({**item, "id": p.id, "type": "user" if i == 0 else "punto"})
+
+        exit()
         clients = CustomUser.objects.filter(role__isnull=True)
         writer = csv.DictWriter(sys.stdout, fieldnames=HEADERS)
         writer.writeheader()

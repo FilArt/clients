@@ -8,7 +8,7 @@
       :right="story.user !== 'me'"
     >
       <span slot="opposite">
-        {{ story.dt | date('dd/MM/yyyy HH:mm') }}
+        {{ story.dt }}
         <br />
         {{ story.user.fullname || story.user }}
       </span>
@@ -49,15 +49,9 @@
 </template>
 <script>
 import DeleteButton from '~/components/buttons/deleteButton'
-import { format, parseISO } from 'date-fns'
 export default {
   name: 'HistoryList',
   components: { DeleteButton },
-  filters: {
-    date(val, fmt) {
-      return format(parseISO(val), fmt)
-    },
-  },
   props: {
     history: {
       type: Array,

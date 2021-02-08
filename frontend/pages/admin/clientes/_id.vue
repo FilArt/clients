@@ -48,7 +48,7 @@
                   <v-list-item-content>
                     <v-list-item-title v-text="bid.offer_name" />
                     <v-list-item-subtitle v-text="'id: ' + bid.id" />
-                    <v-list-item-subtitle v-text="bid.created_at" />
+                    <v-list-item-subtitle v-text="bid.fecha_firma" />
                   </v-list-item-content>
 
                   <v-list-item-content>

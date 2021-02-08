@@ -45,7 +45,7 @@ class DetailPuntoSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Punto
-        exclude = ["user", "bid"]
+        exclude = ["user"]
         extra_kwargs = {
             "province": {"required": True},
             "locality": {"required": True},
@@ -58,15 +58,20 @@ class BidListSerializer(DynamicFieldsMixin, serializers.ModelSerializer):
     offer_name = serializers.CharField(read_only=True, source="offer.name")
     offer_kind = serializers.CharField(read_only=True, source="offer.kind")
     created_at = serializers.SerializerMethodField()
+    fecha_firma = serializers.SerializerMethodField()
     status = serializers.SerializerMethodField()
 
     class Meta:
         model = Bid
-        fields = ["id", "created_at", "offer_name", "status", "offer_kind"]
+        fields = ["id", "created_at", "offer_name", "status", "offer_kind", "fecha_firma"]
 
     # noinspection PyMethodMayBeStatic
     def get_created_at(self, instance: Bid):
         return instance.created_at.strftime("%d.%m.%Y %H:%M")
+
+    # noinspection PyMethodMayBeStatic
+    def get_fecha_firma(self, instance: Bid):
+        return instance.fecha_firma.strftime("%d.%m.%Y %H:%M") if instance.fecha_firma else "No hay fecha firma!"
 
     def get_status(self, bid: Bid):
         return bid.get_status(by=self.context["request"].user)

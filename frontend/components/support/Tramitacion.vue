@@ -131,7 +131,6 @@
               :bid-id="bid.id"
               :responsible="bid.responsible"
               :canal="bid.canal"
-              :puntos-count="bid.puntos_count"
               :default-canal-commission="parseFloat(bid.offer.canal_commission)"
               :default-responsible-commission="parseFloat(bid.offer.agent_commission)"
               :current-responsible-commission="parseFloat(bid.commission)"
@@ -173,10 +172,9 @@
       <v-divider vertical />
 
       <v-col>
-        <v-card-title> Puntos </v-card-title>
-        <v-alert v-if="bid.puntos.length === 0" type="warning">No hay puntos</v-alert>
-        <puntos-list v-else :puntos="bid.puntos" :kind="bid.offer.kind" @punto-updated="fetchBid" />
-        <add-punto-dialog closeable :bid-id="bid.id" @punto-added="fetchBid" />
+        <v-card-title>Punto</v-card-title>
+        <punto-item :punto="bid.punto" @punto-updated="fetchBid" />
+        <add-punto-dialog v-if="!bid.punto" closeable :bid-id="bid.id" @punto-added="fetchBid" />
       </v-col>
     </v-row>
   </div>
@@ -184,14 +182,15 @@
 
 <script>
 import constants from '@/lib/constants'
+import PuntoItem from '@/components/puntos/PuntoItem'
 
 export default {
   name: 'Tramitacion',
   components: {
+    PuntoItem,
     AddPuntoDialog: () => import('@/components/puntos/AddPuntoDialog'),
     Facturacion: () => import('@/components/support/Facturacion'),
     CloseButton: () => import('@/components/buttons/closeButton'),
-    PuntosList: () => import('@/components/puntos/PuntosList'),
     detailOffer: () => import('@/components/detailOffer'),
     HistoryList: () => import('@/components/history/HistoryList'),
   },

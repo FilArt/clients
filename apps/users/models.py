@@ -267,7 +267,6 @@ class Punto(models.Model):
     CATEGORY_CHOICES = (("physical", _("Physical")), ("autonomous", _("Autonomous")), ("business", _("Business")))
     PROVINCE_CHOICES = [(c, c) for c in CITIES]
 
-    bid = models.ManyToManyField("bids.Bid", related_name="puntos")
     user = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name="puntos")
     name = MyCharField(verbose_name=_("Name"))
     is_name_changed = models.BooleanField(blank=True, null=True)

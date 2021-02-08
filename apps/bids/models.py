@@ -25,7 +25,9 @@ class Bid(models.Model):
 
     user = models.ForeignKey(get_user_model(), on_delete=models.CASCADE, related_name="bids")
     offer = models.ForeignKey("calculator.Offer", on_delete=models.CASCADE)
+    punto = models.ForeignKey("users.Punto", on_delete=models.CASCADE)
     created_at = models.DateTimeField(auto_now_add=True)
+    fecha_firma = models.DateTimeField(blank=True, null=True)
     commission = models.DecimalField(max_digits=6, decimal_places=2, default=0)
     canal_commission = models.DecimalField(max_digits=6, decimal_places=2, default=0)
     paid = models.BooleanField(default=False)
@@ -64,10 +66,6 @@ class Bid(models.Model):
     @property
     def success(self) -> bool:
         return bool(self.doc and self.call and self.scoring)
-
-    @property
-    def puntos_count(self) -> int:
-        return self.puntos.count()
 
 
 class BidStory(models.Model):

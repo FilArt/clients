@@ -102,10 +102,6 @@ export default {
       type: Number,
       default: 0,
     },
-    puntosCount: {
-      type: Number,
-      default: 0,
-    },
     isResponsiblePaid: {
       type: Boolean,
       default: false,

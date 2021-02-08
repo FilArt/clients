@@ -63,34 +63,31 @@ class BidViewSet(LoggingMixin, viewsets.ModelViewSet):
     def history(self, request: Request, pk: int):
         bid = self.get_object()
         stories = bid.stories.all()
-        logs = APIRequestLog.objects.filter(view='apps.users.viewsets.AttachmentsViewSet', data__icontains='punto')
+        logs = APIRequestLog.objects.filter(view="apps.users.viewsets.AttachmentsViewSet", data__icontains="punto")
         story: BidStory
         data = [
             {
-                'user': story.user.fullname,
-                'dt': story.dt,
-                'message': story.message,
-                'internal_message': story.internal_message,
-                'status': story.status,
+                "user": story.user.fullname,
+                "dt": story.dt,
+                "message": story.message,
+                "internal_message": story.internal_message,
+                "status": story.status,
             }
             for story in stories
         ]
-        puntos_ids = set(bid.puntos.values_list('id', flat=True))
         for log in logs:
+            # Todo: CHECK
             response = ujson.loads(log.response)
-            if response.get('punto') in puntos_ids:
-                data.append({
-                    'user': log.user.fullname,
-                    'dt': log.requested_at,
-                    'data': response,
-                    'status': 'Nuevo archivo',
-                })
+            if str(response.get("punto")) == str(bid.punto_id):
+                data.append(
+                    {"user": log.user.fullname, "dt": log.requested_at, "data": response, "status": "Nuevo archivo",}
+                )
 
         def format_item(item: dict) -> dict:
-            item['dt'] = item['dt'].strftime('%d/%m/%Y %H:%M')
+            item["dt"] = item["dt"].strftime("%d/%m/%Y %H:%M")
             return item
 
-        data = list(map(format_item, sorted(data, key=itemgetter('dt'), reverse=True)))
+        data = list(map(format_item, sorted(data, key=itemgetter("dt"), reverse=True)))
         return Response(data)
 
     @action(methods=["GET"], detail=True)
@@ -121,14 +118,7 @@ class BidViewSet(LoggingMixin, viewsets.ModelViewSet):
         else:
             offer_status = "..."
 
-        return Response(
-            {
-                "doc": doc,
-                "call": call,
-                "scoring": scoring,
-                "offer_status": offer_status,
-            }
-        )
+        return Response({"doc": doc, "call": call, "scoring": scoring, "offer_status": offer_status,})
 
 
 class BidStoryViewSet(LoggingMixin, viewsets.ModelViewSet):
