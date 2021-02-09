@@ -498,9 +498,15 @@ class AgentContractSerializer(serializers.ModelSerializer):
 
             attachments = punto_data.pop("attachments")
             try:
-                punto = Punto.objects.get(
-                    Q(cups_luz=punto_data.get("cups_luz")) | Q(cups_gas=punto_data.get("cups_gas")), user=created_client
-                )
+                cups_luz = punto_data.get("cups_luz")
+                cups_gas = punto_data.get("cups_gas")
+                if cups_luz:
+                    punto = Punto.objects.get(cups_luz=cups_luz, user=created_client)
+                elif cups_gas:
+                    punto = Punto.objects.get(cups_gas=cups_gas, user=created_client)
+                else:
+                    raise Punto.DoesNotExist
+
             except Punto.DoesNotExist:
                 punto = Punto.objects.create(**punto_data, user=created_client)
             except Punto.MultipleObjectsReturned:
