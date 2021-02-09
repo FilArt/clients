@@ -1,4 +1,5 @@
 import csv
+from datetime import datetime
 from itertools import groupby
 from operator import itemgetter
 from typing import List
@@ -15,6 +16,8 @@ from apps.bids.models import Bid
 from apps.calculator.models import Offer, Company
 from apps.users.models import CustomUser, Punto
 
+FORMATS = "%d/%m/%Y", "%d.%m.%Y"
+
 
 class Command(BaseCommand):
     help = "Load clients from file"
@@ -27,7 +30,7 @@ class Command(BaseCommand):
         _file = options["file"]
         if _file.endswith(".csv"):
             with open(_file) as f:
-                lines = csv.DictReader(_file)
+                lines = csv.DictReader(f.readlines())
         else:
             df: pandas.DataFrame = pandas.read_excel(options["file"], dtype={"postalcode": str}, parse_dates=True)
             df.dropna(axis=0, how="all", thresh=None, subset=None, inplace=True)
@@ -66,6 +69,16 @@ class Command(BaseCommand):
             w = csv.DictWriter(f, fieldnames=["cif", "error"])
             w.writeheader()
             w.writerows(errors)
+
+
+def parse_date(dt, tz=pytz.timezone("Europe/Madrid")):
+    if isinstance(dt, str):
+        for fmt in FORMATS:
+            try:
+                return datetime.strptime(dt, fmt)
+            except ValueError:
+                ...
+    return dt.replace(tzinfo=tz)
 
 
 class ParseError(BaseException):
@@ -107,8 +120,9 @@ def create_user(user_data: dict) -> CustomUser:
 
         value = user_data.get(field)
 
-        if field == "date_joined" and user_data.get("fecha_firma"):
-            value = user_data["fecha_firma"].replace(tzinfo=pytz.timezone("Europe/Madrid"))
+        if field in ("date_joined", "fecha_firma") and value:
+            ff = user_data.get(field)
+            value = parse_date(ff)
         elif not value:
             if field == "email":
                 value = auto_email
@@ -196,7 +210,7 @@ def process_user(lines: List[dict]):
         offer = Offer.objects.get(id__in=offers_ids)
         cups_field = "cups_luz" if offer.kind == "luz" else "cups_gas"
         cups = line[cups_field].strip()
-        ff = line["fecha_firma"].replace(tzinfo=pytz.UTC)
+        ff = parse_date(line["fecha_firma"], tz=pytz.UTC)
 
         try:
             punto = user.puntos.get(**{cups_field: cups})
