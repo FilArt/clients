@@ -3,6 +3,7 @@ from typing import List
 
 from django.contrib.auth.base_user import BaseUserManager
 from django.db import transaction
+from django.db.models import Q
 from drf_dynamic_fields import DynamicFieldsMixin
 from rest_framework import serializers
 from rest_framework.exceptions import ValidationError
@@ -15,7 +16,7 @@ from apps.users.models import (
     Punto,
     UserSettings,
 )
-from clients.utils import notify_telegram, humanize
+from clients.utils import notify_telegram
 
 logger = logging.getLogger(__name__)
 
@@ -370,7 +371,7 @@ class FastContractSerializer(serializers.ModelSerializer):
         user_ser.is_valid(raise_exception=True)
         with transaction.atomic():
             if not CustomUser.objects.filter(email=from_user).exists():
-                from_user_ser = RegisterSerializer(data={"email": from_user, "role": "agent"}, tg_msg=None,)
+                from_user_ser = RegisterSerializer(data={"email": from_user, "role": "agent"}, tg_msg=None, )
                 from_user_ser.is_valid(raise_exception=True)
                 invited_by = from_user_ser.save()
             else:
@@ -484,10 +485,10 @@ class AgentContractSerializer(serializers.ModelSerializer):
         for pkey, punto_data in enumerate(puntos):
             offer = punto_data.pop("offer") if "offer" in punto_data else None
             if (
-                offer
-                and offer.required_fields
-                and "phone" in offer.required_fields
-                and not self.validated_data.get("phone")
+                    offer
+                    and offer.required_fields
+                    and "phone" in offer.required_fields
+                    and not self.validated_data.get("phone")
             ):
                 raise ValidationError({"phone": "Requiredo."})
 
@@ -496,11 +497,20 @@ class AgentContractSerializer(serializers.ModelSerializer):
                 raise ValidationError({"offer": ["Ofertas gas o oferta luz requiredo"]})
 
             attachments = punto_data.pop("attachments")
-            punto = Punto.objects.create(**punto_data, user=created_client)
+            try:
+                punto = Punto.objects.get(
+                    Q(cups_luz=punto_data.get("cups_luz")) | Q(cups_gas=punto_data.get("cups_gas")), user=created_client
+                )
+            except Punto.DoesNotExist:
+                punto = Punto.objects.create(**punto_data, user=created_client)
+            except Punto.MultipleObjectsReturned:
+                notify_telegram(premessage="firmado error", cif_nif=self._user.cif_nif)
+                raise ValidationError("error temporal. intente un poco más tarde (unos 15 minutos)")
+
             if offer:
-                Bid.objects.create(user=created_client, offer=offer, punto=punto)
+                Bid.objects.get_or_create(user=created_client, offer=offer, punto=punto)
             if offer_gas:
-                Bid.objects.create(user=created_client, offer=offer_gas, punto=punto)
+                Bid.objects.get_or_create(user=created_client, offer=offer_gas, punto=punto)
 
             given_types = [a["attachment_type"] for a in attachments] + [*validated_data]
             self._handle_required_fields(offer or offer_gas, punto, pkey, given_types)
