@@ -148,7 +148,9 @@ class UserViewSet(
 
         user: CustomUser = self.request.user
         if user.role == "agent" and not self.detail:
-            queryset = queryset.filter(responsible=user, fecha_firma__gte=datetime(2020, 10, 13))
+            queryset = queryset.filter(responsible=user)
+            if self.request.query_params.get("statuses_in") == "Pagado,Pendiente Pago":
+                queryset = queryset.filter(fecha_firma__gte=datetime(2020, 10, 13))
 
         return queryset
 
