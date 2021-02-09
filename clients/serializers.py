@@ -434,7 +434,7 @@ class ContractPuntoSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Punto
-        exclude = ["bid", "user"]
+        exclude = ["user"]
 
 
 class AgentContractSerializer(serializers.ModelSerializer):
@@ -460,11 +460,26 @@ class AgentContractSerializer(serializers.ModelSerializer):
             "client_role": {"default": "tramitacion", "write_only": True},
         }
 
+    def __init__(self, *args, **kwargs):
+        super(AgentContractSerializer, self).__init__(*args, **kwargs)
+        self._user = None
+
+    def is_valid(self, raise_exception: bool = True):
+        cif_nif = self.initial_data.get("cif_nif")
+        if cif_nif:
+            try:
+                self._user = CustomUser.objects.get(cif_nif=cif_nif)
+            except CustomUser.DoesNotExist:
+                ...
+        else:
+            raise ValidationError({"cif_nif": ["Requiredo."]})
+        return super(AgentContractSerializer, self).is_valid(raise_exception=raise_exception)
+
     @transaction.atomic
     def create(self, validated_data):
         puntos = validated_data.pop("puntos")
         validated_data["responsible"] = CustomUser.objects.get(email=validated_data["responsible"])
-        created_client = super().create(validated_data)
+        created_client = self._user or super().create(validated_data)
         # 1 bid - 1 offer - 1 punto
         for pkey, punto_data in enumerate(puntos):
             offer = punto_data.pop("offer") if "offer" in punto_data else None
@@ -483,11 +498,9 @@ class AgentContractSerializer(serializers.ModelSerializer):
             attachments = punto_data.pop("attachments")
             punto = Punto.objects.create(**punto_data, user=created_client)
             if offer:
-                bid = Bid.objects.create(user=created_client, offer=offer)
-                bid.puntos.add(punto)
+                Bid.objects.create(user=created_client, offer=offer, punto=punto)
             if offer_gas:
-                bid_gas = Bid.objects.create(user=created_client, offer=offer_gas)
-                bid_gas.puntos.add(punto)
+                Bid.objects.create(user=created_client, offer=offer_gas, punto=punto)
 
             given_types = [a["attachment_type"] for a in attachments] + [*validated_data]
             self._handle_required_fields(offer or offer_gas, punto, pkey, given_types)

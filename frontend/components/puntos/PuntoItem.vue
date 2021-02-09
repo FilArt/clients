@@ -127,7 +127,7 @@
         </v-card-title>
       </v-card>
     </v-dialog>
-    <v-alert type="error">No hay punto</v-alert>
+    <v-alert v-else type="error">No hay punto</v-alert>
   </div>
 </template>
 
@@ -188,7 +188,7 @@ export default {
   methods: {
     async deletePunto(punto) {
       const willDelete = await this.$swal({
-        title: `Eliminar punto ${punto.cups}?`,
+        title: `Eliminar punto ${punto.cups_luz || punto.cups_gas}?`,
         text: 'Una vez borrado, no podrás recuperar este punto!',
         icon: 'warning',
         buttons: true,
@@ -196,8 +196,8 @@ export default {
       })
       if (!willDelete) return
       await this.$axios.$delete(`/users/puntos/${punto.id}/`)
-      this.puntoDialog = false
-      this.$emit('punto-updated')
+      this.$emit('punto-deleted')
+      await this.$router.replace({ query: null })
     },
     getColor(attachmentId) {
       const q = this.$route.query

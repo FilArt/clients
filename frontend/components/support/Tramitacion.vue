@@ -173,7 +173,7 @@
 
       <v-col>
         <v-card-title>Punto</v-card-title>
-        <punto-item :punto="bid.punto" @punto-updated="fetchBid" />
+        <punto-item :punto="bid.punto" @punto-updated="fetchBid" @punto-deleted="$emit('punto-deleted')" />
         <add-punto-dialog v-if="!bid.punto" closeable :bid-id="bid.id" @punto-added="fetchBid" />
       </v-col>
     </v-row>
@@ -182,12 +182,11 @@
 
 <script>
 import constants from '@/lib/constants'
-import PuntoItem from '@/components/puntos/PuntoItem'
 
 export default {
   name: 'Tramitacion',
   components: {
-    PuntoItem,
+    PuntoItem: () => import('@/components/puntos/PuntoItem'),
     AddPuntoDialog: () => import('@/components/puntos/AddPuntoDialog'),
     Facturacion: () => import('@/components/support/Facturacion'),
     CloseButton: () => import('@/components/buttons/closeButton'),
@@ -274,17 +273,22 @@ export default {
     },
   },
   watch: {
-    async bidId() {
-      await this.refresh()
+    bidId: {
+      handler: async function () {
+        await this.refresh()
+      },
+      deep: true,
     },
   },
   async mounted() {
-    if (this.bidId) await this.refresh()
+    await this.refresh()
   },
   methods: {
     async refresh() {
-      await this.fetchBid()
-      if (['admin', 'support'].includes(this.$auth.user.role)) await this.fetchLastComments()
+      if (this.bidId && this.bidId.match(/\d+/)) {
+        await this.fetchBid()
+        if (['admin', 'support'].includes(this.$auth.user.role)) await this.fetchLastComments()
+      }
     },
     async fetchHistory() {
       this.history = await this.$axios.$get(`bids/bids/${this.bidId}/history/`)

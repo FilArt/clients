@@ -7,7 +7,11 @@
     <v-col class="flex-grow-1">
       <v-card>
         <v-card-text>
-          <tramitacion :facturacion="facturacion" @tramitate="$emit('tramitate')" />
+          <tramitacion
+            :facturacion="facturacion"
+            @tramitate="$emit('tramitate')"
+            @punto-deleted="$emit('punto-deleted')"
+          />
         </v-card-text>
       </v-card>
     </v-col>
