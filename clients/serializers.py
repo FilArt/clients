@@ -371,7 +371,7 @@ class FastContractSerializer(serializers.ModelSerializer):
         user_ser.is_valid(raise_exception=True)
         with transaction.atomic():
             if not CustomUser.objects.filter(email=from_user).exists():
-                from_user_ser = RegisterSerializer(data={"email": from_user, "role": "agent"}, tg_msg=None, )
+                from_user_ser = RegisterSerializer(data={"email": from_user, "role": "agent"}, tg_msg=None,)
                 from_user_ser.is_valid(raise_exception=True)
                 invited_by = from_user_ser.save()
             else:
@@ -485,10 +485,10 @@ class AgentContractSerializer(serializers.ModelSerializer):
         for pkey, punto_data in enumerate(puntos):
             offer = punto_data.pop("offer") if "offer" in punto_data else None
             if (
-                    offer
-                    and offer.required_fields
-                    and "phone" in offer.required_fields
-                    and not self.validated_data.get("phone")
+                offer
+                and offer.required_fields
+                and "phone" in offer.required_fields
+                and not self.validated_data.get("phone")
             ):
                 raise ValidationError({"phone": "Requiredo."})
 

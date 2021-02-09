@@ -87,7 +87,7 @@ class Command(BaseCommand):
                         "cif": c.cif_nif,
                         "agent": c.responsible,
                         "agent_id": c.responsible_id,
-                        "fecha_firma": (c.fecha_firma if i == 0 else bid.created_at).strftime("%d.%m.%Y"),
+                        "fecha_firma": bid.fecha_firma.strftime("%d.%m.%Y") if bid.fecha_firma else None,
                         "phone": c.phone,
                         "phone_city": c.phone_city,
                     }
