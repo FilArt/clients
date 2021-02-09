@@ -16,6 +16,58 @@ from apps.calculator.models import Offer, Company
 from apps.users.models import CustomUser, Punto
 
 
+class Command(BaseCommand):
+    help = "Load clients from file"
+
+    def add_arguments(self, parser):
+        parser.add_argument("file", type=str)
+
+    def handle(self, *args, **options):
+        errors = []
+        _file = options["file"]
+        if _file.endswith(".csv"):
+            with open(_file) as f:
+                lines = csv.DictReader(_file)
+        else:
+            df: pandas.DataFrame = pandas.read_excel(options["file"], dtype={"postalcode": str}, parse_dates=True)
+            df.dropna(axis=0, how="all", thresh=None, subset=None, inplace=True)
+            df.fillna(value="", inplace=True)
+            df.sort_values("cif_nif", inplace=True)
+            # lines = [i for i in df.to_dict(orient="records") if i["cif_nif"] == "40840964W"]
+            lines = df.to_dict(orient="records")
+
+        # delete empty puntos
+        # for _p in [p for p in Punto.objects.prefetch_related("attachments") if p.attachments.count() == 0]:
+        #     _p.delete()
+
+        # fix 0f
+        # for _p in Punto.objects.filter(Q(cups_luz__endswith="0f") | Q(cups_gas__endswith="0f")):
+        #     if _p.cups_luz and _p.cups_luz.lower().endswith("0f"):
+        #         _p.cups_luz = _p.cups_luz[:-2]
+        #         _p.save(update_fields=["cups_luz"])
+        #     if _p.cups_gas and _p.cups_gas.lower().endswith("0f"):
+        #         _p.cups_gas = _p.cups_gas[:-2]
+        #         _p.save(update_fields=["cups_gas"])
+
+        getter = itemgetter("cif_nif")
+        objects = {cif_nif: list(g) for cif_nif, g in groupby(lines, key=getter)}
+        pb = tqdm(total=len(objects))
+        for cif_nif, user_lines in objects.items():
+            pb.set_description(cif_nif)
+            with transaction.atomic():
+                try:
+                    process_user(user_lines)
+                except (ParseError, AssertionError) as e:
+                    errors.append({"cif": cif_nif, "error": str(e)})
+
+            pb.update()
+
+        with open("errors.csv", "w") as f:
+            w = csv.DictWriter(f, fieldnames=["cif", "error"])
+            w.writeheader()
+            w.writerows(errors)
+
+
 class ParseError(BaseException):
     ...
 
@@ -163,50 +215,3 @@ def process_user(lines: List[dict]):
             create_bid(user, offer, first, ff)
 
     assert len(lines) == user.bids.count()
-
-
-class Command(BaseCommand):
-    help = "Load clients from csv file"
-
-    def add_arguments(self, parser):
-        parser.add_argument("file", type=str)
-
-    def handle(self, *args, **options):
-        errors = []
-        df: pandas.DataFrame = pandas.read_excel(options["file"], dtype={"postalcode": str}, parse_dates=True)
-        df.dropna(axis=0, how="all", thresh=None, subset=None, inplace=True)
-        df.fillna(value="", inplace=True)
-        df.sort_values("cif_nif", inplace=True)
-        # lines = [i for i in df.to_dict(orient="records") if i["cif_nif"] == "40840964W"]
-        lines = df.to_dict(orient="records")
-
-        # delete empty puntos
-        for _p in [p for p in Punto.objects.prefetch_related("attachments") if p.attachments.count() == 0]:
-            _p.delete()
-
-        # fix 0f
-        for _p in Punto.objects.filter(Q(cups_luz__endswith="0f") | Q(cups_gas__endswith="0f")):
-            if _p.cups_luz and _p.cups_luz.lower().endswith("0f"):
-                _p.cups_luz = _p.cups_luz[:-2]
-                _p.save(update_fields=["cups_luz"])
-            if _p.cups_gas and _p.cups_gas.lower().endswith("0f"):
-                _p.cups_gas = _p.cups_gas[:-2]
-                _p.save(update_fields=["cups_gas"])
-
-        getter = itemgetter("cif_nif")
-        objects = {cif_nif: list(g) for cif_nif, g in groupby(lines, key=getter)}
-        pb = tqdm(total=len(objects))
-        for cif_nif, user_lines in objects.items():
-            pb.set_description(cif_nif)
-            with transaction.atomic():
-                try:
-                    process_user(user_lines)
-                except (ParseError, AssertionError) as e:
-                    errors.append({"cif": cif_nif, "error": str(e)})
-
-            pb.update()
-
-        with open("errors.csv", "w") as f:
-            w = csv.DictWriter(f, fieldnames=["cif", "error"])
-            w.writeheader()
-            w.writerows(errors)
