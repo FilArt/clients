@@ -124,7 +124,10 @@ def create_user(user_data: dict) -> CustomUser:
             value = parse_date(ff)
         elif not value:
             if field == "email":
-                value = user_data.get("email") or f"{cif_nif}@gestiongroup.es"
+                email = user_data.get("email")
+                if CustomUser.objects.filter(email=email).exists():
+                    email = f"{cif_nif}@gestiongroup.es"
+                value = email
             else:
                 continue
 
