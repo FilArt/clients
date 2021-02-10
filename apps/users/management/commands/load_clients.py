@@ -36,12 +36,12 @@ class Command(BaseCommand):
             df.dropna(axis=0, how="all", thresh=None, subset=None, inplace=True)
             df.fillna(value="", inplace=True)
             df.sort_values("cif_nif", inplace=True)
-            lines = [
-                {**i, "cif_nif": i["cif_nif"].upper()}
-                for i in df.to_dict(orient="records")
-                if i["cif_nif"].upper() == "72982694Z"
-            ]
-            # lines = df.to_dict(orient="records")
+            # lines = [
+            #     {**i, "cif_nif": i["cif_nif"].upper()}
+            #     for i in df.to_dict(orient="records")
+            #     if i["cif_nif"].upper() == "23187406W"
+            # ]
+            lines = df.to_dict(orient="records")
 
         # delete empty puntos
         # for _p in [p for p in Punto.objects.prefetch_related("attachments") if p.attachments.count() == 0]:
@@ -103,13 +103,8 @@ def deal_with_dups(first, second):
 
 def create_user(user_data: dict) -> CustomUser:
     cif_nif = user_data.get("cif_nif")
-    email = user_data.get("email")
-    auto_email = f"{cif_nif}@gestiongroup.es"
     try:
-        condition = Q(email__in=[e for e in [email, auto_email] if e])
-        if cif_nif:
-            condition |= Q(cif_nif=cif_nif)
-        user = CustomUser.objects.get(condition, role__isnull=True)
+        user = CustomUser.objects.get(cif_nif=cif_nif, role__isnull=True)
     except CustomUser.DoesNotExist:
         user = CustomUser()
         password = BaseUserManager().make_random_password()
@@ -129,7 +124,7 @@ def create_user(user_data: dict) -> CustomUser:
             value = parse_date(ff)
         elif not value:
             if field == "email":
-                value = auto_email
+                value = user_data.get("email") or f"{cif_nif}@gestiongroup.es"
             else:
                 continue
 
