@@ -36,8 +36,12 @@ class Command(BaseCommand):
             df.dropna(axis=0, how="all", thresh=None, subset=None, inplace=True)
             df.fillna(value="", inplace=True)
             df.sort_values("cif_nif", inplace=True)
-            # lines = [i for i in df.to_dict(orient="records") if i["cif_nif"] == "40840964W"]
-            lines = df.to_dict(orient="records")
+            lines = [
+                {**i, "cif_nif": i["cif_nif"].upper()}
+                for i in df.to_dict(orient="records")
+                if i["cif_nif"].upper() == "72982694Z"
+            ]
+            # lines = df.to_dict(orient="records")
 
         # delete empty puntos
         # for _p in [p for p in Punto.objects.prefetch_related("attachments") if p.attachments.count() == 0]:
