@@ -125,7 +125,7 @@ def create_user(user_data: dict) -> CustomUser:
         elif not value:
             if field == "email":
                 email = user_data.get("email")
-                if CustomUser.objects.filter(email=email).exists():
+                if not email or CustomUser.objects.filter(email=email).exists():
                     email = f"{cif_nif}@gestiongroup.es"
                 value = email
             else:
