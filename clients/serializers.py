@@ -4,6 +4,7 @@ from typing import List
 from django.contrib.auth.base_user import BaseUserManager
 from django.db import transaction
 from django.db.models import Q
+from django.utils import timezone
 from drf_dynamic_fields import DynamicFieldsMixin
 from rest_framework import serializers
 from rest_framework.exceptions import ValidationError
@@ -481,6 +482,10 @@ class AgentContractSerializer(serializers.ModelSerializer):
         puntos = validated_data.pop("puntos")
         validated_data["responsible"] = CustomUser.objects.get(email=validated_data["responsible"])
         created_client = self._user or super().create(validated_data)
+        if not self._user:
+            created_client.cif_nif = self.initial_data["cif_nif"]
+            created_client.save(update_fields=["cif_nif"])
+
         # 1 bid - 1 offer - 1 punto
         for pkey, punto_data in enumerate(puntos):
             offer = punto_data.pop("offer") if "offer" in punto_data else None
@@ -513,10 +518,11 @@ class AgentContractSerializer(serializers.ModelSerializer):
                 notify_telegram(premessage="firmado error", cif_nif=self._user.cif_nif)
                 raise ValidationError("error temporal. intente un poco más tarde (unos 15 minutos)")
 
+            ff = timezone.now()
             if offer:
-                Bid.objects.get_or_create(user=created_client, offer=offer, punto=punto)
+                Bid.objects.get_or_create(user=created_client, offer=offer, punto=punto, fecha_firma=ff)
             if offer_gas:
-                Bid.objects.get_or_create(user=created_client, offer=offer_gas, punto=punto)
+                Bid.objects.get_or_create(user=created_client, offer=offer_gas, punto=punto, fecha_firma=ff)
 
             given_types = [a["attachment_type"] for a in attachments] + [*validated_data]
             self._handle_required_fields(offer or offer_gas, punto, pkey, given_types)
