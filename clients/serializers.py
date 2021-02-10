@@ -481,10 +481,12 @@ class AgentContractSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         puntos = validated_data.pop("puntos")
         validated_data["responsible"] = CustomUser.objects.get(email=validated_data["responsible"])
+        ff = timezone.now()
         created_client = self._user or super().create(validated_data)
         if not self._user:
             created_client.cif_nif = self.initial_data["cif_nif"]
-            created_client.save(update_fields=["cif_nif"])
+            created_client.fecha_firma = ff
+            created_client.save(update_fields=["fecha_firma", "cif_nif"])
 
         # 1 bid - 1 offer - 1 punto
         for pkey, punto_data in enumerate(puntos):
@@ -518,7 +520,6 @@ class AgentContractSerializer(serializers.ModelSerializer):
                 notify_telegram(premessage="firmado error", cif_nif=self._user.cif_nif)
                 raise ValidationError("error temporal. intente un poco más tarde (unos 15 minutos)")
 
-            ff = timezone.now()
             if offer:
                 Bid.objects.get_or_create(user=created_client, offer=offer, punto=punto, fecha_firma=ff)
             if offer_gas:
