@@ -101,9 +101,18 @@ class DateTimeToDateField(serializers.CharField, serializers.Field):
         return datetime.strptime(data, "%d/%m/%Y")
 
 
+class MoneyField(serializers.FloatField):
+    def to_representation(self, value):
+        if value:
+            return f"{value} €"
+        return value
+
+
 class UserListSerializer(DynamicFieldsMixin, serializers.ModelSerializer):
     fecha_firma = DateTimeToDateField()
     fecha_registro = DateTimeToDateField()
+    paid_count = MoneyField()
+    canal_paid_count = MoneyField()
     last_login = PrettyDateTimeField()
     new_messages_count = serializers.SerializerMethodField()
     affiliate = serializers.CharField()

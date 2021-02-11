@@ -1,5 +1,5 @@
 from django.contrib.auth.base_user import BaseUserManager
-from django.db.models import QuerySet, Case, When, Q, Value, Subquery, OuterRef, F
+from django.db.models import QuerySet, Case, When, Q, Value, Subquery, OuterRef, F, Sum
 from django.db.models.aggregates import Count
 from django.db.models.fields import CharField
 from django.utils.translation import gettext_lazy as _
@@ -30,6 +30,8 @@ class CustomUserManager(BaseUserManager):
                     .order_by(F("fecha_firma").asc(nulls_last=True))
                     .values("fecha_firma")[:1]
                 ),
+                paid_count=Sum("bids__commission"),
+                canal_paid_count=Sum("bids__canal_commission"),
             )
         )
         return qs
