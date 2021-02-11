@@ -45,6 +45,9 @@ class CustomUserManager(BaseUserManager):
             total_bids=Count("bids"),
             ko_bids=Count("bids", filter=Q(bids__call=False) | Q(bids__scoring=False) | Q(bids__doc=False)),
             ok_bids=Count("bids", filter=Q(bids__call=True) & Q(bids__scoring=True) & Q(bids__doc=True)),
+            untouched_bids=Count(
+                "bids", filter=Q(bids__call__isnull=True) | Q(bids__scoring__isnull=True) | Q(bids__doc__isnull=True)
+            ),
             touched_bids=Count(
                 "bids", filter=Q(bids__call__isnull=False) | Q(bids__scoring__isnull=False) | Q(bids__doc__isnull=False)
             ),

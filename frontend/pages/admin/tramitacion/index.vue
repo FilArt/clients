@@ -4,6 +4,7 @@
       <users-table
         :statuses="statuses"
         :headers="headers"
+        :mode="mode"
         detail-url="/admin/tramitacion"
         is-support
         show-date-filters
@@ -27,6 +28,7 @@ export default {
         constants.statuses.PENDIENTE_TRAMITACION,
         constants.statuses.TRAMITACION_EN_PROCESSO,
       ],
+      mode: 'tramitacion',
       headers: [
         'id',
         'date_joined',

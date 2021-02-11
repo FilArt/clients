@@ -1,9 +1,9 @@
 import logging
 import re
-from datetime import datetime
 from typing import Tuple
 
 from django.contrib.auth.models import Group
+from django.db.models import Q
 from drf_dynamic_fields import DynamicFieldsMixin
 from notifications.models import Notification
 from notifications.signals import notify
@@ -133,8 +133,15 @@ class UserViewSet(
 
     def get_queryset(self):
         statuses = self.request.query_params.get("statuses_in")
-        if statuses:
-            return CustomUser.objects.with_statuses().filter(status__in=statuses.split(","))
+        mode = self.request.query_params.get("mode")
+
+        if mode or statuses:
+            qs = CustomUser.objects.with_statuses()
+            if mode == "tramitacion":
+                return qs.filter(Q(ko_bids__gt=0) | Q(untouched_bids__gt=0))
+            if statuses:
+                return qs.filter(status__in=statuses.split(","))
+
         return super().get_queryset()
 
     def filter_queryset(self, queryset):

@@ -363,6 +363,10 @@ export default {
     DateTimeFilter: () => import('~/components/DateTimeFilter'),
   },
   props: {
+    mode: {
+      type: String,
+      default: null,
+    },
     selectable: {
       type: Boolean,
       default: false,
@@ -635,6 +639,7 @@ export default {
         fields: this.headers.join(),
         role__isnull: this.role === 'null' ? true : null,
       })
+      if (this.mode) query.mode = this.mode
       if (!query.statuses_in && this.statuses && this.statuses.length) query.statuses_in = this.statuses.join(',')
       return Object.keys(query)
         .filter((k) => query[k] !== null)
