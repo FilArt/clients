@@ -480,14 +480,17 @@ class AgentContractSerializer(serializers.ModelSerializer):
     @transaction.atomic
     def create(self, validated_data):
         puntos = validated_data.pop("puntos")
-        validated_data["responsible"] = CustomUser.objects.get(email=validated_data["responsible"])
-        ff = timezone.now()
-        created_client = self._user or super().create(validated_data)
+        responsible = CustomUser.objects.get(email=validated_data["responsible"])
+        validated_data["responsible"] = responsible
+        created_client: CustomUser = self._user or super().create(validated_data)
+        if created_client.responsible != responsible:
+            created_client.responsible = responsible
+            created_client.save(update_fields=["responsible"])
         if not self._user:
             created_client.cif_nif = self.initial_data["cif_nif"]
             created_client.save(update_fields=["cif_nif"])
 
-        # 1 bid - 1 offer - 1 punto
+        ff = timezone.now()
         for pkey, punto_data in enumerate(puntos):
             offer = punto_data.pop("offer") if "offer" in punto_data else None
             if (
@@ -507,9 +510,13 @@ class AgentContractSerializer(serializers.ModelSerializer):
                 cups_luz = punto_data.get("cups_luz")
                 cups_gas = punto_data.get("cups_gas")
                 if cups_luz:
-                    punto = Punto.objects.get(cups_luz=cups_luz, user=created_client)
+                    punto, _ = Punto.objects.update_or_create(
+                        cups_luz=cups_luz, user=created_client, defaults={**punto_data}
+                    )
                 elif cups_gas:
-                    punto = Punto.objects.get(cups_gas=cups_gas, user=created_client)
+                    punto, _ = Punto.objects.update_or_create(
+                        cups_gas=cups_gas, user=created_client, defaults={**punto_data}
+                    )
                 else:
                     raise Punto.DoesNotExist
 
