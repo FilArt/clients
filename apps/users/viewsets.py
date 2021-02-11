@@ -155,6 +155,9 @@ class UserViewSet(
         fr = self.request.query_params.get("fecha_registro__range")
         if fr:
             queryset = queryset.filter(fecha_registro__range=fr.split(","))
+        ff = self.request.query_params.get("fecha_firma__range")
+        if ff:
+            queryset = queryset.filter(fecha_firma__range=ff.split(","))
 
         user: CustomUser = self.request.user
         if user.role == "agent" and not self.detail:
