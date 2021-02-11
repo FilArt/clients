@@ -1,5 +1,5 @@
 from django.contrib.auth.base_user import BaseUserManager
-from django.db.models import QuerySet, Case, When, Q, Value, Subquery, OuterRef
+from django.db.models import QuerySet, Case, When, Q, Value, Subquery, OuterRef, F
 from django.db.models.aggregates import Count
 from django.db.models.fields import CharField
 from django.utils.translation import gettext_lazy as _
@@ -21,10 +21,14 @@ class CustomUserManager(BaseUserManager):
             .get_queryset()
             .annotate(
                 fecha_firma=Subquery(
-                    Bid.objects.filter(user_id=OuterRef("pk")).order_by("-fecha_firma").values("fecha_firma")[:1]
+                    Bid.objects.filter(user_id=OuterRef("pk"))
+                    .order_by(F("fecha_firma").desc(nulls_last=True))
+                    .values("fecha_firma")[:1]
                 ),
                 fecha_registro=Subquery(
-                    Bid.objects.filter(user_id=OuterRef("pk")).order_by("fecha_firma").values("fecha_firma")[:1]
+                    Bid.objects.filter(user_id=OuterRef("pk"))
+                    .order_by(F("fecha_firma").asc(nulls_last=True))
+                    .values("fecha_firma")[:1]
                 ),
             )
         )
