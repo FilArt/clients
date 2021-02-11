@@ -213,8 +213,8 @@
               <date-time-filter
                 v-model="fechaFirmaFilter"
                 label="Fecha de firma"
-                format="YYYY-MM-DD"
-                formatted="DD/MM/YYYY"
+                format="YYYY-MM-DD HH:mm"
+                formatted="DD/MM/YYYY HH:mm"
                 range
                 @input="updateFechaFirmaFilter"
               />
@@ -419,7 +419,7 @@ export default {
   data() {
     const query = this.$route.query
     let dateJoinedFilter = query.date_joined__range || null
-    let fechaFirmaFilter = query.fecha_firma__range || null
+    let fechaFirmaFilter = query.bids__fecha_firma__range || null
     if (dateJoinedFilter) {
       try {
         const [start, end] = dateJoinedFilter.split(',')
@@ -658,9 +658,9 @@ export default {
     },
     updateFechaFirmaFilter(dates) {
       if (dates && dates.start && dates.end) {
-        this.updateQuery({ fecha_firma__range: `${dates.start},${dates.end}` })
+        this.updateQuery({ bids__fecha_firma__range: `${dates.start},${dates.end}` })
       } else {
-        this.updateQuery({ fecha_firma__range: null })
+        this.updateQuery({ bids__fecha_firma__range: null })
       }
     },
     async updateQuery(options) {

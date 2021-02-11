@@ -87,7 +87,6 @@ class CustomUser(AbstractUser):
 
     created_at = models.DateTimeField(auto_now_add=True)
     last_modified = models.DateTimeField(auto_now=True)
-    fecha_firma = models.DateField(blank=True, null=True)
 
     permissions = ArrayField(
         models.CharField(choices=PERMISSIONS_CHOICES, max_length=30),

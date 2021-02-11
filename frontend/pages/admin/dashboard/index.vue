@@ -98,7 +98,7 @@ export default {
       }
       if (this.fechaFirma && this.fechaFirma.end) {
         const { start, end } = this.fechaFirma
-        params.fecha_firma__range = `${start},${end}`
+        params.bids__fecha_firma__range = `${start},${end}`
       }
       const paramsStr = Object.keys(params)
         .map((k) => k + '=' + params[k])

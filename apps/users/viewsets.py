@@ -121,7 +121,7 @@ class UserViewSet(
     filterset_fields = {
         "role": ["exact", "isnull", "in"],
         "date_joined": ["range"],
-        "fecha_firma": ["range"],
+        "bids__fecha_firma": ["range"],
         "source": ["exact"],
         "responsible": ["exact", "in"],
         "bids__doc": ["exact", "isnull"],
