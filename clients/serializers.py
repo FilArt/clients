@@ -520,12 +520,16 @@ class AgentContractSerializer(serializers.ModelSerializer):
                 notify_telegram(premessage="firmado error", cif_nif=self._user.cif_nif)
                 raise ValidationError("error temporal. intente un poco más tarde (unos 15 minutos)")
 
+            bid_data = dict(
+                user=created_client, punto=punto, fecha_firma=ff, defaults=dict(doc=None, scoring=None, call=None,)
+            )
             if offer:
-                Bid.objects.get_or_create(user=created_client, offer=offer, punto=punto, fecha_firma=ff)
+                Bid.objects.update_or_create(offer=offer, **bid_data)
             if offer_gas:
-                Bid.objects.get_or_create(user=created_client, offer=offer_gas, punto=punto, fecha_firma=ff)
+                Bid.objects.update_or_create(offer=offer_gas, **bid_data)
 
             given_types = [a["attachment_type"] for a in attachments] + [*validated_data]
+
             self._handle_required_fields(offer or offer_gas, punto, pkey, given_types)
 
             for attachment_data in attachments:
