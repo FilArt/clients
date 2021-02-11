@@ -44,9 +44,9 @@ class CallVisitUserViewSet(viewsets.ModelViewSet):
         client: CustomUser
         authed_cv_client = get_authed_cv_client(request.user.callvisituser)
         for client in clients:
-            puntos = client.puntos.all()
-            punto: Punto
-            for punto in puntos:
+            bids = client.bids.all()
+            for bid in bids:
+                punto: Punto = bid.punto
                 item = {
                     "name": client.fullname,
                     "postalcode": punto.postalcode,
@@ -60,10 +60,10 @@ class CallVisitUserViewSet(viewsets.ModelViewSet):
                     "province": punto.province,
                     "poblacion": punto.locality,
                     "direccion": punto.address,
-                    "fecha_firma": process_date(client.fecha_firma),
+                    "fecha_firma": process_date(bid.fecha_firma),
                     "fecha_cambio": process_date(punto.last_time_company_luz_changed),
                     "email": client.email,
-                    "oferta": punto.bid.first().offer.name,
+                    "oferta": bid.offer.name,
                     "p1": punto.p1,
                     "p2": punto.p2,
                     "p3": punto.p3,

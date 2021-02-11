@@ -485,8 +485,7 @@ class AgentContractSerializer(serializers.ModelSerializer):
         created_client = self._user or super().create(validated_data)
         if not self._user:
             created_client.cif_nif = self.initial_data["cif_nif"]
-            created_client.fecha_firma = ff
-            created_client.save(update_fields=["fecha_firma", "cif_nif"])
+            created_client.save(update_fields=["cif_nif"])
 
         # 1 bid - 1 offer - 1 punto
         for pkey, punto_data in enumerate(puntos):
