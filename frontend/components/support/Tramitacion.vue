@@ -126,19 +126,7 @@
               </v-col>
             </v-row>
 
-            <facturacion
-              v-else
-              :bid-id="bid.id"
-              :responsible="bid.responsible"
-              :canal="bid.canal"
-              :default-canal-commission="parseFloat(bid.offer.canal_commission)"
-              :default-responsible-commission="parseFloat(bid.offer.agent_commission)"
-              :current-responsible-commission="parseFloat(bid.commission)"
-              :current-canal-commission="parseFloat(bid.canal_commission)"
-              :is-canal-paid="bid.canal_paid"
-              :is-responsible-paid="bid.paid"
-              @paid="$emit('tramitate')"
-            />
+            <facturacion v-else :bid="bid" @paid="$emit('tramitate')" />
           </v-col>
         </v-row>
 
@@ -308,7 +296,7 @@ export default {
     async tramitate() {
       this.loading = true
       try {
-        this.bid = await this.$axios.$patch(`bids/bids/${this.bid.id}/`, {
+        await this.$axios.$patch(`bids/bids/${this.bid.id}/`, {
           doc: this.bid.doc,
           call: this.bid.call,
           scoring: this.bid.scoring,
@@ -318,6 +306,7 @@ export default {
           internal_message: this.internalMessage,
         })
         this.$emit('tramitate')
+        await this.fetchBid()
         await this.fetchLastComments()
         this.$toast.global.done()
         this.tramitateDialog = false
