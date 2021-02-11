@@ -34,8 +34,8 @@
             v-model="date.value"
             :prepend-icon="date.icon"
             :label="date.text"
-            :append-icon="readonly ? null : 'mdi-content-save'"
-            :readonly="readonly"
+            :append-icon="!date.editable ? null : 'mdi-content-save'"
+            :readonly="!date.editable"
             dense
             @click:append="updateUser(date.field, date.value.includes('/') ? date.value : unformatDate(date.value))"
           />
@@ -165,18 +165,21 @@ export default {
           text: 'Ultima entrada',
           field: 'last_login',
           value: this.formatDate(user.last_login),
+          editable: false,
         },
         {
           icon: 'mdi-calendar',
           text: 'Fecha de registro',
           field: 'fecha_registro',
           value: this.formatDate(user.fecha_registro),
+          editable: false,
         },
         {
           icon: 'mdi-calendar',
           text: 'Fecha firma',
           field: 'fecha_firma',
           value: this.formatDate(user.fecha_firma),
+          editable: false,
         },
       ]
     },
