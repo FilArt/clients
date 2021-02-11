@@ -120,7 +120,6 @@ class UserViewSet(
     pagination_class = UsersPagination
     filterset_fields = {
         "role": ["exact", "isnull", "in"],
-        "date_joined": ["range"],
         "bids__fecha_firma": ["range"],
         "source": ["exact"],
         "responsible": ["exact", "in"],

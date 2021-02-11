@@ -18,7 +18,7 @@ export default {
       statuses: [constants.statuses.LEED],
       headers: [
         'id',
-        'date_joined',
+        'fecha_registro',
         'fullname',
         'responsible_fn',
         'last_login',

@@ -22,7 +22,10 @@ class CustomUserManager(BaseUserManager):
             .annotate(
                 fecha_firma=Subquery(
                     Bid.objects.filter(user_id=OuterRef("pk")).order_by("-fecha_firma").values("fecha_firma")[:1]
-                )
+                ),
+                fecha_registro=Subquery(
+                    Bid.objects.filter(user_id=OuterRef("pk")).order_by("fecha_firma").values("fecha_firma")[:1]
+                ),
             )
         )
         return qs

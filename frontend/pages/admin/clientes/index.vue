@@ -18,7 +18,7 @@ export default {
       statuses: [constants.statuses.PAGADO, constants.statuses.PENDIENTE_PAGO],
       headers: [
         'id',
-        'date_joined',
+        'fecha_registro',
         'fecha_firma',
         'fullname',
         'responsible_fn',

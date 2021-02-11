@@ -187,7 +187,7 @@
             </v-col>
 
             <v-col
-              v-if="showDateFilters || headers.some((h) => h.includes('date_joined'))"
+              v-if="showDateFilters || headers.some((h) => h.includes('fecha_registro'))"
               :cols="flexs.cols"
               :xl="flexs.xl"
               :lg="flexs.lg"
@@ -195,10 +195,10 @@
               :xs="flexs.xs"
             >
               <date-time-filter
-                v-model="dateJoinedFilter"
+                v-model="fechaRegistroFilter"
                 label="Fecha de registro"
                 range
-                @input="updateDateJoinedFilter"
+                @input="updatefechaRegistroFilter"
               />
             </v-col>
 
@@ -334,7 +334,7 @@
       </template>
 
       <template v-slot:[`item.date_joined`]="{ item }">
-        {{ $dateFns.format(new Date(item.date_joined), 'yyyy-MM-dd HH:mm') }}
+        {{ $dateFns.format(new Date(item.fecha_registro), 'yyyy-MM-dd HH:mm') }}
       </template>
     </v-data-table>
 
@@ -418,12 +418,12 @@ export default {
   },
   data() {
     const query = this.$route.query
-    let dateJoinedFilter = query.date_joined__range || null
+    let fechaRegistroFilter = query.bids__fecha_firma__range || null
     let fechaFirmaFilter = query.bids__fecha_firma__range || null
-    if (dateJoinedFilter) {
+    if (fechaRegistroFilter) {
       try {
-        const [start, end] = dateJoinedFilter.split(',')
-        dateJoinedFilter = { start: new Date(start), end: new Date(end) }
+        const [start, end] = fechaRegistroFilter.split(',')
+        fechaRegistroFilter = { start: new Date(start), end: new Date(end) }
       } catch (e) {
         console.error(e)
       }
@@ -476,7 +476,7 @@ export default {
         },
       ],
       flexs: { cols: 12, xl: 3, lg: 3, md: 3, sm: 3, xs: 12 },
-      dateJoinedFilter,
+      fechaRegistroFilter,
       fechaFirmaFilter,
       userRoles: Object.values(constants.userRoles),
       role: this.defaultRole,
@@ -510,7 +510,7 @@ export default {
     activeHeaders() {
       const headers = [
         { text: 'ID', value: 'id' },
-        { text: 'Fecha de registro', value: 'date_joined' },
+        { text: 'Fecha de registro', value: 'fecha_registro' },
         { text: 'Fecha firma', value: 'fecha_firma' },
         { text: 'Nombre/Razon social', value: 'fullname', sortable: false },
         { text: 'Tipo de agente', value: 'agent_type' },
@@ -649,11 +649,11 @@ export default {
         })
         .join('&')
     },
-    updateDateJoinedFilter(dates) {
+    updatefechaRegistroFilter(dates) {
       if (dates && dates.start && dates.end) {
-        this.updateQuery({ date_joined__range: `${dates.start},${dates.end}` })
+        this.updateQuery({ fecha_registro__range: `${dates.start},${dates.end}` })
       } else {
-        this.updateQuery({ date_joined__range: null })
+        this.updateQuery({ fecha_registro__range: null })
       }
     },
     updateFechaFirmaFilter(dates) {

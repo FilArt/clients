@@ -21,7 +21,7 @@ export default {
   },
   data() {
     return {
-      headers: ['id', 'fullname', 'agent_type', 'phone', 'date_joined', 'last_login', 'actions'],
+      headers: ['id', 'fullname', 'agent_type', 'phone', 'fecha_registro', 'last_login', 'actions'],
     }
   },
 }

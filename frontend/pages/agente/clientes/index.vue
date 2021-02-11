@@ -16,7 +16,7 @@ export default {
   asyncData() {
     return {
       statuses: [constants.statuses.PAGADO, constants.statuses.PENDIENTE_PAGO],
-      headers: ['id', 'date_joined', 'fecha_firma', 'fullname', 'bids_count', 'paid_count', 'last_login'],
+      headers: ['id', 'fecha_registro', 'fecha_firma', 'fullname', 'bids_count', 'paid_count', 'last_login'],
     }
   },
 }

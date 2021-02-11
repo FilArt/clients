@@ -31,7 +31,7 @@ export default {
       mode: 'tramitacion',
       headers: [
         'id',
-        'date_joined',
+        'fecha_registro',
         'fullname',
         'responsible_fn',
         'bids_count',
