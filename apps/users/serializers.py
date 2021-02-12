@@ -103,6 +103,8 @@ class DateTimeToDateField(serializers.CharField, serializers.Field):
 
 class MoneyField(serializers.FloatField):
     def to_representation(self, value):
+        if value == -1:
+            return "SF"
         if value:
             return f"{value} €"
         return value
