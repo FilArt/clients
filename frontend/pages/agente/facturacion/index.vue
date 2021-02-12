@@ -21,7 +21,7 @@ export default {
   },
   data() {
     return {
-      statuses: [constants.statuses.PENDIENTE_PAGO, constants.statuses.PAGADO],
+      statuses: [constants.statuses.PENDIENTE_PAGO],
       headers: ['id', 'fecha_registro', 'fecha_firma', 'fullname', 'bids_count', 'paid_count', 'status'],
     }
   },
