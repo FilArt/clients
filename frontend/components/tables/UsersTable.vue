@@ -84,6 +84,7 @@
         prevIcon: 'mdi-minus',
         nextIcon: 'mdi-plus',
       }"
+      sort-by="fecha_firma"
       class="elevation-1"
       @update:options="fetchUsers"
       @toggle-select-all="onSelect"

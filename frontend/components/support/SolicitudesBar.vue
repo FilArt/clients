@@ -11,14 +11,21 @@
         <v-divider />
 
         <v-list dense nav>
-          <v-list-item v-for="bid in bids" :key="bid.id" nuxt :to="getNewUrl(bid.id)" exact>
-            <v-icon v-if="bid.offer_kind === 'luz'" color="warning">mdi-flash</v-icon>
-            <v-icon v-else color="blue">mdi-fire</v-icon>
-            <v-list-item-title>
-              <small> ID: {{ bid.id }} </small>
-              <v-divider vertical />
-              <i> {{ bid.status }} </i>
-            </v-list-item-title>
+          <v-list-item v-for="bid in bids" :key="bid.id" two-line nuxt :to="getNewUrl(bid.id)" exact>
+            <v-list-item-avatar>
+              <v-icon v-if="bid.offer_kind === 'luz'" color="warning">mdi-flash</v-icon>
+              <v-icon v-else color="blue">mdi-fire</v-icon>
+            </v-list-item-avatar>
+            <v-list-item-content>
+              <v-list-item-title>
+                <small> ID: {{ bid.id }} </small>
+                <v-divider vertical />
+                <i> {{ bid.status }} </i>
+              </v-list-item-title>
+              <v-list-item-subtitle>
+                {{ bid.fecha_firma }}
+              </v-list-item-subtitle>
+            </v-list-item-content>
           </v-list-item>
 
           <v-dialog v-model="addNewBidDialog" max-width="750">
