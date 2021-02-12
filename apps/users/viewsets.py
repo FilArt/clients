@@ -137,9 +137,10 @@ class UserViewSet(
         if mode or statuses:
             qs = CustomUser.objects.with_statuses()
             if mode == "tramitacion":
-                return qs.filter(Q(ko_bids__gt=0) | Q(untouched_bids__gt=0))
+                qs = qs.filter(Q(ko_bids__gt=0) | Q(untouched_bids__gt=0))
             if statuses:
-                return qs.filter(status__in=statuses.split(","))
+                qs = qs.filter(status__in=statuses.split(","))
+            return qs
 
         return super().get_queryset()
 
