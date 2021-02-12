@@ -30,8 +30,8 @@ class CustomUserManager(BaseUserManager):
                     .order_by(F("fecha_firma").asc(nulls_last=True))
                     .values("fecha_firma")[:1]
                 ),
-                paid_count=Sum("bids__commission"),
-                canal_paid_count=Sum("bids__canal_commission"),
+                paid_count=Sum("bids__commission", distinct=True),
+                canal_paid_count=Sum("bids__canal_commission", distinct=True),
             )
         )
         return qs
