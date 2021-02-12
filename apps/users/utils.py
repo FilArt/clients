@@ -1,6 +1,6 @@
 KO = "KO"
 KO_PAPELLERA = "KO (papellera)"
-PENDIENTE_TRAMITACION = "Pendiente tramitacion"
+PENDIENTE_TRAMITACION = "Pendiente tramitación"
 TRAMITACION = "Tramitación en proceso"
 PENDIENTE_PAGO = "Pendiente Pago"
 PAGADO = "Pagado"

@@ -160,7 +160,7 @@ export default {
         items = [
           {
             icon: 'mdi-lifebuoy',
-            title: 'Tramitacion',
+            title: 'Tramitación',
             to: '/admin/tramitacion',
           },
           {

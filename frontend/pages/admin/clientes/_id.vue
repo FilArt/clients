@@ -21,7 +21,7 @@
 
     <v-card-text>
       <v-tabs v-model="tabs" centered>
-        <v-tab>Tramitacion</v-tab>
+        <v-tab>Tramitación</v-tab>
         <v-tab :disabled="!bids.length">Solicitud ({{ bids.length }})</v-tab>
         <v-tab :disabled="!calls.length"> Llamadas ({{ calls.length }}) </v-tab>
         <v-tab :disabled="!history.length">Historia ({{ history.length }})</v-tab>

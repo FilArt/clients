@@ -35,7 +35,7 @@
     <v-row class="text-center">
       <v-col style="max-width: 750px">
         <v-card-title>
-          {{ modeTramitacion ? 'Tramitacion' : 'Facturacion' }}
+          {{ modeTramitacion ? 'Tramitación' : 'Facturacion' }}
         </v-card-title>
 
         <v-row>

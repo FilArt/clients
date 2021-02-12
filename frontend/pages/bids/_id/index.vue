@@ -19,7 +19,7 @@
         <v-col class="flex-grow-0">
           <v-btn
             nuxt
-            :disabled="bid.status !== 'Pendiente tramitacion'"
+            :disabled="bid.status !== 'Pendiente tramitación'"
             :to="`/ofertas/search/?bid_for_change=${bid.id}`"
             color="warning"
           >

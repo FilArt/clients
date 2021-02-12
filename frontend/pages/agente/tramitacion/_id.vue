@@ -47,7 +47,7 @@ export default {
         case 'OK':
           color = 'success'
           break
-        case 'Pendiente tramitacion':
+        case 'Pendiente tramitación':
           color = 'warning'
           break
         default:

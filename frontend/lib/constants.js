@@ -12,7 +12,7 @@ const cleanEmpty = (obj) => {
 const LEED = 'Leed'
 const KO = 'KO'
 const KO_PAPELLERA = 'KO (papellera)'
-const PENDIENTE_TRAMITACION = 'Pendiente tramitacion'
+const PENDIENTE_TRAMITACION = 'Pendiente tramitación'
 const TRAMITACION_EN_PROCESO = 'Tramitación en proceso'
 const PENDIENTE_PAGO = 'Pendiente Pago'
 const PAGADO = 'Pagado'
