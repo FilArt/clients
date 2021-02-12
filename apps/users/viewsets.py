@@ -221,10 +221,10 @@ class ManageUsersViewSet(UserViewSet, mixins.CreateModelMixin, mixins.DestroyMod
     def analytic(self, request: Request):
         clients = self.filter_queryset(CustomUser.objects.with_statuses().filter(role__isnull=True))
         filters = {
-            "Total en tramitacion": [TRAMITACION, PENDIENTE_TRAMITACION],
-            "Total tramitacion en processo": [TRAMITACION],
-            "Total pendiente tramitacion": [PENDIENTE_TRAMITACION],
-            "Total KO tramitacion": [KO],
+            "Total en tramitación": [TRAMITACION, PENDIENTE_TRAMITACION],
+            "Total tramitación en proceso": [TRAMITACION],
+            "Total pendiente tramitación": [PENDIENTE_TRAMITACION],
+            "Total KO tramitación": [KO],
             "Total en facturacion": [PAGADO, PENDIENTE_PAGO],
             "Total pendiente pago": [PENDIENTE_PAGO],
             "Total pagado": [PAGADO],

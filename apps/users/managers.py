@@ -91,7 +91,7 @@ class CustomUserManager(BaseUserManager):
                 When(ko=True, then=Value(KO_PAPELLERA)),
                 When(ko_bids__gt=0, then=Value(KO)),
                 When(touched_bids=0, then=Value(PENDIENTE_TRAMITACION)),
-                When(ok_bids=0, then=Value("Tramitacion en processo")),
+                When(ok_bids=0, then=Value("Tramitación en proceso")),
                 When(Q(unpaid_bids_for_agent__gt=0) | Q(unpaid_bids_for_canal__gt=0), then=Value(PENDIENTE_PAGO),),
                 When(Q(unpaid_bids_for_canal=0) & Q(unpaid_bids_for_agent=0), then=Value(PAGADO),),
                 output_field=CharField(),

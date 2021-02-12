@@ -36,7 +36,7 @@ export default {
     const user = await $axios.$get(apiUrl)
     const statuses = [
       constants.statuses.KO,
-      constants.statuses.TRAMITACION_EN_PROCESSO,
+      constants.statuses.TRAMITACION_EN_PROCESO,
       constants.statuses.PENDIENTE_TRAMITACION,
       constants.statuses.PAGADO,
       constants.statuses.PENDIENTE_PAGO,

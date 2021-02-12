@@ -13,7 +13,7 @@ const LEED = 'Leed'
 const KO = 'KO'
 const KO_PAPELLERA = 'KO (papellera)'
 const PENDIENTE_TRAMITACION = 'Pendiente tramitacion'
-const TRAMITACION_EN_PROCESSO = 'Tramitacion en processo'
+const TRAMITACION_EN_PROCESO = 'Tramitación en proceso'
 const PENDIENTE_PAGO = 'Pendiente Pago'
 const PAGADO = 'Pagado'
 
@@ -22,12 +22,12 @@ const statuses = {
   KO,
   KO_PAPELLERA,
   PENDIENTE_TRAMITACION,
-  TRAMITACION_EN_PROCESSO,
+  TRAMITACION_EN_PROCESO,
   PENDIENTE_PAGO,
   PAGADO,
   tramitacion: {
     PENDIENTE_TRAMITACION,
-    TRAMITACION_EN_PROCESSO,
+    TRAMITACION_EN_PROCESO,
   },
   facturacion: {
     PENDIENTE_PAGO,

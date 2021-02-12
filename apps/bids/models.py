@@ -17,7 +17,7 @@ def more_than_zero(value):
 
 class Bid(models.Model):
     DEFAULT_STATUS = "Pendiente tramitacion"
-    IN_TRAMITACION = "Tramitacion en processo"
+    IN_TRAMITACION = "Tramitación en proceso"
     OFFER_STATUS_CHOICES = (
         (0, "FIRMADA"),
         (1, "PTE FIRMAR"),

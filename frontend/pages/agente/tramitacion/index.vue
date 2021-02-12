@@ -25,7 +25,7 @@ export default {
       statuses: [
         constants.statuses.KO,
         constants.statuses.PENDIENTE_TRAMITACION,
-        constants.statuses.TRAMITACION_EN_PROCESSO,
+        constants.statuses.TRAMITACION_EN_PROCESO,
       ],
       headers: [
         'id',
