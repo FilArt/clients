@@ -108,6 +108,7 @@ export default {
       this.errorMessages = {}
       try {
         await this.$axios.$patch(`bids/bids/${this.bid.id}/`, { [field]: value })
+        this.$toast.global.done()
         this.$emit('paid')
       } catch (e) {
         const err = e.response.data

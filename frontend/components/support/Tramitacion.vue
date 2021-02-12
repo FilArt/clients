@@ -126,7 +126,7 @@
               </v-col>
             </v-row>
 
-            <facturacion v-else :bid="bid" @paid="$emit('tramitate')" />
+            <facturacion v-else :key="bid.id" :bid="bid" @paid="$emit('tramitate')" />
           </v-col>
         </v-row>
 
