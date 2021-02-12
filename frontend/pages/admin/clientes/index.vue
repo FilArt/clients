@@ -1,7 +1,14 @@
 <template>
   <v-card>
     <v-card-text>
-      <users-table selectable :statuses="statuses" :headers="headers" detail-url="/admin/clientes" use-full-name />
+      <users-table
+        selectable
+        bids-count-header="Puntos suministo"
+        :statuses="statuses"
+        :headers="headers"
+        detail-url="/admin/clientes"
+        use-full-name
+      />
     </v-card-text>
   </v-card>
 </template>

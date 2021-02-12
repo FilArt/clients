@@ -416,6 +416,10 @@ export default {
       type: [String, Number],
       default: 0,
     },
+    bidsCountHeader: {
+      type: String,
+      default: 'Solicitud',
+    },
   },
   data() {
     const query = this.$route.query
@@ -519,7 +523,7 @@ export default {
         { text: 'Ultima entrada', value: 'last_login' },
         { text: 'Responsable', value: 'responsible_fn' },
         { text: 'Canal', value: 'canal_fn' },
-        { text: 'Puntos suministo', value: 'bids_count', sortable: false },
+        { text: this.bidsCountHeader, value: 'bids_count', sortable: false },
         { text: 'Comisiones agente', value: 'paid_count' },
         { text: 'Comisiones canal', value: 'canal_paid_count' },
         { text: 'Estado', value: 'status' },
