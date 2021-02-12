@@ -2,6 +2,7 @@ from django.contrib.auth.base_user import BaseUserManager
 from django.db.models import QuerySet, Case, When, Q, Value, Subquery, OuterRef, F, Sum
 from django.db.models.aggregates import Count
 from django.db.models.fields import CharField
+from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 
 from .utils import KO, PENDIENTE_PAGO, PENDIENTE_TRAMITACION, PAGADO, KO_PAPELLERA
@@ -32,11 +33,13 @@ class CustomUserManager(BaseUserManager):
                 ),
                 paid_count=Case(
                     When(responsible__fixed_salary=True, then=Value(-1)),
-                    default=Sum("bids__commission", distinct=True),
+                    default=Sum("bids__commission", filter=Q(fecha_firma__year=timezone.now().year), distinct=True,),
                 ),
                 canal_paid_count=Case(
                     When(responsible__fixed_salary=True, then=Value(-1)),
-                    default=Sum("bids__canal_commission", distinct=True),
+                    default=Sum(
+                        "bids__canal_commission", filter=Q(fecha_firma__year=timezone.now().year), distinct=True
+                    ),
                 ),
             )
         )
