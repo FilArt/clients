@@ -7,6 +7,7 @@ from django.contrib.auth.models import Group
 from django.contrib.auth.password_validation import validate_password
 from django.core.exceptions import ValidationError as DjangoValidationError
 from django.template.loader import render_to_string
+from django.utils import timezone
 from django.utils.html import strip_tags
 from django.utils.translation import gettext_lazy as _
 from drf_dynamic_fields import DynamicFieldsMixin
@@ -148,7 +149,11 @@ class UserListSerializer(DynamicFieldsMixin, serializers.ModelSerializer):
         return self.context["request"].user.unread_messages.filter(message__author=instance).count()
 
     def get_bids_count(self, instance: CustomUser) -> int:
-        return len([bid for bid in instance.bids.all() if not bid.success])
+        if self.context["request"].initial_data.get("mode") == "tramitacion":
+            return len(
+                [bid for bid in instance.bids.all() if not bid.success and bid.created_at.year == timezone.now().year]
+            )
+        return instance.bids.count()
 
     def to_representation(self, instance: CustomUser):
         # todo переделать
