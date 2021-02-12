@@ -149,7 +149,7 @@ class UserListSerializer(DynamicFieldsMixin, serializers.ModelSerializer):
         return self.context["request"].user.unread_messages.filter(message__author=instance).count()
 
     def get_bids_count(self, instance: CustomUser) -> int:
-        if self.context["request"].initial_data.get("mode") == "tramitacion":
+        if self.context["request"].data.get("mode") == "tramitacion":
             return len(
                 [bid for bid in instance.bids.all() if not bid.success and bid.created_at.year == timezone.now().year]
             )
