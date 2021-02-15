@@ -103,20 +103,11 @@ class DateTimeToDateField(serializers.CharField, serializers.Field):
         return datetime.strptime(data, "%d/%m/%Y")
 
 
-class MoneyField(serializers.FloatField):
-    def to_representation(self, value):
-        if value == -1:
-            return "SF"
-        if value:
-            return f"{value} €"
-        return value
-
-
 class UserListSerializer(DynamicFieldsMixin, serializers.ModelSerializer):
     fecha_firma = DateTimeToDateField()
     fecha_registro = DateTimeToDateField()
-    paid_count = MoneyField()
-    canal_paid_count = MoneyField()
+    paid_count = serializers.SerializerMethodField()
+    canal_paid_count = serializers.SerializerMethodField()
     last_login = PrettyDateTimeField()
     new_messages_count = serializers.SerializerMethodField()
     affiliate = serializers.CharField()
@@ -161,14 +152,18 @@ class UserListSerializer(DynamicFieldsMixin, serializers.ModelSerializer):
     def get_paid_count(self, instance: CustomUser) -> str:
         by, mode, bids = self._get_bids(instance)
         if mode == "facturacion":
-            return sum([bid.paid_count for bid in bids.all() if bid.success and bid.get_status(by) != "Pagado"])
-        return instance.paid_count
+            pc = sum([bid.commission for bid in bids.all() if bid.success and bid.get_status(by) != "Pagado"])
+        else:
+            pc = instance.paid_count
+        return "SF" if pc == -1 else f"{pc} €" if pc is not None else pc
 
     def get_canal_paid_count(self, instance: CustomUser) -> str:
         by, mode, bids = self._get_bids(instance)
         if mode == "facturacion":
-            return sum([bid.canal_paid_count for bid in bids.all() if bid.success and bid.get_status(by) != "Pagado"])
-        return instance.canal_paid_count
+            pc = sum([bid.canal_commission for bid in bids.all() if bid.success and bid.get_status(by) != "Pagado"])
+        else:
+            pc = instance.canal_paid_count
+        return "SF" if pc == -1 else f"{pc} €" if pc is not None else pc
 
     def to_representation(self, instance: CustomUser):
         # todo переделать
