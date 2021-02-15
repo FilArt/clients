@@ -20,6 +20,7 @@ from apps.bids.models import Bid
 from clients.serializers import BidListSerializer
 from clients.utils import notify_telegram, humanize
 from .models import Attachment, CustomUser, Punto
+from .utils import PENDIENTE_PAGO
 
 logger = logging.getLogger(__name__)
 
@@ -153,7 +154,7 @@ class UserListSerializer(DynamicFieldsMixin, serializers.ModelSerializer):
         if mode == "tramitacion":
             return len([bid for bid in bids.all() if not bid.success and bid.created_at.year == timezone.now().year])
         elif mode == "facturacion":
-            return len([bid for bid in bids.all() if bid.success and bid.get_status(by) != "Pagado"])
+            return len([bid for bid in bids.all() if bid.success and PENDIENTE_PAGO in bid.get_status(by)])
 
         return bids.count()
 
