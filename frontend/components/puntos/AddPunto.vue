@@ -24,6 +24,12 @@
             />
           </v-radio-group>
 
+          <v-switch
+            v-else-if="field.value === 'is_name_changed'"
+            v-model="newPunto.is_name_changed"
+            label="Cambio de nombre"
+          />
+
           <company-select v-else-if="field.value === 'company_luz' && admin" v-model="newPunto.company_luz" />
 
           <v-autocomplete
@@ -109,9 +115,9 @@ export default {
       type: Number,
       default: null,
     },
-    bidId: {
-      type: Number,
-      default: 0,
+    bid: {
+      type: Object,
+      default: () => null,
     },
     color: {
       type: String,
@@ -123,6 +129,10 @@ export default {
     },
     punto: {
       type: Object,
+      default: () => null,
+    },
+    userId: {
+      type: [String, Number],
       default: () => null,
     },
   },
@@ -259,7 +269,8 @@ export default {
         try {
           const punto = await this.$axios.$post('/users/puntos/', {
             ...this.newPunto,
-            bid: this.bidId,
+            bid: { ...this.bid, offer: this.bid.offer.id },
+            user: this.userId,
           })
           await this.loadFiles(punto.id)
           if (Object.keys(this.fileErrors).length) return

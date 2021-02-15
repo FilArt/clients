@@ -71,7 +71,7 @@ export default {
       default: null,
     },
     clientType: {
-      type: String,
+      type: [String, Number],
       default: null,
     },
     // consumo: {

@@ -103,6 +103,7 @@ class CreateBidSerializer(serializers.ModelSerializer):
         fields = [
             "id",
             "offer",
+            "punto",
         ]
 
 

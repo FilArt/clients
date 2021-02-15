@@ -15,19 +15,43 @@
         <select-offer v-model="offer" label="Elejir oferta" />
       </v-card-text>
 
-      <v-card-actions>
-        <submit-button :disabled="!offer || !offer.id" label="Enviar" block />
-      </v-card-actions>
+      <v-card-text>
+        <v-card-title> Elejir punto </v-card-title>
+        <v-row>
+          <v-col>
+            <v-btn
+              v-for="p in puntos"
+              :key="p.id"
+              :color="punto && punto.id === p.id ? 'success' : null"
+              @click="punto = p"
+            >
+              {{ p.id }}. {{ p.cups_luz || p.cups_gas }}
+            </v-btn>
+          </v-col>
+        </v-row>
+
+        <submit-button
+          v-if="punto && offer"
+          :label="`Salvar nuevo solicitud con punto ${punto.id} y oferta ''${offer.name}''`"
+        />
+      </v-card-text>
+
+      <v-divider />
+
+      <v-card-text>
+        <add-punto v-if="offer" :bid="{ offer }" :user-id="userId" @punto-added="$emit('bid-added')" />
+      </v-card-text>
     </v-form>
   </v-card>
 </template>
 
 <script>
-import SubmitButton from '@/components/buttons/submitButton'
 import SelectOffer from '@/components/selects/SelectOffer'
+import AddPunto from '@/components/puntos/AddPunto'
+import SubmitButton from '@/components/buttons/submitButton'
 export default {
   name: 'AddNewBid',
-  components: { SelectOffer, SubmitButton },
+  components: { SubmitButton, AddPunto, SelectOffer },
   props: {
     userId: {
       type: Number,
@@ -37,12 +61,17 @@ export default {
   data() {
     return {
       offer: null,
+      punto: null,
+      puntos: [],
     }
+  },
+  async mounted() {
+    this.puntos = await this.$axios.$get(`/users/puntos/?user=${this.userId}`)
   },
   methods: {
     async submit() {
       try {
-        await this.$axios.$post('bids/bids/', { user: this.userId, offer: this.offer.id })
+        await this.$axios.$post('bids/bids/', { user: this.userId, offer: this.offer.id, punto: this.punto.id })
         this.$emit('bid-added')
       } catch (e) {
         console.error(e)

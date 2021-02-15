@@ -13,7 +13,7 @@
       :offer-client-type="offerClientType"
       :label="label"
       :punto="punto"
-      :bid-id="bidId"
+      :bid="bid"
       @close="dialog = false"
       @punto-added="$emit('punto-added', $event)"
     />
@@ -34,9 +34,9 @@ export default {
       type: Number,
       default: null,
     },
-    bidId: {
-      type: Number,
-      default: 0,
+    bid: {
+      type: Object,
+      default: () => null,
     },
     color: {
       type: String,

@@ -3,6 +3,7 @@ import re
 from typing import Tuple
 
 from django.contrib.auth.models import Group
+from django.db import transaction
 from django.db.models import Q
 from drf_dynamic_fields import DynamicFieldsMixin
 from notifications.models import Notification
@@ -57,6 +58,7 @@ from .serializers import (
     UploadToCallVisitSerializer,
 )
 from .utils import TRAMITACION, PENDIENTE_TRAMITACION, KO, PAGADO, PENDIENTE_PAGO, KO_PAPELLERA
+from ..bids.serializers import CreateBidSerializer
 
 logger = logging.getLogger(__name__)
 
@@ -284,15 +286,20 @@ class PuntoViewSet(LoggingMixin, viewsets.ModelViewSet):
 
     def perform_create(self, serializer):
         user = self.request.user
-        if user.role is None and not user.profile_filled:
-            raise ValidationError({"profileNotFilled": True})
-        bid_id = self.request.data.get("bid")
-        bid = get_object_or_404(Bid, id=bid_id)
-        if bid.punto:
-            raise ValidationError("Solicitud tiene punto")
-        punto = serializer.save(user=bid.user)
-        bid.punto = punto
-        bid.save()
+        if user.role is None:
+            if not user.profile_filled:
+                raise ValidationError({"profileNotFilled": True})
+            serializer.save()
+        else:
+            user = self.request.data.get("user")
+            if not user:
+                raise ValidationError({"user": ["Requiredo."]})
+            with transaction.atomic():
+                punto = serializer.save(user_id=user)
+                data = {"punto": punto.id, **(self.request.data.get("bid") or {})}
+                bid_serializer = CreateBidSerializer(data=data)
+                bid_serializer.is_valid(raise_exception=True)
+                bid_serializer.save(user_id=user)
 
     @action(methods=["GET"], detail=False)
     def get_categories(self, _):
