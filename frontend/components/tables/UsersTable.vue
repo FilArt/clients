@@ -496,11 +496,7 @@ export default {
         ...query,
         sortBy: ['fecha_firma'],
         sortDesc: [false],
-        statuses_in: query.statuses_in
-          ? query.statuses_in.split(',')
-          : this.statuses.includes(constants.statuses.PENDIENTE_PAGO)
-          ? [constants.statuses.PENDIENTE_PAGO]
-          : [],
+        statuses_in: query.statuses_in ? query.statuses_in.split(',') : [],
         mustSort: null,
         multiSort: null,
         bids__call: null,
