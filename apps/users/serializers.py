@@ -149,11 +149,16 @@ class UserListSerializer(DynamicFieldsMixin, serializers.ModelSerializer):
         return self.context["request"].user.unread_messages.filter(message__author=instance).count()
 
     def get_bids_count(self, instance: CustomUser) -> int:
-        if self.context["request"].data.get("mode") == "tramitacion":
-            return len(
-                [bid for bid in instance.bids.all() if not bid.success and bid.created_at.year == timezone.now().year]
-            )
-        return instance.bids.count()
+        request = self.context["request"]
+        mode = request.query_params.get("mode")
+        bids = getattr(instance, "bids")
+        if mode == "tramitacion":
+            return len([bid for bid in bids.all() if not bid.success and bid.created_at.year == timezone.now().year])
+        elif mode == "facturacion":
+            by = request.user
+            return len([bid for bid in bids.all() if bid.success and bid.get_status(by) != "Pagado"])
+
+        return bids.count()
 
     def to_representation(self, instance: CustomUser):
         # todo переделать

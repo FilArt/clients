@@ -4,6 +4,7 @@
       <users-table
         :statuses="statuses"
         :headers="headers"
+        mode="facturacion"
         detail-url="/admin/facturacion"
         show-date-filters
         use-full-name
