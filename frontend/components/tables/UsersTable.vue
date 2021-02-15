@@ -84,7 +84,6 @@
         prevIcon: 'mdi-minus',
         nextIcon: 'mdi-plus',
       }"
-      sort-by="fecha_firma"
       class="elevation-1"
       @update:options="fetchUsers"
       @toggle-select-all="onSelect"
@@ -495,6 +494,8 @@ export default {
       search: query.search || '',
       query: {
         ...query,
+        sortBy: ['fecha_firma'],
+        sortDesc: [false],
         statuses_in: query.statuses_in ? query.statuses_in.split(',') : [],
         mustSort: null,
         multiSort: null,
@@ -621,8 +622,9 @@ export default {
         }
         const query = this.getQuery()
         const data = await this.$axios.$get(`${this.listUrl}/?${query}`)
-        this.users = data.results
-        this.total = data.count
+        const { results, count } = data
+        this.users = results
+        this.total = count
       } catch (e) {
         if (e.response && e.response.status === 404 && this.query.page !== 1) {
           this.query.page = 1

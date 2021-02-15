@@ -149,16 +149,25 @@ class UserListSerializer(DynamicFieldsMixin, serializers.ModelSerializer):
         return self.context["request"].user.unread_messages.filter(message__author=instance).count()
 
     def get_bids_count(self, instance: CustomUser) -> int:
-        request = self.context["request"]
-        mode = request.query_params.get("mode")
-        bids = getattr(instance, "bids")
+        by, mode, bids = self._get_bids(instance)
         if mode == "tramitacion":
             return len([bid for bid in bids.all() if not bid.success and bid.created_at.year == timezone.now().year])
         elif mode == "facturacion":
-            by = request.user
             return len([bid for bid in bids.all() if bid.success and bid.get_status(by) != "Pagado"])
 
         return bids.count()
+
+    def get_paid_count(self, instance: CustomUser) -> str:
+        by, mode, bids = self._get_bids(instance)
+        if mode == "facturacion":
+            return sum([bid.paid_count for bid in bids.all() if bid.success and bid.get_status(by) != "Pagado"])
+        return instance.paid_count
+
+    def get_canal_paid_count(self, instance: CustomUser) -> str:
+        by, mode, bids = self._get_bids(instance)
+        if mode == "facturacion":
+            return sum([bid.canal_paid_count for bid in bids.all() if bid.success and bid.get_status(by) != "Pagado"])
+        return instance.canal_paid_count
 
     def to_representation(self, instance: CustomUser):
         # todo переделать
@@ -170,6 +179,10 @@ class UserListSerializer(DynamicFieldsMixin, serializers.ModelSerializer):
         if hasattr(instance, "status"):
             rep["status"] = getattr(instance, "status")
         return rep
+
+    def _get_bids(self, instance: CustomUser):
+        request = self.context["request"]
+        return request.user, request.query_params.get("mode"), getattr(instance, "bids")
 
 
 class ManageUserListSerializer(UserListSerializer):
