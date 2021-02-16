@@ -66,7 +66,16 @@ class BidListSerializer(DynamicFieldsMixin, serializers.ModelSerializer):
 
     class Meta:
         model = Bid
-        fields = ["id", "created_at", "offer_name", "status", "offer_kind", "fecha_firma", "mymoney"]
+        fields = [
+            "id",
+            "created_at",
+            "offer_name",
+            "status",
+            "offer_kind",
+            "fecha_firma",
+            "mymoney",
+            "fecha_de_cobro_prevista",
+        ]
 
     # noinspection PyMethodMayBeStatic
     def get_created_at(self, instance: Bid):
