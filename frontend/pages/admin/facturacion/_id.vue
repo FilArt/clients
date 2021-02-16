@@ -16,7 +16,13 @@
     <v-divider />
 
     <v-card-text>
-      <solicitudes-process :user="user" facturacion @bid-added="refresh" @tramitate="onTramitate" />
+      <solicitudes-process
+        :user="user"
+        facturacion
+        @bid-added="refresh"
+        @bid-deleted="refresh"
+        @tramitate="onTramitate"
+      />
     </v-card-text>
   </v-card>
 </template>

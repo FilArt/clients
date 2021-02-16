@@ -24,6 +24,9 @@
               </v-list-item-title>
               <v-list-item-subtitle>
                 {{ bid.fecha_firma }}
+                <v-list-item-action>
+                  <delete-button @click="deleteBid(bid.id)" />
+                </v-list-item-action>
               </v-list-item-subtitle>
             </v-list-item-content>
           </v-list-item>
@@ -55,9 +58,10 @@
 
 <script>
 import AddNewBid from '@/components/forms/AddNewBid'
+import DeleteButton from '@/components/buttons/deleteButton'
 export default {
   name: 'SolicitudesBar',
-  components: { AddNewBid },
+  components: { DeleteButton, AddNewBid },
   props: {
     bids: {
       type: Array,
@@ -74,6 +78,18 @@ export default {
     }
   },
   methods: {
+    async deleteBid(bidId) {
+      const willDelete = await this.$swal({
+        title: `Eliminar solicitud ${bidId}?`,
+        text: 'Una vez borrado, no podrás recuperar este solicitud!',
+        icon: 'warning',
+        buttons: true,
+        dangerMode: true,
+      })
+      if (!willDelete) return
+      await this.$axios.$delete(`/bids/bids/${bidId}/`)
+      await this.$emit('bid-deleted')
+    },
     getNewUrl(bidId) {
       const params = { ...this.$route.query, bid_id: bidId }
       return (

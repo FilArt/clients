@@ -22,7 +22,7 @@
     <v-divider />
 
     <v-card-text>
-      <solicitudes-process :user="user" @bid-added="refresh" @tramitate="onTramitate" />
+      <solicitudes-process :user="user" @bid-added="refresh" @tramitate="onTramitate" @bid-deleted="refresh" />
     </v-card-text>
   </v-card>
 </template>

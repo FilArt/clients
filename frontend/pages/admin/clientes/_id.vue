@@ -29,7 +29,13 @@
 
         <v-tabs-items v-model="tabs">
           <v-tab-item>
-            <solicitudes-process :user="user" @bid-added="refresh" @tramitate="refresh" @punto-deleted="refresh" />
+            <solicitudes-process
+              :user="user"
+              @bid-added="refresh"
+              @tramitate="refresh"
+              @punto-deleted="refresh"
+              @bid-deleted="refresh"
+            />
           </v-tab-item>
           <v-tab-item>
             <v-container>

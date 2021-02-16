@@ -1,7 +1,12 @@
 <template>
   <v-row class="flex-wrap" align="top" justify="center">
     <v-col class="flex-grow-0">
-      <solicitudes-bar :user-id="user.id" :bids="user.bids" @bid-added="$emit('bid-added')" />
+      <solicitudes-bar
+        :user-id="user.id"
+        :bids="user.bids"
+        @bid-added="$emit('bid-added')"
+        @bid-deleted="$emit('bid-deleted')"
+      />
     </v-col>
 
     <v-col class="flex-grow-1">
