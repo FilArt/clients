@@ -62,10 +62,11 @@ class BidListSerializer(DynamicFieldsMixin, serializers.ModelSerializer):
     created_at = serializers.SerializerMethodField()
     fecha_firma = serializers.SerializerMethodField()
     status = serializers.SerializerMethodField()
+    mymoney = serializers.SerializerMethodField()
 
     class Meta:
         model = Bid
-        fields = ["id", "created_at", "offer_name", "status", "offer_kind", "fecha_firma"]
+        fields = ["id", "created_at", "offer_name", "status", "offer_kind", "fecha_firma", "mymoney"]
 
     # noinspection PyMethodMayBeStatic
     def get_created_at(self, instance: Bid):
@@ -77,6 +78,13 @@ class BidListSerializer(DynamicFieldsMixin, serializers.ModelSerializer):
 
     def get_status(self, bid: Bid):
         return bid.get_status(by=self.context["request"].user)
+
+    def get_mymoney(self, instance: Bid):
+        if instance.user.responsible == self.context["request"].user:
+            m = instance.commission
+        else:
+            m = instance.canal_commission
+        return f"{m} €"
 
 
 class UserSettingsSerializer(serializers.ModelSerializer):

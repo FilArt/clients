@@ -123,6 +123,15 @@
                     {{ lastComments[group.value] }}
                   </v-radio-group>
                 </template>
+
+                <br />
+
+                <date-time-filter
+                  v-model="bid['fecha_de_cobro_prevista']"
+                  label="Fecha de cobro prevista"
+                  formatted="DD/MM/YYYY"
+                  @input="onPrevistaInput"
+                />
               </v-col>
             </v-row>
 
@@ -174,6 +183,7 @@ import constants from '@/lib/constants'
 export default {
   name: 'Tramitacion',
   components: {
+    DateTimeFilter: () => import('@/components/DateTimeFilter'),
     PuntoItem: () => import('@/components/puntos/PuntoItem'),
     AddPuntoDialog: () => import('@/components/puntos/AddPuntoDialog'),
     Facturacion: () => import('@/components/support/Facturacion'),
@@ -272,6 +282,10 @@ export default {
     await this.refresh()
   },
   methods: {
+    async onPrevistaInput(newDt) {
+      await this.$axios.$patch(`/bids/bids/${this.bidId}/`, { fecha_de_cobro_prevista: newDt.slice(0, 10) })
+      this.$toast.global.done()
+    },
     async refresh() {
       if (this.bidId && this.bidId.match(/\d+/)) {
         await this.fetchBid()

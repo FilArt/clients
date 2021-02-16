@@ -54,6 +54,7 @@ class BidSerializer(BidListSerializer):
             "canal_paid",
             "offer_status",
             "offer_status_accesible",
+            "fecha_de_cobro_prevista",
         ]
 
     def get_status(self, bid: Bid) -> str:

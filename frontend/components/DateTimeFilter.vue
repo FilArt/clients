@@ -8,6 +8,8 @@
     :color="color"
     :dark="$vuetify.theme.isDark"
     :custom-shortcuts="customShortcuts"
+    button-now-translation="Ahora"
+    auto-close
     @input="$emit('input', $event)"
   />
 </template>
@@ -16,7 +18,7 @@ export default {
   name: 'DateTimeFilter',
   props: {
     value: {
-      type: Object,
+      type: [String, Object],
       default: () => null,
     },
     label: {

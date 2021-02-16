@@ -36,6 +36,7 @@ class Bid(models.Model):
     scoring = models.BooleanField(verbose_name=_("Is scoring ok?"), blank=True, null=True)
     call = models.BooleanField(verbose_name=_("Is call ok?"), blank=True, null=True)
     offer_status = models.CharField(max_length=1, choices=OFFER_STATUS_CHOICES, blank=True, null=True)
+    fecha_de_cobro_prevista = models.DateField(blank=True, null=True, verbose_name="Fecha de cobro prevista")
 
     class Meta:
         verbose_name = _("Bid")
