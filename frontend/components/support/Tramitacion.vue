@@ -123,19 +123,19 @@
                     {{ lastComments[group.value] }}
                   </v-radio-group>
                 </template>
-
-                <br />
-
-                <date-time-filter
-                  v-model="bid['fecha_de_cobro_prevista']"
-                  label="Fecha de cobro prevista"
-                  formatted="DD/MM/YYYY"
-                  @input="onPrevistaInput"
-                />
               </v-col>
             </v-row>
 
             <facturacion v-else :key="bid.id" :bid="bid" @paid="$emit('tramitate')" />
+
+            <br />
+
+            <date-time-filter
+              v-model="bid['fecha_de_cobro_prevista']"
+              label="Fecha de cobro prevista"
+              formatted="DD/MM/YYYY"
+              @input="onPrevistaInput"
+            />
           </v-col>
         </v-row>
 
