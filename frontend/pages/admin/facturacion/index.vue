@@ -22,7 +22,7 @@ export default {
   },
   data() {
     return {
-      statuses: [constants.statuses.PENDIENTE_PAGO, constants.statuses.PAGADO],
+      statuses: [constants.statuses.PENDIENTE_PAGO],
       headers: [
         'id',
         'fecha_registro',

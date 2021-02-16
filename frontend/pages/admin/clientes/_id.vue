@@ -22,6 +22,7 @@
     <v-card-text>
       <v-tabs v-model="tabs" centered>
         <v-tab>Tramitación</v-tab>
+        <v-tab>Facturacion</v-tab>
         <v-tab :disabled="!bids.length">Solicitud ({{ bids.length }})</v-tab>
         <v-tab :disabled="!calls.length"> Llamadas ({{ calls.length }}) </v-tab>
         <v-tab :disabled="!history.length">Historia ({{ history.length }})</v-tab>
@@ -31,6 +32,16 @@
           <v-tab-item>
             <solicitudes-process
               :user="user"
+              @bid-added="refresh"
+              @tramitate="refresh"
+              @punto-deleted="refresh"
+              @bid-deleted="refresh"
+            />
+          </v-tab-item>
+          <v-tab-item>
+            <solicitudes-process
+              :user="user"
+              facturacion
               @bid-added="refresh"
               @tramitate="refresh"
               @punto-deleted="refresh"

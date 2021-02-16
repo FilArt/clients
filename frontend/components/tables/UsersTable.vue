@@ -221,7 +221,7 @@
             </v-col>
 
             <v-col
-              v-if="headers.some((h) => h === 'status')"
+              v-if="headers.some((h) => h === 'status') && statuses.length > 1"
               :cols="flexs.cols"
               :xl="flexs.xl"
               :lg="flexs.lg"
