@@ -139,7 +139,7 @@ class UserViewSet(
         if mode or statuses:
             qs = CustomUser.objects.with_statuses()
             if mode == "tramitacion":
-                qs = qs.filter(Q(ko_bids__gt=0) | Q(untouched_bids__gt=0))
+                qs = qs.filter(status__in=[TRAMITACION, PENDIENTE_TRAMITACION])
             elif mode == "facturacion":
                 qs = CustomUser.objects.facturacion()
             if statuses:

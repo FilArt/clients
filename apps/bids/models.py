@@ -7,6 +7,8 @@ from django.utils.translation import gettext_lazy as _
 
 from apps.users.models import CustomUser
 
+# from apps.users.utils import PAGADO, PENDIENTE_PAGO, PENDIENTE_TRAMITACION, TRAMITACION, KO, KO_PAPELLERA
+
 logger = logging.getLogger(__name__)
 
 
@@ -24,7 +26,9 @@ class Bid(models.Model):
     )
 
     user = models.ForeignKey(get_user_model(), on_delete=models.CASCADE, related_name="bids")
+    # noinspection PyUnresolvedReferences
     offer = models.ForeignKey("calculator.Offer", on_delete=models.CASCADE)
+    # noinspection PyUnresolvedReferences
     punto = models.ForeignKey("users.Punto", on_delete=models.CASCADE)
     created_at = models.DateTimeField(auto_now_add=True)
     fecha_firma = models.DateTimeField(blank=True, null=True)
@@ -50,6 +54,25 @@ class Bid(models.Model):
         super().save(**kwargs)
         if save_bid_story:
             BidStory.objects.create(bid=self, user=self.user)
+
+    # @property
+    # def status(self):
+    #     bools = self.doc, self.scoring, self.call, self.offer_status
+    #     if self.user.ko:
+    #         return KO_PAPELLERA
+    #     elif all(bools):
+    #         if self.paid:
+    #             return PAGADO
+    #         else:
+    #             return PENDIENTE_PAGO
+    #     elif not list(filter(None, bools)):
+    #         return PENDIENTE_TRAMITACION
+    #     elif any(bools):
+    #         return TRAMITACION
+    #     elif any([b is False for b in bools]):
+    #         return KO
+    #     else:
+    #         raise ValueError(f"SOMETING WENT WRONG (bid id {self.id})")
 
     def get_status(self, by: CustomUser) -> str:
         if False in (self.doc, self.call, self.scoring):
