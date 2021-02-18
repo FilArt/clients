@@ -1,6 +1,6 @@
 from django.contrib.auth.base_user import BaseUserManager
-from django.db.models import QuerySet, Case, When, Q, Value, Subquery, OuterRef, F, Sum
-from django.db.models.aggregates import Count
+from django.db.models import QuerySet, Case, When, Q, Value, Sum
+from django.db.models.aggregates import Count, Max, Min
 from django.db.models.fields import CharField
 from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
@@ -15,35 +15,22 @@ class CustomUserManager(BaseUserManager):
     """
 
     def get_queryset(self):
-        from apps.bids.models import Bid
-
-        qs = (
+        return (
             super()
             .get_queryset()
             .annotate(
-                fecha_firma=Subquery(
-                    Bid.objects.filter(user_id=OuterRef("pk"))
-                    .order_by(F("fecha_firma").desc(nulls_last=True))
-                    .values("fecha_firma")[:1]
-                ),
-                fecha_registro=Subquery(
-                    Bid.objects.filter(user_id=OuterRef("pk"))
-                    .order_by(F("fecha_firma").asc(nulls_last=True))
-                    .values("fecha_firma")[:1]
-                ),
+                fecha_firma=Max("bids__fecha_firma", filter=Q(bids__call=True, bids__doc=True, bids__scoring=True)),
+                fecha_registro=Min("bids__fecha_firma", filter=Q(bids__call=True, bids__doc=True, bids__scoring=True)),
                 paid_count=Case(
                     When(responsible__fixed_salary=True, then=Value(-1)),
-                    default=Sum("bids__commission", filter=Q(fecha_firma__year=timezone.now().year), distinct=True,),
+                    default=Sum("bids__commission", filter=Q(bids__fecha_firma__year=timezone.now().year)),
                 ),
                 canal_paid_count=Case(
                     When(responsible__fixed_salary=True, then=Value(-1)),
-                    default=Sum(
-                        "bids__canal_commission", filter=Q(fecha_firma__year=timezone.now().year), distinct=True
-                    ),
+                    default=Sum("bids__canal_commission", filter=Q(bids__fecha_firma__year=timezone.now().year)),
                 ),
             )
         )
-        return qs
 
     def create_user(self, email, password, **extra_fields):
         """
@@ -76,9 +63,6 @@ class CustomUserManager(BaseUserManager):
         qs = qs.annotate(
             ko_bids=Count("bids", filter=Q(bids__call=False) | Q(bids__scoring=False) | Q(bids__doc=False)),
             ok_bids=Count("bids", filter=Q(bids__call=True) & Q(bids__scoring=True) & Q(bids__doc=True)),
-            untouched_bids=Count(
-                "bids", filter=Q(bids__call__isnull=True) | Q(bids__scoring__isnull=True) | Q(bids__doc__isnull=True)
-            ),
             touched_bids=Count(
                 "bids", filter=Q(bids__call__isnull=False) | Q(bids__scoring__isnull=False) | Q(bids__doc__isnull=False)
             ),
@@ -88,7 +72,6 @@ class CustomUserManager(BaseUserManager):
                 When(ko=True, then=Value(KO_PAPELLERA)),
                 When(ko_bids__gt=0, then=Value(KO)),
                 When(touched_bids=0, then=Value(PENDIENTE_TRAMITACION)),
-                When(ok_bids=0, then=Value(TRAMITACION)),
                 When(
                     Q(
                         Q(bids__paid=False) | Q(bids__canal_paid=False, responsible__canal__isnull=False),
@@ -107,6 +90,7 @@ class CustomUserManager(BaseUserManager):
                     ),
                     then=Value(PAGADO),
                 ),
+                default=Value(TRAMITACION),
                 output_field=CharField(),
             ),
         )
