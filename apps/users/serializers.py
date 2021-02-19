@@ -36,10 +36,12 @@ class RegisterSerializer(serializers.ModelSerializer):
             "email",
             "password",
             "role",
+            "cif_nif",
         ]
         extra_kwargs = {
             "password": {"required": False, "write_only": True},
             "role": {"required": False, "write_only": True},
+            "cif_nif": {"required": True, "allow_null": False, "allow_blank": False},
         }
 
     def save(self, **kwargs):
@@ -360,6 +362,7 @@ class CreateClientSerializer(RegisterSerializer):
             "email",
             "company_name",
             "phone",
+            "cif_nif",
         ]
         extra_kwargs = {"id": {"read_only": True}}
 

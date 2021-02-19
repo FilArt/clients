@@ -3,6 +3,7 @@
     <v-text-field v-model="user.company_name" label="Nombre" :error-messages="errorMessages.company_name" />
     <email-field v-model="user.email" :error-messages="errorMessages.email" />
     <phone-field v-model="user.phone" :error-messages="errorMessages.phone" />
+    <v-text-field v-model="user.cif_nif" label="CIF/NIF" :error-messages="errorMessages.cif_nif" />
 
     <submit-button block label="Guardar" />
   </v-form>
@@ -22,6 +23,7 @@ export default {
         company_name: null,
         email: null,
         phone: null,
+        cif_nif: null,
       },
       errorMessages: {},
     }
