@@ -1,5 +1,5 @@
 from django.contrib.auth.base_user import BaseUserManager
-from django.db.models import QuerySet, Case, When, Q, Value, Sum
+from django.db.models import QuerySet, Case, When, Q, Value, Sum, F
 from django.db.models.aggregates import Count, Max, Min
 from django.db.models.fields import CharField
 from django.utils import timezone
@@ -18,9 +18,10 @@ class CustomUserManager(BaseUserManager):
         return (
             super()
             .get_queryset()
+            .annotate(min_fr=Min("bids__fecha_firma", filter=Q(bids__call=True, bids__doc=True, bids__scoring=True)),)
             .annotate(
                 fecha_firma=Max("bids__fecha_firma", filter=Q(bids__call=True, bids__doc=True, bids__scoring=True)),
-                fecha_registro=Min("bids__fecha_firma", filter=Q(bids__call=True, bids__doc=True, bids__scoring=True)),
+                fecha_registro=Case(When(min_fr__isnull=True, then=F("created_at")), default=F("min_fr"),),
                 paid_count=Case(
                     When(responsible__fixed_salary=True, then=Value(-1)),
                     default=Sum("bids__commission", filter=Q(bids__fecha_firma__year=timezone.now().year)),
