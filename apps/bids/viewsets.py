@@ -14,7 +14,7 @@ from rest_framework_tracking.models import APIRequestLog
 from clients.serializers import BidListSerializer
 from .models import Bid, BidStory
 from .permissions import BidsPermission
-from .serializers import BidSerializer, CreateBidSerializer, BidStorySerializer
+from .serializers import CreateBidSerializer, BidStorySerializer
 
 
 class BidViewSet(LoggingMixin, viewsets.ModelViewSet):
@@ -25,15 +25,11 @@ class BidViewSet(LoggingMixin, viewsets.ModelViewSet):
     def get_serializer_class(self):
         if self.action == "create":
             return CreateBidSerializer
-
-        elif self.detail:
-            return BidSerializer
-
         return BidListSerializer
 
     def get_queryset(self):
         user = self.request.user
-        qs = Bid.objects.all()
+        qs = Bid.objects.with_status()
 
         if user.role in ("admin", "support"):
             return qs

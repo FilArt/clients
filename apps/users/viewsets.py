@@ -4,7 +4,6 @@ from typing import Tuple
 
 from django.contrib.auth.models import Group
 from django.db import transaction
-from django.db.models import Q
 from drf_dynamic_fields import DynamicFieldsMixin
 from notifications.models import Notification
 from notifications.signals import notify
@@ -137,14 +136,15 @@ class UserViewSet(
         mode = self.request.query_params.get("mode")
 
         if mode or statuses:
-            qs = CustomUser.objects.with_statuses()
             if mode == "tramitacion":
-                qs = qs.filter(status__in=[TRAMITACION, PENDIENTE_TRAMITACION])
+                return CustomUser.objects.with_statuses().filter(status__in=[TRAMITACION, PENDIENTE_TRAMITACION])
+            elif mode == "tramitacion2":
+                return CustomUser.objects.tramitacion()
             elif mode == "facturacion":
-                qs = CustomUser.objects.facturacion()
+                return CustomUser.objects.facturacion()
             if statuses:
-                qs = qs.filter(status__in=statuses.split(","))
-            return qs
+                users = Bid.objects.with_status().filter(status__in=statuses.split(",")).values("user")
+                return CustomUser.objects.filter(id__in=users)
 
         return super().get_queryset()
 

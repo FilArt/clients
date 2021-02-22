@@ -7,7 +7,6 @@ from django.contrib.auth.models import Group
 from django.contrib.auth.password_validation import validate_password
 from django.core.exceptions import ValidationError as DjangoValidationError
 from django.template.loader import render_to_string
-from django.utils import timezone
 from django.utils.html import strip_tags
 from django.utils.translation import gettext_lazy as _
 from drf_dynamic_fields import DynamicFieldsMixin
@@ -20,7 +19,7 @@ from apps.bids.models import Bid
 from clients.serializers import BidListSerializer
 from clients.utils import notify_telegram, humanize
 from .models import Attachment, CustomUser, Punto
-from .utils import PENDIENTE_PAGO
+from .utils import TRAMITACION_STATUSES, FACTURACION_STATUSES, PENDIENTE_PAGO
 
 logger = logging.getLogger(__name__)
 
@@ -145,16 +144,18 @@ class UserListSerializer(DynamicFieldsMixin, serializers.ModelSerializer):
     def get_bids_count(self, instance: CustomUser) -> int:
         by, mode, bids = self._get_bids(instance)
         if mode == "tramitacion":
-            return len([bid for bid in bids.all() if not bid.success and bid.created_at.year == timezone.now().year])
+            return len([bid for bid in instance.bids.all() if not bid.success])
+        elif mode == "tramitacion2":
+            return Bid.objects.with_status().filter(user=instance, status__in=TRAMITACION_STATUSES).count()
         elif mode == "facturacion":
-            return len([bid for bid in bids.all() if bid.success and PENDIENTE_PAGO in bid.get_status(by)])
+            return Bid.objects.with_status().filter(user=instance, status__in=FACTURACION_STATUSES).count()
 
         return bids.count()
 
     def get_paid_count(self, instance: CustomUser) -> str:
         by, mode, bids = self._get_bids(instance)
         if mode == "facturacion":
-            pc = sum([bid.commission for bid in bids.all() if bid.success and bid.get_status(by) != "Pagado"])
+            pc = sum([bid.commission for bid in bids.all() if bid.status == PENDIENTE_PAGO])
         else:
             pc = instance.paid_count
         return "SF" if pc == -1 else f"{pc} €" if pc is not None else pc
@@ -162,7 +163,7 @@ class UserListSerializer(DynamicFieldsMixin, serializers.ModelSerializer):
     def get_canal_paid_count(self, instance: CustomUser) -> str:
         by, mode, bids = self._get_bids(instance)
         if mode == "facturacion":
-            pc = sum([bid.canal_commission for bid in bids.all() if bid.success and bid.get_status(by) != "Pagado"])
+            pc = sum([bid.canal_commission for bid in bids.all() if bid.status == PENDIENTE_PAGO])
         else:
             pc = instance.canal_paid_count
         return "SF" if pc == -1 else f"{pc} €" if pc is not None else pc
@@ -180,7 +181,8 @@ class UserListSerializer(DynamicFieldsMixin, serializers.ModelSerializer):
 
     def _get_bids(self, instance: CustomUser):
         request = self.context["request"]
-        return request.user, request.query_params.get("mode"), getattr(instance, "bids")
+        bids = Bid.objects.with_status().filter(user=instance)
+        return request.user, request.query_params.get("mode"), bids
 
 
 class ManageUserListSerializer(UserListSerializer):
@@ -266,13 +268,10 @@ class ManageUserSerializer(UserListSerializer):
 
 
 class UserSerializer(UserListSerializer):
-    bids = BidListSerializer(many=True)
-
     class Meta:
         model = CustomUser
         fields = [
             "id",
-            "bids",
             "fullname",
             "first_name",
             "last_name",

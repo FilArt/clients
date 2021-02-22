@@ -23,7 +23,7 @@
                 <i> {{ bid.status }} </i>
               </v-list-item-title>
               <v-list-item-subtitle>
-                {{ bid.fecha_firma }}
+                {{ bid['fecha_firma'] }}
                 <v-list-item-action>
                   <delete-button @click="deleteBid(bid.id)" />
                 </v-list-item-action>
@@ -63,10 +63,6 @@ export default {
   name: 'SolicitudesBar',
   components: { DeleteButton, AddNewBid },
   props: {
-    bids: {
-      type: Array,
-      default: () => [],
-    },
     userId: {
       type: Number,
       default: null,
@@ -75,7 +71,11 @@ export default {
   data() {
     return {
       addNewBidDialog: false,
+      bids: [],
     }
+  },
+  async mounted() {
+    this.bids = await this.$axios.$get(`/bids/bids/?user=${this.userId}`)
   },
   methods: {
     async deleteBid(bidId) {

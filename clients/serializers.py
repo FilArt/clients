@@ -7,9 +7,9 @@ from django.db.models import Q
 from django.utils import timezone
 from drf_dynamic_fields import DynamicFieldsMixin
 from rest_framework import serializers
-from rest_framework.exceptions import ValidationError
+from rest_framework.exceptions import ValidationError, PermissionDenied
 
-from apps.bids.models import Bid
+from apps.bids.models import Bid, BidStory
 from apps.calculator.models import Offer
 from apps.users.models import (
     Attachment,
@@ -17,6 +17,7 @@ from apps.users.models import (
     Punto,
     UserSettings,
 )
+from apps.users.utils import PENDIENTE_TRAMITACION, TRAMITACION
 from clients.utils import notify_telegram
 
 logger = logging.getLogger(__name__)
@@ -54,46 +55,6 @@ class DetailPuntoSerializer(serializers.ModelSerializer):
             "address": {"required": True},
             "postalcode": {"required": True},
         }
-
-
-class BidListSerializer(DynamicFieldsMixin, serializers.ModelSerializer):
-    offer_name = serializers.CharField(read_only=True, source="offer.name")
-    offer_kind = serializers.CharField(read_only=True, source="offer.kind")
-    created_at = serializers.SerializerMethodField()
-    fecha_firma = serializers.SerializerMethodField()
-    status = serializers.SerializerMethodField()
-    mymoney = serializers.SerializerMethodField()
-
-    class Meta:
-        model = Bid
-        fields = [
-            "id",
-            "created_at",
-            "offer_name",
-            "status",
-            "offer_kind",
-            "fecha_firma",
-            "mymoney",
-            "fecha_de_cobro_prevista",
-        ]
-
-    # noinspection PyMethodMayBeStatic
-    def get_created_at(self, instance: Bid):
-        return instance.created_at.strftime("%d.%m.%Y %H:%M")
-
-    # noinspection PyMethodMayBeStatic
-    def get_fecha_firma(self, instance: Bid):
-        return instance.fecha_firma.strftime("%d.%m.%Y %H:%M") if instance.fecha_firma else "No hay fecha firma!"
-
-    def get_status(self, bid: Bid):
-        return bid.get_status(by=self.context["request"].user)
-
-    def get_mymoney(self, instance: Bid):
-        if instance.user.responsible == self.context["request"].user:
-            m = instance.commission
-        else:
-            m = instance.canal_commission
-        return f"{m} €"
 
 
 class UserSettingsSerializer(serializers.ModelSerializer):
@@ -219,6 +180,93 @@ class DetailOfferSerializer(OfferListSerializer):
 
     def to_internal_value(self, data):
         return Offer.objects.get(id=data)
+
+
+class BidListSerializer(DynamicFieldsMixin, serializers.ModelSerializer):
+    agent_type = serializers.CharField(source="user.agent_type", read_only=True)
+    canal = serializers.CharField(source="user.responsible.canal", read_only=True)
+    created_at = serializers.SerializerMethodField()
+    fecha_firma = serializers.SerializerMethodField()
+    internal_message = serializers.CharField(write_only=True, allow_blank=True, allow_null=True)
+    message = serializers.CharField(write_only=True, allow_blank=True, allow_null=True)
+    mymoney = serializers.SerializerMethodField()
+    new_status = serializers.CharField(write_only=True, required=False, allow_blank=True, allow_null=True)
+    offer = DetailOfferSerializer()
+    offer_kind = serializers.CharField(read_only=True, source="offer.kind")
+    offer_name = serializers.CharField(read_only=True, source="offer.name")
+    offer_status_accesible = serializers.SerializerMethodField()
+    punto = PuntoSerializer()
+    responsible = serializers.CharField(source="user.responsible", read_only=True)
+    status = serializers.SerializerMethodField()
+    success = serializers.BooleanField()
+
+    class Meta:
+        model = Bid
+        fields = "__all__"
+
+    # noinspection PyMethodMayBeStatic
+    def get_offer_status_accesible(self, bid: Bid) -> bool:
+        return bid.offer.company.offer_status_used
+
+    # noinspection PyMethodMayBeStatic
+    def get_created_at(self, instance: Bid):
+        return instance.created_at.strftime("%d.%m.%Y %H:%M")
+
+    # noinspection PyMethodMayBeStatic
+    def get_fecha_firma(self, instance: Bid):
+        return instance.fecha_firma.strftime("%d.%m.%Y %H:%M") if instance.fecha_firma else "No hay fecha firma!"
+
+    def get_status(self, bid: Bid):
+        by = self.context["request"].user
+        if by.is_client:
+            if bid.success:
+                return "OK"
+            if self.doc or self.call or self.scoring or (self.offer_status and self.offer.company.offer_status_used):
+                return TRAMITACION
+            return PENDIENTE_TRAMITACION
+
+        return getattr(bid, "status")
+
+    def get_mymoney(self, instance: Bid):
+        if instance.user.responsible == self.context["request"].user:
+            m = instance.commission
+        else:
+            m = instance.canal_commission
+        return f"{m} €"
+
+    def update(self, bid: Bid, validated_data):
+        if "offer" in validated_data:
+            requester = self.context["request"].user
+            if requester.role is None and (bid.doc or bid.scoring or bid.call):
+                raise PermissionDenied
+            offer = validated_data.pop("offer")
+            bid.offer = offer
+            bid.save(update_fields=["offer"])
+
+        bid_succeeded = bid.success
+        _super = super().update(bid, validated_data)
+        if not bid_succeeded:
+            bid.refresh_from_db()
+            if bid.success:
+                bid.fecha_firma = timezone.now()
+                bid.save()
+        return _super
+
+    def save(self, **kwargs):
+        user = self.context["request"].user
+        with transaction.atomic():
+            bid: Bid = super().save(**kwargs)
+
+            new_status = self.validated_data.get("new_status")
+            if new_status:
+                BidStory.objects.create(
+                    user=user,
+                    bid=bid,
+                    status=new_status,
+                    message=self.validated_data.get("message"),
+                    internal_message=self.validated_data.get("internal_message") or None,
+                )
+        return bid
 
 
 class SimpleAccountSerializer(AccountSerializer):

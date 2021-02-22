@@ -5,7 +5,16 @@ from django.db.models.fields import CharField
 from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 
-from .utils import KO, PENDIENTE_PAGO, PENDIENTE_TRAMITACION, PAGADO, KO_PAPELLERA, TRAMITACION
+from .utils import (
+    KO,
+    PENDIENTE_PAGO,
+    PENDIENTE_TRAMITACION,
+    PAGADO,
+    KO_PAPELLERA,
+    TRAMITACION,
+    FACTURACION_STATUSES,
+    TRAMITACION_STATUSES,
+)
 
 
 class CustomUserManager(BaseUserManager):
@@ -20,7 +29,7 @@ class CustomUserManager(BaseUserManager):
             .get_queryset()
             .annotate(min_fr=Min("bids__fecha_firma", filter=Q(bids__call=True, bids__doc=True, bids__scoring=True)),)
             .annotate(
-                fecha_firma=Max("bids__fecha_firma", filter=Q(bids__call=True, bids__doc=True, bids__scoring=True)),
+                fecha_firma=Max("bids__fecha_firma"),
                 fecha_registro=Case(When(min_fr__isnull=True, then=F("created_at")), default=F("min_fr"),),
                 paid_count=Case(
                     When(responsible__fixed_salary=True, then=Value(-1)),
@@ -98,4 +107,13 @@ class CustomUserManager(BaseUserManager):
         return qs
 
     def facturacion(self) -> QuerySet:
-        return self.with_statuses().filter(status__in=(PAGADO, PENDIENTE_PAGO))
+        from ..bids.models import Bid
+
+        users = Bid.objects.with_status().filter(status__in=FACTURACION_STATUSES).values("user")
+        return self.get_queryset().filter(id__in=users, role__isnull=True)
+
+    def tramitacion(self) -> QuerySet:
+        from ..bids.models import Bid
+
+        users = Bid.objects.with_status().filter(status__in=TRAMITACION_STATUSES).values("user")
+        return self.get_queryset().filter(id__in=users, role__isnull=True)
