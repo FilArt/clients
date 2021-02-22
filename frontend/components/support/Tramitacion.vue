@@ -249,11 +249,11 @@ export default {
         offer_status: [
           {
             label: 'Firmada',
-            value: 0,
+            value: true,
           },
           {
             label: 'PTE Firmar',
-            value: 1,
+            value: false,
           },
         ],
       },
