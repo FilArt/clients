@@ -95,6 +95,7 @@
       </v-card-text>
 
       <v-card-text>
+        <!-- eslint-disable-next-line vue/no-v-html -->
         <v-sheet light v-html="htmlDetails" />
       </v-card-text>
     </div>
