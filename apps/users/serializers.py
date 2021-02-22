@@ -144,8 +144,6 @@ class UserListSerializer(DynamicFieldsMixin, serializers.ModelSerializer):
     def get_bids_count(self, instance: CustomUser) -> int:
         by, mode, bids = self._get_bids(instance)
         if mode == "tramitacion":
-            return len([bid for bid in instance.bids.all() if not bid.success])
-        elif mode == "tramitacion2":
             return Bid.objects.with_status().filter(user=instance, status__in=TRAMITACION_STATUSES).count()
         elif mode == "facturacion":
             return Bid.objects.with_status().filter(user=instance, status__in=FACTURACION_STATUSES).count()

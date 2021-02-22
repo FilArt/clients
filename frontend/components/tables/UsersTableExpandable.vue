@@ -157,7 +157,7 @@
     <template v-slot:expanded-item="{ item }">
       <td :colspan="headers.length">
         <v-list>
-          <v-list-item v-for="bid in bids" :key="bid.id" :to="`tramitacion2/${item.id}/?bid_id=${bid.id}`">
+          <v-list-item v-for="bid in bids" :key="bid.id" :to="`tramitacion/${item.id}/?bid_id=${bid.id}`">
             <bid-detail :mode="mode" :bid="bid" />
           </v-list-item>
         </v-list>

@@ -137,8 +137,6 @@ class UserViewSet(
 
         if mode or statuses:
             if mode == "tramitacion":
-                return CustomUser.objects.with_statuses().filter(status__in=[TRAMITACION, PENDIENTE_TRAMITACION])
-            elif mode == "tramitacion2":
                 return CustomUser.objects.tramitacion()
             elif mode == "facturacion":
                 return CustomUser.objects.facturacion()

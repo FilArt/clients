@@ -47,21 +47,6 @@ export default {
       this.user = user
       this.values = { ...user }
     },
-    bidStatusColor(status) {
-      let color
-      switch (status) {
-        case 'OK':
-          color = 'success'
-          break
-        case 'Pendiente tramitación':
-          color = 'warning'
-          break
-        default:
-          color = 'error'
-          break
-      }
-      return color
-    },
     async moveToKo() {
       await this.$axios.$patch(`users/users/${this.user.id}/`, { ko: true })
       await this.$router.push(`/admin/ko/${this.user.id}`)

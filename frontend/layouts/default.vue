@@ -74,11 +74,6 @@ export default {
             to: '/admin/tramitacion',
           },
           {
-            icon: 'mdi-file-document-edit',
-            title: 'TRAMITACIÓN 2',
-            to: '/admin/tramitacion2',
-          },
-          {
             icon: 'mdi-currency-eur',
             title: 'FACTURACIÓN',
             to: '/admin/facturacion',

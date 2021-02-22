@@ -4,7 +4,7 @@
       <users-table-expandable
         :statuses="statuses"
         :headers="headers"
-        mode="tramitacion2"
+        mode="tramitacion"
         detail-url="/agente/tramitacion"
         is-support
         show-date-filters
