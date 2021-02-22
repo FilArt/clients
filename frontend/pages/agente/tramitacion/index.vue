@@ -1,9 +1,10 @@
 <template>
   <v-card>
     <v-card-text>
-      <users-table
+      <users-table-expandable
         :statuses="statuses"
         :headers="headers"
+        mode="tramitacion2"
         detail-url="/agente/tramitacion"
         is-support
         show-date-filters
@@ -15,10 +16,11 @@
 
 <script>
 import constants from '@/lib/constants'
+import UsersTableExpandable from '~/components/tables/UsersTableExpandable'
 
 export default {
   components: {
-    UsersTable: () => import('~/components/tables/UsersTable'),
+    UsersTableExpandable,
   },
   data() {
     return {

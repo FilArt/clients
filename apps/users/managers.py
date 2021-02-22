@@ -119,4 +119,4 @@ class CustomUserManager(BaseUserManager):
         from ..bids.models import Bid
 
         users = Bid.objects.with_status().filter(status__in=TRAMITACION_STATUSES).values("user")
-        return self.get_queryset().filter(id__in=users, role__isnull=True)
+        return self.get_queryset().filter(Q(id__in=users) | Q(bids__isnull=True), role__isnull=True)
