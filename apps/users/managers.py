@@ -27,9 +27,12 @@ class CustomUserManager(BaseUserManager):
         return (
             super()
             .get_queryset()
-            .annotate(min_fr=Min("bids__fecha_firma", filter=Q(bids__call=True, bids__doc=True, bids__scoring=True)),)
             .annotate(
-                fecha_firma=Max("bids__fecha_firma"),
+                min_fr=Min("bids__fecha_firma", filter=Q(bids__call=True, bids__doc=True, bids__scoring=True)),
+                max_fr=Max("bids__fecha_firma", filter=Q(bids__call=True, bids__doc=True, bids__scoring=True)),
+            )
+            .annotate(
+                fecha_firma=Case(When(max_fr__isnull=True, then=F("created_at")), default=F("max_fr"),),
                 fecha_registro=Case(When(min_fr__isnull=True, then=F("created_at")), default=F("min_fr"),),
                 paid_count=Case(
                     When(responsible__fixed_salary=True, then=Value(-1)),
