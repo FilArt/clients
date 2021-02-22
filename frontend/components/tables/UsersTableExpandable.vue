@@ -363,8 +363,8 @@ export default {
       }
       this.expanded = [item]
       const fields = this.mode.includes('tramitacion')
-        ? 'id,status,fecha_firma,fecha_registro,doc,call,scoring,offer_status,offer_status_accesible,success'
-        : 'id,status,fecha_firma,fecha_registro,commission,canal_commission,fecha_de_cobro_prevista,paid,canal_paid'
+        ? 'id,status,fecha_firma,created_at,doc,call,scoring,offer_status,offer_status_accesible,success'
+        : 'id,status,fecha_firma,created_at,commission,canal_commission,fecha_de_cobro_prevista,paid,canal_paid'
       this.bids = await this.$axios.$get(`/bids/bids/?user=${item.id}&fields=${fields}`)
     },
     getDetailUrl(userId) {

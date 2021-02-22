@@ -2,7 +2,7 @@
   <v-row align="center">
     <v-col cols="1">{{ bid.id }}</v-col>
     <v-col cols="2">{{ bid.status }}</v-col>
-    <v-col cols="1">FR: {{ bid['fecha_registro'] || '-' }}</v-col>
+    <v-col cols="1">FR: {{ bid['created_at'] }}</v-col>
     <v-col cols="1">FF: {{ bid['fecha_firma'] || '-' }}</v-col>
     <template v-if="mode.includes('tramitacion')">
       <v-col cols="1">Doc: {{ signs[bid.doc] }}</v-col>
