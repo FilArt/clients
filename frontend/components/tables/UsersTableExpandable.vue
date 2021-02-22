@@ -157,7 +157,7 @@
     <template v-slot:expanded-item="{ item }">
       <td :colspan="headers.length">
         <template v-for="bid in bids">
-          <bid-detail :key="bid.id" :bid="bid" :to="`tramitacion2/${item.id}/?bid_id=${bid.id}`" />
+          <bid-detail :key="bid.id" :mode="mode" :bid="bid" :to="`tramitacion2/${item.id}/?bid_id=${bid.id}`" />
         </template>
       </td>
     </template>
@@ -360,7 +360,9 @@ export default {
         return
       }
       this.expanded = [item]
-      const fields = 'id,doc,call,scoring,offer_status,status,offer_status_accesible,success,fecha_firma'
+      const fields = this.mode.includes('tramitacion')
+        ? 'id,status,fecha_firma,doc,call,scoring,offer_status,offer_status_accesible,success'
+        : 'id,status,fecha_firma,commission,canal_commission,fecha_de_cobro_prevista,paid,canal_paid'
       this.bids = await this.$axios.$get(`/bids/bids/?user=${item.id}&fields=${fields}`)
     },
     getDetailUrl(userId) {

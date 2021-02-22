@@ -4,17 +4,22 @@
       <v-col cols="1">{{ bid.id }}</v-col>
       <v-col cols="2">{{ bid.status }}</v-col>
       <v-col cols="2">{{ bid['fecha_firma'] }}</v-col>
-      <v-col cols="1">Doc: {{ doc }}</v-col>
-      <v-col cols="2">Llamada: {{ call }}</v-col>
-      <v-col cols="2">Scoring: {{ scoring }}</v-col>
-      <v-col v-if="bid['offer_status_accesible']" cols="2">Estado de oferta: {{ offer_status }}</v-col>
+      <template v-if="mode.includes('tramitacion')">
+        <v-col cols="1">Doc: {{ signs[bid.doc] }}</v-col>
+        <v-col cols="2">Llamada: {{ signs[bid.call] }}</v-col>
+        <v-col cols="2">Scoring: {{ signs[bid.scoring] }}</v-col>
+        <v-col v-if="bid['offer_status_accesible']" cols="2">Estado de oferta: {{ offer_status }}</v-col>
+      </template>
+      <template v-else>
+        <v-col>Agente: {{ bid.commission }} € ({{ signs[bid.paid] }})</v-col>
+        <v-col>Canal: {{ bid.canal_commission }} € ({{ signs[bid.canal_paid] }})</v-col>
+        <v-col>Fecha de cobro prevista: {{ bid.fecha_de_cobro_prevista || '-' }}</v-col>
+      </template>
     </v-row>
   </v-card>
 </template>
 
 <script>
-const BOOL_TRUE = '✅'
-const BOOL_FALSE = '❌'
 export default {
   name: 'BidDetail',
   props: {
@@ -26,20 +31,19 @@ export default {
       type: String,
       default: null,
     },
+    mode: {
+      type: String,
+      default: 'tramitacion',
+    },
   },
-  computed: {
-    doc() {
-      return this.bid.doc ? BOOL_TRUE : BOOL_FALSE
-    },
-    call() {
-      return this.bid.call ? BOOL_TRUE : BOOL_FALSE
-    },
-    scoring() {
-      return this.bid.scoring ? BOOL_TRUE : BOOL_FALSE
-    },
-    offer_status() {
-      return this.bid.offer_status ? BOOL_TRUE : BOOL_FALSE
-    },
+  data() {
+    return {
+      signs: {
+        true: '✅',
+        false: '❌',
+        null: '⏳',
+      },
+    }
   },
 }
 </script>
