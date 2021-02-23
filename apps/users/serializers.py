@@ -98,7 +98,7 @@ class PrettyDateTimeField(serializers.DateTimeField, serializers.ReadOnlyField):
 
 class DateTimeToDateField(serializers.CharField, serializers.Field):
     def to_representation(self, value):
-        return value.strftime("%d/%m/%Y") if value else "-"
+        return value.strftime("%d/%m/%Y %H:%M") if value else "-"
 
     def to_internal_value(self, data):
         return datetime.strptime(data, "%d/%m/%Y")
