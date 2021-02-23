@@ -38,23 +38,9 @@ export default {
   methods: {
     async onTramitate() {
       const user = await this.$axios.$get(`users/users/${this.$route.params.id}/`)
+      await this.$store.dispatch('bids/fetchBids', { params: `user=${user.id}` })
       this.user = user
       this.values = { ...user }
-    },
-    bidStatusColor(status) {
-      let color
-      switch (status) {
-        case 'OK':
-          color = 'success'
-          break
-        case 'Pendiente tramitación':
-          color = 'warning'
-          break
-        default:
-          color = 'error'
-          break
-      }
-      return color
     },
     async refresh() {
       this.user = await this.$axios.$get(`users/users/${this.user.id}/`)

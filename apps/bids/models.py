@@ -56,11 +56,8 @@ class Bid(models.Model):
 
     @property
     def success(self) -> bool:
-        return (
-            bool(self.doc and self.call and self.scoring) and self.offer_status
-            if self.offer.company.offer_status_used
-            else True
-        )
+        offer_status = self.offer_status if self.offer.company.offer_status_used else True
+        return all((self.doc, self.call, self.scoring, offer_status))
 
 
 class BidStory(models.Model):

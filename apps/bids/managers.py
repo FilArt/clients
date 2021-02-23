@@ -28,7 +28,7 @@ class BidManager(Manager):
                     ),
                     When(
                         Q(
-                            # Q(paid=False) | Q(canal_paid=False, user__responsible__canal__isnull=False),
+                            Q(paid=False) | Q(canal_paid=False, user__responsible__canal__isnull=False),
                             Q(offer_status=True, offer__company__offer_status_used=True)
                             | Q(offer__company__offer_status_used=False),
                             doc=True,
@@ -39,8 +39,8 @@ class BidManager(Manager):
                     ),
                     When(
                         Q(
-                            canal_paid=True,
-                            user__responsible__canal__isnull=False,
+                            Q(canal_paid=True, user__responsible__canal__isnull=False)
+                            | Q(user__responsible__canal__isnull=True),
                             paid=True,
                             doc=True,
                             call=True,

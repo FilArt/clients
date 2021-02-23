@@ -46,6 +46,7 @@ export default {
   methods: {
     async onTramitate() {
       const user = await this.$axios.$get(`users/users/${this.$route.params.id}/`)
+      await this.$store.dispatch('bids/fetchBids', { params: `user=${user.id}` })
       this.user = user
       this.values = { ...user }
     },

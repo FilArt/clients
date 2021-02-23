@@ -13,7 +13,7 @@
         <v-list dense nav>
           <v-list-item v-for="bid in bids" :key="bid.id" two-line nuxt :to="getNewUrl(bid.id)" exact>
             <v-list-item-avatar>
-              <v-icon v-if="bid.offer_kind === 'luz'" color="warning">mdi-flash</v-icon>
+              <v-icon v-if="bid['offer_kind'] === 'luz'" color="warning">mdi-flash</v-icon>
               <v-icon v-else color="blue">mdi-fire</v-icon>
             </v-list-item-avatar>
             <v-list-item-content>
@@ -59,6 +59,7 @@
 <script>
 import AddNewBid from '@/components/forms/AddNewBid'
 import DeleteButton from '@/components/buttons/deleteButton'
+import { mapState } from 'vuex'
 export default {
   name: 'SolicitudesBar',
   components: { DeleteButton, AddNewBid },
@@ -71,11 +72,11 @@ export default {
   data() {
     return {
       addNewBidDialog: false,
-      bids: [],
     }
   },
+  computed: mapState({ bids: (state) => state.bids.bids }),
   async mounted() {
-    this.bids = await this.$axios.$get(`/bids/bids/?user=${this.userId}`)
+    await this.$store.dispatch('bids/fetchBids', { params: `user=${this.userId}` })
   },
   methods: {
     async deleteBid(bidId) {
