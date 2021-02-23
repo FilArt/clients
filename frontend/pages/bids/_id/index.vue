@@ -1,9 +1,17 @@
 <template>
   <v-card>
-    <v-card-title>
-      Solicitud
-      <v-chip v-text="bid.status" />
-    </v-card-title>
+    <v-toolbar>
+      <v-toolbar-items>
+        <v-btn icon @click="$router.back()">
+          <v-icon color="error">mdi-arrow-left</v-icon>
+        </v-btn>
+      </v-toolbar-items>
+      <v-toolbar-title>
+        Solicitud
+        <v-chip v-text="bid.status" />
+      </v-toolbar-title>
+    </v-toolbar>
+    <v-card-title> </v-card-title>
     <v-card-text>
       <detail-offer :offer="bid.offer" />
     </v-card-text>
