@@ -283,7 +283,8 @@ export default Object.freeze({
     return (
       number === 1 ||
       ['3.0A', '3.1A'].includes(tarif) ||
-      (letter + number === 'c3' && ['2.1DHA', '2.0DHA'].includes(tarif))
+      (letter + number === 'c3' && ['2.1DHA', '2.0DHA'].includes(tarif)) ||
+      (tarif.includes('S') && letter === 'c')
     )
   },
   clientTypes: {

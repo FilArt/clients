@@ -9,12 +9,12 @@
     >
       <template v-slot:[`item.company_logo`]="{ item }">
         <v-avatar width="100">
-          <v-img :src="item.company_logo || '/no-image.svg'" />
+          <v-img :src="item['company_logo'] || '/no-image.svg'" />
         </v-avatar>
       </template>
 
-      <template v-slot:[`item.profit_num`]="{ item }"> {{ item.profit_num }} € </template>
-      <template v-slot:[`item.annual_profit_num`]="{ item }"> {{ item.annual_profit_num }} € </template>
+      <template v-slot:[`item.profit_num`]="{ item }"> {{ item['profit_num'] }} € </template>
+      <template v-slot:[`item.annual_profit_num`]="{ item }"> {{ item['annual_profit_num'] }} € </template>
 
       <template v-slot:[`item.actions`]="{ item }">
         <v-btn icon nuxt :to="getDetailUrl(item)">
