@@ -286,9 +286,9 @@ class Punto(models.Model):
     last_time_company_gas_changed = models.DateField(
         verbose_name=_("Last time company gas changed"), blank=True, null=True
     )
-    cups_luz = CICharField(verbose_name=_("CUPS"), blank=True, null=True, max_length=25, validators=[cups_validator])
+    cups_luz = CICharField(verbose_name=_("CUPS"), blank=True, null=True, max_length=20, validators=[cups_validator])
     cups_gas = CICharField(
-        verbose_name=_("CUPS GAS"), blank=True, null=True, max_length=25, validators=[cups_validator]
+        verbose_name=_("CUPS GAS"), blank=True, null=True, max_length=20, validators=[cups_validator]
     )
     tarif_luz = MyCharField(verbose_name=_("Tarif"))
     tarif_gas = MyCharField(verbose_name=_("Tarif gas"))
