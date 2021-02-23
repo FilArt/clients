@@ -15,6 +15,7 @@
       lastIcon: 'mdi-arrow-collapse-right',
       prevIcon: 'mdi-minus',
       nextIcon: 'mdi-plus',
+      itemsPerPageText: `Suma solicitud: ${suma}. Filas por página:`,
     }"
     class="elevation-1"
     @update:options="fetchUsers"
@@ -301,6 +302,7 @@ export default {
       userRoles: Object.values(constants.userRoles),
       role: this.defaultRole,
       users: [],
+      suma: 0,
       loading: false,
       total: 0,
       search: query.search || '',
@@ -385,9 +387,10 @@ export default {
         }
         const query = this.getQuery()
         const data = await this.$axios.$get(`${this.listUrl}/?${query}`)
-        const { results, count } = data
+        const { results, count, suma } = data
         this.users = results
         this.total = count
+        this.suma = suma
       } catch (e) {
         if (e.response && e.response.status === 404 && this.query.page !== 1) {
           this.query.page = 1

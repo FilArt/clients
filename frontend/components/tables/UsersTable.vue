@@ -83,6 +83,7 @@
         lastIcon: 'mdi-arrow-collapse-right',
         prevIcon: 'mdi-minus',
         nextIcon: 'mdi-plus',
+        itemsPerPageText: `Suma solicitud: ${suma}. Filas por página:`,
       }"
       class="elevation-1"
       @update:options="fetchUsers"
@@ -485,6 +486,7 @@ export default {
       userRoles: Object.values(constants.userRoles),
       role: this.defaultRole,
       users: [],
+      suma: 0,
       loading: false,
       total: 0,
       onlyNewMessages: false,
@@ -496,7 +498,7 @@ export default {
         ...query,
         sortBy: ['fecha_firma'],
         sortDesc: [false],
-        statuses_in: query.statuses_in ? query.statuses_in.split(',') : [],
+        statuses_in: query.statuses_in && query.statuses_in.length ? query.statuses_in.split(',') : [],
         mustSort: null,
         multiSort: null,
         bids__call: null,
@@ -622,8 +624,9 @@ export default {
         }
         const query = this.getQuery()
         const data = await this.$axios.$get(`${this.listUrl}/?${query}`)
-        const { results, count } = data
+        const { results, count, suma } = data
         this.users = results
+        this.suma = suma
         this.total = count
       } catch (e) {
         if (e.response && e.response.status === 404 && this.query.page !== 1) {
