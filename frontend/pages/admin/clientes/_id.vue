@@ -102,6 +102,8 @@
 </template>
 
 <script>
+import { mapState } from 'vuex'
+
 export default {
   components: {
     SolicitudesProcess: () => import('@/components/SolicitudesProcess'),
@@ -114,7 +116,7 @@ export default {
   async asyncData({ params, $axios }) {
     const user = await $axios.$get(`/users/users/${params.id}/`)
 
-    const phoneNumbers = [user.phone, user.phone_city]
+    const phoneNumbers = [user.phone, user['phone_city']]
     let calls = []
     if (phoneNumbers.length) {
       calls = await $axios.$get(`users/calls/${params.id}`)
@@ -129,17 +131,17 @@ export default {
       user,
       participant,
       calls,
-      bids: user.bids,
       puntos: await $axios.$get(`/users/puntos/?user=${params.id}`),
       history: await $axios.$get(`/bids/history/?user=${params.id}`),
-      tabs: user.bids.length ? 0 : null,
+      tabs: null,
     }
   },
+  computed: mapState({ bids: (state) => state.bids.bids }),
   methods: {
     async refresh() {
       const user = await this.$axios.$get(`/users/users/${this.$route.params.id}/`)
+      await this.$store.dispatch('bids/fetchBids', { params: `user=${user.id}` })
       this.user = user
-      this.bids = user.bids
     },
     async fetchPuntos() {
       this.puntos = await this.$axios.$get(`/users/puntos/?user=${this.$route.params.id}`)
