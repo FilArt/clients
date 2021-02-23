@@ -129,10 +129,6 @@ class CustomUser(AbstractUser):
         )
 
     @cached_property
-    def bids_count(self) -> int:
-        return self.bids.count()
-
-    @cached_property
     def clients_count(self) -> int:
         return self.under_responsibility.count()
 
