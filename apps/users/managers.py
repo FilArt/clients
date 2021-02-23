@@ -122,7 +122,7 @@ class CustomUserManager(BaseUserManager):
         bids = Bid.objects.with_status().filter(status__in=FACTURACION_STATUSES)
         users = bids.values("user")
         return self.get_queryset().filter(id__in=users, role__isnull=True).annotate(
-            bids_count=Count('bids', filter=Q(bids__in=bids))
+            bids_count=Count('bids', filter=Q(bids__in=bids), distinct=True)
         )
 
     def tramitacion(self) -> QuerySet:
@@ -131,5 +131,5 @@ class CustomUserManager(BaseUserManager):
         bids = Bid.objects.with_status().filter(status__in=TRAMITACION_STATUSES)
         users = bids.values("user")
         return self.get_queryset().filter(Q(id__in=users) | Q(bids__isnull=True), role__isnull=True).annotate(
-            bids_count=Count('bids', filter=Q(bids__in=bids))
+            bids_count=Count('bids', filter=Q(bids__in=bids), distinct=True)
         )
