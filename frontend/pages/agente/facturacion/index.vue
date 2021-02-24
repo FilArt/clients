@@ -1,13 +1,7 @@
 <template>
   <v-card>
     <v-card-text>
-      <users-table-expandable
-        :statuses="statuses"
-        :headers="headers"
-        detail-url="/agente/facturacion"
-        show-date-filters
-        use-full-name
-      />
+      <users-table-expandable :statuses="statuses" :headers="headers" show-date-filters use-full-name />
     </v-card-text>
   </v-card>
 </template>

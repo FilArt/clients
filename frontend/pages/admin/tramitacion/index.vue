@@ -1,14 +1,7 @@
 <template>
   <v-card>
     <v-card-text>
-      <users-table-expandable
-        :statuses="statuses"
-        :headers="headers"
-        :mode="mode"
-        detail-url="/admin/tramitacion"
-        is-support
-        show-date-filters
-      />
+      <users-table-expandable :statuses="statuses" :headers="headers" :mode="mode" is-support show-date-filters />
     </v-card-text>
   </v-card>
 </template>

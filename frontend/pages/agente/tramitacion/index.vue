@@ -5,7 +5,6 @@
         :statuses="statuses"
         :headers="headers"
         mode="tramitacion"
-        detail-url="/agente/tramitacion"
         is-support
         show-date-filters
         use-full-name

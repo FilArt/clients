@@ -8,7 +8,7 @@
       <v-col cols="1">Doc: {{ signs[bid.doc] }}</v-col>
       <v-col cols="2">Llamada: {{ signs[bid.call] }}</v-col>
       <v-col cols="2">Scoring: {{ signs[bid.scoring] }}</v-col>
-      <v-col v-if="bid['offer_status_accesible']" cols="2">Estado de oferta: {{ signs[offer_status] }}</v-col>
+      <v-col v-if="bid['offer_status_accesible']" cols="2">Estado de oferta: {{ signs[bid.offer_status] }}</v-col>
     </template>
     <template v-else>
       <v-col>Agente: {{ bid.commission }} € ({{ signs[bid.paid] }})</v-col>

@@ -166,7 +166,7 @@
     </template>
 
     <template v-slot:[`item.fullname`]="{ item }">
-      <v-row v-if="detailUrl" align="center">
+      <v-row align="center">
         <v-col>
           <nuxt-link :to="getDetailUrl(item.id)">
             {{ item.fullname }}
@@ -179,7 +179,6 @@
           </v-btn>
         </v-col>
       </v-row>
-      <span v-else>{{ item.fullname }}</span>
     </template>
   </v-data-table>
 </template>
@@ -206,10 +205,6 @@ export default {
     listUrl: {
       type: String,
       default: 'users/users',
-    },
-    detailUrl: {
-      type: String,
-      default: '/admin/tramitacion',
     },
     allowDelete: {
       type: Boolean,
@@ -370,7 +365,7 @@ export default {
       this.bids = await this.$axios.$get(`/bids/bids/?user=${item.id}&fields=${fields}`)
     },
     getDetailUrl(userId) {
-      return `${this.detailUrl}/${userId}`
+      return `${this.$route.path}/${userId}`
     },
 
     // other
