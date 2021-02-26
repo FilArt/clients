@@ -160,13 +160,18 @@ export default {
         items = [
           {
             icon: 'mdi-lifebuoy',
-            title: 'Tramitación',
+            title: 'TRAMITACIÓN',
             to: '/admin/tramitacion',
           },
           {
             icon: 'mdi-file-cancel-outline',
             title: 'PAPELERA',
             to: '/admin/ko',
+          },
+          {
+            icon: 'mdi-briefcase-account-outline',
+            title: 'CLIENTES',
+            to: '/admin/clientes',
           },
         ]
       } else {
