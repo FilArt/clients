@@ -20,7 +20,7 @@ def get_me(request: Request):
 
 @api_view()
 def get_calls(request: Request, user_id):
-    if not request.user.role == "admin":
+    if request.user.role not in ("admin", "support"):
         raise PermissionDenied
     user = get_object_or_404(CustomUser, pk=user_id)
     phones = [phone for phone in [user.phone, user.phone_city] if phone]
