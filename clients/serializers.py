@@ -250,6 +250,9 @@ class BidListSerializer(DynamicFieldsMixin, serializers.ModelSerializer):
             if bid.success:
                 bid.fecha_firma = timezone.now()
                 bid.save()
+            elif bid.fecha_firma:
+                bid.fecha_firma = None
+                bid.save()
         return _super
 
     def save(self, **kwargs):
