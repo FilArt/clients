@@ -395,13 +395,7 @@ class AgentContractViewSet(LoggingMixin, viewsets.ModelViewSet):
     def create(self, request, *args, **kwargs):
         data = self._parse_data(request)
         serializer = self.get_serializer(data=data)
-        try:
-            serializer.is_valid(raise_exception=True)
-        except ValidationError as e:
-            logger.info(request.data)
-            logger.exception(e)
-            raise
-
+        serializer.is_valid(raise_exception=True)
         self.perform_create(serializer)
         headers = self.get_success_headers(serializer.data)
         return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
