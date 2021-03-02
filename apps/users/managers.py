@@ -28,7 +28,7 @@ class CustomUserManager(BaseUserManager):
             super()
             .get_queryset()
             .annotate(
-                min_fr=Min("bids__fecha_firma", filter=Q(bids__call=True, bids__doc=True, bids__scoring=True)),
+                min_fr=Min("bids__created_at"),
                 max_fr=Max("bids__fecha_firma", filter=Q(bids__call=True, bids__doc=True, bids__scoring=True)),
             )
             .annotate(
