@@ -67,12 +67,12 @@ class CalculatorSerializer(serializers.ModelSerializer):
     # rental = BeautyFloatField(show_euro=True)
     rental = RoundedField(read_only=True)
     profit = BeautyFloatField(show_euro=True)
-    profit_num = serializers.DecimalField(read_only=True, max_digits=10, decimal_places=2, source="profit")
+    profit_num = serializers.DecimalField(read_only=True, max_digits=15, decimal_places=2, source="profit")
     profit_percent = serializers.IntegerField(read_only=True)
     total = BeautyFloatField(show_euro=True)
     annual_profit = BeautyFloatField(show_euro=True)
     annual_profit_num = serializers.DecimalField(
-        read_only=True, max_digits=10, decimal_places=2, source="annual_profit"
+        read_only=True, max_digits=15, decimal_places=2, source="annual_profit"
     )
 
     class Meta:
