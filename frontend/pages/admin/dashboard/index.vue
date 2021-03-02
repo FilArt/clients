@@ -94,7 +94,7 @@ export default {
       if (this.agentsFilter && this.agentsFilter.length) params.responsible__in = this.agentsFilter.join(',')
       if (this.fechaRegistro && this.fechaRegistro.end) {
         const { start, end } = this.fechaRegistro
-        params.fecha_registro__range = `${start},${end}`
+        params.created_at__range = `${start},${end}`
       }
       if (this.fechaFirma && this.fechaFirma.end) {
         const { start, end } = this.fechaFirma

@@ -188,7 +188,7 @@
             </v-col>
 
             <v-col
-              v-if="showDateFilters || headers.some((h) => h.includes('fecha_registro'))"
+              v-if="headers.some((h) => h === 'created_at')"
               :cols="flexs.cols"
               :xl="flexs.xl"
               :lg="flexs.lg"
@@ -196,8 +196,8 @@
               :xs="flexs.xs"
             >
               <date-time-filter
-                v-model="fechaRegistroFilter"
                 label="Fecha de registro"
+                :value="query.created_at__range"
                 range
                 @input="updatefechaRegistroFilter"
               />
@@ -212,7 +212,7 @@
               :xs="flexs.xs"
             >
               <date-time-filter
-                v-model="fechaFirmaFilter"
+                :value="query.bids__fecha_firma__range"
                 label="Fecha de firma"
                 format="YYYY-MM-DD HH:mm"
                 formatted="DD/MM/YYYY HH:mm"
@@ -335,7 +335,7 @@
       </template>
 
       <template v-slot:[`item.date_joined`]="{ item }">
-        {{ $dateFns.format(new Date(item.fecha_registro), 'yyyy-MM-dd HH:mm') }}
+        {{ $dateFns.format(new Date(item.created_at), 'yyyy-MM-dd HH:mm') }}
       </template>
     </v-data-table>
 
@@ -518,7 +518,7 @@ export default {
     activeHeaders() {
       const headers = [
         { text: 'ID', value: 'id' },
-        { text: 'Fecha de registro', value: 'fecha_registro' },
+        { text: 'Fecha de registro', value: 'created_at' },
         { text: 'Fecha firma', value: 'fecha_firma' },
         { text: 'Nombre/Razon social', value: 'fullname', sortable: false },
         { text: 'Tipo de agente', value: 'agent_type' },
@@ -661,9 +661,9 @@ export default {
     },
     updatefechaRegistroFilter(dates) {
       if (dates && dates.start && dates.end) {
-        this.updateQuery({ fecha_registro__range: `${dates.start},${dates.end}` })
+        this.updateQuery({ created_at__range: `${dates.start},${dates.end}` })
       } else {
-        this.updateQuery({ fecha_registro__range: null })
+        this.updateQuery({ created_at__range: null })
       }
     },
     updateFechaFirmaFilter(dates) {
@@ -674,7 +674,7 @@ export default {
       }
     },
     async updateQuery(options) {
-      this.query.page = 1
+      options = { ...options, page: 1 }
       Object.keys(options).forEach((key) => {
         const value = options[key]
         if (value) {

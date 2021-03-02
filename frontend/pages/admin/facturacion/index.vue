@@ -25,7 +25,7 @@ export default {
       statuses: [constants.statuses.PENDIENTE_PAGO],
       headers: [
         'id',
-        'fecha_registro',
+        'created_at',
         'fecha_firma',
         'fullname',
         'bids_count',

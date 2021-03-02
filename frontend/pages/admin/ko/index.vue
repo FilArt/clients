@@ -23,7 +23,7 @@ export default {
   data() {
     return {
       statuses: [constants.statuses.KO_PAPELLERA],
-      headers: ['id', 'fecha_registro', 'fullname', 'responsible_fn', 'bids_count', 'new_messages_count'],
+      headers: ['id', 'created_at', 'fullname', 'responsible_fn', 'bids_count', 'new_messages_count'],
     }
   },
 }

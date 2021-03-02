@@ -37,6 +37,10 @@ class CustomUserManager(BaseUserManager):
                     When(max_fr__isnull=True, then=F("created_at")),
                     default=F("max_fr"),
                 ),
+                fecha_registro=Case(
+                    When(min_fr__isnull=True, then=F("created_at")),
+                    default=F("min_fr"),
+                ),
                 paid_count=Case(
                     When(responsible__fixed_salary=True, then=Value(-1)),
                     default=Sum("bids__commission", filter=Q(bids__fecha_firma__year=timezone.now().year)),

@@ -170,8 +170,8 @@ export default {
         {
           icon: 'mdi-calendar',
           text: 'Fecha de registro',
-          field: 'fecha_registro',
-          value: this.formatDate(user.fecha_registro),
+          field: 'created_at',
+          value: this.formatDate(user.created_at),
           editable: false,
         },
         {
@@ -191,7 +191,7 @@ export default {
       'responsible',
       'phone',
       'phone_city',
-      'fecha_registro',
+      'created_at',
       'last_login',
       'email',
       'legal_representative',

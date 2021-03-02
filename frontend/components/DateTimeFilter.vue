@@ -1,5 +1,6 @@
 <template>
   <vue-ctk-date-time-picker
+    :id="label"
     v-model="dateTime"
     :label="label"
     :format="format"
@@ -44,7 +45,7 @@ export default {
   },
   data() {
     return {
-      dateTime: this.value,
+      dateTime: this.getValue(this.value),
       customShortcuts: [
         { key: 'thisWeek', label: 'Esta semana', value: 'isoWeek' },
         { key: 'lastWeek', label: 'Ultima semana', value: '-isoWeek' },
@@ -60,9 +61,18 @@ export default {
   watch: {
     value: {
       handler(val) {
-        this.dateTime = val
+        this.dateTime = this.getValue(val)
       },
       deep: true,
+    },
+  },
+  methods: {
+    getValue(val) {
+      if (val instanceof String || typeof val === 'string') {
+        val = val.split(',')
+        return { start: val[0], end: val[1] }
+      }
+      return val
     },
   },
 }

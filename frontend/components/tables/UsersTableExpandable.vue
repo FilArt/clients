@@ -63,19 +63,19 @@
             :xs="flexs.xs"
           >
             <v-autocomplete
-              v-model="query.responsible__in"
+              :value="query.responsible__in ? query.responsible__in.split(',').map((i) => parseInt(i)) : null"
               label="Responsable"
               :items="responsibles"
               multiple
               item-text="fullname"
               item-value="id"
               clearable
-              @change="updateQuery({ responsible__in: $event })"
+              @change="updateQuery({ responsible__in: $event && $event.length ? $event.join() : null })"
             />
           </v-col>
 
           <v-col
-            v-if="showDateFilters || headers.some((h) => h.includes('fecha_registro'))"
+            v-if="headers.some((h) => h === 'created_at')"
             :cols="flexs.cols"
             :xl="flexs.xl"
             :lg="flexs.lg"
@@ -83,10 +83,34 @@
             :xs="flexs.xs"
           >
             <date-time-filter
-              v-model="fechaRegistroFilter"
+              :value="query.created_at__range"
               label="Fecha de registro"
               range
-              @input="updatefechaRegistroFilter"
+              @input="
+                $event && $event.end
+                  ? updateQuery({ created_at__range: `${$event.start},${$event.end}` })
+                  : updateQuery({ created_at__range: null })
+              "
+            />
+          </v-col>
+
+          <v-col
+            v-if="headers.some((h) => h.includes('fecha_registro'))"
+            :cols="flexs.cols"
+            :xl="flexs.xl"
+            :lg="flexs.lg"
+            :md="flexs.md"
+            :xs="flexs.xs"
+          >
+            <date-time-filter
+              label="Fecha de registro solicitud"
+              range
+              :value="query.bids__created_at__range"
+              @input="
+                $event && $event.end
+                  ? updateQuery({ bids__created_at__range: `${$event.start},${$event.end}` })
+                  : updateQuery({ bids__created_at__range: null })
+              "
             />
           </v-col>
 
@@ -99,12 +123,14 @@
             :xs="flexs.xs"
           >
             <date-time-filter
-              v-model="fechaFirmaFilter"
+              :value="query.bids__fecha_firma__range"
               label="Fecha de firma"
-              format="YYYY-MM-DD HH:mm"
-              formatted="DD/MM/YYYY HH:mm"
               range
-              @input="updateFechaFirmaFilter"
+              @input="
+                $event && $event.end
+                  ? updateQuery({ bids__fecha_firma__range: `${$event.start},${$event.end}` })
+                  : updateQuery({ bids__fecha_firma__range: null })
+              "
             />
           </v-col>
 
@@ -214,10 +240,6 @@ export default {
       type: Boolean,
       default: false,
     },
-    showDateFilters: {
-      type: Boolean,
-      default: false,
-    },
     isSupport: {
       type: Boolean,
       default: false,
@@ -241,28 +263,10 @@ export default {
   },
   data() {
     const query = this.$route.query
-    let fechaRegistroFilter = query.bids__fecha_firma__range || null
-    let fechaFirmaFilter = query.bids__fecha_firma__range || null
-    if (fechaRegistroFilter) {
-      try {
-        const [start, end] = fechaRegistroFilter.split(',')
-        fechaRegistroFilter = { start: new Date(start), end: new Date(end) }
-      } catch (e) {
-        console.error(e)
-      }
-    }
-    if (fechaFirmaFilter) {
-      try {
-        const [start, end] = fechaFirmaFilter.split(',')
-        fechaFirmaFilter = { start: new Date(start), end: new Date(end) }
-      } catch (e) {
-        console.error(e)
-      }
-    }
     return {
+      constants,
       bids: [],
       expanded: [],
-      constants,
       booleanItems: [
         {
           text: 'OK',
@@ -292,8 +296,6 @@ export default {
         },
       ],
       flexs: { cols: 12, xl: 3, lg: 3, md: 3, sm: 3, xs: 12 },
-      fechaRegistroFilter,
-      fechaFirmaFilter,
       userRoles: Object.values(constants.userRoles),
       role: this.defaultRole,
       users: [],
@@ -305,7 +307,11 @@ export default {
         ...query,
         sortBy: ['fecha_firma'],
         sortDesc: [false],
-        statuses_in: query.statuses_in ? query.statuses_in.split(',') : [],
+        statuses_in: query.statuses_in
+          ? query.statuses_in.length
+            ? query.statuses_in.split(',')
+            : query.statuses_in
+          : [],
         mustSort: null,
         multiSort: null,
         bids__call: null,
@@ -322,8 +328,9 @@ export default {
     activeHeaders() {
       const headers = [
         { text: 'ID', value: 'id' },
-        { text: 'Fecha de registro', value: 'fecha_registro' },
-        { text: 'Fecha ultima firma', value: 'fecha_firma' },
+        { text: 'Fecha de registro', value: 'created_at' },
+        { text: 'Fecha de registro solicitud', value: 'fecha_registro' },
+        { text: 'Fecha firma', value: 'fecha_firma' },
         { text: 'Nombre/Razon social', value: 'fullname', sortable: false },
         { text: 'Tipo de agente', value: 'agent_type' },
         { text: 'Telefono', value: 'phone' },
@@ -381,18 +388,18 @@ export default {
           })
         }
         const query = this.getQuery()
-        const data = await this.$axios.$get(`${this.listUrl}/?${query}`)
+        const queryStr = Object.keys(query)
+          .filter((k) => query[k] !== null)
+          .map((k) => {
+            const value = query[k]
+            return value instanceof Array ? `${k}=${value.join()}` : `${k}=${value}`
+          })
+          .join('&')
+        const data = await this.$axios.$get(`${this.listUrl}/?${queryStr}`)
         const { results, count, suma } = data
         this.users = results
         this.total = count
         this.suma = suma
-      } catch (e) {
-        if (e.response && e.response.status === 404 && this.query.page !== 1) {
-          this.query.page = 1
-          await this.fetchUsers()
-        } else {
-          console.error(e)
-        }
       } finally {
         this.loading = false
       }
@@ -409,30 +416,10 @@ export default {
       })
       if (this.mode) query.mode = this.mode
       if (!query.statuses_in && this.statuses && this.statuses.length) query.statuses_in = this.statuses.join(',')
-      return Object.keys(query)
-        .filter((k) => query[k] !== null)
-        .map((k) => {
-          const value = query[k]
-          return value instanceof Array ? `${k}=${value.join()}` : `${k}=${value}`
-        })
-        .join('&')
-    },
-    updatefechaRegistroFilter(dates) {
-      if (dates && dates.start && dates.end) {
-        this.updateQuery({ fecha_registro__range: `${dates.start},${dates.end}` })
-      } else {
-        this.updateQuery({ fecha_registro__range: null })
-      }
-    },
-    updateFechaFirmaFilter(dates) {
-      if (dates && dates.start && dates.end) {
-        this.updateQuery({ bids__fecha_firma__range: `${dates.start},${dates.end}` })
-      } else {
-        this.updateQuery({ bids__fecha_firma__range: null })
-      }
+      return query
     },
     async updateQuery(options) {
-      this.query.page = 1
+      options = { ...options, page: 1 }
       Object.keys(options).forEach((key) => {
         const value = options[key]
         if (value) {
