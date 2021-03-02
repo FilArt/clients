@@ -106,7 +106,7 @@ class DateTimeToDateField(serializers.CharField, serializers.Field):
 
 class UserListSerializer(DynamicFieldsMixin, serializers.ModelSerializer):
     fecha_firma = DateTimeToDateField()
-    fecha_registro = DateTimeToDateField()
+    created_at = DateTimeToDateField()
     paid_count = serializers.SerializerMethodField()
     canal_paid_count = serializers.SerializerMethodField()
     last_login = PrettyDateTimeField()
@@ -122,8 +122,8 @@ class UserListSerializer(DynamicFieldsMixin, serializers.ModelSerializer):
             "email",
             "phone",
             "date_joined",
-            "fecha_registro",
             "fecha_firma",
+            "created_at",
             "last_login",
             "bids_count",
             "new_messages_count",
@@ -278,8 +278,8 @@ class UserSerializer(UserListSerializer):
             "source",
             "client_role",
             "fecha_firma",
-            "fecha_registro",
             "ko",
+            "created_at",
             "observations",
             "company_name",
         ]

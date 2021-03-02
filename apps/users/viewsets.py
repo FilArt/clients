@@ -121,9 +121,11 @@ class UserViewSet(
     pagination_class = UsersPagination
     filterset_fields = {
         "role": ["exact", "isnull", "in"],
-        "bids__fecha_firma": ["range"],
+        "created_at": ["range"],
         "source": ["exact"],
         "responsible": ["exact", "in"],
+        "bids__created_at": ["range"],
+        "bids__fecha_firma": ["range"],
         "bids__doc": ["exact", "isnull"],
         "bids__scoring": ["exact", "isnull"],
         "bids__call": ["exact", "isnull"],
@@ -154,13 +156,6 @@ class UserViewSet(
             queryset = queryset.order_by("-status")
         elif "status" in ordering:
             queryset = queryset.order_by("status")
-
-        fr = self.request.query_params.get("fecha_registro__range")
-        if fr:
-            queryset = queryset.filter(fecha_registro__range=fr.split(","))
-        ff = self.request.query_params.get("fecha_firma__range")
-        if ff:
-            queryset = queryset.filter(fecha_firma__range=ff.split(","))
 
         user: CustomUser = self.request.user
         if user.role == "agent" and not self.detail:
