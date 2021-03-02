@@ -22,7 +22,7 @@ export default {
         constants.statuses.TRAMITACION_EN_PROCESO,
       ],
       mode: 'tramitacion',
-      headers: ['id', 'fecha_registro', 'fecha_firma', 'fullname', 'responsible_fn', 'bids_count'],
+      headers: ['id', 'fecha_registro', 'fullname', 'responsible_fn', 'bids_count'],
     }
   },
 }
