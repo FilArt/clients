@@ -440,7 +440,10 @@ class FastContractSerializer(serializers.ModelSerializer):
         user_ser.is_valid(raise_exception=True)
         with transaction.atomic():
             if not CustomUser.objects.filter(email=from_user).exists():
-                from_user_ser = RegisterSerializer(data={"email": from_user, "role": "agent"}, tg_msg=None,)
+                from_user_ser = RegisterSerializer(
+                    data={"email": from_user, "role": "agent", "cif_nif": from_user.split("@")[0]},
+                    tg_msg=None,
+                )
                 from_user_ser.is_valid(raise_exception=True)
                 invited_by = from_user_ser.save()
             else:
