@@ -395,89 +395,6 @@ class WithFacturaContractOnlineSerializer(AdditionalContractOnlineSerializer):
             return user
 
 
-class FastContractSerializer(serializers.ModelSerializer):
-    iban = serializers.CharField(write_only=True, required=False)
-    offer = serializers.PrimaryKeyRelatedField(queryset=Offer.objects.all(), write_only=True)
-
-    from_user = serializers.EmailField(write_only=True)
-
-    class Meta:
-        model = CustomUser
-        fields = [
-            "first_name",
-            "last_name",
-            "email",
-            "phone",
-            "offer",
-            "iban",
-            "from_user",
-            "dni",
-            "legal_representative",
-        ]
-        extra_kwargs = {
-            "last_name": {"required": False},
-            "phone": {"required": False},
-            "cif": {"required": False},
-            "dni": {"required": False},
-            "legal_representative": {"required": False},
-        }
-
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self._preserve_user = None
-        self._preserve_bid = None
-
-    def create(self, validated_data):
-        from apps.users.serializers import RegisterSerializer
-
-        from_user = validated_data.pop("from_user")
-        offer = validated_data.pop("offer")
-
-        names = [validated_data.get("first_name"), validated_data.get("last_name")]
-        company_name = " ".join([str(name) for name in names if name]).strip()
-        user_data = {**validated_data, "company_name": company_name}
-        user_ser = SimpleAccountSerializer(data=user_data)
-        user_ser.is_valid(raise_exception=True)
-        with transaction.atomic():
-            if not CustomUser.objects.filter(email=from_user).exists():
-                from_user_ser = RegisterSerializer(
-                    data={"email": from_user, "role": "agent", "cif_nif": from_user.split("@")[0]},
-                    tg_msg=None,
-                )
-                from_user_ser.is_valid(raise_exception=True)
-                invited_by = from_user_ser.save()
-            else:
-                invited_by = CustomUser.objects.get(email=from_user)
-
-            # TODO: добавить обработку старых клиентов (обновление)
-            user = user_ser.save(
-                password=BaseUserManager().make_random_password(),
-                invited_by=invited_by,
-                responsible=invited_by,
-                source="call_n_visit",
-                client_role="tramitacion",
-            )
-            bid = Bid.objects.create(user=user, offer=offer)
-            Punto.objects.create(bid=bid, user=user)
-
-            self._preserve_bid = bid.id
-            self._preserve_user = user.id
-
-            try:
-                data_for_telegam = {str(k): str(v) for k, v in validated_data.items()}
-                notify_telegram("Nuevo usuario - contractar de Call&Visit", **data_for_telegam)
-            except Exception as e:
-                logger.exception(e)
-
-            return user
-
-    def to_representation(self, instance):
-        rep = super().to_representation(instance)
-        rep["user"] = self._preserve_user
-        rep["bid"] = self._preserve_bid
-        return rep
-
-
 class ResponsibleField(serializers.EmailField):
     def to_internal_value(self, data):
         try:
@@ -485,7 +402,7 @@ class ResponsibleField(serializers.EmailField):
         except CustomUser.DoesNotExist:
             from apps.users.serializers import RegisterSerializer
 
-            ser = RegisterSerializer(data={"email": data, "role": "agent"}, tg_msg=None)
+            ser = RegisterSerializer(data={"email": data, "role": "agent", "cif_nif": data.split('@')[0]}, tg_msg=None)
             ser.is_valid(raise_exception=True)
             return ser.save().email
 

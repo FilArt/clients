@@ -25,7 +25,6 @@ from clients.serializers import (
     ContractOnlineSerializer,
     DetailPuntoSerializer,
     WithFacturaContractOnlineSerializer,
-    FastContractSerializer,
     AgentContractSerializer,
 )
 from .models import Attachment, CustomUser, Punto
@@ -384,24 +383,6 @@ class WithFacturaContractOnlineViewSet(LoggingMixin, viewsets.ModelViewSet):
     queryset = CustomUser.objects.all()
     serializer_class = WithFacturaContractOnlineSerializer
     permission_classes: Tuple = tuple()
-
-
-class FastContractViewSet(WithFacturaContractOnlineViewSet):
-    serializer_class = FastContractSerializer
-
-    def create(self, request, *args, **kwargs):
-        user_email = request.data.get("email")
-        offer = request.data.get("offer")
-        if user_email and offer:
-            try:
-                user = CustomUser.objects.get(email=user_email)
-                bids = Bid.objects.filter(user=user, offer_id=offer)
-                if bids.exists():
-                    return Response({"user": user.id, "bid": bids.last().id})
-            except CustomUser.DoesNotExist:
-                pass
-
-        return super().create(request, *args, **kwargs)
 
 
 class AgentContractViewSet(LoggingMixin, viewsets.ModelViewSet):
