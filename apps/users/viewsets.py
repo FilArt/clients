@@ -82,7 +82,11 @@ class RegisterViewSet(LoggingMixin, viewsets.GenericViewSet, mixins.CreateModelM
 
 
 class AccountViewSet(
-    LoggingMixin, viewsets.GenericViewSet, mixins.RetrieveModelMixin, mixins.UpdateModelMixin, mixins.DestroyModelMixin,
+    LoggingMixin,
+    viewsets.GenericViewSet,
+    mixins.RetrieveModelMixin,
+    mixins.UpdateModelMixin,
+    mixins.DestroyModelMixin,
 ):
     queryset = CustomUser.objects.all()
     serializer_class = AccountSerializer
@@ -191,6 +195,19 @@ class UserViewSet(
         if not attachments:
             attachments = Attachment.objects.filter(punto__user=request.user)
         return Response(AttachmentSerializer(attachments, many=True).data)
+
+    @action(methods=["POST"], detail=False, permission_classes=([]))
+    def set_libre_agent(self, request: Request):
+        cif = request.data.get("cif")
+        email = request.data.get("email")
+        agent = get_object_or_404(CustomUser.objects.all(), email=email)
+        client = get_object_or_404(CustomUser.objects.all(), cif_nif=cif)
+        if agent != client.responsible:
+            raise ValidationError({"email": ["You are not a owner of this client"]})
+        libre = CustomUser.objects.get(email="LIBRE@LIBRE.COM")
+        client.responsible = libre
+        client.save(update_fields=["responsible"])
+        return Response("OK")
 
 
 class ManageUsersViewSet(UserViewSet, mixins.CreateModelMixin, mixins.DestroyModelMixin):
