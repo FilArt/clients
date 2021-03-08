@@ -199,8 +199,14 @@ class UserViewSet(
     def set_libre_agent(self, request: Request):
         cif = request.data.get("cif")
         email = request.data.get("email")
-        agent = get_object_or_404(CustomUser.objects.all(), email=email)
-        client = get_object_or_404(CustomUser.objects.all(), cif_nif=cif)
+        try:
+            agent = get_object_or_404(CustomUser.objects.all(), email=email)
+        except CustomUser.DoesNotExist:
+            raise ValidationError(f"no hay agente {email} en area de clientes")
+        try:
+            client = get_object_or_404(CustomUser.objects.all(), cif_nif=cif)
+        except CustomUser.DoesNotExist:
+            raise ValidationError(f"no hay cliente con cif {cif} en area de clientes")
         if agent != client.responsible:
             raise ValidationError({"email": ["You are not a owner of this client"]})
         libre = CustomUser.objects.get(email="LIBRE@LIBRE.COM")
