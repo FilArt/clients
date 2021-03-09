@@ -76,6 +76,7 @@ class CallVisitUserViewSet(viewsets.ModelViewSet):
                     "dni": punto.dni,
                     "iban": punto.iban,
                     "phones2": [p for p in [client.phone, client.phone_city] if p],
+                    "is_client": True,
                 }
                 response = authed_cv_client.post("https://app.call-visit.com/api/cards/", json=item)
                 response_data = response.json()

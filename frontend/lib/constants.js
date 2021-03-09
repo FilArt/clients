@@ -312,5 +312,6 @@ export default Object.freeze({
     RENEW: 'Renovaciones',
     BAD_CONTACT: 'Mal contacto',
     ACEPT: 'Proceso aceptacion',
+    FIDELIZACION: 'Fidelizacion',
   },
 })
