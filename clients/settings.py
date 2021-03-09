@@ -53,6 +53,7 @@ INSTALLED_APPS = [
     "rest_framework_tracking",
     "notifications",
     "apps.cv_integration",
+    "django_unused_media",
 ]
 
 MIDDLEWARE = [

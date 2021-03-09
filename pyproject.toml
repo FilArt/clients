@@ -38,6 +38,7 @@ setuptools = "^51.1.2"
 tqdm = "^4.56.0"
 pandas = "^1.2.1"
 openpyxl = "^3.0.6"
+django-unused-media = "^0.2.2"
 
 [tool.poetry.dev-dependencies]
 flake8 = "^3.8.3"
