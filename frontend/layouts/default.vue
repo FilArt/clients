@@ -108,11 +108,6 @@ export default {
             title: 'HISTORIAL',
             to: '/admin/log',
           },
-          // {
-          //   icon: 'mdi-file',
-          //   title: 'ARCHIVOS',
-          //   to: '/admin/archivos',
-          // },
         ])
       } else if (role === 'agent') {
         items = items.concat([

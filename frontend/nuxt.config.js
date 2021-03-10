@@ -1,16 +1,11 @@
 import es from 'vuetify/es5/locale/es'
 import colors from 'vuetify/es5/util/colors'
 
-const DEV = process.env.NODE_ENV !== 'production'
-const BACKEND_HOST = `http://localhost:${process.env.BACKEND_PORT || '8001'}`
+const BACKEND_HOST = process.env.BACKEND_HOST
 
 export default {
   ssr: false,
-  dev: DEV,
   target: 'static',
-  /*
-   ** Headers of the page
-   */
   head: {
     titleTemplate: '%s',
     title: 'Area de clientes Gestion Group',
@@ -78,7 +73,7 @@ export default {
    ** See https://axios.nuxtjs.org/options
    */
   axios: {
-    browserBaseURL: !DEV ? 'https://areaclientes.gestiongroup.es/api' : `${BACKEND_HOST}/api`,
+    browserBaseURL: `${BACKEND_HOST}/api`,
     proxy: true,
     headers: {
       common: {
@@ -87,9 +82,8 @@ export default {
     },
   },
   proxy: {
-    '/api/': !DEV ? 'https://areaclientes.gestiongroup.es/' : BACKEND_HOST,
-    '/media/': !DEV ? 'https://areaclientes.gestiongroup.es/' : BACKEND_HOST,
-    // '/media/': 'https://areaclientes.gestiongroup.es/',
+    '/api/': BACKEND_HOST,
+    '/media/': BACKEND_HOST,
   },
   auth: {
     redirect: {

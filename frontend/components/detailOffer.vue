@@ -29,11 +29,7 @@
             class="mx-auto"
             max-width="150"
             max-height="100"
-            :src="
-              offer.company_logo
-                ? offer.company_logo.replace('localhost:8001', 'areaclientes.gestiongroup.es')
-                : '/no-image.svg'
-            "
+            :src="offer['company_logo'] ? offer['company_logo'] : '/no-image.svg'"
           />
         </v-col>
 
