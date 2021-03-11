@@ -211,8 +211,6 @@ EMAIL_HOST_USER = ""
 EMAIL_HOST_PASSWORD = ""
 
 CALL_VISIT_URL = os.environ.get("CALL_VISIT_URL")
-if not CALL_VISIT_URL:
-    raise ValueError("CALL_VISIT_URL not set")
 
 try:
     from .local_settings import *  # noqa: F403, F401
