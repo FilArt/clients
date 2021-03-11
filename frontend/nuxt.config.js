@@ -6,6 +6,10 @@ const BACKEND_HOST = process.env.BACKEND_HOST
 export default {
   ssr: false,
   target: 'static',
+  dev: process.env.NODE_ENV !== 'production',
+  env: {
+    CALL_VISIT_URL: process.env.CALL_VISIT_URL,
+  },
   head: {
     titleTemplate: '%s',
     title: 'Area de clientes Gestion Group',
@@ -163,7 +167,6 @@ export default {
      ** You can extend webpack config here
      */
     extend(config, ctx) {
-      // Run ESLint on save
       if (ctx.isDev && ctx.isClient) {
         config.module.rules.push({
           enforce: 'pre',

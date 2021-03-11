@@ -1,6 +1,7 @@
 import logging
 
 import requests
+from django.conf import settings
 from django.contrib.auth import get_user_model
 from rest_framework import viewsets
 from rest_framework.decorators import api_view, action
@@ -20,7 +21,9 @@ logger.setLevel(logging.DEBUG)
 def get_authed_cv_client(user: CallVisitUser) -> requests.Session:
     session = requests.Session()
     auth_headers = {"email": user.email, "password": user.password}
-    auth_request = session.post("https://app.call-visit.com/api/token-auth/", data=auth_headers)
+    auth_request = session.post(
+        f"{settings.CALL_VISIT_URL}/api/token-auth/", data=auth_headers
+    )
     if not auth_request.ok:
         raise AuthenticationFailed("cv auth failed")
     token = auth_request.json().get("token")
@@ -42,9 +45,9 @@ class CallVisitUserViewSet(viewsets.ModelViewSet):
         clients = get_user_model().objects.filter(id__in=clients_ids)
         errors = []
         client: CustomUser
-        authed_cv_client = get_authed_cv_client(request.user.callvisituser)
+        authed_cv_client = get_authed_cv_client(getattr(request.user, "callvisituser"))
         for client in clients:
-            bids = client.bids.all()
+            bids = getattr(client, "bids").all()
             for bid in bids:
                 punto: Punto = bid.punto
                 item = {
@@ -55,7 +58,8 @@ class CallVisitUserViewSet(viewsets.ModelViewSet):
                     "tarif": punto.tarif_luz,
                     "tarif_gas": punto.tarif_gas,
                     "client_type": "J" if punto.category == "business" else "F",
-                    "persona_contacto": punto.legal_representative or client.legal_representative,
+                    "persona_contacto": punto.legal_representative
+                    or client.legal_representative,
                     "commers": punto.company_luz.name if punto.company_luz else None,
                     "province": punto.province,
                     "poblacion": punto.locality,
@@ -78,7 +82,9 @@ class CallVisitUserViewSet(viewsets.ModelViewSet):
                     "phones2": [p for p in [client.phone, client.phone_city] if p],
                     "is_client": True,
                 }
-                response = authed_cv_client.post("https://app.call-visit.com/api/cards/", json=item)
+                response = authed_cv_client.post(
+                    f"{settings.CALL_VISIT_URL}/api/cards/", json=item
+                )
                 response_data = response.json()
                 if not response.ok:
                     errors.append({client.id: response_data})
@@ -90,11 +96,11 @@ class CallVisitUserViewSet(viewsets.ModelViewSet):
 @api_view(http_method_names=["POST"])
 def call(request: Request):
     try:
-        session = get_authed_cv_client(request.user.callvisituser)
+        session = get_authed_cv_client(getattr(request.user, "callvisituser"))
         data = request.data
         method = data.get("method", "get")
         func = session.get if method == "get" else session.post
         response = func(data.get("url"), data=data)
         return Response(response.json())
     except Exception as e:
-        raise ValidationError(e)
+        raise ValidationError(str(e))

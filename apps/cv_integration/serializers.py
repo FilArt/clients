@@ -1,4 +1,5 @@
 import requests
+from django.conf import settings
 from rest_framework import serializers
 from rest_framework.exceptions import ValidationError
 from rest_framework.serializers import CurrentUserDefault
@@ -17,11 +18,13 @@ class CallVisitUserSerializer(serializers.ModelSerializer):
         self._token = None
 
     def validate(self, attrs):
-        login_request = requests.post("https://app.call-visit.com/api/token-auth/", data=attrs)
+        login_request = requests.post(
+            f"{settings.CALL_VISIT_URL}/api/token-auth/", data=attrs
+        )
         try:
             login_request.raise_for_status()
         except requests.HTTPError as e:
-            raise ValidationError(e)
+            raise ValidationError(str(e))
         self._token = login_request.json()
 
         return super().validate(attrs)

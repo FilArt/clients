@@ -109,7 +109,9 @@ DATABASES = {
 # https://docs.djangoproject.com/en/3.0/ref/settings/#auth-password-validators
 
 AUTH_PASSWORD_VALIDATORS = [
-    {"NAME": "django.contrib.auth.password_validation.UserAttributeSimilarityValidator"},
+    {
+        "NAME": "django.contrib.auth.password_validation.UserAttributeSimilarityValidator"
+    },
     {"NAME": "django.contrib.auth.password_validation.MinimumLengthValidator"},
     {"NAME": "django.contrib.auth.password_validation.CommonPasswordValidator"},
     {"NAME": "django.contrib.auth.password_validation.NumericPasswordValidator"},
@@ -167,16 +169,28 @@ GOOGLE_SERVICE_ACCOUNT_CREDS = "~/.config/gspread/service_account.json"
 # channels
 ASGI_APPLICATION = "apps.chat.routing.application"
 CHANNEL_LAYERS = {
-    "default": {"BACKEND": "channels_redis.core.RedisChannelLayer", "CONFIG": {"hosts": [("127.0.0.1", 6379)],},},
+    "default": {
+        "BACKEND": "channels_redis.core.RedisChannelLayer",
+        "CONFIG": {
+            "hosts": [("127.0.0.1", 6379)],
+        },
+    },
 }
 
 LOGGING = {
     "version": 1,
     "disable_existing_loggers": False,
-    "handlers": {"console": {"level": "INFO", "class": "logging.StreamHandler",},},
-    "root": {"handlers": ["console"], "level": "INFO",},
+    "handlers": {
+        "console": {
+            "level": "INFO",
+            "class": "logging.StreamHandler",
+        },
+    },
+    "root": {
+        "handlers": ["console"],
+        "level": "INFO",
+    },
 }
-
 # telegram
 TELEGRAM_TOKEN = ""
 TELEGRAM_CHAT_ID = ""
@@ -195,6 +209,10 @@ EMAIL_USE_TLS = True
 EMAIL_PORT = 587
 EMAIL_HOST_USER = ""
 EMAIL_HOST_PASSWORD = ""
+
+CALL_VISIT_URL = os.environ.get("CALL_VISIT_URL")
+if not CALL_VISIT_URL:
+    raise ValueError("CALL_VISIT_URL not set")
 
 try:
     from .local_settings import *  # noqa: F403, F401

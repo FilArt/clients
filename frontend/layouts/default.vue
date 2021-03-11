@@ -183,9 +183,6 @@ export default {
           },
         ])
       }
-      // if (permissions.includes('offers') || !role) {
-      // items.push({ icon: 'mdi-offer', title: 'Ofertas', to: '/ofertas' })
-      // }
       if (permissions.includes('calculator')) {
         items.push({ icon: 'mdi-calculator', title: 'COMPARADOR', to: '/comparador' })
       }

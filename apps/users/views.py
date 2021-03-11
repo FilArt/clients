@@ -20,7 +20,7 @@ def get_me(request: Request):
 
 @api_view()
 def get_calls(request: Request, user_id):
-    if request.user.role not in ("admin", "support"):
+    if getattr(request.user, "role") not in ("admin", "support"):
         raise PermissionDenied
     user = get_object_or_404(CustomUser, pk=user_id)
     phones = [phone for phone in [user.phone, user.phone_city] if phone]
@@ -30,6 +30,11 @@ def get_calls(request: Request, user_id):
         calls_path = os.path.join(settings.CALLS_STORAGE_PATH, phone)
         if os.path.exists(calls_path):
             calls = os.listdir(calls_path)
-            result.extend([f"https://app.call-visit.com/media/freeswitch_recordings/{phone}/{call}" for call in calls])
+            result.extend(
+                [
+                    f"{settings.CALL_VISIT_URL}/media/freeswitch_recordings/{phone}/{call}"
+                    for call in calls
+                ]
+            )
 
     return Response(result)
