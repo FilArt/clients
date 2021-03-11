@@ -4,7 +4,10 @@ set -e
 
 cd frontend
 
-NODE_ENV=production yarn run generate
+echo Input backend host
+read BACKEND_HOST
+
+BACKEND_HOST=$BACKEND_HOST NODE_ENV=production yarn run generate
 
 cd ..
 
