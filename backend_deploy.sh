@@ -2,9 +2,10 @@
 
 set -e
 
-ssh cv "\
+ssh $SERVER "\
   cd /srv/http/clients; \
   git pull; \
+  source .venv/bin/activate; \
   poetry install --no-dev --no-root; \
   ./manage.py migrate; \
   ./manage.py compilemessages -l es &> /dev/null; \
