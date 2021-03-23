@@ -1,6 +1,6 @@
 from django.contrib.auth.base_user import BaseUserManager
 from django.db.models import QuerySet, Case, When, Q, Value, Sum, F
-from django.db.models.aggregates import Count, Max, Min
+from django.db.models.aggregates import Count, Max
 from django.db.models.fields import CharField
 from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
@@ -28,7 +28,7 @@ class CustomUserManager(BaseUserManager):
             super()
             .get_queryset()
             .annotate(
-                min_fr=Min("bids__created_at"),
+                min_fr=Max("bids__created_at"),
                 max_fr=Max("bids__fecha_firma", filter=Q(bids__call=True, bids__doc=True, bids__scoring=True)),
             )
             .annotate(
