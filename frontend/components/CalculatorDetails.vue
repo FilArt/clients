@@ -202,7 +202,7 @@ export default {
         )
         if (download) this.downloadURL = `${location.origin}/${response}`
       } catch (e) {
-        await this.$swal({ title: 'Not sent!', icon: 'error', text: e.response.data })
+        await this.$swal({ title: 'Error', icon: 'error', text: e.response.data })
       } finally {
         this.loading = this.downloading = false
       }

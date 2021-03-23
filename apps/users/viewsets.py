@@ -4,6 +4,7 @@ from typing import Tuple
 
 from django.contrib.auth.models import Group
 from django.db import transaction
+from django.http import Http404, HttpResponseBadRequest
 from drf_dynamic_fields import DynamicFieldsMixin
 from notifications.models import Notification
 from notifications.signals import notify
@@ -201,12 +202,12 @@ class UserViewSet(
         email = request.data.get("email")
         try:
             agent = get_object_or_404(CustomUser.objects.all(), email=email)
-        except CustomUser.DoesNotExist:
-            raise ValidationError(f"no hay agente {email} en area de clientes")
+        except (Http404, CustomUser.DoesNotExist):
+            return HttpResponseBadRequest(f"No hay agente con email {email} en area de clientes")
         try:
             client = get_object_or_404(CustomUser.objects.all(), cif_nif=cif)
-        except CustomUser.DoesNotExist:
-            raise ValidationError(f"no hay cliente con cif {cif} en area de clientes")
+        except (Http404, CustomUser.DoesNotExist):
+            return HttpResponseBadRequest(f"No hay cliente con cif {cif} en area de clientes")
         if agent != client.responsible:
             raise ValidationError({"email": ["You are not a owner of this client"]})
         libre = CustomUser.objects.get(email="LIBRE@LIBRE.COM")
