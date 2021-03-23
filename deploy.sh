@@ -15,4 +15,12 @@ cd ..
 
 rsync -rvzz --delete -e ssh frontend/dist/ "$SERVER":/var/django/clients/static
 
-exec ./backend_deploy.sh
+ssh "$SERVER" "\
+  cd /srv/http/clients; \
+  git pull; \
+  source .venv/bin/activate; \
+  poetry install --no-dev --no-root; \
+  ./manage.py migrate; \
+  ./manage.py compilemessages -l es &> /dev/null; \
+  ./manage.py collectstatic --noinput; \
+   supervisorctl restart clients:"
