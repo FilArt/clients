@@ -4,6 +4,7 @@
       <users-table
         :statuses="statuses"
         :headers="headers"
+        mode="ko_papellera"
         detail-url="/admin/ko"
         is-support
         show-date-filters

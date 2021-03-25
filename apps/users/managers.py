@@ -133,3 +133,6 @@ class CustomUserManager(BaseUserManager):
         return self.get_queryset().filter(Q(id__in=users) | Q(bids__isnull=True), role__isnull=True).annotate(
             bids_count=Count('bids', filter=Q(bids__in=bids), distinct=True)
         )
+
+    def ko_papellera(self) -> QuerySet:
+        return self.get_queryset().filter(ko=True)

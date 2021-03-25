@@ -146,6 +146,9 @@ class UserViewSet(
                 return CustomUser.objects.tramitacion()
             elif mode == "facturacion":
                 return CustomUser.objects.facturacion()
+            elif mode == "ko_papellera":
+                return CustomUser.objects.ko_papellera()
+
             if statuses:
                 users = Bid.objects.with_status().filter(status__in=statuses.split(",")).values("user")
                 return CustomUser.objects.filter(id__in=users)
