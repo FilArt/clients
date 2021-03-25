@@ -32,7 +32,7 @@ class CustomUserManager(BaseUserManager):
                 max_fr=Max("bids__fecha_firma", filter=Q(bids__call=True, bids__doc=True, bids__scoring=True)),
             )
             .annotate(
-                bids_count=Count('bids'),
+                bids_count=Count("bids"),
                 fecha_firma=Case(
                     When(max_fr__isnull=True, then=F("created_at")),
                     default=F("max_fr"),
@@ -121,8 +121,11 @@ class CustomUserManager(BaseUserManager):
 
         bids = Bid.objects.with_status().filter(status__in=FACTURACION_STATUSES)
         users = bids.values("user")
-        return self.get_queryset().filter(id__in=users, role__isnull=True).annotate(
-            bids_count=Count('bids', filter=Q(bids__in=bids), distinct=True)
+        return (
+            self.get_queryset()
+            .filter(id__in=users, role__isnull=True, ko=False)
+            .exclude(ko=True)
+            .annotate(bids_count=Count("bids", filter=Q(bids__in=bids), distinct=True))
         )
 
     def tramitacion(self) -> QuerySet:
@@ -130,8 +133,11 @@ class CustomUserManager(BaseUserManager):
 
         bids = Bid.objects.with_status().filter(status__in=TRAMITACION_STATUSES)
         users = bids.values("user")
-        return self.get_queryset().filter(Q(id__in=users) | Q(bids__isnull=True), role__isnull=True).annotate(
-            bids_count=Count('bids', filter=Q(bids__in=bids), distinct=True)
+        return (
+            self.get_queryset()
+            .filter(Q(id__in=users) | Q(bids__isnull=True), role__isnull=True)
+            .exclude(ko=True)
+            .annotate(bids_count=Count("bids", filter=Q(bids__in=bids), distinct=True))
         )
 
     def ko_papellera(self) -> QuerySet:
