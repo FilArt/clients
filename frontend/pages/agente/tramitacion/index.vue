@@ -28,7 +28,17 @@ export default {
         constants.statuses.PENDIENTE_TRAMITACION,
         constants.statuses.TRAMITACION_EN_PROCESO,
       ],
-      headers: ['id', 'created_at', 'fullname', 'bids_count', 'status', 'docs', 'scorings', 'calls', 'offer_status'],
+      headers: [
+        'id',
+        'fecha_registro',
+        'fullname',
+        'bids_count',
+        'status',
+        'docs',
+        'scorings',
+        'calls',
+        'offer_status',
+      ],
     }
   },
 }
