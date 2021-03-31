@@ -202,6 +202,8 @@ class UserViewSet(
     @action(methods=["POST"], detail=False, permission_classes=([]))
     def set_libre_agent(self, request: Request):
         cif = request.data.get("cif")
+        if not cif:
+            raise ValidationError({'cif': ["Requerido"]})
         email = request.data.get("email")
         try:
             agent = get_object_or_404(CustomUser.objects.all(), email=email)
