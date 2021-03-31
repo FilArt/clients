@@ -17,7 +17,10 @@ export const state = () => ({
 
 export const actions = {
   async fetchCvUsers({ commit }) {
-    commit('setCvUsers', await this.$axios.$post('cv_integration/x', { url: `https://app.call-visit.com/api/users/` }))
+    commit(
+      'setCvUsers',
+      await this.$axios.$post('cv_integration/x', { url: `https://call-visit.gestiongroup.es/api/users/` }),
+    )
   },
   async fetchResponsibles({ commit }) {
     const users = (await this.$axios.$get('users/users/?role=agent&fields=id,fullname&itemsPerPage=100')).results

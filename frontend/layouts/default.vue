@@ -134,7 +134,7 @@ export default {
           {
             icon: 'mdi-call-merge',
             title: 'Call&Visit',
-            href: 'https://app.call-visit.com',
+            href: 'https://call-visit.gestiongroup.es',
           },
         ])
         // if (permissions.includes('leeds_access')) {
