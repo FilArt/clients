@@ -78,6 +78,7 @@ class CallVisitUserViewSet(viewsets.ModelViewSet):
                     "status": request.data.get("status"),
                     "tele": request.data.get("tele"),
                     "dni": punto.dni,
+                    "cif": client.cif_nif,
                     "iban": punto.iban,
                     "phones2": [p for p in [client.phone, client.phone_city] if p],
                     "is_client": True,
