@@ -140,20 +140,21 @@ class UserViewSet(
     def get_queryset(self):
         statuses = self.request.query_params.get("statuses_in")
         mode = self.request.query_params.get("mode")
+        qs = super().get_queryset()
 
         if mode or statuses:
             if mode == "tramitacion":
-                return CustomUser.objects.tramitacion()
+                qs = CustomUser.objects.tramitacion()
             elif mode == "facturacion":
-                return CustomUser.objects.facturacion()
+                qs = CustomUser.objects.facturacion()
             elif mode == "ko_papellera":
-                return CustomUser.objects.ko_papellera()
+                qs = CustomUser.objects.ko_papellera()
 
             if statuses:
                 users = Bid.objects.with_status().filter(status__in=statuses.split(",")).values("user")
-                return CustomUser.objects.filter(id__in=users)
+                qs = qs.filter(id__in=users)
 
-        return super().get_queryset()
+        return qs
 
     def filter_queryset(self, queryset):
         queryset = super(UserViewSet, self).filter_queryset(queryset)
@@ -203,7 +204,7 @@ class UserViewSet(
     def set_libre_agent(self, request: Request):
         cif = request.data.get("cif")
         if not cif:
-            raise ValidationError({'cif': ["Requerido"]})
+            raise ValidationError({"cif": ["Requerido"]})
         email = request.data.get("email")
         try:
             agent = get_object_or_404(CustomUser.objects.all(), email=email)
