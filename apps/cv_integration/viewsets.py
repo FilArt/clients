@@ -84,9 +84,16 @@ class CallVisitUserViewSet(viewsets.ModelViewSet):
                     "is_client": True,
                 }
                 response = authed_cv_client.post(f"{settings.CALL_VISIT_URL}/api/cards/", json=item)
-                response_data = response.json()
+                if not response.ok and ('already exist' in response.text or 'Multipunto' in response.text):
+                    cups = punto.cups_luz
+                    response = authed_cv_client.get(f"{settings.CALL_VISIT_URL}/api/cards/get_by_cups/?cups={cups}")
+                    card_id = response.json()
+                    item.pop('cups')
+                    response = authed_cv_client.patch(f"{settings.CALL_VISIT_URL}/api/cards/{card_id}/", json=item)
+
                 if not response.ok:
-                    errors.append({client.id: response_data})
+                    errors.append({client.id: response.json()})
+
         if errors:
             raise ValidationError(errors)
         return Response("OK")
