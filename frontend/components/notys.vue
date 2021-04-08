@@ -1,7 +1,7 @@
 <template>
   <v-menu offset-y :close-on-content-click="false">
     <template v-slot:activator="{ on, attrs }">
-      <v-badge :content="unread" :value="unread" color="error" overlap>
+      <v-badge :content="total" :value="total" color="error" overlap>
         <v-btn icon :loading="loading" color="primary" v-bind="attrs" v-on="on">
           <v-icon>mdi-eye</v-icon>
         </v-btn>
@@ -9,52 +9,55 @@
     </template>
 
     <v-card>
-      <v-virtual-scroll :bench="10" :items="notys" height="300" item-height="64" width="600">
-        <template v-slot:default="{ item }">
-          <v-list-item two-line nuxt :to="getUrl(item)" exact>
-            <v-list-item-content>
-              <v-list-item-title>
-                {{ $dateFns.format(new Date(item.timestamp), 'dd/MM/yyyy HH:mm') }}
-              </v-list-item-title>
-              <v-list-item-subtitle>{{ item.author }} {{ getActionWord(item) }}</v-list-item-subtitle>
-            </v-list-item-content>
+      <v-card-text>
+        <v-virtual-scroll :bench="10" :items="notys" height="300" item-height="64" width="600">
+          <template v-slot:default="{ item }">
+            <v-list-item two-line nuxt :to="loading ? null : getUrl(item)" exact>
+              <v-list-item-content>
+                <v-list-item-title>
+                  {{ $dateFns.format(new Date(item.timestamp), 'dd/MM/yyyy HH:mm') }}
+                </v-list-item-title>
+                <v-list-item-subtitle>{{ item.author }} {{ getActionWord(item) }}</v-list-item-subtitle>
+              </v-list-item-content>
 
-            <!--            <v-list-item-action>-->
-            <!--              <v-btn small icon color="warning" @click="toggleUnread(item)">-->
-            <!--                <v-icon small>-->
-            <!--                  {{ item.unread ? 'mdi-check' : 'mdi-cancel' }}-->
-            <!--                </v-icon>-->
-            <!--              </v-btn>-->
-            <!--            </v-list-item-action>-->
+              <v-list-item-action>
+                <v-btn :disabled="loading" small icon color="error" @click.prevent="deleteNoty(item.id)">
+                  <v-icon small>mdi-trash-can-outline</v-icon>
+                </v-btn>
+              </v-list-item-action>
+            </v-list-item>
 
-            <v-list-item-action>
-              <v-btn small icon color="error" @click.prevent="deleteNoty(item.id)">
-                <v-icon small>mdi-trash-can-outline</v-icon>
-              </v-btn>
-            </v-list-item-action>
-          </v-list-item>
+            <v-divider></v-divider>
+          </template>
+        </v-virtual-scroll>
+      </v-card-text>
 
-          <v-divider></v-divider>
-        </template>
-      </v-virtual-scroll>
+      <v-card-text>
+        <v-pagination
+          v-model="page"
+          :length="Math.ceil(total / pageSize)"
+          circle
+          :total-visible="7"
+          @input="refresh"
+        />
+      </v-card-text>
     </v-card>
   </v-menu>
 </template>
 
 <script>
+const qs = require('qs')
 export default {
   name: 'Notys',
   data() {
     return {
       loading: false,
       notys: [],
+      total: 0,
+      page: 1,
+      pageSize: 10,
       refreshInterval: null,
     }
-  },
-  computed: {
-    unread() {
-      return this.notys.filter(({ unread }) => unread).length
-    },
   },
   async mounted() {
     await this.refresh()
@@ -75,17 +78,15 @@ export default {
         this.loading = false
       }
     },
-    // async toggleUnread(noty) {
-    //   if (noty.unread) {
-    //     await this.$axios.$post(`users/notys/${noty.id}/mark_read/`)
-    //   } else {
-    //     await this.$axios.$post(`users/notys/${noty.id}/mark_unread/`)
-    //   }
-    //   await this.refresh()
-    // },
     async refresh() {
       this.loading = true
-      this.notys = await this.$axios.$get('users/notys/?')
+      const paramsString = qs.stringify({
+        page: this.page,
+        pageSize: this.pageSize,
+      })
+      const { count, results } = await this.$axios.$get(`users/notys/?${paramsString}`)
+      this.total = count
+      this.notys = results
       this.loading = false
     },
     getUrl({ verb, target_object_id, actor_object_id }) {
@@ -94,9 +95,6 @@ export default {
     },
     getActionWord({ verb, actor_object_id }) {
       return verb === 'new_attachment' ? `agregó archivo ${actor_object_id}` : verb
-    },
-    getIcon({ verb }) {
-      return verb === 'new_attachment' ? 'mdi-file' : 'NOICON'
     },
   },
 }

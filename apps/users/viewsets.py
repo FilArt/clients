@@ -12,6 +12,7 @@ from rest_framework import mixins, viewsets, status
 from rest_framework.decorators import action
 from rest_framework.exceptions import PermissionDenied, ValidationError
 from rest_framework.generics import get_object_or_404
+from rest_framework.pagination import PageNumberPagination
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.request import Request
 from rest_framework.response import Response
@@ -29,7 +30,7 @@ from clients.serializers import (
     AgentContractSerializer,
 )
 from .models import Attachment, CustomUser, Punto
-from .pagination import UsersPagination, AttachmentsPagination
+from .pagination import UsersPagination, AttachmentsPagination, NotyPagination
 from .permissions import (
     UsersPermission,
     AdminAgentPermission,
@@ -502,6 +503,7 @@ class NotificationViewSet(viewsets.ModelViewSet):
     filterset_fields = {
         "unread": ["exact"],
     }
+    pagination_class = NotyPagination
 
     def get_queryset(self):
         return super().get_queryset().filter(recipient=self.request.user)
