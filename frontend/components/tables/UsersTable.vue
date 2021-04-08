@@ -578,11 +578,30 @@ export default {
           clients: this.selected.map((c) => c.id),
         })
         this.uploadToCallVisitDialog = false
+        await this.$swal({
+          title: 'Listo',
+          icon: 'success',
+        })
       } catch (e) {
+        const text = e.response.data
+          .map((clientError) => {
+            const clientId = Object.keys(clientError)[0]
+            const clientErrors = clientError[clientId]
+            return (
+              `Errores de tarjeta ${clientId}:\n` +
+              Object.keys(clientErrors)
+                .map((field) => {
+                  const error = clientErrors[field]
+                  return `${field}: ${error}`
+                })
+                .join(';\n')
+            )
+          })
+          .join('\n----------------------------------------\n')
         await this.$swal({
           title: 'Error',
           icon: 'error',
-          text: JSON.stringify(e.response.data),
+          text,
         })
       } finally {
         this.loading = false

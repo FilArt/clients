@@ -216,7 +216,7 @@ export default {
       this.$store.commit('setPuntoCategories', await this.$axios.$get('/users/puntos/get_categories/'))
     }
     if (!this.cities || !this.cities.length) {
-      this.$store.commit('setCities', await this.$axios.$get('/users/puntos/get_cities/'))
+      await this.$store.dispatch('fetchProvinces')
     }
   },
   methods: {

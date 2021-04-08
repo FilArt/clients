@@ -17,10 +17,10 @@ export const state = () => ({
 
 export const actions = {
   async fetchCvUsers({ commit }) {
-    commit(
-      'setCvUsers',
-      await this.$axios.$post('cv_integration/x', { url: `https://call-visit.gestiongroup.es/api/users/` }),
-    )
+    const url =
+      (process.env.NODE_ENV === 'development' ? 'http://localhost:8000' : 'https://call-visit.gestiongroup.es') +
+      '/api/users/'
+    commit('setCvUsers', await this.$axios.$post('cv_integration/x', { url }))
   },
   async fetchResponsibles({ commit }) {
     const users = (await this.$axios.$get('users/users/?role=agent&fields=id,fullname&itemsPerPage=100')).results
@@ -34,10 +34,15 @@ export const actions = {
     const names = (await this.$axios.$get('/calculator/offers/?fields=name')).map((item) => item.name)
     commit('setNames', names)
   },
+  async fetchProvinces({ commit }) {
+    const provinces = await this.$axios.$get('/users/puntos/get_cities/')
+    commit('setCities', provinces)
+  },
 }
 
 export const mutations = {
   setCvUsers(state, cvusers) {
+    console.log(cvusers)
     state.cvusers = cvusers
   },
   resetCalculator(state) {

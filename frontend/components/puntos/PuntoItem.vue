@@ -46,6 +46,14 @@
                   @input="save({ id: punto.id, field: 'category', value: $event })"
                 />
 
+                <v-select
+                  v-else-if="header.value === 'province'"
+                  :label="header.text"
+                  :items="$store.state.cities"
+                  :value="punto.province"
+                  @input="save({ id: punto.id, field: 'province', value: $event })"
+                />
+
                 <v-switch
                   v-else-if="header.type === 'switch'"
                   v-model="punto[header.value]"
@@ -184,6 +192,9 @@ export default {
           }
         }),
     }
+  },
+  async mounted() {
+    await this.$store.dispatch('fetchProvinces')
   },
   methods: {
     async deletePunto(punto) {
