@@ -84,11 +84,13 @@ class CallVisitUserViewSet(viewsets.ModelViewSet):
                     "is_client": True,
                 }
                 response = authed_cv_client.post(f"{settings.CALL_VISIT_URL}/api/cards/", json=item)
-                if not response.ok and ('already exist' in response.text or 'Multipunto' in response.text):
+                if not response.ok and (
+                    "La tarjeta con ese cups ya existe" in response.text or "Multipunto" in response.text
+                ):
                     cups = punto.cups_luz
                     response = authed_cv_client.get(f"{settings.CALL_VISIT_URL}/api/cards/get_by_cups/?cups={cups}")
                     card_id = response.json()
-                    item.pop('cups')
+                    item.pop("cups")
                     response = authed_cv_client.patch(f"{settings.CALL_VISIT_URL}/api/cards/{card_id}/", json=item)
 
                 if not response.ok:

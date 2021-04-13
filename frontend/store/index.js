@@ -42,7 +42,6 @@ export const actions = {
 
 export const mutations = {
   setCvUsers(state, cvusers) {
-    console.log(cvusers)
     state.cvusers = cvusers
   },
   resetCalculator(state) {

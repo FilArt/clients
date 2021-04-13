@@ -6,6 +6,7 @@
         :icon="!label"
         :disabled="disabled"
         :block="block"
+        :loading="loading"
         color="primary"
         v-on="on"
         @click="$emit('click')"
@@ -33,6 +34,10 @@ export default {
     label: {
       type: String,
       default: null,
+    },
+    loading: {
+      type: Boolean,
+      default: false,
     },
   },
 }

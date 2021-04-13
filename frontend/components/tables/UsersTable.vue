@@ -48,7 +48,7 @@
     <v-dialog v-model="uploadToCallVisitDialog" persistent>
       <v-card>
         <v-card-title>
-          <span> Enviar en Call&Visit </span>
+          <span>Enviar en Call&Visit</span>
           <v-spacer />
           <close-button
             @click="
@@ -63,7 +63,7 @@
             <cv-user-select v-model="form.operator" type="operator" />
             <cv-user-select v-model="form.tele" type="tele" />
             <v-select v-model="form.status" label="Estado" :items="Object.values(constants.cvStatuses)" />
-            <submit-button label="Enviar" block />
+            <submit-button label="Enviar" block :loading="loading" />
           </v-form>
         </v-card-text>
       </v-card>
