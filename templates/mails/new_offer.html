@@ -590,36 +590,7 @@
             {{ new.tax.value }} €
         </td>
     </tr>
-    {% if old.otros %}
-        <tr>
-            <td colspan="3">
-                <em>OTROS:</em>
-            </td>
-            <td colspan="2">
-                {{ old.otros }} €
-            </td>
-            <td colspan="3">
-                <em>OTROS:</em>
-            </td>
-            <td colspan="2">
-                - €
-            </td>
-        </tr>
-    {% endif %}
-    <tr>
-        <td colspan="3">
-            <em>OTROS CONCEPTOS:</em>
-        </td>
-        <td colspan="2">
-            {{ old.oc }} €
-        </td>
-        <td colspan="3">
-            <em>OTROS CONCEPTOS:</em>
-        </td>
-        <td colspan="2">
-            {{ new.oc }} €
-        </td>
-    </tr>
+
     {% if old.descuento %}
         <tr>
             <td colspan="3">
