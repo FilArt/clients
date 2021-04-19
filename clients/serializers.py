@@ -186,7 +186,7 @@ class BidListSerializer(DynamicFieldsMixin, serializers.ModelSerializer):
     agent_type = serializers.CharField(source="user.agent_type", read_only=True)
     canal = serializers.CharField(source="user.responsible.canal", read_only=True)
     created_at = serializers.SerializerMethodField()
-    fecha_firma = serializers.SerializerMethodField()
+    fecha_firma = serializers.DateTimeField(format="%d/%m/%Y %H:%M")
     internal_message = serializers.CharField(write_only=True, allow_blank=True, allow_null=True)
     message = serializers.CharField(write_only=True, allow_blank=True, allow_null=True)
     mymoney = serializers.SerializerMethodField()
@@ -211,10 +211,6 @@ class BidListSerializer(DynamicFieldsMixin, serializers.ModelSerializer):
     # noinspection PyMethodMayBeStatic
     def get_created_at(self, instance: Bid):
         return instance.created_at.strftime("%d.%m.%Y %H:%M")
-
-    # noinspection PyMethodMayBeStatic
-    def get_fecha_firma(self, instance: Bid):
-        return instance.fecha_firma.strftime("%d.%m.%Y %H:%M") if instance.fecha_firma else "No hay fecha firma!"
 
     def get_status(self, bid: Bid):
         by = self.context["request"].user
@@ -402,7 +398,7 @@ class ResponsibleField(serializers.EmailField):
         except CustomUser.DoesNotExist:
             from apps.users.serializers import RegisterSerializer
 
-            ser = RegisterSerializer(data={"email": data, "role": "agent", "cif_nif": data.split('@')[0]}, tg_msg=None)
+            ser = RegisterSerializer(data={"email": data, "role": "agent", "cif_nif": data.split("@")[0]}, tg_msg=None)
             ser.is_valid(raise_exception=True)
             return ser.save().email
 

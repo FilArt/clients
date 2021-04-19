@@ -28,37 +28,45 @@
           <v-spacer />
         </v-toolbar>
         <v-card-text class="d-flex flex-row flex-wrap">
-          <v-text-field
-            v-for="date in datesInfo"
-            :key="date.text"
-            v-model="date.value"
-            :prepend-icon="date.icon"
-            :label="date.text"
-            :append-icon="!date.editable ? null : 'mdi-content-save'"
-            :readonly="!date.editable"
-            dense
-            @click:append="updateUser(date.field, date.value.includes('/') ? date.value : unformatDate(date.value))"
-          />
-
-          <!--        <v-select-->
-          <!--          v-model="source"-->
-          <!--          dense-->
-          <!--          prepend-icon="mdi-target"-->
-          <!--          label="Origin"-->
-          <!--          :items="[-->
-          <!--            {-->
-          <!--              text: 'Online',-->
-          <!--              value: 'default',-->
-          <!--            },-->
-          <!--            {-->
-          <!--              text: 'Call&Visit',-->
-          <!--              value: 'call_n_visit',-->
-          <!--            },-->
-          <!--          ]"-->
-          <!--          :readonly="readonly"-->
-          <!--          :append-icon="source !== user.source ? 'mdi-content-save' : null"-->
-          <!--          @click:append="updateUser('source', source)"-->
-          <!--        />-->
+          <v-dialog v-for="(date, idx) in datesInfo" :key="date.text" v-model="dialogs[idx]" max-width="600px">
+            <template v-slot:activator="{ on }">
+              <v-text-field
+                v-model="date.value"
+                :prepend-icon="date.icon"
+                :label="date.text"
+                :append-icon="!date.editable ? null : 'mdi-content-save'"
+                :readonly="!date.editable"
+                dense
+                v-on="on"
+              />
+            </template>
+            <v-card>
+              <v-card-text>
+                <v-row>
+                  <v-col>
+                    <date-time-filter v-model="date.value" format="DD/MM/YYYY HH:mm" inline />
+                  </v-col>
+                </v-row>
+                <v-row>
+                  <v-col class="flex-grow-0">
+                    <v-btn color="warning" @click="dialogs[idx] = false"> Cancellar </v-btn>
+                  </v-col>
+                  <v-col>
+                    <v-btn
+                      block
+                      color="info"
+                      @click="
+                        updateUser(date.field, date.value)
+                        dialogs[idx] = false
+                      "
+                    >
+                      Salvar
+                    </v-btn>
+                  </v-col>
+                </v-row>
+              </v-card-text>
+            </v-card>
+          </v-dialog>
 
           <v-autocomplete
             v-model="responsible"
@@ -79,12 +87,12 @@
     <v-row>
       <v-col>
         <v-textarea
-          v-model="user.observations"
+          v-model="user['observations']"
           label="Observaciones"
           dense
           prepend-icon="mdi-eye"
           :append-icon="readonly ? null : 'mdi-content-save'"
-          @click:append="updateUser('observations', user.observations)"
+          @click:append="updateUser('observations', user['observations'])"
         />
       </v-col>
     </v-row>
@@ -93,10 +101,11 @@
 
 <script>
 import { mapState } from 'vuex'
-import { format, parseISO, parse } from 'date-fns'
+import { format, parseISO } from 'date-fns'
 const DATE_FORMAT = 'dd/MM/yyyy HH:mm'
 export default {
   name: 'UserDetailData',
+  components: { DateTimeFilter: () => import('@/components/DateTimeFilter') },
   props: {
     userId: {
       type: [Number, String],
@@ -113,6 +122,7 @@ export default {
       responsible: null,
       source: null,
       phone: null,
+      dialogs: {},
     }
   },
   computed: {
@@ -141,7 +151,7 @@ export default {
         {
           icon: 'mdi-phone',
           text: 'Telefono fijo',
-          value: user.phone_city,
+          value: user['phone_city'],
           field: 'phone_city',
         },
         {
@@ -164,21 +174,21 @@ export default {
           icon: 'mdi-calendar',
           text: 'Ultima entrada',
           field: 'last_login',
-          value: this.formatDate(user.last_login),
+          value: this.formatDate(user['last_login']),
           editable: false,
         },
         {
           icon: 'mdi-calendar',
           text: 'Fecha de registro',
           field: 'created_at',
-          value: this.formatDate(user.created_at),
+          value: this.formatDate(user['created_at']),
           editable: false,
         },
         {
           icon: 'mdi-calendar',
           text: 'Fecha firma',
           field: 'fecha_firma',
-          value: this.formatDate(user.fecha_firma),
+          value: this.formatDate(user['fecha_firma']),
           editable: false,
         },
       ]
@@ -210,9 +220,6 @@ export default {
     }
   },
   methods: {
-    unformatDate(maybeDate) {
-      return maybeDate ? parse(maybeDate, DATE_FORMAT, new Date()).toISOString() : null
-    },
     formatDate(dt) {
       if (!dt || dt.includes('/')) return dt
       try {

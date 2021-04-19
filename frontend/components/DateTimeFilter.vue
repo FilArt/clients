@@ -7,7 +7,8 @@
     :formatted="formatted"
     :range="range"
     :color="color"
-    :dark="$vuetify.theme.isDark"
+    :inline="inline"
+    :dark="$vuetify.theme['isDark']"
     :custom-shortcuts="customShortcuts"
     button-now-translation="Ahora"
     auto-close
@@ -42,6 +43,10 @@ export default {
       type: Boolean,
       default: false,
     },
+    inline: {
+      type: Boolean,
+      default: false,
+    },
   },
   data() {
     return {
@@ -68,7 +73,7 @@ export default {
   },
   methods: {
     getValue(val) {
-      if (val instanceof String || typeof val === 'string') {
+      if ((val instanceof String || typeof val === 'string') && val.includes(',')) {
         val = val.split(',')
         return { start: val[0], end: val[1] }
       }

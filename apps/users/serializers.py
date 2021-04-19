@@ -101,7 +101,13 @@ class DateTimeToDateField(serializers.CharField, serializers.Field):
         return value.strftime("%d/%m/%Y %H:%M") if value else "-"
 
     def to_internal_value(self, data):
-        return datetime.strptime(data, "%d/%m/%Y")
+        try:
+            return datetime.strptime(data, "%d/%m/%Y")
+        except ValueError:
+            try:
+                return datetime.strptime(data, "%d/%m/%Y %H:%M")
+            except ValueError:
+                return datetime.strptime(data, "%Y-%m-%d %H:%M")
 
 
 class UserListSerializer(DynamicFieldsMixin, serializers.ModelSerializer):
