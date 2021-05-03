@@ -83,11 +83,6 @@ export default {
             title: 'PAPELERA',
             to: '/admin/ko',
           },
-          // {
-          //   icon: 'mdi-account-multiple',
-          //   title: 'LEEDS',
-          //   to: '/admin/leeds',
-          // },
           {
             icon: 'mdi-briefcase-account-outline',
             title: 'CLIENTES',
@@ -126,24 +121,12 @@ export default {
             title: 'FACTURACIÓN',
             to: '/agente/facturacion',
           },
-          // {
-          //   icon: 'mdi-briefcase-account-outline',
-          //   title: 'CLIENTES',
-          //   to: '/agente/clientes',
-          // },
           {
             icon: 'mdi-call-merge',
             title: 'Call&Visit',
             href: 'https://call-visit.gestiongroup.es',
           },
         ])
-        // if (permissions.includes('leeds_access')) {
-        //   items.splice(2, 0, {
-        //     icon: 'mdi-account-multiple',
-        //     title: 'LEEDS',
-        //     to: '/agente/leeds',
-        //   })
-        // }
         if (user.agent_type === 'canal') {
           items.splice(3, 0, {
             icon: 'mdi-account-multiple',

@@ -21,37 +21,13 @@
 
     <v-card-text>
       <v-tabs v-model="tabs" centered>
-        <v-tab :disabled="!bids.length">Solicitud ({{ bids.length }})</v-tab>
+        <v-tab>Solicitudes</v-tab>
         <v-tab :disabled="!history.length">Historia ({{ history.length }})</v-tab>
         <v-tab :disabled="!puntos.length">Puntos suministros ({{ puntos.length }})</v-tab>
 
         <v-tabs-items v-model="tabs">
           <v-tab-item>
-            <v-container>
-              <v-toolbar>
-                <v-row align="center">
-                  <v-col>Solicitudes</v-col>
-                  <v-spacer />
-                  <v-col>
-                    <add-new-bid-dialog :user-id="$route.params.id" label="Añadir nuevo solicitud" />
-                  </v-col>
-                </v-row>
-              </v-toolbar>
-
-              <v-list three-line subheader nav shaped>
-                <v-list-item v-for="bid in bids" :key="bid.id" nuxt :to="`/bids/${bid.id}`">
-                  <v-list-item-content>
-                    <v-list-item-title v-text="bid.offer_name" />
-                    <v-list-item-subtitle v-text="'id: ' + bid.id" />
-                    <v-list-item-subtitle v-text="bid.created_at" />
-                  </v-list-item-content>
-
-                  <v-list-item-content>
-                    {{ bid.status }}
-                  </v-list-item-content>
-                </v-list-item>
-              </v-list>
-            </v-container>
+            <solicitudes-bar :user-id="$route.params.id" />
           </v-tab-item>
 
           <v-tab-item>
@@ -72,14 +48,14 @@
 <script>
 export default {
   components: {
-    AddNewBidDialog: () => import('@/components/dialogs/AddNewBidDialog'),
+    SolicitudesBar: () => import('@/components/support/SolicitudesBar'),
     Chat: () => import('~/components/chat/Chat'),
     PuntosList: () => import('~/components/puntos/PuntosList'),
     HistoryList: () => import('~/components/history/HistoryList'),
     UserDetailData: () => import('@/components/forms/UserDetailData'),
   },
   async asyncData({ params, $axios }) {
-    const user = await $axios.$get(`/users/users/${params.id}/?fields=phone,phone_city,email,avatar,bids`)
+    const user = await $axios.$get(`/users/users/${params.id}/?fields=phone,phone_city,email,avatar`)
 
     const participant = {
       id: params.id,
@@ -89,10 +65,9 @@ export default {
     return {
       user,
       participant,
-      bids: user.bids,
       puntos: await $axios.$get(`/users/puntos/?user=${params.id}`),
       history: await $axios.$get(`/bids/history/?user=${params.id}`),
-      tabs: user.bids.length ? 0 : null,
+      tabs: null,
     }
   },
   methods: {

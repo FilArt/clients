@@ -11,34 +11,8 @@
 
     <v-divider />
 
-    <v-card-title>Solicitudes</v-card-title>
-
     <v-card-text>
-      <v-data-table
-        :headers="[
-          {
-            text: 'ID',
-            value: 'id',
-          },
-          {
-            text: 'Estado',
-            value: 'status',
-          },
-          {
-            text: 'Fecha firma',
-            value: 'fecha_firma',
-          },
-          {
-            text: 'Commissiones',
-            value: 'mymoney',
-          },
-          {
-            text: 'Fecha de cobro prevista',
-            value: 'fecha_de_cobro_prevista',
-          },
-        ]"
-        :items="user.bids"
-      />
+      <solicitudes-bar :user-id="$route.params.id" />
     </v-card-text>
   </v-card>
 </template>
@@ -46,6 +20,7 @@
 <script>
 export default {
   components: {
+    SolicitudesBar: () => import('@/components/support/SolicitudesBar'),
     UserDetailData: () => import('@/components/forms/UserDetailData'),
   },
   async asyncData({ $axios, params }) {

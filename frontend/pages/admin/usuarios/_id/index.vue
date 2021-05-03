@@ -109,10 +109,6 @@
                 text: 'Comparador',
                 value: 'calculator',
               },
-              {
-                text: 'Leeds - disponible',
-                value: 'leeds_access',
-              },
             ]"
             :append-icon="user.permissions !== settings.permissions ? 'mdi-content-save' : null"
             @click:append="update({ permissions: settings.permissions })"

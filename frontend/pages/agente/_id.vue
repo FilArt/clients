@@ -6,27 +6,8 @@
 
     <v-divider />
 
-    <v-card-title>Solicitudes</v-card-title>
     <v-card-text>
-      <v-list>
-        <v-list-group v-for="bid in user.bids" :key="bid.id" v-model="bid.active" no-action>
-          <template v-slot:activator>
-            <v-list-item-content>
-              ID: {{ bid.id }}
-
-              <v-chip :color="bidStatusColor(bid.status)">
-                {{ bid.status }}
-              </v-chip>
-            </v-list-item-content>
-          </template>
-
-          <v-list-item>
-            <v-list-item-content>
-              <tramitacion :bid-id="bid.id" />
-            </v-list-item-content>
-          </v-list-item>
-        </v-list-group>
-      </v-list>
+      <solicitudes-bar :user-id="$route.params.id" />
     </v-card-text>
   </v-card>
 </template>
@@ -34,8 +15,8 @@
 <script>
 export default {
   components: {
+    SolicitudesBar: () => import('@/components/support/SolicitudesBar'),
     UserDetailData: () => import('@/components/forms/UserDetailData'),
-    Tramitacion: () => import('~/components/support/Tramitacion'),
   },
   async asyncData({ $axios, params }) {
     const user = await $axios.$get(`users/users/${params.id}/`)
