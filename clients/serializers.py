@@ -467,6 +467,17 @@ class AgentContractSerializer(serializers.ModelSerializer):
         responsible = CustomUser.objects.get(email=validated_data["responsible"])
         validated_data["responsible"] = responsible
         created_client: CustomUser = self._user or super().create(validated_data)
+
+        new_comment = validated_data.pop("observations")
+        if new_comment and new_comment != created_client.observations:
+            created_client.observations = f"{created_client.observations}\n---\n{new_comment}"
+            created_client.save(update_fields=["observations"])
+
+        new_email = validated_data.pop("email")
+        if new_email and new_email != created_client.email:
+            created_client.email = new_email
+            created_client.save(update_fields=["email"])
+
         if created_client.responsible != responsible:
             created_client.responsible = responsible
             created_client.save(update_fields=["responsible"])
