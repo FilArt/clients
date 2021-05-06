@@ -31,36 +31,36 @@
                       {{ bid['fecha_firma'] }}
                     </v-list-item-subtitle>
                   </v-list-item-content>
-                </v-list-item>
-              </v-col>
-              <v-col class="flex-grow-0">
-                <v-dialog v-model="dialogs[bid.id]" max-width="500px">
-                  <template v-slot:activator="{ on }">
-                    <v-btn color="info" icon v-on="on"><v-icon>mdi-pencil</v-icon></v-btn>
-                  </template>
-                  <v-card>
-                    <v-card-title> Fecha firma </v-card-title>
-                    <v-card-text>
-                      <v-row>
-                        <v-col>
-                          <date-time-filter v-model="bid['fecha_firma']" format="DD/MM/YYYY HH:mm" inline />
-                        </v-col>
-                      </v-row>
-                      <v-row>
-                        <v-col class="flex-grow-0">
-                          <v-btn color="warning" @click="dialogs[bid.id] = false"> Cancellar </v-btn>
-                        </v-col>
-                        <v-col>
-                          <v-btn block color="info" @click="updateBid(bid.id, 'fecha_firma', bid['fecha_firma'])">
-                            Salvar
-                          </v-btn>
-                        </v-col>
-                      </v-row>
-                    </v-card-text>
-                  </v-card>
-                </v-dialog>
+                  <v-list-item-action>
+                    <v-dialog v-model="dialogs[bid.id]" max-width="500px">
+                      <template v-slot:activator="{ on }">
+                        <v-btn color="info" icon v-on="on"><v-icon>mdi-pencil</v-icon></v-btn>
+                      </template>
+                      <v-card>
+                        <v-card-title> Fecha firma </v-card-title>
+                        <v-card-text>
+                          <v-row>
+                            <v-col>
+                              <date-time-filter v-model="bid['fecha_firma']" format="DD/MM/YYYY HH:mm" inline />
+                            </v-col>
+                          </v-row>
+                          <v-row>
+                            <v-col class="flex-grow-0">
+                              <v-btn color="warning" @click="dialogs[bid.id] = false"> Cancellar </v-btn>
+                            </v-col>
+                            <v-col>
+                              <v-btn block color="info" @click="updateBid(bid.id, 'fecha_firma', bid['fecha_firma'])">
+                                Salvar
+                              </v-btn>
+                            </v-col>
+                          </v-row>
+                        </v-card-text>
+                      </v-card>
+                    </v-dialog>
 
-                <delete-button @click="deleteBid(bid.id)" />
+                    <delete-button @click="deleteBid(bid.id)" />
+                  </v-list-item-action>
+                </v-list-item>
               </v-col>
             </v-row>
           </template>
