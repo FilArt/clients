@@ -21,9 +21,12 @@ class BidManager(Manager):
                     ),
                     When(
                         Q(doc__isnull=True)
-                        | Q(call__isnull=True)
-                        | Q(scoring__isnull=True)
-                        | Q(offer_status__isnull=True, offer__company__offer_status_used=True),
+                        & Q(call__isnull=True)
+                        & Q(scoring__isnull=True)
+                        & Q(
+                            Q(offer_status__isnull=True, offer__company__offer_status_used=True)
+                            | Q(offer__company__offer_status_used__in=[None, False])
+                        ),
                         then=Value(PENDIENTE_TRAMITACION),
                     ),
                     When(
