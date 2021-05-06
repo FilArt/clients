@@ -2,8 +2,8 @@ import logging
 from typing import List
 
 from django.contrib.auth.base_user import BaseUserManager
+from django.core.validators import EmailValidator
 from django.db import transaction
-from django.db.models import Q
 from django.utils import timezone
 from drf_dynamic_fields import DynamicFieldsMixin
 from rest_framework import serializers
@@ -432,7 +432,6 @@ class AgentContractSerializer(serializers.ModelSerializer):
         fields = [
             "observations",
             "company_name",
-            "email",
             "phone",
             "responsible",
             "legal_representative",
@@ -473,8 +472,9 @@ class AgentContractSerializer(serializers.ModelSerializer):
             created_client.observations = f"{created_client.observations}\n---\n{new_comment}"
             created_client.save(update_fields=["observations"])
 
-        new_email = validated_data.pop("email")
+        new_email = self.initial_data.get("email")
         if new_email and new_email != created_client.email:
+            EmailValidator()(new_email)
             created_client.email = new_email
             created_client.save(update_fields=["email"])
 
