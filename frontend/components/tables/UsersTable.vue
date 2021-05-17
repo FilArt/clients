@@ -527,6 +527,7 @@ export default {
         { text: 'Responsable', value: 'responsible_fn' },
         { text: 'Canal', value: 'canal_fn' },
         { text: this.bidsCountHeader, value: 'bids_count', sortable: false },
+        { text: this.bidsCountHeader, value: 'puntos_count', sortable: false },
         { text: 'Comisiones agente', value: 'paid_count' },
         { text: 'Comisiones canal', value: 'canal_paid_count' },
         { text: 'Estado', value: 'status' },

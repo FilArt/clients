@@ -120,6 +120,7 @@ class UserListSerializer(DynamicFieldsMixin, serializers.ModelSerializer):
     new_messages_count = serializers.SerializerMethodField()
     affiliate = serializers.CharField()
     bids_count = serializers.IntegerField(read_only=True)
+    puntos_count = serializers.IntegerField(read_only=True)
 
     class Meta:
         model = CustomUser
@@ -134,6 +135,7 @@ class UserListSerializer(DynamicFieldsMixin, serializers.ModelSerializer):
             "created_at",
             "last_login",
             "bids_count",
+            "puntos_count",
             "new_messages_count",
             "affiliate",
             "docs",

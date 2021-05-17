@@ -3,7 +3,7 @@
     <v-card-text>
       <users-table
         selectable
-        bids-count-header="Puntos suministo"
+        bids-count-header="Puntos suministros"
         :statuses="statuses"
         :headers="headers"
         detail-url="/admin/clientes"
@@ -29,7 +29,7 @@ export default {
         'fecha_firma',
         'fullname',
         'responsible_fn',
-        'bids_count',
+        'puntos_count',
         'paid_count',
         'last_login',
         'new_messages_count',

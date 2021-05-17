@@ -183,6 +183,10 @@ class CustomUser(AbstractUser):
     def affiliate(self):
         return self.get_source_display()
 
+    @property
+    def puntos_count(self):
+        return self.puntos.count()
+
     def __str__(self):
         return self.fullname
 
