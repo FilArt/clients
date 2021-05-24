@@ -16,10 +16,9 @@ from rest_framework.exceptions import ValidationError
 from rest_framework_tracking.models import APIRequestLog
 
 from apps.bids.models import Bid
-from clients.serializers import BidListSerializer
 from clients.utils import notify_telegram, humanize
 from .models import Attachment, CustomUser, Punto
-from .utils import TRAMITACION_STATUSES, FACTURACION_STATUSES, PENDIENTE_PAGO
+from .utils import PENDIENTE_PAGO
 
 logger = logging.getLogger(__name__)
 

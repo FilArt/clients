@@ -57,6 +57,12 @@ class DetailPuntoSerializer(serializers.ModelSerializer):
         }
 
 
+class AgentPuntoSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Punto
+        exclude = ["user", "iban"]
+
+
 class UserSettingsSerializer(serializers.ModelSerializer):
     class Meta:
         model = UserSettings

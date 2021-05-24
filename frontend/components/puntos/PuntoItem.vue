@@ -76,7 +76,7 @@
               </v-card-text>
 
               <v-row
-                v-if="group.text === 'Documentacion' && punto.attachments.length"
+                v-if="group.text === 'Documentacion' && punto.attachments && punto.attachments.length"
                 align="center"
                 class="flex-wrap"
                 style="max-width: 500px"
@@ -100,7 +100,7 @@
                 </v-col>
               </v-row>
 
-              <v-flex v-if="group.text === 'Documentacion'">
+              <v-flex v-if="$auth.user.role !== 'agent' && group.text === 'Documentacion'">
                 <v-dialog v-model="uploadFileDialog" max-width="500">
                   <template v-slot:activator="{ on }">
                     <v-btn icon color="success" v-on="on">
