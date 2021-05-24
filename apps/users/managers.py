@@ -1,5 +1,5 @@
 from django.contrib.auth.base_user import BaseUserManager
-from django.db.models import QuerySet, Case, When, Q, Value, Sum, F
+from django.db.models import QuerySet, Case, When, Q, Value, Sum, F, Subquery, OuterRef
 from django.db.models.aggregates import Count, Max
 from django.db.models.fields import CharField
 from django.utils import timezone
@@ -24,6 +24,9 @@ class CustomUserManager(BaseUserManager):
     """
 
     def get_queryset(self):
+        from ..bids.models import Bid
+
+        newest_bid = Bid.objects.filter(user=OuterRef("pk")).order_by(F("fecha_firma").asc(nulls_last=True))
         return (
             super()
             .get_queryset()
@@ -49,6 +52,8 @@ class CustomUserManager(BaseUserManager):
                     When(responsible__fixed_salary=True, then=Value(-1)),
                     default=Sum("bids__canal_commission", filter=Q(bids__fecha_firma__year=timezone.now().year)),
                 ),
+                company_luz=Subquery(newest_bid.values("punto__company_luz")[:1]),
+                company_gas=Subquery(newest_bid.values("punto__company_gas")[:1]),
             )
         )
 

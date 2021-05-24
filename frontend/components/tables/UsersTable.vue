@@ -141,32 +141,6 @@
               </v-tooltip>
             </v-col>
 
-            <!--            <v-col-->
-            <!--              v-if="headers.some((h) => h.value === 'affiliate')"-->
-            <!--              :cols="flexs.cols"-->
-            <!--              :xl="flexs.xl"-->
-            <!--              :lg="flexs.lg"-->
-            <!--              :md="flexs.md"-->
-            <!--              :xs="flexs.xs"-->
-            <!--            >-->
-            <!--              <v-select-->
-            <!--                v-model="query.source"-->
-            <!--                label="Origin"-->
-            <!--                :items="[-->
-            <!--                  {-->
-            <!--                    text: 'Online',-->
-            <!--                    value: 'default',-->
-            <!--                  },-->
-            <!--                  {-->
-            <!--                    text: 'Call&Visit',-->
-            <!--                    value: 'call_n_visit',-->
-            <!--                  },-->
-            <!--                ]"-->
-            <!--                clearable-->
-            <!--                @change="updateQuery({ source: $event })"-->
-            <!--              />-->
-            <!--            </v-col>-->
-
             <v-col
               v-if="headers.some((h) => h.includes('responsible'))"
               :cols="flexs.cols"
@@ -184,6 +158,37 @@
                 item-value="id"
                 clearable
                 @change="updateQuery({ responsible__in: $event })"
+              />
+            </v-col>
+
+            <v-col
+              v-if="companyFilters"
+              :cols="flexs.cols"
+              :xl="flexs.xl"
+              :lg="flexs.lg"
+              :md="flexs.md"
+              :xs="flexs.xs"
+            >
+              <company-select
+                v-model="query.company_luz"
+                label="Commers luz"
+                without-other
+                @input="updateQuery({ company_luz: $event })"
+              />
+            </v-col>
+            <v-col
+              v-if="companyFilters"
+              :cols="flexs.cols"
+              :xl="flexs.xl"
+              :lg="flexs.lg"
+              :md="flexs.md"
+              :xs="flexs.xs"
+            >
+              <company-select
+                v-model="query.company_gas"
+                label="Commers gas"
+                without-other
+                @input="updateQuery({ company_gas: $event })"
               />
             </v-col>
 
@@ -352,9 +357,11 @@
 <script>
 import constants from '@/lib/constants'
 import { mapState } from 'vuex'
+import CompanySelect from '@/components/selects/CompanySelect'
 export default {
   name: 'UsersTable',
   components: {
+    CompanySelect,
     CvUserSelect: () => import('@/components/cv_components/selects/cvUserSelect'),
     CloseButton: () => import('~/components/buttons/closeButton'),
     SubmitButton: () => import('~/components/buttons/submitButton'),
@@ -364,6 +371,10 @@ export default {
     DateTimeFilter: () => import('~/components/DateTimeFilter'),
   },
   props: {
+    companyFilters: {
+      type: Boolean,
+      default: false,
+    },
     mode: {
       type: String,
       default: null,
@@ -694,6 +705,7 @@ export default {
       }
     },
     async updateQuery(options) {
+      console.log(options)
       options = { ...options, page: 1 }
       Object.keys(options).forEach((key) => {
         const value = options[key]

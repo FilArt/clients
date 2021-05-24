@@ -120,6 +120,8 @@ class UserListSerializer(DynamicFieldsMixin, serializers.ModelSerializer):
     affiliate = serializers.CharField()
     bids_count = serializers.IntegerField(read_only=True)
     puntos_count = serializers.IntegerField(read_only=True)
+    company_luz = serializers.CharField(read_only=True)
+    company_gas = serializers.CharField(read_only=True)
 
     class Meta:
         model = CustomUser
@@ -145,6 +147,8 @@ class UserListSerializer(DynamicFieldsMixin, serializers.ModelSerializer):
             "canal_paid_count",
             "fixed_salary",
             "agent_type",
+            "company_luz",
+            "company_gas",
         )
 
     def get_new_messages_count(self, instance: CustomUser) -> int:

@@ -8,6 +8,7 @@
         :headers="headers"
         detail-url="/admin/clientes"
         use-full-name
+        company-filters
       />
     </v-card-text>
   </v-card>

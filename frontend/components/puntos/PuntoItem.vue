@@ -37,6 +37,17 @@
                     })
                   "
                 />
+                <company-select
+                  v-else-if="header.value === 'company_gas'"
+                  :value="punto.company_gas"
+                  @input="
+                    save({
+                      id: punto.id,
+                      field: 'company_gas',
+                      value: $event,
+                    })
+                  "
+                />
 
                 <v-select
                   v-else-if="header.value === 'category'"

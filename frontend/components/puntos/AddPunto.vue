@@ -32,6 +32,8 @@
 
           <company-select v-else-if="field.value === 'company_luz' && admin" v-model="newPunto.company_luz" />
 
+          <company-select v-else-if="field.value === 'company_gas' && admin" v-model="newPunto.company_gas" />
+
           <v-autocomplete
             v-else-if="field.value === 'province'"
             v-model="newPunto.province"

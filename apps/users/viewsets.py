@@ -166,6 +166,11 @@ class UserViewSet(
         elif "status" in ordering:
             queryset = queryset.order_by("status")
 
+        for company_field in ("company_luz", "company_gas"):
+            company_filter_value = self.request.query_params.get(company_field)
+            if company_filter_value:
+                queryset = queryset.filter(**{company_field: company_filter_value})
+
         user: CustomUser = self.request.user
         if user.role == "agent" and not self.detail:
             queryset = queryset.filter(responsible=user)
