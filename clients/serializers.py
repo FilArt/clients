@@ -456,6 +456,14 @@ class AgentContractSerializer(serializers.ModelSerializer):
         self._user = None
 
     def is_valid(self, raise_exception: bool = True):
+        new_email = self.initial_data.get("email")
+        EmailValidator()(new_email)
+        if new_email:
+            if CustomUser.objects.filter(email=new_email).exists():
+                raise ValidationError({"email": ["Already exist"]})
+        else:
+            raise ValidationError({"email": ["Requiredo."]})
+
         cif_nif = self.initial_data.get("cif_nif")
         if cif_nif:
             try:
@@ -471,14 +479,7 @@ class AgentContractSerializer(serializers.ModelSerializer):
         puntos = validated_data.pop("puntos")
         responsible = CustomUser.objects.get(email=validated_data["responsible"])
         validated_data["responsible"] = responsible
-
-        new_email = self.initial_data.get("email")
-        EmailValidator()(new_email)
-        if new_email:
-            if CustomUser.objects.filter(email=new_email).exists():
-                raise ValidationError({"email": ["Already exist"]})
-            else:
-                validated_data["email"] = new_email
+        validated_data["email"] = self.initial_data["email"]
 
         created_client: CustomUser = self._user or super().create(validated_data)
 
