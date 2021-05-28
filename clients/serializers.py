@@ -2,6 +2,7 @@ import logging
 from typing import List
 
 from django.contrib.auth.base_user import BaseUserManager
+from django.core.exceptions import ValidationError as DjangoValidationError
 from django.core.validators import EmailValidator
 from django.db import transaction
 from django.utils import timezone
@@ -457,7 +458,11 @@ class AgentContractSerializer(serializers.ModelSerializer):
 
     def is_valid(self, raise_exception: bool = True):
         new_email = self.initial_data.get("email")
-        EmailValidator()(new_email)
+        try:
+            EmailValidator()(new_email)
+        except DjangoValidationError as e:
+            raise ValidationError({"email": e})
+
         if new_email:
             if CustomUser.objects.filter(email=new_email).exists():
                 raise ValidationError({"email": ["Already exist"]})
