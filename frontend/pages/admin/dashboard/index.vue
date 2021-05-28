@@ -63,6 +63,10 @@
         </v-list-item>
       </v-list>
     </v-card-text>
+
+    <v-card-text v-if="commers">
+      <v-data-table :headers="commers.headers" :items="commers.rows"></v-data-table>
+    </v-card-text>
   </v-card>
 </template>
 
@@ -79,6 +83,7 @@ export default {
       fechaRegistro: { start: null, end: null },
       fechaFirma: { start: null, end: null },
       agentsFilter: [],
+      commers: null,
     }
   },
 
@@ -104,7 +109,9 @@ export default {
         .map((k) => k + '=' + params[k])
         .join('&')
       try {
-        this.analytics = await this.$axios.$get(`users/manage_users/analytic/?${paramsStr}`)
+        const { stats, commers } = await this.$axios.$get(`users/manage_users/analytic/?${paramsStr}`)
+        this.analytics = stats
+        this.commers = commers
       } finally {
         this.loading = false
       }

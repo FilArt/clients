@@ -4,6 +4,7 @@ from typing import Tuple
 
 from django.contrib.auth.models import Group
 from django.db import transaction
+from django.db.models import Sum
 from django.http import Http404, HttpResponseBadRequest
 from drf_dynamic_fields import DynamicFieldsMixin
 from notifications.models import Notification
@@ -59,6 +60,7 @@ from .serializers import (
 )
 from .utils import TRAMITACION, PENDIENTE_TRAMITACION, KO, PAGADO, PENDIENTE_PAGO, KO_PAPELLERA
 from ..bids.serializers import CreateBidSerializer
+from ..calculator.models import Company
 
 logger = logging.getLogger(__name__)
 
@@ -262,10 +264,55 @@ class ManageUsersViewSet(UserViewSet, mixins.CreateModelMixin, mixins.DestroyMod
             "Total pagado": [PAGADO],
             "Total en papelera": [KO_PAPELLERA],
         }
-        data = {
+        stats = {
             "Total clientes": clients.count(),
             "Total solicitudes": sum(i.bids_count for i in clients),
             **{item: clients.filter(status__in=statuses).count() for item, statuses in filters.items()},
+        }
+        commers = {
+            "headers": [
+                {"text": "Comercializadora", "value": "commers"},
+                {"text": "Clientes (luz)", "value": "clients_luz"},
+                {"text": "Clientes (gas)", "value": "clients_gas"},
+                {"text": "Puntos (luz)", "value": "puntos_luz"},
+                {"text": "Puntos (gas)", "value": "puntos_gas"},
+                {"text": "Consumo (luz) GW", "value": "consumo_luz"},
+                {"text": "Consumo (gas) GW", "value": "consumo_gas"},
+            ],
+            "rows": [
+                {
+                    "commers": commers.name,
+                    "clients_luz": CustomUser.objects.filter(company_luz=commers).count(),
+                    "clients_gas": CustomUser.objects.filter(company_gas=commers).count(),
+                    "puntos_luz": Punto.objects.filter(company_luz=commers).count(),
+                    "puntos_gas": Punto.objects.filter(company_gas=commers).count(),
+                    "consumo_luz": round(
+                        (
+                            Punto.objects.filter(company_luz=commers).aggregate(consumo=Sum("consumo_annual_luz"))[
+                                "consumo"
+                            ]
+                            or 0
+                        )
+                        / pow(10, 6),
+                        2,
+                    ),
+                    "consumo_gas": round(
+                        (
+                            Punto.objects.filter(company_gas=commers).aggregate(consumo=Sum("consumo_annual_gas"))[
+                                "consumo"
+                            ]
+                            or 0
+                        )
+                        / pow(10, 6),
+                        2,
+                    ),
+                }
+                for commers in Company.objects.exclude(logo__exact="")
+            ],
+        }
+        data = {
+            "stats": stats,
+            "commers": commers,
         }
         return Response(data)
 
