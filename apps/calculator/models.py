@@ -39,6 +39,10 @@ class Tarif(Enum):
     G33 = "3.3"
     G34 = "3.4"
 
+    T20TD = "2.0TD"
+    T30TD = "3.0TD"
+    T61TD = "6.1TD"
+
     @staticmethod
     def all():
         return [t.value for t in Tarif]
@@ -161,7 +165,9 @@ class Offer(models.Model):
     canal_commission = models.DecimalField(max_digits=6, decimal_places=2, default=0)
     agent_commission = models.DecimalField(max_digits=6, decimal_places=2, default=0)
     required_fields = ArrayField(
-        models.CharField(max_length=30, choices=REQUIRED_FIELD_CHOICES), blank=True, null=True,
+        models.CharField(max_length=30, choices=REQUIRED_FIELD_CHOICES),
+        blank=True,
+        null=True,
     )
 
     def __str__(self) -> str:
