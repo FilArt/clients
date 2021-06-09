@@ -21,15 +21,13 @@
                   </v-list-item-avatar>
                   <v-list-item-content>
                     <v-list-item-title>
-                      <small> ID: {{ bid.id }} </small>
+                      <small>ID: {{ bid.id }}</small>
                     </v-list-item-title>
                     <v-list-item-title>
-                      <i> {{ bid.status }} </i>
+                      <i>{{ bid.status }}</i>
                     </v-list-item-title>
 
-                    <v-list-item-subtitle>
-                      {{ bid['fecha_firma'] }}
-                    </v-list-item-subtitle>
+                    <v-list-item-subtitle> FF: {{ bid.fecha_firma || '-' }} </v-list-item-subtitle>
                   </v-list-item-content>
                   <v-list-item-action>
                     <v-dialog v-model="dialogs[bid.id]" max-width="500px">
