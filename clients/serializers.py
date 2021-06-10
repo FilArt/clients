@@ -464,12 +464,6 @@ class AgentContractSerializer(serializers.ModelSerializer):
         except (EmailSyntaxError, EmailNotValidError) as e:
             raise ValidationError({"email": e})
 
-        if new_email:
-            if CustomUser.objects.filter(email=new_email).exists():
-                raise ValidationError({"email": ["Already exist"]})
-        else:
-            raise ValidationError({"email": ["Requiredo."]})
-
         cif_nif = self.initial_data.get("cif_nif")
         if cif_nif:
             try:
@@ -478,6 +472,13 @@ class AgentContractSerializer(serializers.ModelSerializer):
                 ...
         else:
             raise ValidationError({"cif_nif": ["Requiredo."]})
+
+        if new_email:
+            if CustomUser.objects.filter(email=new_email).exclude(cif_nif=cif_nif).exists():
+                raise ValidationError({"email": ["Already exist"]})
+        else:
+            raise ValidationError({"email": ["Requiredo."]})
+
         return super(AgentContractSerializer, self).is_valid(raise_exception=raise_exception)
 
     @transaction.atomic
