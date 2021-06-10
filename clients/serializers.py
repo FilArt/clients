@@ -2,11 +2,10 @@ import logging
 from typing import List
 
 from django.contrib.auth.base_user import BaseUserManager
-from django.core.exceptions import ValidationError as DjangoValidationError
-from django.core.validators import EmailValidator
 from django.db import transaction
 from django.utils import timezone
 from drf_dynamic_fields import DynamicFieldsMixin
+from email_validator import validate_email, EmailSyntaxError, EmailNotValidError
 from rest_framework import serializers
 from rest_framework.exceptions import ValidationError, PermissionDenied
 
@@ -461,8 +460,8 @@ class AgentContractSerializer(serializers.ModelSerializer):
     def is_valid(self, raise_exception: bool = True):
         new_email = self.initial_data.get("email")
         try:
-            EmailValidator()(new_email)
-        except DjangoValidationError as e:
+            validate_email(new_email)
+        except (EmailSyntaxError, EmailNotValidError) as e:
             raise ValidationError({"email": e})
 
         if new_email:
