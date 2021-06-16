@@ -26,7 +26,6 @@ def str_to_float(some):
 
 @unique
 class Tarif(Enum):
-    T30A = "3.0A"
     T31A = "3.1A"
     G31 = "3.1"
     G32 = "3.2"
