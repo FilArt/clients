@@ -276,12 +276,8 @@ export default Object.freeze({
     letter = letter.toLowerCase()
     number = parseInt(number)
     tarif = tarif.toUpperCase()
-    return (
-      number === 1 ||
-      ['3.0TD', '6.1TD'].includes(tarif) ||
-      (letter + number === 'c3' && ['2.1DHA', '2.0DHA'].includes(tarif)) ||
-      (tarif.includes('S') && letter === 'c')
-    )
+    if (tarif === '2.0TD') return letter === 'p' ? [1, 2].includes(number) : [1, 2, 3].includes(number)
+    return true
   },
   clientTypes: {
     0: 'Físico',

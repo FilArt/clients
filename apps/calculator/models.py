@@ -53,8 +53,8 @@ class CalculatorSettings(models.Model):
     tax = models.FloatField(default=1)
     carbon_tax = models.FloatField(default=0.00234)
     equip_rent_t20td = models.FloatField(default=1, validators=[is_positive])
-    equip_rent_t30 = models.FloatField(default=1, validators=[is_positive])
-    equip_rent_t31 = models.FloatField(default=1, validators=[is_positive])
+    equip_rent_t30td = models.FloatField(default=1, validators=[is_positive])
+    equip_rent_t61td = models.FloatField(default=1, validators=[is_positive])
     equip_rent_g31 = models.FloatField(default=0.6, validators=[is_positive])
     equip_rent_g32 = models.FloatField(default=1.1, validators=[is_positive])
     equip_rent_g33 = models.FloatField(default=12.5, validators=[is_positive])
@@ -65,17 +65,14 @@ class CalculatorSettings(models.Model):
 
     def get_equip(self, tarif):
         return {
-            k.value: v
-            for k, v in {
-                Tarif.T20TD: self.equip_rent_t20td,
-                Tarif.T30A: self.equip_rent_t30,
-                Tarif.T31A: self.equip_rent_t31,
-                Tarif.G31: self.equip_rent_g31,
-                Tarif.G32: self.equip_rent_g32,
-                Tarif.G33: self.equip_rent_g33,
-                Tarif.G34: self.equip_rent_g34,
-            }.items()
-        }[tarif]
+                Tarif.T20TD.value: self.equip_rent_t20td,
+                Tarif.T30TD.value: self.equip_rent_t30td,
+                Tarif.T61TD.value: self.equip_rent_t61td,
+                Tarif.G31.value: self.equip_rent_g31,
+                Tarif.G32.value: self.equip_rent_g32,
+                Tarif.G33.value: self.equip_rent_g33,
+                Tarif.G34.value: self.equip_rent_g34,
+            }[tarif]
 
 
 class Company(models.Model):
@@ -140,9 +137,15 @@ class Offer(models.Model):
     p1 = PositiveNullableFloatField()
     p2 = PositiveNullableFloatField()
     p3 = PositiveNullableFloatField()
+    p4 = PositiveNullableFloatField()
+    p5 = PositiveNullableFloatField()
+    p6 = PositiveNullableFloatField()
     c1 = PositiveNullableFloatField()
     c2 = PositiveNullableFloatField()
     c3 = PositiveNullableFloatField()
+    c4 = PositiveNullableFloatField()
+    c5 = PositiveNullableFloatField()
+    c6 = PositiveNullableFloatField()
     is_price_permanent = models.CharField(max_length=20, choices=PRICE_CHOICES)
     canal_commission = models.DecimalField(max_digits=6, decimal_places=2, default=0)
     agent_commission = models.DecimalField(max_digits=6, decimal_places=2, default=0)

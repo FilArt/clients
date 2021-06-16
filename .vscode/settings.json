@@ -3,10 +3,10 @@
   "editor.tabCompletion": "on",
   "editor.snippetSuggestions": "bottom",
   "python.languageServer": "Pylance",
-  "python.linting.flake8Enabled": true,
+  "python.linting.flake8Enabled": false,
   "python.linting.pylintEnabled": false,
   "python.linting.mypyEnabled": true,
-  "python.linting.mypyPath": "/usr/bin/dmypy",
+  "python.linting.mypyPath": "/usr/bin/mypy",
   "python.linting.mypyArgs": [
     "run",
     "--",

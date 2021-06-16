@@ -6,7 +6,7 @@ from apps.calculator.models import Tarif
 
 def migrate_tarifs(apps, _):
     offer_model = apps.get_model('calculator', 'Offer')
-    offers = offer_model.objects.filter(tarif__startswith='2.0')
+    offers = offer_model.objects.filter(tarif__startswith='2')
     offers.update(tarif=Tarif.T20TD.value)
 
 

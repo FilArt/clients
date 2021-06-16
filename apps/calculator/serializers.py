@@ -38,9 +38,15 @@ class CalculatorSerializer(serializers.ModelSerializer):
     c1 = ConsumoField(required=True)
     c2 = ConsumoField()
     c3 = ConsumoField()
+    c4 = ConsumoField()
+    c5 = ConsumoField()
+    c6 = ConsumoField()
     p1 = PotenciaField()
     p2 = PotenciaField()
     p3 = PotenciaField()
+    p4 = PotenciaField()
+    p5 = PotenciaField()
+    p6 = PotenciaField()
     current_price = serializers.FloatField(min_value=0, validators=[positive_number])
     reactive = serializers.FloatField(min_value=0, allow_null=True, required=False, validators=[casi_positive_number],)
     igic = serializers.BooleanField(write_only=True)
@@ -48,16 +54,28 @@ class CalculatorSerializer(serializers.ModelSerializer):
     c_st_c1 = ConsumoCalculationField()
     c_st_c2 = ConsumoCalculationField()
     c_st_c3 = ConsumoCalculationField()
+    c_st_c4 = ConsumoCalculationField()
+    c_st_c5 = ConsumoCalculationField()
+    c_st_c6 = ConsumoCalculationField()
     c_st_p1 = PotenciaCalculationField()
     c_st_p2 = PotenciaCalculationField()
     c_st_p3 = PotenciaCalculationField()
+    c_st_p4 = PotenciaCalculationField()
+    c_st_p5 = PotenciaCalculationField()
+    c_st_p6 = PotenciaCalculationField()
 
     st_c1 = RoundedField(read_only=True)
     st_c2 = RoundedField(read_only=True)
     st_c3 = RoundedField(read_only=True)
+    st_c4 = RoundedField(read_only=True)
+    st_c5 = RoundedField(read_only=True)
+    st_c6 = RoundedField(read_only=True)
     st_p1 = RoundedField(read_only=True)
     st_p2 = RoundedField(read_only=True)
     st_p3 = RoundedField(read_only=True)
+    st_p4 = RoundedField(read_only=True)
+    st_p5 = RoundedField(read_only=True)
+    st_p6 = RoundedField(read_only=True)
 
     iva = IvaField(read_only=True)
     tax = TaxField(read_only=True)
@@ -89,24 +107,42 @@ class CalculatorSerializer(serializers.ModelSerializer):
             "p1",
             "p2",
             "p3",
+            "p4",
+            "p5",
+            "p6",
             "c1",
             "c2",
             "c3",
+            "c4",
+            "c5",
+            "c6",
             "is_price_permanent",
             "client_type",
             "description",
             "c_st_p1",
             "c_st_p2",
             "c_st_p3",
+            "c_st_p4",
+            "c_st_p5",
+            "c_st_p6",
             "c_st_c1",
             "c_st_c2",
             "c_st_c3",
+            "c_st_c4",
+            "c_st_c5",
+            "c_st_c6",
             "st_p1",
             "st_p2",
             "st_p3",
+            "st_p4",
+            "st_p5",
+            "st_p6",
             "st_c1",
             "st_c2",
             "st_c3",
+            "st_c4",
+            "st_c5",
+            "st_c6",
             "tax",
             "iva",
             "rental",
@@ -142,11 +178,15 @@ class CalculatorSerializer(serializers.ModelSerializer):
         zero = Value(0, output_field=models.FloatField())
 
         p1, p2, p3 = data.get("p1", 0), data.get("p2", 0), data.get("p3", 0)
+        p4, p5, p6 = data.get("p4", 0), data.get("p5", 0), data.get("p6", 0)
         c1, c2, c3 = data.get("c1"), data.get("c2", 0), data.get("c3", 0)
-        power_min = min(filter((lambda n: n != 0), (p1, p2, p3))) if is_luz else None
-        power_max = max(filter((lambda n: n != 0), (p1, p2, p3))) if is_luz else None
+        c4, c5, c6 = data.get("c4", 0), data.get("c5", 0), data.get("c6", 0)
+        ps = p1, p2, p3, p4, p5, p6
+        power_min = min(filter((lambda n: n != 0), ps)) if is_luz else None
+        power_max = max(filter((lambda n: n != 0), ps)) if is_luz else None
 
-        annual_consumption = (sum((c1, c2, c3)) / data["period"]) * 365
+        consumptions = c1, c2, c3, c4, c5, c6
+        annual_consumption = sum(consumptions) / data["period"] * 365
         current_price = Value(new_current_price or data["current_price"], output_field=models.FloatField())
         reactive = Value(data.get("reactive", 0), output_field=models.FloatField())
 
@@ -176,12 +216,20 @@ class CalculatorSerializer(serializers.ModelSerializer):
                 )
                 .annotate(
                     st_p1=F("p1") * Value(p1) * Value(data["period"]),
-                    st_c2=F("c2") * Value(c2),
-                    st_c3=F("c3") * Value(c3),
                     st_p2=F("p2") * Value(p2) * Value(data["period"]),
                     st_p3=F("p3") * Value(p3) * Value(data["period"]),
+                    st_p4=F("p4") * Value(p4) * Value(data["period"]),
+                    st_p5=F("p5") * Value(p5) * Value(data["period"]),
+                    st_p6=F("p6") * Value(p6) * Value(data["period"]),
+                    st_c2=F("c2") * Value(c2),
+                    st_c3=F("c3") * Value(c3),
+                    st_c4=F("c4") * Value(c4),
+                    st_c5=F("c5") * Value(c5),
+                    st_c6=F("c6") * Value(c6),
                 )
-                .annotate(subtotal=F("st_c1") + F("st_c2") + F("st_c3") + F("st_p1") + F("st_p2") + F("st_p3"))
+                .annotate(subtotal=F("st_c1") + F("st_c2") + F("st_c3") + F("st_p1") + 
+                                   F("st_p2") + F("st_p3") + F('st_c4') + F('st_c5') + 
+                                   F('st_c6') + F('st_p4') + F('st_p5') + F('st_p6'))
             )
         else:
             qs = qs.annotate(
