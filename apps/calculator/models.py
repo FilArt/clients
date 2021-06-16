@@ -26,12 +26,6 @@ def str_to_float(some):
 
 @unique
 class Tarif(Enum):
-    T20A = "2.0A"
-    T20DHA = "2.0DHA"
-    T20DHS = "2.0DHS"
-    T21A = "2.1A"
-    T21DHA = "2.1DHA"
-    T21DHS = "2.1DHS"
     T30A = "3.0A"
     T31A = "3.1A"
     G31 = "3.1"
@@ -60,12 +54,7 @@ class CalculatorSettings(models.Model):
     igic = models.FloatField(default=0.03)
     tax = models.FloatField(default=1)
     carbon_tax = models.FloatField(default=0.00234)
-    equip_rent_t20 = models.FloatField(default=1, validators=[is_positive])
-    equip_rent_t20dha = models.FloatField(default=1, validators=[is_positive])
-    equip_rent_t20dhs = models.FloatField(default=1, validators=[is_positive])
-    equip_rent_t21 = models.FloatField(default=1, validators=[is_positive])
-    equip_rent_t21dha = models.FloatField(default=1, validators=[is_positive])
-    equip_rent_t21dhs = models.FloatField(default=1, validators=[is_positive])
+    equip_rent_t20td = models.FloatField(default=1, validators=[is_positive])
     equip_rent_t30 = models.FloatField(default=1, validators=[is_positive])
     equip_rent_t31 = models.FloatField(default=1, validators=[is_positive])
     equip_rent_g31 = models.FloatField(default=0.6, validators=[is_positive])
@@ -80,12 +69,7 @@ class CalculatorSettings(models.Model):
         return {
             k.value: v
             for k, v in {
-                Tarif.T20A: self.equip_rent_t20,
-                Tarif.T20DHA: self.equip_rent_t20dha,
-                Tarif.T20DHS: self.equip_rent_t20dhs,
-                Tarif.T21A: self.equip_rent_t21,
-                Tarif.T21DHA: self.equip_rent_t21dha,
-                Tarif.T21DHS: self.equip_rent_t21dhs,
+                Tarif.T20TD: self.equip_rent_t20td,
                 Tarif.T30A: self.equip_rent_t30,
                 Tarif.T31A: self.equip_rent_t31,
                 Tarif.G31: self.equip_rent_g31,
