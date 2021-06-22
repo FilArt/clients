@@ -25,7 +25,7 @@ class TaxField(serializers.CharField):
         return {
             "percent": self.context["tax_percent"],
             # "value": "{:.2f} €".format(value.tax),
-            "value": "{:.2f}".format(value.tax),
+            "value": "{:.2f}".format(value.tax or 0),
         }
 
 
@@ -34,7 +34,7 @@ class IvaField(TaxField):
         return {
             "percent": self.context["iva_percent"],
             # "value": "{:.2f} €".format(value.iva),
-            "value": "{:.2f}".format(value.iva),
+            "value": "{:.2f}".format(value.iva or 0),
         }
 
 
