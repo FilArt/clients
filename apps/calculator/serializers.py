@@ -179,7 +179,7 @@ class CalculatorSerializer(serializers.ModelSerializer):
 
         p1, p2, p3 = data.get("p1", 0), data.get("p2", 0), data.get("p3", 0)
         p4, p5, p6 = data.get("p4", 0), data.get("p5", 0), data.get("p6", 0)
-        c1, c2, c3 = data.get("c1"), data.get("c2", 0), data.get("c3", 0)
+        c1, c2, c3 = data.get("c1", 0), data.get("c2", 0), data.get("c3", 0)
         c4, c5, c6 = data.get("c4", 0), data.get("c5", 0), data.get("c6", 0)
         ps = p1, p2, p3, p4, p5, p6
         power_min = min(filter((lambda n: n != 0), ps)) if is_luz else None
@@ -205,7 +205,7 @@ class CalculatorSerializer(serializers.ModelSerializer):
             client_type=data["client_type"],
             tarif=data["tarif"],
             kind=kind,
-        ).annotate(st_c1=F("c1") * Value(c1),)
+        ).annotate(st_c1=F("c1") * Value(c1))
         if is_luz:
             qs = (
                 qs.filter(
