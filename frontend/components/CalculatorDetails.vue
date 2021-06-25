@@ -49,34 +49,17 @@
             <v-text-field v-model="offerName" dense label="Oferta" />
             <v-text-field v-model="direccion" dense label="Direccion" />
             <v-text-field v-model="cups" dense label="CUPS" />
-            <v-text-field v-model="p1_offer" dense :label="`Precio por ${word} ${isGas ? '' : 'P1'}`" type="number" />
             <v-text-field
-              v-show="showInput('p', 2)"
-              v-model="p2_offer"
+              v-for="pitem in pitems"
+              v-show="showInput(pitem.letter, pitem.number)"
+              :key="pitem.letter + pitem.number"
+              v-model="pitem.value"
+              :label="
+                'Precio por ' +
+                (pitem.letter === 'c' ? 'consumo' : isGas ? 'termino fijo' : 'potencia') +
+                (isGas ? '' : ' P' + pitem.number)
+              "
               dense
-              :label="`Precio por ${word} ${isGas ? '' : 'P2'}`"
-              type="number"
-            />
-            <v-text-field
-              v-show="showInput('p', 3)"
-              v-model="p3_offer"
-              dense
-              :label="`Precio por ${word} ${isGas ? '' : 'P3'}`"
-              type="number"
-            />
-            <v-text-field v-model="c1_offer" :label="`Precio por consumo ${isGas ? '' : 'P1'}`" type="number" dense />
-            <v-text-field
-              v-show="showInput('c', 2)"
-              v-model="c2_offer"
-              dense
-              :label="`Precio por consumo ${isGas ? '' : 'P2'}`"
-              type="number"
-            />
-            <v-text-field
-              v-show="showInput('c', 3)"
-              v-model="c3_offer"
-              dense
-              :label="`Precio por consumo ${isGas ? '' : 'P3'}`"
               type="number"
             />
             <v-text-field v-model="otros" label="Otros" type="number" />
@@ -149,6 +132,68 @@ export default {
       agent,
       error: null,
       downloadURL: null,
+      pitems: [
+        {
+          letter: 'p',
+          number: 1,
+          value: null,
+        },
+        {
+          letter: 'p',
+          number: 2,
+          value: null,
+        },
+        {
+          letter: 'p',
+          number: 3,
+          value: null,
+        },
+        {
+          letter: 'p',
+          number: 4,
+          value: null,
+        },
+        {
+          letter: 'p',
+          number: 5,
+          value: null,
+        },
+        {
+          letter: 'p',
+          number: 6,
+          value: null,
+        },
+        {
+          letter: 'c',
+          number: 1,
+          value: null,
+        },
+        {
+          letter: 'c',
+          number: 2,
+          value: null,
+        },
+        {
+          letter: 'c',
+          number: 3,
+          value: null,
+        },
+        {
+          letter: 'c',
+          number: 4,
+          value: null,
+        },
+        {
+          letter: 'c',
+          number: 5,
+          value: null,
+        },
+        {
+          letter: 'c',
+          number: 6,
+          value: null,
+        },
+      ],
     }
   },
   computed: {
@@ -157,9 +202,6 @@ export default {
     }),
     isGas() {
       return this.offer.kind === 'gas'
-    },
-    word() {
-      return this.isGas ? 'termino fijo' : 'potencia'
     },
   },
   watch: {
