@@ -44,11 +44,11 @@
 
             <v-text-field v-model="clientName" label="Nombre de cliente" />
             <email-field v-model="emailTo" label="Email de cliente" />
+            <v-text-field v-model="direccion" label="Direccion" />
+            <v-text-field v-model="cups" label="CUPS" />
           </v-col>
           <v-col>
             <v-text-field v-model="offerName" dense label="Oferta" />
-            <v-text-field v-model="direccion" dense label="Direccion" />
-            <v-text-field v-model="cups" dense label="CUPS" />
             <v-text-field
               v-for="pitem in pitems"
               v-show="showInput(pitem.letter, pitem.number)"
@@ -58,8 +58,8 @@
               dense
               type="number"
             />
-            <v-text-field v-model="otros" label="Otros" type="number" />
-            <v-text-field v-model="descuento" label="Descuento" suffix="€" type="number" />
+            <v-text-field v-model="otros" label="Otros" type="number" dense />
+            <v-text-field v-model="descuento" label="Descuento" suffix="€" type="number" dense />
 
             <v-text-field v-model="rental" label="Alquiler de equipo" type="number" dense />
             <v-text-field v-model="tax" label="Imp.Electricidad" type="number" dense />
@@ -112,12 +112,6 @@ export default {
       cups: null,
       clientName: null,
       emailTo: null,
-      p1_offer: null,
-      p2_offer: null,
-      p3_offer: null,
-      c1_offer: null,
-      c2_offer: null,
-      c3_offer: null,
       offerName: null,
       note: null,
       rental: null,
@@ -263,12 +257,6 @@ export default {
         cups: this.cups,
         client_name: this.clientName,
         email_to: this.emailTo,
-        p1_offer: this.p1_offer,
-        p2_offer: this.p2_offer,
-        p3_offer: this.p3_offer,
-        c1_offer: this.c1_offer,
-        c2_offer: this.c2_offer,
-        c3_offer: this.c3_offer,
         name: this.offerName,
         note: this.note,
         rental: this.rental,

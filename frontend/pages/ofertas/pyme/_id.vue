@@ -1,6 +1,6 @@
 <template>
   <v-row justify="center">
-    <v-col v-for="offer in offers" :key="offer.id" xl="4" lg="6" md="12">
+    <v-col v-for="offer in offers" :key="offer.id" xl="6" lg="8" md="12">
       <v-sheet>
         <detail-offer :offer="offer" show-add-btn />
       </v-sheet>
