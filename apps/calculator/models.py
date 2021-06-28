@@ -65,14 +65,14 @@ class CalculatorSettings(models.Model):
 
     def get_equip(self, tarif):
         return {
-                Tarif.T20TD.value: self.equip_rent_t20td,
-                Tarif.T30TD.value: self.equip_rent_t30td,
-                Tarif.T61TD.value: self.equip_rent_t61td,
-                Tarif.G31.value: self.equip_rent_g31,
-                Tarif.G32.value: self.equip_rent_g32,
-                Tarif.G33.value: self.equip_rent_g33,
-                Tarif.G34.value: self.equip_rent_g34,
-            }[tarif]
+            Tarif.T20TD.value: self.equip_rent_t20td,
+            Tarif.T30TD.value: self.equip_rent_t30td,
+            Tarif.T61TD.value: self.equip_rent_t61td,
+            Tarif.G31.value: self.equip_rent_g31,
+            Tarif.G32.value: self.equip_rent_g32,
+            Tarif.G33.value: self.equip_rent_g33,
+            Tarif.G34.value: self.equip_rent_g34,
+        }[tarif]
 
 
 class Company(models.Model):
@@ -115,6 +115,8 @@ class Offer(models.Model):
         ("name_changed_doc", _("DOCUMENTO CAMBIO DE NOMBRE")),
         ("contrato_arredamiento", _("CONTRATO ARREDAMIENTO/COMPRAVENTA")),
         ("contrato", _("CONTRATO")),
+        ("anexo", _("Anexo")),
+        ("hoja", _("HOJA DE ACTIVACIÓN FUTURA")),
     )
     OFFER_KIND_CHOICES = (
         ("luz", _("Luz")),

@@ -705,7 +705,6 @@ export default {
       }
     },
     async updateQuery(options) {
-      console.log(options)
       options = { ...options, page: 1 }
       Object.keys(options).forEach((key) => {
         const value = options[key]

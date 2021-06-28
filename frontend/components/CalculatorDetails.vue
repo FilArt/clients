@@ -54,11 +54,7 @@
               v-show="showInput(pitem.letter, pitem.number)"
               :key="pitem.letter + pitem.number"
               v-model="pitem.value"
-              :label="
-                'Precio por ' +
-                (pitem.letter === 'c' ? 'consumo' : isGas ? 'termino fijo' : 'potencia') +
-                (isGas ? '' : ' P' + pitem.number)
-              "
+              :label="getLabel(pitem)"
               dense
               type="number"
             />
@@ -216,6 +212,14 @@ export default {
     await this.getDetails()
   },
   methods: {
+    getLabel(pitem) {
+      const { isGas } = this
+      return (
+        'Precio por ' +
+        (pitem.letter === 'c' ? 'consumo' : isGas ? 'termino fijo' : 'potencia') +
+        (isGas ? '' : ' P' + pitem.number)
+      )
+    },
     showInput(letter, number) {
       return this.form.tarif ? constants.showInput(letter, number, this.form.tarif) : false
     },

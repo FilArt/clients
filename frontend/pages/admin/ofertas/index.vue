@@ -61,7 +61,9 @@
             editDialog = false
           "
         >
-          <v-card-title class="headline">Editar {{ fieldToEdit ? fieldToEdit.label : 'ofertas' }}</v-card-title>
+          <v-card-title class="headline">
+            Editar {{ fieldToEdit ? fieldToEdit.label.toLowerCase() : 'ofertas' }}
+          </v-card-title>
 
           <v-card-text v-if="!fieldToEdit">
             <v-select

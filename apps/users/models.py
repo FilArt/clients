@@ -328,6 +328,8 @@ class Attachment(models.Model):
         ("factura_gas_1", _("Factura GAS")),
         ("factura_gas_2", _("Factura GAS reverso")),
         ("contrato", _("Contrato")),
+        ("anexo", _("Anexo")),
+        ("hoja", _("HOJA DE ACTIVACIÓN FUTURA")),
     )
 
     punto = models.ForeignKey(Punto, on_delete=models.CASCADE, related_name="attachments")

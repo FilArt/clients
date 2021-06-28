@@ -31,6 +31,8 @@ export default {
         { value: 'contrato_arredamiento', text: 'Contrato arredamiento/compraventa' },
         { value: 'name_changed_doc', text: 'Documento cambio de nombre' },
         { value: 'contrato', text: 'Contrato' },
+        { value: 'anexo', text: 'Anexo' },
+        { value: 'hoja', text: 'HOJA DE ACTIVACIÓN FUTURA' },
       ],
     }
   },

@@ -187,6 +187,8 @@ export default {
         { value: 'name_changed', text: 'Cambio de nombre' },
         { value: 'arredamiento', text: 'Contrato arredamiento' },
         { value: 'contrato', text: 'Contrato' },
+        { value: 'anexo', text: 'Anexo' },
+        { value: 'hoja', text: 'HOJA DE ACTIVACIÓN FUTURA' },
       ],
       uploadFileDialog: false,
       file: null,
