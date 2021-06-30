@@ -204,10 +204,6 @@ export default {
   },
   async mounted() {
     await this.getDetails()
-    const self = this
-    setInterval(async function () {
-      await self.getDetails()
-    }, 1000)
   },
   methods: {
     getLabel(pitem) {
