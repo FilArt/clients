@@ -60,9 +60,15 @@
             <v-text-field v-model="newOffer.p1" label="P1" :error-messages="errorMessages.p1" />
             <v-text-field v-model="newOffer.p2" label="P2" :error-messages="errorMessages.p2" />
             <v-text-field v-model="newOffer.p3" label="P3" :error-messages="errorMessages.p3" />
+            <v-text-field v-model="newOffer.p4" label="P4" :error-messages="errorMessages.p4" />
+            <v-text-field v-model="newOffer.p5" label="P5" :error-messages="errorMessages.p5" />
+            <v-text-field v-model="newOffer.p6" label="P6" :error-messages="errorMessages.p6" />
             <v-text-field v-model="newOffer.c1" label="C1" :error-messages="errorMessages.c1" />
             <v-text-field v-model="newOffer.c2" label="C2" :error-messages="errorMessages.c2" />
             <v-text-field v-model="newOffer.c3" label="C3" :error-messages="errorMessages.c3" />
+            <v-text-field v-model="newOffer.c4" label="C4" :error-messages="errorMessages.c4" />
+            <v-text-field v-model="newOffer.c5" label="C5" :error-messages="errorMessages.c5" />
+            <v-text-field v-model="newOffer.c6" label="C6" :error-messages="errorMessages.c6" />
             <v-select
               v-model="newOffer.is_price_permanent"
               label="Tipo de precio"
@@ -110,9 +116,15 @@ const offerObject = {
   p1: null,
   p2: null,
   p3: null,
+  p4: null,
+  p5: null,
+  p6: null,
   c1: null,
   c2: null,
   c3: null,
+  c4: null,
+  c5: null,
+  c6: null,
   is_price_permanent: null,
   canal_commission: null,
   agent_commission: null,
