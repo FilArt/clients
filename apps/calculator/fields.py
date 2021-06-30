@@ -57,7 +57,7 @@ class ConsumoCalculationField(serializers.CharField):
         price = getattr(value, field_name)
         return self.PATTERN.format(
             **{"user_value": user_value, "price": price, "subtotal": subtotal, "period": initial_data["period"]}
-        )
+        ).replace(".", ",")
 
 
 class PotenciaCalculationField(ConsumoCalculationField):
