@@ -16,8 +16,8 @@
       <v-app>
         <v-main>
           <v-card class="d-flex align-center justify-space-between pa-1">
-            <v-card>
-              <img src="https://intranet.gestiongroup.es/gg_logo_blue.png" />
+            <v-card class="d-flex" style="max-width: 50%;">
+              <img width="100%" src="https://intranet.gestiongroup.es/gg_logo_blue.png" />
             </v-card>
 
             <v-card class="d-flex flex-column">
@@ -93,13 +93,13 @@
           <v-card class="d-flex flex-column offset">
             <v-card><span class="first-word">Energía reactiva:</span> {{ new.reactive }} €</v-card>
             <v-card><span class="first-word">Alquiler equipos:</span> {{ new.rental }} €</v-card>
-            <v-card
-              ><span class="first-word"
-                >{% if new.kind == 'luz' %}IMP. ELECTRICIDAD:{% else %}IMP. HIDROCARBUROS{% endif %} ({{
-                new.tax.percent }}%):</span
-              >
-              {{ new.tax.value }} €</v-card
-            >
+            <v-card>
+              <span class="first-word">
+                {% if new.kind == 'luz' %} IMP. ELECTRICIDAD: {% else %} IMP. HIDROCARBUROS {% endif %}
+                <span> ({{ new.tax.percent}}%): </span>
+              </span>
+              {{ new.tax.value }} €
+            </v-card>
             <v-card
               ><span class="first-word"
                 >{% if old.igic == 'true' %}IGIC{% else %}I.V.A{% endif %} ({{ new.iva.percent }}):</span
@@ -122,9 +122,9 @@
 
           <v-card class="d-flex flex-row">
             <v-card>
-              <img height="75" src="https://intranet.gestiongroup.es/person.svg" />
+              <img height="60" src="https://intranet.gestiongroup.es/person.svg" />
             </v-card>
-            <v-card class="d-flex flex-column">
+            <v-card class="d-flex flex-column" style="text-indent: 10px;">
               <v-card> Nombre del asesor: {{ agent }}</v-card>
               <v-card> Teléfono: {{ agent_phone }}</v-card>
               <v-card> Email: {{ agent_email }}</v-card>
