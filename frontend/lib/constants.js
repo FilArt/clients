@@ -185,6 +185,33 @@ export default Object.freeze({
         value: 'luz',
       },
     },
+    p4: {
+      text: 'P4',
+      value: 'p4',
+      onlyAdmin: true,
+      group: {
+        text: 'Luz',
+        value: 'luz',
+      },
+    },
+    p5: {
+      text: 'P5',
+      value: 'p5',
+      onlyAdmin: true,
+      group: {
+        text: 'Luz',
+        value: 'luz',
+      },
+    },
+    p6: {
+      text: 'P6',
+      value: 'p6',
+      onlyAdmin: true,
+      group: {
+        text: 'Luz',
+        value: 'luz',
+      },
+    },
     company_gas: {
       text: 'Comercializadora gas',
       value: 'company_gas',
