@@ -297,3 +297,9 @@ class CalculatorSerializer(serializers.ModelSerializer):
                 "iva_percent": f"{round(nds * 100)}%",
             },
         ).data
+
+
+class CalculatorSettingsSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = CalculatorSettings
+        fields = "__all__"

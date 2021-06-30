@@ -9,9 +9,9 @@ from rest_framework_tracking.mixins import LoggingMixin
 
 from apps.calculator.pagination import OffersPagination
 from clients.serializers import AdminOfferListSerializer, DetailOfferSerializer, OfferListSerializer
-from .models import Company, Offer
-from .permissions import OffersPermission
-from .serializers import CompanySerializer
+from .models import CalculatorSettings, Company, Offer
+from .permissions import CalculatorSettingsPermission, OffersPermission
+from .serializers import CalculatorSettingsSerializer, CompanySerializer
 
 
 class CompanyViewSet(LoggingMixin, viewsets.ModelViewSet):
@@ -121,3 +121,9 @@ class PaginatedOfferViewSet(LoggingMixin, viewsets.ModelViewSet):
             raise ValidationError({"ids": ["Invalid data"]})
         Offer.objects.filter(id__in=offers_ids).delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
+
+
+class CalculatorSettingsViewset(viewsets.ModelViewSet):
+    queryset = CalculatorSettings.objects.all()
+    serializer_class = CalculatorSettingsSerializer
+    permission_classes = (CalculatorSettingsPermission,)
