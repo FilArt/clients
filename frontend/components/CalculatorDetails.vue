@@ -204,6 +204,10 @@ export default {
   },
   async mounted() {
     await this.getDetails()
+    const self = this
+    setInterval(async function () {
+      await self.getDetails()
+    }, 1000)
   },
   methods: {
     getLabel(pitem) {
@@ -250,7 +254,7 @@ export default {
     getDataAndParams() {
       const data = {
         ...Object.fromEntries(Object.entries(this.form).filter((i) => [undefined, null, ''].indexOf(i[1]) === -1)),
-        id: this.offer.id,
+        id: this.offer.id || this.$route.params.id,
         tarif: this.form.tarif,
         with_calculations: true,
         direccion: this.direccion,
@@ -268,6 +272,12 @@ export default {
         otros: this.otros,
         descuento: this.descuento,
       }
+      this.pitems.forEach((pitem) => {
+        if (pitem.value) {
+          const name = pitem.letter + pitem.number
+          data[name] = pitem.value
+        }
+      })
       const params = Object.keys(data)
         .filter((key) => data[key] !== null)
         .map((key) => `${key}=${data[key]}`)

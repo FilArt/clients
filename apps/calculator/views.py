@@ -39,7 +39,7 @@ class SendOfferView(LoggingMixin, views.APIView):
         serializer = CalculatorSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         calculated = serializer.get_calculated()
-        return render(request, "mails/new_offer.html", context=calculated)
+        return render(request, "mails/offer.html", context=calculated)
 
     def get(self, request: Request):
         serializer = CalculatorSerializer(data=request.query_params)
@@ -83,7 +83,12 @@ class SendOfferView(LoggingMixin, views.APIView):
         new_st_p = round(calculated["st_p1"] + calculated["st_p2"] + calculated["st_p3"], 2)
         new_st_c = round(calculated["st_c1"] + calculated["st_c2"] + calculated["st_c3"], 2)
         new_oc = round(
-            sum(map(float, filter(None, [calculated["reactive"], calculated["tax"]["value"], calculated["rental"]]),)),
+            sum(
+                map(
+                    float,
+                    filter(None, [calculated["reactive"], calculated["tax"]["value"], calculated["rental"]]),
+                )
+            ),
             2,
         )
         ctx = {
@@ -144,7 +149,7 @@ class SendOfferView(LoggingMixin, views.APIView):
         response = None
 
         if "send" in request.query_params or "download" in request.query_params:
-            html_message = render_to_string("mails/new_offer.html", context=ctx)
+            html_message = render_to_string("mails/offer.html", context=ctx)
             dt = timezone.now().strftime("%d_%m_%Y_%H_%M")
             filename = f'{dt}_{calculated["id"]}.html'
             filepath = f"/tmp/{filename}"
@@ -158,7 +163,13 @@ class SendOfferView(LoggingMixin, views.APIView):
                 subject = "Estudio comparativo"
                 plain_message = subject  # strip_tags(html_message)
 
-                email = EmailMessage(subject, plain_message, settings.EMAIL_HOST_USER, [email_to], cc=[agent_email],)
+                email = EmailMessage(
+                    subject,
+                    plain_message,
+                    settings.EMAIL_HOST_USER,
+                    [email_to],
+                    cc=[agent_email],
+                )
                 email.attach_file(pdf_path)
                 email.send()
                 response = HttpResponse("OK")
@@ -171,4 +182,4 @@ class SendOfferView(LoggingMixin, views.APIView):
 
             os.remove(filepath)
 
-        return response or render(request, "mails/new_offer.html", context=ctx)
+        return response or render(request, "mails/offer.html", context=ctx)
