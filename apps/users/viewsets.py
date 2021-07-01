@@ -1,7 +1,19 @@
 import logging
 import re
+from json import JSONDecodeError
 from typing import Tuple
 
+from clients.serializers import (
+    AccountSerializer,
+    AdditionalContractOnlineSerializer,
+    AgentContractSerializer,
+    AgentPuntoSerializer,
+    AttachmentSerializer,
+    ContractOnlineSerializer,
+    DetailPuntoSerializer,
+    WithFacturaContractOnlineSerializer,
+)
+from django.conf import settings
 from django.contrib.auth.models import Group
 from django.db import transaction
 from django.db.models import Sum
@@ -9,7 +21,7 @@ from django.http import Http404, HttpResponseBadRequest
 from drf_dynamic_fields import DynamicFieldsMixin
 from notifications.models import Notification
 from notifications.signals import notify
-from rest_framework import mixins, viewsets, status
+from rest_framework import mixins, status, viewsets
 from rest_framework.decorators import action
 from rest_framework.exceptions import PermissionDenied, ValidationError
 from rest_framework.generics import get_object_or_404
@@ -20,48 +32,40 @@ from rest_framework_tracking.mixins import LoggingMixin
 from rest_framework_tracking.models import APIRequestLog
 
 from apps.bids.models import Bid
-from clients.serializers import (
-    AccountSerializer,
-    AdditionalContractOnlineSerializer,
-    AttachmentSerializer,
-    ContractOnlineSerializer,
-    DetailPuntoSerializer,
-    WithFacturaContractOnlineSerializer,
-    AgentContractSerializer,
-    AgentPuntoSerializer,
-)
+from apps.cv_integration.viewsets import get_authed_cv_client
+
+from ..bids.serializers import CreateBidSerializer
+from ..calculator.models import Company
 from .models import Attachment, CustomUser, Punto
-from .pagination import UsersPagination, AttachmentsPagination, NotyPagination
+from .pagination import AttachmentsPagination, NotyPagination, UsersPagination
 from .permissions import (
-    UsersPermission,
     AdminAgentPermission,
-    ManageUserPermission,
-    AgentClientsPermissions,
     AdminPermission,
+    AgentClientsPermissions,
     AttachmentPermissions,
+    ManageUserPermission,
     NotyPermissions,
     PuntoPermissions,
+    UsersPermission,
 )
 from .serializers import (
+    AgentClientsSerializer,
+    CanalAgentesSerializer,
+    CreateClientSerializer,
+    GroupSerializer,
     LoadFacturasSerializer,
     ManageUserListSerializer,
     ManageUserSerializer,
+    NotificationSerializer,
+    RegisterByAdminSerializer,
     RegisterSerializer,
+    RequestLogSerializer,
+    UploadToCallVisitSerializer,
     UserHistorySerializer,
     UserListSerializer,
     UserSerializer,
-    RequestLogSerializer,
-    RegisterByAdminSerializer,
-    AgentClientsSerializer,
-    CanalAgentesSerializer,
-    NotificationSerializer,
-    GroupSerializer,
-    CreateClientSerializer,
-    UploadToCallVisitSerializer,
 )
-from .utils import TRAMITACION, PENDIENTE_TRAMITACION, KO, PAGADO, PENDIENTE_PAGO, KO_PAPELLERA
-from ..bids.serializers import CreateBidSerializer
-from ..calculator.models import Company
+from .utils import KO, KO_PAPELLERA, PAGADO, PENDIENTE_PAGO, PENDIENTE_TRAMITACION, TRAMITACION
 
 logger = logging.getLogger(__name__)
 
@@ -229,6 +233,35 @@ class UserViewSet(
         client.responsible = libre
         client.save(update_fields=["responsible"])
         return Response("OK")
+
+    @action(methods=["GET"], detail=True)
+    def get_cv_data(self, request: Request, pk: int):
+        client = self.get_object()
+        if client.role:
+            raise ValidationError("invalid request")
+        puntos = client.puntos.all()
+        cupses = filter(
+            (lambda cups: cups), [punto.cups_luz for punto in puntos] + [punto.cups_gas for punto in puntos]
+        )
+        authed_cv_client = get_authed_cv_client(getattr(request.user, "callvisituser"))
+        agent = {}
+        for cups in cupses:
+            try:
+                card_id = authed_cv_client.get(f"{settings.CALL_VISIT_URL}/api/cards/get_by_cups/?cups={cups}").json()
+                if card_id:
+                    card = authed_cv_client.get(
+                        f"{settings.CALL_VISIT_URL}/api/cards/{card_id}?fields=operator_fn,manager_fn,status"
+                    ).json()
+                    if card:
+                        agent = {
+                            "operator": card["operator_fn"],
+                            "agent": card["manager_fn"],
+                            "status": card["status"],
+                        }
+                        break
+            except JSONDecodeError:
+                pass
+        return Response(agent)
 
 
 class ManageUsersViewSet(UserViewSet, mixins.CreateModelMixin, mixins.DestroyModelMixin):

@@ -95,6 +95,28 @@
           @click:append="updateUser('observations', user['observations'])"
         />
       </v-col>
+      <v-col>
+        <v-list>
+          <v-list-item>
+            <v-list-item-subtitle> Teleconcetador </v-list-item-subtitle>
+            <v-list-item-title>
+              {{ cvData['operator'] || '-' }}
+            </v-list-item-title>
+          </v-list-item>
+          <v-list-item>
+            <v-list-item-subtitle> Agente </v-list-item-subtitle>
+            <v-list-item-title>
+              {{ cvData['agent'] || '-' }}
+            </v-list-item-title>
+          </v-list-item>
+          <v-list-item>
+            <v-list-item-subtitle> Estado </v-list-item-subtitle>
+            <v-list-item-title>
+              {{ cvData['status'] || '-' }}
+            </v-list-item-title>
+          </v-list-item>
+        </v-list>
+      </v-col>
     </v-row>
   </v-container>
 </template>
@@ -123,6 +145,7 @@ export default {
       source: null,
       phone: null,
       dialogs: {},
+      cvData: {},
     }
   },
   computed: {
@@ -211,6 +234,12 @@ export default {
       'cif_nif',
     ]
     const user = await this.$axios.$get(`users/users/${this.userId}/?fields=${fields}`)
+    try {
+      this.cvData = await this.$axios.$get(`users/users/${this.userId}/get_cv_data/`)
+    } catch (e) {
+      console.log(e)
+      this.$toast.error(e && e.response && e.response.data ? e.response.data : e, { timeout: 3000, duration: 3000 })
+    }
     this.user = user
     this.responsible = user.responsible
     this.source = user.source
