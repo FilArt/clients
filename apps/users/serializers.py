@@ -388,4 +388,5 @@ class UserHistorySerializer(serializers.ModelSerializer):
         fields = ["id", "data", "user", "requested_at", "username_persistent"]
 
     def get_data(self, obj):
-        return json.loads(obj.data.replace("'", '"'))
+        valid_json_string = obj.data.replace("'", '"').replace("True", '"true"').replace("False", "false")
+        return json.loads(valid_json_string)
