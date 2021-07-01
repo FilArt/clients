@@ -1,3 +1,4 @@
+import json
 import logging
 from datetime import datetime
 
@@ -374,3 +375,14 @@ class UploadToCallVisitSerializer(serializers.ModelSerializer):
     class Meta:
         model = CustomUser
         fields = ("id",)
+
+
+class UserHistorySerializer(serializers.ModelSerializer):
+    data = serializers.SerializerMethodField()
+
+    class Meta:
+        model = APIRequestLog
+        fields = ["data", "user", "requested_at", "username_persistent"]
+
+    def get_data(self, obj):
+        return json.loads(obj.data.replace("'", '"'))

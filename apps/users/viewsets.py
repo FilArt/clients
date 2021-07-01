@@ -47,6 +47,7 @@ from .serializers import (
     ManageUserListSerializer,
     ManageUserSerializer,
     RegisterSerializer,
+    UserHistorySerializer,
     UserListSerializer,
     UserSerializer,
     RequestLogSerializer,
@@ -333,6 +334,17 @@ class ManageUsersViewSet(UserViewSet, mixins.CreateModelMixin, mixins.DestroyMod
                 **by_statuses,
             }
             data.append(item)
+        return Response(data)
+
+    @action(methods=["GET"], detail=True, permission_classes=(AdminPermission,))
+    def history(self, request: Request, pk: int):
+        logs = APIRequestLog.objects.filter(
+            view__in=["apps.users.viewsets.ManageUsersViewSet", 'apps.users.viewsets.UserViewSet'],
+            view_method__in=["partial_update", "update"],
+            path__in=[f"/api/users/manage_users/{pk}/", f'/api/users/users/{pk}/'],
+            errors__isnull=True,
+        )
+        data = UserHistorySerializer(logs, many=True).data
         return Response(data)
 
 

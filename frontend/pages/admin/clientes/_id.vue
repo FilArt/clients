@@ -10,13 +10,37 @@
     </v-toolbar>
 
     <v-card-text>
-      <user-detail-data
-        :user-id="$route.params.id"
-        @user-updated="
-          user = null
-          user = $event
-        "
-      />
+      <user-detail-data :user-id="$route.params.id" @user-updated="refresh" />
+      <v-dialog>
+        <template v-slot:activator="{ on }">
+          <v-btn :disabled="!userHistory || !userHistory.length" v-on="on"> history </v-btn>
+        </template>
+        <v-card>
+          <v-card-text>
+            <v-list>
+              <v-list-item v-for="item in userHistory" :key="item.requested_at">
+                <v-list-item-content>
+                  <v-list-item-title>
+                    <caption>
+                      {{
+                        formatDate(item.requested_at)
+                      }}
+                    </caption>
+                    <nuxt-link :to="'/admin/usuarios/' + item.user">{{ item.username_persistent }}</nuxt-link>
+                  </v-list-item-title>
+                  <p
+                    v-for="(subitem, idx) in formatJson(item.data)"
+                    :key="idx"
+                    :style="subitem.startsWith('\t') ? 'text-indent: 1em' : ''"
+                  >
+                    {{ subitem }}
+                  </p>
+                </v-list-item-content>
+              </v-list-item>
+            </v-list>
+          </v-card-text>
+        </v-card>
+      </v-dialog>
     </v-card-text>
 
     <v-card-text>
@@ -103,7 +127,7 @@
 
 <script>
 import { mapState } from 'vuex'
-
+import { format } from 'date-fns'
 export default {
   components: {
     SolicitudesProcess: () => import('@/components/SolicitudesProcess'),
@@ -133,14 +157,36 @@ export default {
       calls,
       puntos: await $axios.$get(`/users/puntos/?user=${params.id}`),
       history: await $axios.$get(`/bids/history/?user=${params.id}`),
+      userHistory: await $axios.$get(`/users/manage_users/${params.id}/history/`),
       tabs: null,
     }
   },
   computed: mapState({ bids: (state) => state.bids.bids }),
   methods: {
+    formatDate(dateStr) {
+      return format(new Date(dateStr), 'dd/MM/yyyy HH:mm')
+    },
+    formatJson(obj) {
+      const subitems = []
+      Object.keys(obj).forEach((key) => {
+        const val = obj[key]
+        if (String(val).includes('\n')) {
+          const lines = val.split('\n')
+          subitems.push(`${key}:`)
+          lines.forEach((line) => {
+            subitems.push('\t' + line)
+          })
+        } else {
+          subitems.push(`${key}: ${val}`)
+        }
+        return `${key}: ${obj[key]}`
+      })
+      return subitems
+    },
     async refresh() {
       const user = await this.$axios.$get(`/users/users/${this.$route.params.id}/`)
       await this.$store.dispatch('bids/fetchBids', { params: `user=${user.id}` })
+      this.userHistory = await this.$axios.$get(`/users/manage_users/${user.id}/history/`)
       this.user = user
     },
     async fetchPuntos() {
