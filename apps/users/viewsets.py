@@ -405,7 +405,10 @@ class PuntoViewSet(LoggingMixin, viewsets.ModelViewSet):
 class AttachmentsViewSet(LoggingMixin, viewsets.ModelViewSet):
     queryset = Attachment.objects.all()
     serializer_class = AttachmentSerializer
-    permission_classes = (AttachmentPermissions,)
+    permission_classes = (
+        IsAuthenticated,
+        AttachmentPermissions,
+    )
 
     def filter_queryset(self, queryset):
         user = self.request.user
@@ -568,7 +571,10 @@ class AgentClients(viewsets.ReadOnlyModelViewSet):
 class NotificationViewSet(viewsets.ModelViewSet):
     queryset = Notification.objects.all()
     serializer_class = NotificationSerializer
-    permission_classes = (IsAuthenticated, NotyPermissions,)
+    permission_classes = (
+        IsAuthenticated,
+        NotyPermissions,
+    )
     filterset_fields = {
         "unread": ["exact"],
     }
