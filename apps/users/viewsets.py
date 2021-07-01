@@ -343,6 +343,7 @@ class ManageUsersViewSet(UserViewSet, mixins.CreateModelMixin, mixins.DestroyMod
             view_method__in=["partial_update", "update"],
             path__in=[f"/api/users/manage_users/{pk}/", f"/api/users/users/{pk}/"],
             errors__isnull=True,
+            data__isnull=False,
         ).order_by("-requested_at")
         data = UserHistorySerializer(logs, many=True).data
         return Response(data)
@@ -567,7 +568,7 @@ class AgentClients(viewsets.ReadOnlyModelViewSet):
 class NotificationViewSet(viewsets.ModelViewSet):
     queryset = Notification.objects.all()
     serializer_class = NotificationSerializer
-    permission_classes = (NotyPermissions,)
+    permission_classes = (IsAuthenticated, NotyPermissions,)
     filterset_fields = {
         "unread": ["exact"],
     }
