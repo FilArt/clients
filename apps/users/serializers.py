@@ -382,7 +382,7 @@ class UserHistorySerializer(serializers.ModelSerializer):
 
     class Meta:
         model = APIRequestLog
-        fields = ["data", "user", "requested_at", "username_persistent"]
+        fields = ["id", "data", "user", "requested_at", "username_persistent"]
 
     def get_data(self, obj):
         return json.loads(obj.data.replace("'", '"'))

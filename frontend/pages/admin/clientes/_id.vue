@@ -11,27 +11,47 @@
 
     <v-card-text>
       <user-detail-data :user-id="$route.params.id" @user-updated="refresh" />
-      <v-dialog>
+
+      <v-dialog v-model="userHistoryDialog" scrollable max-width="750px">
         <template v-slot:activator="{ on }">
-          <v-btn :disabled="!userHistory || !userHistory.length" v-on="on"> history </v-btn>
+          <v-btn block color="primary" :disabled="!userHistory || !userHistory.length" v-on="on">
+            <v-icon left>mdi-eye</v-icon>
+            Ver el historial del usuario
+          </v-btn>
         </template>
         <v-card>
-          <v-card-text>
+          <v-card-title>
+            Cambias
+            <v-spacer />
+            <close-button @click="userHistoryDialog = false" />
+          </v-card-title>
+
+          <v-divider></v-divider>
+
+          <v-card-text style="height: 500px">
             <v-list>
-              <v-list-item v-for="item in userHistory" :key="item.requested_at">
+              <v-list-item v-for="item in userHistory" :key="item.id">
                 <v-list-item-content>
                   <v-list-item-title>
-                    <caption>
-                      {{
-                        formatDate(item.requested_at)
-                      }}
-                    </caption>
-                    <nuxt-link :to="'/admin/usuarios/' + item.user">{{ item.username_persistent }}</nuxt-link>
+                    <v-row>
+                      <v-col> ID: {{ item.id }} </v-col>
+                      <v-col>
+                        <caption>
+                          {{
+                            formatDate(item.requested_at)
+                          }}
+                        </caption>
+                      </v-col>
+                      <v-col>
+                        <nuxt-link :to="'/admin/usuarios/' + item.user">{{ item.username_persistent }}</nuxt-link>
+                      </v-col>
+                    </v-row>
                   </v-list-item-title>
                   <p
                     v-for="(subitem, idx) in formatJson(item.data)"
                     :key="idx"
                     :style="subitem.startsWith('\t') ? 'text-indent: 1em' : ''"
+                    class="truncate"
                   >
                     {{ subitem }}
                   </p>
@@ -136,6 +156,7 @@ export default {
     PuntosList: () => import('~/components/puntos/PuntosList'),
     HistoryList: () => import('~/components/history/HistoryList'),
     UserDetailData: () => import('@/components/forms/UserDetailData'),
+    CloseButton: () => import('@/components/buttons/closeButton.vue'),
   },
   async asyncData({ params, $axios }) {
     const user = await $axios.$get(`/users/users/${params.id}/`)
@@ -159,6 +180,7 @@ export default {
       history: await $axios.$get(`/bids/history/?user=${params.id}`),
       userHistory: await $axios.$get(`/users/manage_users/${params.id}/history/`),
       tabs: null,
+      userHistoryDialog: false,
     }
   },
   computed: mapState({ bids: (state) => state.bids.bids }),

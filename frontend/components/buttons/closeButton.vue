@@ -5,7 +5,7 @@
         <v-icon>mdi-close</v-icon>
       </v-btn>
     </template>
-    <span>Close</span>
+    <span>Cerca</span>
   </v-tooltip>
 </template>
 

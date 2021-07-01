@@ -339,11 +339,11 @@ class ManageUsersViewSet(UserViewSet, mixins.CreateModelMixin, mixins.DestroyMod
     @action(methods=["GET"], detail=True, permission_classes=(AdminPermission,))
     def history(self, request: Request, pk: int):
         logs = APIRequestLog.objects.filter(
-            view__in=["apps.users.viewsets.ManageUsersViewSet", 'apps.users.viewsets.UserViewSet'],
+            view__in=["apps.users.viewsets.ManageUsersViewSet", "apps.users.viewsets.UserViewSet"],
             view_method__in=["partial_update", "update"],
-            path__in=[f"/api/users/manage_users/{pk}/", f'/api/users/users/{pk}/'],
+            path__in=[f"/api/users/manage_users/{pk}/", f"/api/users/users/{pk}/"],
             errors__isnull=True,
-        )
+        ).order_by("-requested_at")
         data = UserHistorySerializer(logs, many=True).data
         return Response(data)
 
