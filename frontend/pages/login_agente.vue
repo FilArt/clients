@@ -137,7 +137,12 @@ export default {
       try {
         await this.$axios.post('users/register_user/reset_password/', this.form)
       } catch (e) {
-        this.error = e.response.data
+        const err = e.response.data
+        if (err instanceof String) {
+          this.$toast.error(err)
+        } else {
+          this.error = err
+        }
       }
 
       await this.$swal({
