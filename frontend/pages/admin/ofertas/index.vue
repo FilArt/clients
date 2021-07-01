@@ -125,10 +125,6 @@
       <v-spacer />
 
       <v-toolbar-items>
-        <v-btn nuxt to="/admin/ofertas/comparador" color="info">
-          Comparador
-          <v-icon>mdi-cog</v-icon>
-        </v-btn>
         <v-btn nuxt to="/admin/ofertas/comercializadoras" color="warning">Comercializadoras</v-btn>
 
         <v-btn nuxt to="/admin/ofertas/nuevo_oferta" color="success">

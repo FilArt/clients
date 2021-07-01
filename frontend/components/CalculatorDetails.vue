@@ -89,7 +89,10 @@ import PhoneField from '@/components/fields/phoneField'
 
 export default {
   name: 'CalculatorDetails',
-  components: { PhoneField, EmailField },
+  components: {
+    PhoneField,
+    EmailField,
+  },
   props: {
     offer: {
       type: Object,
