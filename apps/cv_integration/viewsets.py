@@ -51,7 +51,7 @@ class CallVisitUserViewSet(viewsets.ModelViewSet):
             bids = getattr(client, "bids").all()
             for bid in bids:
                 punto: Punto = bid.punto
-                item = {
+                item = {k: v for k, v in {
                     "name": client.fullname,
                     "postalcode": punto.postalcode,
                     "cups": punto.cups_luz,
@@ -85,7 +85,7 @@ class CallVisitUserViewSet(viewsets.ModelViewSet):
                     "iban": punto.iban,
                     "phones2": [p for p in [client.phone, client.phone_city] if p],
                     "is_client": True,
-                }
+                }.items() if v}
                 response = authed_cv_client.post(f"{settings.CALL_VISIT_URL}/api/cards/", json=item)
                 if not response.ok and (
                     "La tarjeta con ese cups ya existe" in response.text or "Multipunto" in response.text
