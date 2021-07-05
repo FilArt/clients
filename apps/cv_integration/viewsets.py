@@ -54,7 +54,7 @@ class CallVisitUserViewSet(viewsets.ModelViewSet):
                 item = {k: v for k, v in {
                     "name": client.fullname,
                     "postalcode": punto.postalcode,
-                    "cups": punto.cups_luz,
+                    "cups": punto.cups_luz or punto.cups_gas,
                     "cups_gas": punto.cups_gas,
                     "tarif": punto.tarif_luz,
                     "tarif_gas": punto.tarif_gas,
