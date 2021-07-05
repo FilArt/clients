@@ -4,6 +4,7 @@
       <users-table
         selectable
         bids-count-header="Puntos suministros"
+        mode="client"
         :statuses="statuses"
         :headers="headers"
         detail-url="/admin/clientes"

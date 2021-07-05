@@ -157,6 +157,8 @@ class UserViewSet(
                 qs = CustomUser.objects.facturacion()
             elif mode == "ko_papellera":
                 qs = CustomUser.objects.ko_papellera()
+            elif mode == "client":
+                qs = CustomUser.objects.clients()
 
             if statuses:
                 users = Bid.objects.with_status().filter(status__in=statuses.split(",")).values("user")

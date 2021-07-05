@@ -6,6 +6,7 @@ from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 
 from .utils import (
+    CLIENT_STATUSES,
     KO,
     PENDIENTE_PAGO,
     PENDIENTE_TRAMITACION,
@@ -89,7 +90,8 @@ class CustomUserManager(BaseUserManager):
             ko_bids=Count("bids", filter=Q(bids__call=False) | Q(bids__scoring=False) | Q(bids__doc=False)),
             ok_bids=Count("bids", filter=Q(bids__call=True) & Q(bids__scoring=True) & Q(bids__doc=True)),
             touched_bids=Count(
-                "bids", filter=Q(bids__call__isnull=False) | Q(bids__scoring__isnull=False) | Q(bids__doc__isnull=False)
+                "bids",
+                filter=Q(bids__call__isnull=False) | Q(bids__scoring__isnull=False) | Q(bids__doc__isnull=False),
             ),
         ).annotate(
             status=Case(
@@ -134,6 +136,18 @@ class CustomUserManager(BaseUserManager):
         )
 
     def tramitacion(self) -> QuerySet:
+        from ..bids.models import Bid
+
+        bids = Bid.objects.with_status().filter(status__in=CLIENT_STATUSES)
+        users = bids.values("user")
+        return (
+            self.get_queryset()
+            .filter(Q(id__in=users) | Q(bids__isnull=True), role__isnull=True)
+            .exclude(ko=True)
+            .annotate(bids_count=Count("bids", filter=Q(bids__in=bids), distinct=True))
+        )
+
+    def clients(self) -> QuerySet:
         from ..bids.models import Bid
 
         bids = Bid.objects.with_status().filter(status__in=TRAMITACION_STATUSES)
