@@ -245,8 +245,8 @@ class UserViewSet(
         )
         try:
             authed_cv_client = get_authed_cv_client(getattr(request.user, "callvisituser"))
-        except CustomUser.RelatedObjectDoesNotExist:
-            raise ValidationError('First log in to call-visit')
+        except CustomUser.callvisituser.RelatedObjectDoesNotExist:
+            raise ValidationError("First log in to call-visit")
         agent = {}
         for cups in cupses:
             try:
