@@ -243,7 +243,10 @@ class UserViewSet(
         cupses = filter(
             (lambda cups: cups), [punto.cups_luz for punto in puntos] + [punto.cups_gas for punto in puntos]
         )
-        authed_cv_client = get_authed_cv_client(getattr(request.user, "callvisituser"))
+        try:
+            authed_cv_client = get_authed_cv_client(getattr(request.user, "callvisituser"))
+        except CustomUser.RelatedObjectDoesNotExist:
+            raise ValidationError('First log in to call-visit')
         agent = {}
         for cups in cupses:
             try:
