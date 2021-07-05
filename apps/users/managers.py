@@ -138,7 +138,7 @@ class CustomUserManager(BaseUserManager):
     def tramitacion(self) -> QuerySet:
         from ..bids.models import Bid
 
-        bids = Bid.objects.with_status().filter(status__in=CLIENT_STATUSES)
+        bids = Bid.objects.with_status().filter(status__in=TRAMITACION_STATUSES)
         users = bids.values("user")
         return (
             self.get_queryset()
@@ -150,7 +150,7 @@ class CustomUserManager(BaseUserManager):
     def clients(self) -> QuerySet:
         from ..bids.models import Bid
 
-        bids = Bid.objects.with_status().filter(status__in=TRAMITACION_STATUSES)
+        bids = Bid.objects.with_status().filter(status__in=CLIENT_STATUSES)
         users = bids.values("user")
         return (
             self.get_queryset()
