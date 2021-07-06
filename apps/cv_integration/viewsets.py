@@ -95,17 +95,22 @@ class CallVisitUserViewSet(viewsets.ModelViewSet):
                 if not response.ok and (
                     "La tarjeta con ese cups ya existe" in response.text or "Multipunto" in response.text
                 ):
-                    cups = punto.cups_luz
+                    cups = punto.cups_luz or punto.cups_gas
                     response = authed_cv_client.get(f"{settings.CALL_VISIT_URL}/api/cards/get_by_cups/?cups={cups}")
                     card_id = response.json()
                     item.pop("cups")
                     response = authed_cv_client.patch(f"{settings.CALL_VISIT_URL}/api/cards/{card_id}/", json=item)
 
                 if not response.ok:
-                    try:
-                        errors.append({client.id: response.json()})
-                    except json.JSONDecodeError:
-                        errors.append({client.id: response.text})
+                    if response.status_code == 404:
+                        errors.append({client.id: ["No ha encontrado"]})
+                    else:
+                        try:
+                            errors.append({client.id: response.json()})
+                        except json.JSONDecodeError:
+                            errors.append({client.id: response.text})
+                else:
+                    errors.append({client.id: ["OK"]})
 
         if errors:
             raise ValidationError(errors)
