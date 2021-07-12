@@ -50,16 +50,16 @@
 
           <v-card class="d-flex flex-column offset font-weight-light caption">
             <v-card> <span class="first-word">P1:</span> {{ up1 }} kW/h × {{ period }} dias × {{ p1 }} € = {{ st_p1 }} €  </v-card>
-            {% if c_st_p2 %}
-            <v-card> <span class="first-word">P2:</span> {{ c_st_p2 }} </v-card>
-            {% endif %} {% if c_st_p3 %}
-            <v-card> <span class="first-word">P3:</span> {{ c_st_p3 }} </v-card>
-            {% endif %} {% if c_st_p4 %}
-            <v-card> <span class="first-word">P4:</span> {{ c_st_p4 }} </v-card>
-            {% endif %} {% if c_st_p5 %}
-            <v-card> <span class="first-word">P5:</span> {{ c_st_p5 }} </v-card>
-            {% endif %} {% if c_st_p6 %}
-            <v-card> <span class="first-word">P6:</span> {{ c_st_p6 }} </v-card>
+            {% if up2 %}
+            <v-card> <span class="first-word">P2:</span> {{ up2 }} kW/h × {{ period }} dias × {{ p2 }} € = {{ st_p2 }} €  </v-card>
+            {% endif %} {% if up3 %}
+            <v-card> <span class="first-word">P3:</span> {{ up3 }} kW/h × {{ period }} dias × {{ p3 }} € = {{ st_p3 }} €  </v-card>
+            {% endif %} {% if up4 %}
+            <v-card> <span class="first-word">P4:</span> {{ up4 }} kW/h × {{ period }} dias × {{ p4 }} € = {{ st_p4 }} €  </v-card>
+            {% endif %} {% if up5 %}
+            <v-card> <span class="first-word">P5:</span> {{ up5 }} kW/h × {{ period }} dias × {{ p5 }} € = {{ st_p5 }} €  </v-card>
+            {% endif %} {% if up6 %}
+            <v-card> <span class="first-word">P6:</span> {{ up6 }} kW/h × {{ period }} dias × {{ p6 }} € = {{ st_p6 }} €  </v-card>
             {% endif %}
           </v-card>
 
@@ -70,18 +70,18 @@
           </v-card>
 
           <v-card class="d-flex flex-column offset font-weight-light caption">
-            {% if c_st_c1 %}
-            <v-card><span class="first-word">P1: </span>{{ c_st_c1 }}</v-card>
-            {% endif %} {% if c_st_c2 %}
-            <v-card><span class="first-word">P2: </span>{{ c_st_c2 }}</v-card>
-            {% endif %} {% if c_st_c3 %}
-            <v-card><span class="first-word">P3: </span>{{ c_st_c3 }}</v-card>
-            {% endif %} {% if c_st_c4 %}
-            <v-card><span class="first-word">P4: </span>{{ c_st_c4 }}</v-card>
-            {% endif %} {% if c_st_c5 %}
-            <v-card><span class="first-word">P5: </span>{{ c_st_c5 }}</v-card>
-            {% endif %} {% if c_st_c6 %}
-            <v-card><span class="first-word">P6: </span>{{ c_st_c6 }}</v-card>
+            {% if uc1 %}
+            <v-card><span class="first-word">P1: </span>{{ uc1 }} X {{ c1 }} (€/kWh) = {{ st_c1 }} €</v-card>
+            {% endif %} {% if uc2 %}
+            <v-card><span class="first-word">P2: </span>{{ uc2 }} X {{ c2 }} (€/kWh) = {{ st_c2 }} €</v-card>
+            {% endif %} {% if uc3 %}
+            <v-card><span class="first-word">P3: </span>{{ uc3 }} X {{ c3 }} (€/kWh) = {{ st_c3 }} €</v-card>
+            {% endif %} {% if uc4 %}
+            <v-card><span class="first-word">P4: </span>{{ uc4 }} X {{ c4 }} (€/kWh) = {{ st_c4 }} €</v-card>
+            {% endif %} {% if uc5 %}
+            <v-card><span class="first-word">P5: </span>{{ uc5 }} X {{ c5 }} (€/kWh) = {{ st_c5 }} €</v-card>
+            {% endif %} {% if uc6 %}
+            <v-card><span class="first-word">P6: </span>{{ uc6 }} X {{ c6 }} (€/kWh) = {{ st_c6 }} €</v-card>
             {% endif %}
           </v-card>
 
