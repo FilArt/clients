@@ -5,6 +5,51 @@
       <v-btn style="margin-right: 7em" color="success" :disabled="loading || downloading" rounded @click="getDetails">
         <v-icon>mdi-refresh</v-icon>
       </v-btn>
+
+      <v-dialog v-model="rewriteValuesFormDialog" max-width="750" scrollable>
+        <template v-slot:activator="{ on }">
+          <v-btn v-on="on"> Cambiar valores </v-btn>
+        </template>
+        <v-card>
+          <v-card-text>
+            <v-card flat class="d-flex flex-wrap">
+              <v-card v-for="field in rewriteValuesForm" :key="field.name" class="mb-6 pa-2" flat>
+                <div v-if="field.items && field.items.length">
+                  <v-select
+                    v-model="newTax.key"
+                    :items="field.items"
+                    :label="field.text"
+                    item-text="text"
+                    item-value="key"
+                    clearable
+                    @clear="
+                      newTax = {}
+                      onNewTaxInput()
+                    "
+                  />
+                  <v-text-field v-if="newTax.key" v-model="newTax.percent" label="Percent" @input="onNewTaxInput" />
+                  <v-text-field v-if="newTax.key" v-model="newTax.value" label="Valor" @input="onNewTaxInput" />
+                </div>
+                <v-text-field v-else v-model="field.value" :label="field.text" />
+              </v-card>
+            </v-card>
+          </v-card-text>
+
+          <v-card-actions>
+            <v-btn color="warning" @click="resetFormField">Cancelar</v-btn>
+            <v-btn
+              color="success"
+              @click="
+                rewriteValuesFormDialog = false
+                getDetails()
+              "
+            >
+              OK
+            </v-btn>
+          </v-card-actions>
+        </v-card>
+      </v-dialog>
+
       <v-btn color="warning" :disabled="downloading" :loading="loading" rounded x-large @click="send(false)">
         <v-icon>mdi-email-send</v-icon>
       </v-btn>
@@ -32,67 +77,187 @@
       </v-btn>
     </v-card-text>
 
-    <div v-else>
-      <v-card-text>
-        <v-row>
-          <v-col>
-            <template>
-              <v-text-field v-model="agent.fullname" label="Tu nombre" />
-              <email-field v-model="agent.email" label="Tu email" />
-              <phone-field v-model="agent.phone" />
-            </template>
-
-            <v-text-field v-model="clientName" label="Nombre de cliente" />
-            <email-field v-model="emailTo" label="Email de cliente" />
-            <v-text-field v-model="direccion" label="Direccion" />
-            <v-text-field v-model="cups" label="CUPS" />
-          </v-col>
-          <v-col>
-            <v-text-field v-model="offerName" dense label="Oferta" />
-            <v-text-field
-              v-for="pitem in pitems"
-              v-show="showInput(pitem.letter, pitem.number)"
-              :key="pitem.letter + pitem.number"
-              v-model="pitem.value"
-              :label="getLabel(pitem)"
-              dense
-              type="number"
-            />
-            <v-text-field v-model="otros" label="Otros" type="number" dense />
-            <v-text-field v-model="descuento" label="Descuento" suffix="€" type="number" dense />
-
-            <v-text-field v-model="rental" label="Alquiler de equipo" type="number" dense />
-            <v-text-field v-model="tax" label="Imp.Electricidad" type="number" dense />
-            <v-text-field v-model="iva" :label="form.igic ? 'IGIC' : 'IVA'" suffix="%" type="number" dense />
-          </v-col>
-        </v-row>
-        <v-row>
-          <v-col>
-            <v-textarea v-model="note" label="Nota" dense />
-          </v-col>
-        </v-row>
-      </v-card-text>
-
-      <v-card-text>
-        <!-- eslint-disable-next-line vue/no-v-html -->
-        <v-sheet light v-html="htmlDetails" />
-      </v-card-text>
-    </div>
+    <v-card-text v-else>
+      <!-- eslint-disable-next-line vue/no-v-html -->
+      <v-sheet light v-html="htmlDetails" />
+    </v-card-text>
   </v-card>
 </template>
 
 <script>
-import { mapState } from 'vuex'
-import EmailField from '@/components/fields/emailField'
-import constants from '@/lib/constants'
-import PhoneField from '@/components/fields/phoneField'
+const defaultFields = [
+  {
+    text: 'Nombre del cliente',
+    value: null,
+    name: 'client_name',
+  },
+  {
+    text: 'Email del cliente',
+    value: null,
+    name: 'client_email',
+  },
+  {
+    text: 'Teléfono del cliente',
+    value: null,
+    name: 'client_phone',
+  },
+  {
+    text: 'CUPS',
+    value: null,
+    name: 'cups',
+  },
+  {
+    text: 'Importe alquiler equipo',
+    value: null,
+    name: 'rental',
+  },
 
+  // {
+  //   id: 5004,
+  //   company_name: 'AXPO',
+  //   company_logo: '/media/6.png',
+  //   name: 'AXPO-LUZ-ANTIGUO',
+  //   tarif: '2.0TD',
+  //   p1: 0.0,
+  //   p2: 0.0,
+  //   p3: 0.0,
+  //   p4: 0.0,
+  //   p5: 0.0,
+  //   p6: 0.0,
+  //   c1: 0.0,
+  //   c2: 0.0,
+  //   c3: 0.0,
+  //   c4: 0.0,
+  //   c5: 0.0,
+  //   c6: 0.0,
+  //   is_price_permanent: 'Fijo',
+  //   client_type: 1,
+  //   description: 'AXPO-ANTIGUO',
+  //   c_st_p1: '21,12 kW/h × 10 dias × 0,0 € = 0,0 €',
+  //   c_st_p2: None,
+  //   c_st_p3: None,
+  //   c_st_p4: None,
+  //   c_st_p5: None,
+  //   c_st_p6: None,
+  //   c_st_c1: '22,12 kW/h × 0,0 € = 0,0 €',
+  //   c_st_c2: None,
+  //   c_st_c3: None,
+  //   c_st_c4: None,
+  //   c_st_c5: None,
+  //   c_st_c6: None,
+  //   st_p1: 0.0,
+  //   st_p2: 0.0,
+  //   st_p3: 0.0,
+  //   st_p4: 0.0,
+  //   st_p5: 0.0,
+  //   st_p6: 0.0,
+  //   st_c1: 0.0,
+  //   st_c2: 0.0,
+  //   st_c3: 0.0,
+  //   st_c4: 0.0,
+  //   st_c5: 0.0,
+  //   st_c6: 0.0,
+  //   tax: { percent: 5.11, value: '0.00' },
+  //   iva: { percent: '21%', value: '0.06' },
+  //   rental: 0.27,
+  //   total: '0.32',
+  //   current_price: 50.0,
+  //   profit: '49.68',
+  //   profit_num: '49.68',
+  //   profit_percent: 99,
+  //   annual_profit: '1813.2',
+  //   annual_profit_num: '1813.20',
+  //   kind: 'luz',
+  //   reactive: 0.0,
+  // },
+
+  {
+    text: 'Impuesto con desplegable',
+    items: [
+      { key: 'tax', value: '0.00', text: 'IGIC' },
+      { key: 'iva', value: '0.06', text: 'IVA' },
+      { key: 'canarias', value: null, text: 'islas Canarias' },
+    ],
+    name: 'impuesto',
+  },
+  {
+    text: 'Nombre del asesor/a',
+    value: null,
+    name: 'agent',
+  },
+  {
+    text: 'Teléfono del asesor/a',
+    value: null,
+    name: 'agent_phone',
+  },
+  {
+    text: 'Email del asesor/a',
+    value: null,
+    name: 'agent_email',
+  },
+  {
+    text: 'P1 (potencia)',
+    value: null,
+    name: 'up1',
+  },
+  {
+    text: 'P2 (potencia)',
+    value: null,
+    name: 'up2',
+  },
+  {
+    text: 'P3 (potencia)',
+    value: null,
+    name: 'up3',
+  },
+  {
+    text: 'P4 (potencia)',
+    value: null,
+    name: 'up4',
+  },
+  {
+    text: 'P5 (potencia)',
+    value: null,
+    name: 'up5',
+  },
+  {
+    text: 'P6 (potencia)',
+    value: null,
+    name: 'up6',
+  },
+  {
+    text: 'P1 (consumo)',
+    value: null,
+    name: 'uc1',
+  },
+  {
+    text: 'P2 (consumo)',
+    value: null,
+    name: 'uc2',
+  },
+  {
+    text: 'P3 (consumo)',
+    value: null,
+    name: 'uc3',
+  },
+  {
+    text: 'P4 (consumo)',
+    value: null,
+    name: 'uc4',
+  },
+  {
+    text: 'P5 (consumo)',
+    value: null,
+    name: 'uc5',
+  },
+  {
+    text: 'P6 (consumo)',
+    value: null,
+    name: 'uc6',
+  },
+]
 export default {
   name: 'CalculatorDetails',
-  components: {
-    PhoneField,
-    EmailField,
-  },
   props: {
     offer: {
       type: Object,
@@ -100,134 +265,85 @@ export default {
     },
   },
   data() {
-    const user = this.$auth.user || {}
-    let agent = localStorage.getItem('agent')
-    agent =
-      agent && typeof agent === 'string'
-        ? JSON.parse(agent)
-        : { fullname: user.fullname, email: user.email, phone: user.phone }
     return {
+      newTax: {},
+      form: null,
+      rewriteValuesFormDialog: false,
+      rewriteValuesForm: defaultFields,
       sendingEmail: false,
       loading: false,
       downloading: false,
       htmlDetails: null,
-      direccion: null,
-      cups: null,
-      clientName: null,
-      emailTo: null,
-      offerName: null,
-      note: null,
-      rental: null,
-      tax: null,
-      iva: 21,
       otros: null,
       descuento: null,
-      agent,
       error: null,
       downloadURL: null,
-      pitems: [
-        {
-          letter: 'p',
-          number: 1,
-          value: null,
-        },
-        {
-          letter: 'p',
-          number: 2,
-          value: null,
-        },
-        {
-          letter: 'p',
-          number: 3,
-          value: null,
-        },
-        {
-          letter: 'p',
-          number: 4,
-          value: null,
-        },
-        {
-          letter: 'p',
-          number: 5,
-          value: null,
-        },
-        {
-          letter: 'p',
-          number: 6,
-          value: null,
-        },
-        {
-          letter: 'c',
-          number: 1,
-          value: null,
-        },
-        {
-          letter: 'c',
-          number: 2,
-          value: null,
-        },
-        {
-          letter: 'c',
-          number: 3,
-          value: null,
-        },
-        {
-          letter: 'c',
-          number: 4,
-          value: null,
-        },
-        {
-          letter: 'c',
-          number: 5,
-          value: null,
-        },
-        {
-          letter: 'c',
-          number: 6,
-          value: null,
-        },
-      ],
     }
   },
   computed: {
-    ...mapState({
-      form: (state) => state.calculatorForm,
-    }),
     isGas() {
       return this.offer.kind === 'gas'
     },
   },
-  watch: {
-    agent: {
-      handler: (val) => {
-        localStorage.setItem('agent', JSON.stringify(val))
-      },
-      deep: true,
-    },
-  },
   async mounted() {
+    this.form = {
+      id: this.offer.id || this.$route.params.id,
+      ...this.$store.state.calculatorForm,
+      with_calculations: true,
+    }
     await this.getDetails()
   },
   methods: {
-    getLabel(pitem) {
-      const { isGas } = this
-      return (
-        'Precio por ' +
-        (pitem.letter === 'c' ? 'consumo' : isGas ? 'termino fijo' : 'potencia') +
-        (isGas ? '' : ' P' + pitem.number)
-      )
+    // showInput(letter, number) {
+    //   return this.form.tarif ? constants.showInput(letter, number, this.form.tarif) : false
+    // },
+    onNewTaxInput() {
+      if (this.newTax.value) {
+        this.rewriteValuesForm.push({
+          name: this.newTax.key,
+          value: { percent: this.newTax.percent, value: this.newTax.value },
+        })
+      } else {
+        this.rewriteValuesForm = this.rewriteValuesForm.filter((item) => item.name !== this.newTax.key)
+      }
     },
-    showInput(letter, number) {
-      return this.form.tarif ? constants.showInput(letter, number, this.form.tarif) : false
+    resetFormField() {
+      this.rewriteValuesForm = defaultFields
+      this.rewriteValuesFormDialog = false
     },
     async getDetails() {
       this.loading = true
-      const { params } = this.getDataAndParams()
-      this.htmlDetails = await this.$axios.$get(`calculator/new_offer/?${params}`)
-      this.loading = false
+      const form = Object.fromEntries(
+        Object.entries(this.form)
+          .filter((i) => [undefined, null, ''].indexOf(i[1]) === -1)
+          .map((item) => {
+            const [key, val] = item
+            if (typeof val === 'string' && val.includes(',')) {
+              return [key, val.replaceAll(',', '.')]
+            }
+            return [key, val]
+          }),
+      )
+      try {
+        this.htmlDetails = await this.$axios.$post('calculator/new_offer/', {
+          ...form,
+          rewrite: Object.fromEntries(
+            this.rewriteValuesForm.map((item) => {
+              const { name, value } = item
+              return [name, value]
+            }),
+          ),
+        })
+      } catch (e) {
+        let err = e.response.data
+        err = err instanceof Array ? err.join('; ') : err
+        await this.$swal({ title: 'Error', icon: 'error', text: err })
+      } finally {
+        this.loading = false
+      }
     },
     async send(download) {
-      if (!download && !this.emailTo) {
+      if (!download && !this.rewriteValuesForm['EMAIL DEL CLIENTE']) {
         await this.$swal({ title: 'Entrar correo', icon: 'error' })
         return
       }
@@ -238,50 +354,20 @@ export default {
       } else {
         this.loading = true
       }
-      const { params } = this.getDataAndParams()
+      const data = { ...this.form, rewrite: { ...this.rewriteValuesForm } }
+      if (download) {
+        data.download = 'true'
+      } else {
+        data.send = 'true'
+      }
       try {
-        const response = await this.$axios.$get(
-          `calculator/new_offer/?${download ? 'download' : 'send'}=true&${params}`,
-        )
+        const response = await this.$axios.$post('calculator/new_offer/', { ...data })
         if (download) this.downloadURL = `${location.origin}/${response}`
       } catch (e) {
-        await this.$swal({ title: 'Error', icon: 'error', text: e.response.data })
+        await this.$swal({ title: 'Error', icon: 'error', text: JSON.parse(e.response.data) })
       } finally {
         this.loading = this.downloading = false
       }
-    },
-    getDataAndParams() {
-      const data = {
-        ...Object.fromEntries(Object.entries(this.form).filter((i) => [undefined, null, ''].indexOf(i[1]) === -1)),
-        id: this.offer.id || this.$route.params.id,
-        tarif: this.form.tarif,
-        with_calculations: true,
-        direccion: this.direccion,
-        cups: this.cups,
-        client_name: this.clientName,
-        email_to: this.emailTo,
-        name: this.offerName,
-        note: this.note,
-        rental: this.rental,
-        tax: this.tax,
-        agent_email: this.agent.email,
-        agent_fullname: this.agent.fullname,
-        agent_phone: this.agent.phone,
-        iva: this.iva,
-        otros: this.otros,
-        descuento: this.descuento,
-      }
-      this.pitems.forEach((pitem) => {
-        if (pitem.value) {
-          const name = pitem.letter + pitem.number
-          data[name] = pitem.value
-        }
-      })
-      const params = Object.keys(data)
-        .filter((key) => data[key] !== null)
-        .map((key) => `${key}=${data[key]}`)
-        .join('&')
-      return { data, params }
     },
     addBid() {
       let data = { offer: this.offer.id }

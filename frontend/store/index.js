@@ -3,7 +3,7 @@ export const state = () => ({
   calculatorForm: {
     kind: 'luz',
     igic: false,
-    client_type: 0,
+    client_type: 1,
   },
   puntoCategories: [],
   cities: [],
@@ -48,7 +48,7 @@ export const mutations = {
     state.calculatorForm = {
       kind: 'luz',
       igic: false,
-      client_type: 0,
+      client_type: 1,
       reactive: 0,
     }
   },

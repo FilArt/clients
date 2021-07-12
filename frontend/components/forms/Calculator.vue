@@ -97,11 +97,11 @@
 
             <v-col>
               <tarif-select
-                v-model="tarif"
                 :error-messages="errorMessages.tarif"
                 hint
                 :gas="form.kind === 'gas'"
-                @input="updateForm('tarif', tarif)"
+                :value="form.tarif"
+                @input="updateForm('tarif', $event)"
               />
             </v-col>
           </v-row>
@@ -153,11 +153,11 @@
                   <v-text-field
                     dense
                     :suffix="letter === 'p' ? 'kw' : 'kW/h'"
-                    :value="form[letter + number]"
+                    :value="form['u' + letter + number]"
                     :label="(letter === 'p' ? 'Potencia' : 'Consumo') + ' P' + number"
                     :name="'P' + number"
-                    :error-messages="errorMessages[letter + number]"
-                    @input="updateForm(letter + number, $event)"
+                    :error-messages="errorMessages['u' + letter + number]"
+                    @input="updateForm('u' + letter + number, $event)"
                   >
                     <template v-slot:append-outer>
                       <v-tooltip bottom open-on-click open-on-focus open-on-hover z-index="1000">
@@ -194,7 +194,7 @@
             </v-col>
           </v-row>
 
-          <v-row v-if="form.kind === 'luz'" align="center">
+          <v-row v-show="false" v-if="form.kind === 'luz'" align="center">
             <v-col>
               <v-checkbox
                 v-model="hasReactiveEnergy"
@@ -258,7 +258,6 @@ export default {
       errorMessages: {},
       loading: false,
       showResults: false,
-      tarif: null,
     }
   },
   computed: {
@@ -302,8 +301,7 @@ export default {
     },
   },
   watch: {
-    tarif() {
-      this.updateForm('tarif', this.tarif)
+    'form.tarif': () => {
       const fields = [
         ['p', 2],
         ['p', 3],
@@ -317,9 +315,6 @@ export default {
       })
     },
   },
-  mounted() {
-    this.$store.commit('resetCalculator')
-  },
   methods: {
     getDetailUrl(offer) {
       return this.detailUrl
@@ -329,7 +324,7 @@ export default {
           }&showCalculatorDetails=true`
     },
     showInput(letter, number) {
-      return constants.showInput(letter, number, this.tarif)
+      return this.form && this.form.tarif && constants.showInput(letter, number, this.form.tarif)
     },
     updateForm(key, value) {
       this.$store.commit('updateCalculatorForm', {
@@ -340,10 +335,20 @@ export default {
     submit() {
       this.errorMessages = {}
       this.loading = true
+      const values = Object.fromEntries(
+        Object.entries(this.form)
+          .filter((i) => [undefined, null, ''].indexOf(i[1]) === -1)
+          .map((item) => {
+            const [key, val] = item
+            if (typeof val === 'string' && val.includes(',')) {
+              return [key, val.replaceAll(',', '.')]
+            }
+            return [key, val]
+          }),
+      )
       this.$axios
         .$post('calculator/calculate/', {
-          tarif: this.tarif,
-          ...Object.fromEntries(Object.entries(this.form).filter((i) => [undefined, null, ''].indexOf(i[1]) === -1)),
+          ...values,
         })
         .then((data) => {
           this.$store.commit('setCalculatedOffers', data)

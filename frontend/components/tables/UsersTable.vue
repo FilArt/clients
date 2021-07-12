@@ -7,7 +7,26 @@
             <v-toolbar-title>{{ selected.length }} clientes </v-toolbar-title>
             <v-spacer />
             <v-toolbar-items>
-              <v-tooltip bottom>
+              <v-tooltip v-if="renovation" bottom>
+                <template v-slot:activator="{ on, attrs }">
+                  <v-btn
+                    icon
+                    color="#004680"
+                    v-bind="attrs"
+                    e
+                    v-on="on"
+                    @click="
+                      returnRenovationStatusDialog = true
+                      actionsSnackbar = false
+                    "
+                  >
+                    <v-icon>mdi-cloud-upload</v-icon>
+                  </v-btn>
+                </template>
+                <span>Enviar en Clientes</span>
+              </v-tooltip>
+
+              <v-tooltip v-else bottom>
                 <template v-slot:activator="{ on, attrs }">
                   <v-btn
                     icon
@@ -44,6 +63,26 @@
         </v-card-text>
       </v-card>
     </v-snackbar>
+
+    <v-dialog v-model="returnRenovationStatusDialog" persistent>
+      <v-card>
+        <v-card-title>
+          <span>Enviar en Clientes</span>
+          <v-spacer />
+          <close-button
+            @click="
+              returnRenovationStatusDialog = false
+              actionsSnackbar = true
+            "
+          />
+        </v-card-title>
+        <v-card-text>
+          <v-form @submit.prevent="returnToClients">
+            <submit-button label="Enviar" block :loading="loading" />
+          </v-form>
+        </v-card-text>
+      </v-card>
+    </v-dialog>
 
     <v-dialog v-model="uploadToCallVisitDialog" persistent>
       <v-card>
@@ -357,11 +396,10 @@
 <script>
 import constants from '@/lib/constants'
 import { mapState } from 'vuex'
-import CompanySelect from '@/components/selects/CompanySelect'
 export default {
   name: 'UsersTable',
   components: {
-    CompanySelect,
+    CompanySelect: () => import('@/components/selects/CompanySelect'),
     CvUserSelect: () => import('@/components/cv_components/selects/cvUserSelect'),
     CloseButton: () => import('~/components/buttons/closeButton'),
     SubmitButton: () => import('~/components/buttons/submitButton'),
@@ -371,6 +409,10 @@ export default {
     DateTimeFilter: () => import('~/components/DateTimeFilter'),
   },
   props: {
+    renovation: {
+      type: Boolean,
+      default: false,
+    },
     companyFilters: {
       type: Boolean,
       default: false,
@@ -455,6 +497,7 @@ export default {
     return {
       constants,
       uploadToCallVisitDialog: false,
+      returnRenovationStatusDialog: false,
       actionsSnackbar: false,
       selected: [],
       form: {
@@ -595,7 +638,8 @@ export default {
           icon: 'success',
         })
       } catch (e) {
-        const text = e.response.data
+        const err = e.response.data
+        const text = err
           .map((clientError) => {
             const clientId = Object.keys(clientError)[0]
             const clientErrors = clientError[clientId]
@@ -618,6 +662,15 @@ export default {
       } finally {
         this.loading = false
       }
+    },
+    async returnToClients() {
+      for (let index = 0; index < this.selected.length; index++) {
+        const client = this.selected[index]
+        await this.$axios.$patch(`users/manage_users/${client.id}/`, { renovated: false })
+      }
+      await this.fetchUsers()
+      this.$toast.global.done()
+      this.returnRenovationStatusDialog = false
     },
     onSelect({ item, items, value }) {
       if (!value) {

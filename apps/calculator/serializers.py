@@ -28,25 +28,26 @@ class RoundedField(serializers.FloatField):
 
 
 class CalculatorSerializer(serializers.ModelSerializer):
-    email_to = serializers.EmailField(write_only=True, required=False, allow_null=True)
     id = serializers.IntegerField(required=False)
+    rewrite = serializers.JSONField(write_only=True, required=False)
+    total = serializers.FloatField()
     company_name = serializers.CharField(source="company.name", read_only=True)
     company_logo = serializers.ImageField(source="company.logo", read_only=True)
     period = serializers.IntegerField(min_value=1, write_only=True)
     tarif = serializers.ChoiceField(choices=Tarif.choices())
     client_type = serializers.ChoiceField(choices=Offer.CLIENT_TYPE_CHOICES)
-    c1 = ConsumoField(required=True)
-    c2 = ConsumoField()
-    c3 = ConsumoField()
-    c4 = ConsumoField()
-    c5 = ConsumoField()
-    c6 = ConsumoField()
-    p1 = PotenciaField()
-    p2 = PotenciaField()
-    p3 = PotenciaField()
-    p4 = PotenciaField()
-    p5 = PotenciaField()
-    p6 = PotenciaField()
+    uc1 = ConsumoField(required=True)
+    uc2 = ConsumoField()
+    uc3 = ConsumoField()
+    uc4 = ConsumoField()
+    uc5 = ConsumoField()
+    uc6 = ConsumoField()
+    up1 = PotenciaField()
+    up2 = PotenciaField()
+    up3 = PotenciaField()
+    up4 = PotenciaField()
+    up5 = PotenciaField()
+    up6 = PotenciaField()
     current_price = serializers.FloatField(min_value=0, validators=[positive_number])
     reactive = serializers.FloatField(
         min_value=0,
@@ -55,19 +56,6 @@ class CalculatorSerializer(serializers.ModelSerializer):
         validators=[casi_positive_number],
     )
     igic = serializers.BooleanField(write_only=True)
-
-    c_st_c1 = ConsumoCalculationField()
-    c_st_c2 = ConsumoCalculationField()
-    c_st_c3 = ConsumoCalculationField()
-    c_st_c4 = ConsumoCalculationField()
-    c_st_c5 = ConsumoCalculationField()
-    c_st_c6 = ConsumoCalculationField()
-    c_st_p1 = PotenciaCalculationField()
-    c_st_p2 = PotenciaCalculationField()
-    c_st_p3 = PotenciaCalculationField()
-    c_st_p4 = PotenciaCalculationField()
-    c_st_p5 = PotenciaCalculationField()
-    c_st_p6 = PotenciaCalculationField()
 
     st_c1 = RoundedField(read_only=True)
     st_c2 = RoundedField(read_only=True)
@@ -101,8 +89,8 @@ class CalculatorSerializer(serializers.ModelSerializer):
     class Meta:
         model = Offer
         fields = [
+            "rewrite",
             "id",
-            "email_to",
             "company",
             "company_name",
             "company_logo",
@@ -121,21 +109,21 @@ class CalculatorSerializer(serializers.ModelSerializer):
             "c4",
             "c5",
             "c6",
+            "up1",
+            "up2",
+            "up3",
+            "up4",
+            "up5",
+            "up6",
+            "uc1",
+            "uc2",
+            "uc3",
+            "uc4",
+            "uc5",
+            "uc6",
             "is_price_permanent",
             "client_type",
             "description",
-            "c_st_p1",
-            "c_st_p2",
-            "c_st_p3",
-            "c_st_p4",
-            "c_st_p5",
-            "c_st_p6",
-            "c_st_c1",
-            "c_st_c2",
-            "c_st_c3",
-            "c_st_c4",
-            "c_st_c5",
-            "c_st_c6",
             "st_p1",
             "st_p2",
             "st_p3",
@@ -165,6 +153,16 @@ class CalculatorSerializer(serializers.ModelSerializer):
             "rental",
         ]
         extra_kwargs = {
+            "p2": {"read_only": True},
+            "p3": {"read_only": True},
+            "p4": {"read_only": True},
+            "p5": {"read_only": True},
+            "p6": {"read_only": True},
+            "c2": {"read_only": True},
+            "c3": {"read_only": True},
+            "c4": {"read_only": True},
+            "c5": {"read_only": True},
+            "c6": {"read_only": True},
             "name": {"read_only": True},
             "company": {"write_only": True},
             "is_price_permanent": {"read_only": True},
@@ -182,15 +180,15 @@ class CalculatorSerializer(serializers.ModelSerializer):
         nds = calculator_settings.igic if use_igic else calculator_settings.iva
         zero = Value(0, output_field=models.FloatField())
 
-        p1, p2, p3 = data.get("p1", 0), data.get("p2", 0), data.get("p3", 0)
-        p4, p5, p6 = data.get("p4", 0), data.get("p5", 0), data.get("p6", 0)
-        c1, c2, c3 = data.get("c1", 0), data.get("c2", 0), data.get("c3", 0)
-        c4, c5, c6 = data.get("c4", 0), data.get("c5", 0), data.get("c6", 0)
-        ps = p1, p2, p3, p4, p5, p6
+        ip1, ip2, ip3 = data.get("up1", 0), data.get("up2", 0), data.get("up3", 0)
+        ip4, ip5, ip6 = data.get("up4", 0), data.get("up5", 0), data.get("up6", 0)
+        ic1, ic2, ic3 = data.get("uc1", 0), data.get("uc2", 0), data.get("uc3", 0)
+        ic4, ic5, ic6 = data.get("uc4", 0), data.get("uc5", 0), data.get("uc6", 0)
+        ps = ip1, ip2, ip3, ip4, ip5, ip6
         power_min = min(filter((lambda n: n != 0), ps)) if is_luz else None
         power_max = max(filter((lambda n: n != 0), ps)) if is_luz else None
 
-        consumptions = c1, c2, c3, c4, c5, c6
+        consumptions = ic1, ic2, ic3, ic4, ic5, ic6
         annual_consumption = sum(consumptions) / data["period"] * 365
         current_price = Value(new_current_price or data["current_price"], output_field=models.FloatField())
         reactive = Value(data.get("reactive", 0), output_field=models.FloatField())
@@ -210,7 +208,21 @@ class CalculatorSerializer(serializers.ModelSerializer):
             client_type=data["client_type"],
             tarif=data["tarif"],
             kind=kind,
-        ).annotate(st_c1=F("c1") * Value(c1))
+        ).annotate(
+            up1=Value(ip1, output_field=models.FloatField()),
+            up2=Value(ip2, output_field=models.FloatField()),
+            up3=Value(ip3, output_field=models.FloatField()),
+            up4=Value(ip4, output_field=models.FloatField()),
+            up5=Value(ip5, output_field=models.FloatField()),
+            up6=Value(ip6, output_field=models.FloatField()),
+            uc1=Value(ic1, output_field=models.FloatField()),
+            uc2=Value(ic2, output_field=models.FloatField()),
+            uc3=Value(ic3, output_field=models.FloatField()),
+            uc4=Value(ic4, output_field=models.FloatField()),
+            uc5=Value(ic5, output_field=models.FloatField()),
+            uc6=Value(ic6, output_field=models.FloatField()),
+            st_c1=F("c1") * Value(ic1),
+        )
         if is_luz:
             qs = (
                 qs.filter(
@@ -220,17 +232,17 @@ class CalculatorSerializer(serializers.ModelSerializer):
                     )
                 )
                 .annotate(
-                    st_p1=F("p1") * Value(p1) * Value(data["period"]),
-                    st_p2=F("p2") * Value(p2) * Value(data["period"]),
-                    st_p3=F("p3") * Value(p3) * Value(data["period"]),
-                    st_p4=F("p4") * Value(p4) * Value(data["period"]),
-                    st_p5=F("p5") * Value(p5) * Value(data["period"]),
-                    st_p6=F("p6") * Value(p6) * Value(data["period"]),
-                    st_c2=F("c2") * Value(c2),
-                    st_c3=F("c3") * Value(c3),
-                    st_c4=F("c4") * Value(c4),
-                    st_c5=F("c5") * Value(c5),
-                    st_c6=F("c6") * Value(c6),
+                    st_p1=F("p1") * Value(ip1) * Value(data["period"]),
+                    st_p2=F("p2") * Value(ip2) * Value(data["period"]),
+                    st_p3=F("p3") * Value(ip3) * Value(data["period"]),
+                    st_p4=F("p4") * Value(ip4) * Value(data["period"]),
+                    st_p5=F("p5") * Value(ip5) * Value(data["period"]),
+                    st_p6=F("p6") * Value(ip6) * Value(data["period"]),
+                    st_c2=F("c2") * Value(ic2),
+                    st_c3=F("c3") * Value(ic3),
+                    st_c4=F("c4") * Value(ic4),
+                    st_c5=F("c5") * Value(ic5),
+                    st_c6=F("c6") * Value(ic6),
                 )
                 .annotate(
                     subtotal=F("st_c1")
@@ -294,7 +306,7 @@ class CalculatorSerializer(serializers.ModelSerializer):
                 # "tax_percent": f'{"Imp. eléctrico" if is_luz else "Imp. hidrocarburos"} ({tax_percent}%)',
                 "tax_percent": tax_percent,
                 # "iva_percent": f'{"IGIC" if use_igic else "IVA general"} ({round(nds * 100, 2)}%)',
-                "iva_percent": f"{round(nds * 100)}%",
+                "iva_percent": f"{round(nds * 100)}",
             },
         ).data
 

@@ -136,6 +136,7 @@ export default {
     }),
     createSocket() {
       const token = this.$auth.strategies.local.token.get().substring(7)
+      console.log(process)
       const ws_scheme = window.location.protocol === 'https:' ? 'wss' : 'ws'
       const chatSocket = new ReconnectingWebSocket(
         `${ws_scheme}://${window.location.host.replace('3000', '8000')}/ws/chat/${

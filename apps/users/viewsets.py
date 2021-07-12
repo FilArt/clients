@@ -158,7 +158,9 @@ class UserViewSet(
             elif mode == "ko_papellera":
                 qs = CustomUser.objects.ko_papellera()
             elif mode == "client":
-                qs = CustomUser.objects.clients()
+                qs = CustomUser.objects.clients().exclude(renovated=True)
+            elif mode == "renovated":
+                qs = CustomUser.objects.clients().filter(renovated=True)
 
             if statuses:
                 users = Bid.objects.with_status().filter(status__in=statuses.split(",")).values("user")
@@ -287,7 +289,7 @@ class ManageUsersViewSet(UserViewSet, mixins.CreateModelMixin, mixins.DestroyMod
     def upload_to_call_visit(self, request: Request):
         ser = UploadToCallVisitSerializer(data=request.data, many=True)
         ser.is_valid(raise_exception=True)
-        clients = ser.data
+        # clients = ser.data
         return Response("OK")
 
     @action(methods=["GET"], detail=False, permission_classes=(AdminPermission,))

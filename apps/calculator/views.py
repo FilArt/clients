@@ -1,17 +1,15 @@
 import os
 import shutil
-from functools import reduce
-from operator import mul
 
 import pdfkit
 from django.conf import settings
-from django.contrib.auth.models import AnonymousUser
 from django.core.mail import EmailMessage
 from django.http import HttpResponse
 from django.shortcuts import render
 from django.template.loader import render_to_string
 from django.utils import timezone
 from rest_framework import views
+from rest_framework.exceptions import ValidationError
 from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework_tracking.mixins import LoggingMixin
@@ -35,120 +33,26 @@ class SendOfferView(LoggingMixin, views.APIView):
     http_method_names = ["post", "get"]
     logging_methods = ["POST"]
 
+    # def post(self, request: Request):
+    #     serializer = CalculatorSerializer(data=request.data)
+    #     serializer.is_valid(raise_exception=True)
+    #     calculated = serializer.get_calculated()
+    #     return render(request, "mails/offer.html", context=calculated)
+
     def post(self, request: Request):
         serializer = CalculatorSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         calculated = serializer.get_calculated()
-        return render(request, "mails/offer.html", context=calculated)
-
-    def get(self, request: Request):
-        serializer = CalculatorSerializer(data=request.query_params)
-        serializer.is_valid(raise_exception=True)
-
-        old = {k: v for k, v in request.query_params.items()}
-        rental, tax = old.get("rental"), old.get("tax")
-        old["tax"] = tax or "-"
-        old["rental"] = rental or "-"
-        old["company_name"] = serializer.validated_data["company"].name
-        old["st_c1"] = round(reduce(mul, map(float, (old.get("c1", 0), old.get("c1_offer", 0)))), 2)
-        old["st_c2"] = round(reduce(mul, map(float, (old.get("c2", 0), old.get("c2_offer", 0)))), 2)
-        old["st_c3"] = round(reduce(mul, map(float, (old.get("c3", 0), old.get("c3_offer", 0)))), 2)
-        old["st_p1"] = round(reduce(mul, map(float, (old.get("p1", 0), old.get("p1_offer", 0), old["period"]))), 2)
-        old["st_p2"] = round(reduce(mul, map(float, (old.get("p2", 0), old.get("p2_offer", 0), old["period"]))), 2)
-        old["st_p3"] = round(reduce(mul, map(float, (old.get("p3", 0), old.get("p3_offer", 0), old["period"]))), 2)
-        old["st_c"] = sum(map(float, filter(None, [old.get("st_c1"), old.get("st_c2"), old.get("st_c3")])))
-        old["st_p"] = sum(map(float, filter(None, [old.get("st_p1"), old.get("st_p2"), old.get("st_p3")])))
-        old["oc"] = sum(map(float, filter(None, [old["reactive"], tax, rental, old.get("otros", 0)])))
-        old["bi"] = (old.get("st_c") + old.get("st_p") + old.get("oc")) or "-"
-        old["total"] = 0
-        if old["st_c"] or old["st_p"]:
-            if old.get("descuento"):
-                old["bi"] = old["bi"] - float(old["descuento"])
-            old["bi"] = round(old["bi"], 2)
-
-            old["total"] = old["bi"]
-            if old.get("iva"):
-                iva = float(old["iva"]) / 100 * old["total"]
-                old["iva"] = {"value": round(iva, 2), "percent": old["iva"]}
-                old["total"] = round(iva + old["total"], 2)
-
-        # calculated = serializer.get_calculated(new_current_price=old["total"])
-        # old["total"] = old["total"] or calculated["current_price"]
-        calculated = serializer.get_calculated()
-        old["total"] = calculated["current_price"]
-
-        for n in ("st_c", "st_p", "oc"):
-            old[n] = round(old[n], 2)
-
-        new_st_p = round(calculated["st_p1"] + calculated["st_p2"] + calculated["st_p3"], 2)
-        new_st_c = round(calculated["st_c1"] + calculated["st_c2"] + calculated["st_c3"], 2)
-        new_oc = round(
-            sum(
-                map(
-                    float,
-                    filter(None, [calculated["reactive"], calculated["tax"]["value"], calculated["rental"]]),
-                )
-            ),
-            2,
-        )
+        rewrited_values = {k: v for k, v in serializer.validated_data["rewrite"].items() if v is not None}
         ctx = {
-            "new": {
-                "st_p": new_st_p,
-                "st_c": new_st_c,
-                "oc": new_oc,
-                "bi": round(new_st_c + new_st_p + new_oc, 2),
-                **calculated,
-            },
-            "old": {
-                "descuento_value": "-",
-                "iva": "-",
-                "igic": "-",
-                "oc": "-",
-                "total": "-",
-                "p1": "-",
-                "p2": "-",
-                "p3": "-",
-                "c1": "-",
-                "c2": "-",
-                "c3": "-",
-                "p1_offer": "-",
-                "p2_offer": "-",
-                "p3_offer": "-",
-                "c1_offer": "-",
-                "c2_offer": "-",
-                "c3_offer": "-",
-                "st_p1": "-",
-                "st_p2": "-",
-                "st_p3": "-",
-                "st_c1": "-",
-                "st_c2": "-",
-                "st_c3": "-",
-                "st_p": "-",
-                "st_c": "-",
-                **old,
-            },
-            "period": old["period"],
+            **calculated,
+            **rewrited_values,
             "date": timezone.now().date().strftime("%d/%m/%Y"),
-            "agent": request.user.fullname
-            if not isinstance(request.user, AnonymousUser)
-            else old.get("agent_fullname"),
-            "agent_email": request.user.email
-            if not isinstance(request.user, AnonymousUser)
-            else old.get("agent_email"),
-            "agent_phone": request.user.phone
-            if not isinstance(request.user, AnonymousUser)
-            else old.get("agent_phone"),
-            "direccion": request.data.get("direccion") or request.query_params.get("direccion"),
-            "cups": request.data.get("cups") or request.query_params.get("cups"),
-            "client_name": request.data.get("client_name") or request.query_params.get("client_name"),
-            "note": request.data.get("note") or request.query_params.get("note"),
         }
-
-        email_to = serializer.validated_data.get("email_to")
-        agent_email = old.get("agent_email", request.user.email if hasattr(request.user, "email") else None)
+        email_to = serializer.validated_data.get("EMAIL DEL CLIENTE")
         response = None
 
-        if "send" in request.query_params or "download" in request.query_params:
+        if "send" in request.data or "download" in request.data:
             html_message = render_to_string("mails/offer.html", context=ctx)
             dt = timezone.now().strftime("%d_%m_%Y_%H_%M")
             filename = f'{dt}_{calculated["id"]}.html'
@@ -159,7 +63,11 @@ class SendOfferView(LoggingMixin, views.APIView):
             pdf_path = filepath.replace("html", "pdf")
             pdfkit.from_file(f.name, pdf_path)
 
-            if "send" in request.query_params and email_to:
+            if "send" in request.data:
+                if settings.DEBUG:
+                    return HttpResponse("OK")
+                if not email_to:
+                    raise ValidationError("EMAIL DEL CLIENTE - requierido")
                 subject = "Estudio comparativo"
                 plain_message = subject  # strip_tags(html_message)
 
@@ -168,13 +76,13 @@ class SendOfferView(LoggingMixin, views.APIView):
                     plain_message,
                     settings.EMAIL_HOST_USER,
                     [email_to],
-                    cc=[agent_email],
+                    cc=[ctx["agent_email"]],
                 )
                 email.attach_file(pdf_path)
                 email.send()
                 response = HttpResponse("OK")
 
-            elif "download" in request.query_params:
+            elif "download" in request.data:
                 pdf_name = filename.replace("html", "pdf")
                 new_pdf_path = os.path.join(settings.MEDIA_ROOT, pdf_name)
                 shutil.move(pdf_path, new_pdf_path)

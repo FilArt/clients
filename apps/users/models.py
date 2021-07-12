@@ -111,6 +111,7 @@ class CustomUser(AbstractUser):
     )
     ko = models.BooleanField(blank=True, null=True)
     observations = models.TextField(blank=True, null=True)
+    renovated = models.BooleanField(blank=True, null=True)
 
     objects = CustomUserManager()
 

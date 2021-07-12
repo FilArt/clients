@@ -89,6 +89,11 @@ export default {
             to: '/admin/clientes',
           },
           {
+            icon: 'mdi-briefcase-account-outline',
+            title: 'RENOVACION',
+            to: '/admin/renovacion',
+          },
+          {
             icon: 'mdi-account-tie',
             title: 'USUARIOS',
             to: '/admin/usuarios',

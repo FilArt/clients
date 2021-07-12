@@ -21,7 +21,7 @@
             </v-card>
 
             <v-card class="d-flex flex-column">
-              <v-card style="text-align: right"> № {{ old.id }} </v-card>
+              <v-card style="text-align: right"> № {{ id }} </v-card>
               <v-card style="text-align: right"> Fecha de la propuesta: {{ date }} </v-card>
               <v-card style="text-align: right"> Periodo de validez: 7 Días </v-card>
             </v-card>
@@ -36,10 +36,10 @@
           <br />
 
           <v-card class="d-flex flex-column font-italic">
-            <v-card> NOMBRE DEL CLIENTE: {{ old.client_name }} </v-card>
-            <v-card> TARIFA: {{new.tarif}} </v-card>
-            <v-card> COMERCIALIZADORA: {{new.company_name}} </v-card>
-            <v-card> OFERTA: {{ new.name }} </v-card>
+            <v-card> NOMBRE DEL CLIENTE: {{ client_name }} </v-card>
+            <v-card> TARIFA: {{tarif}} </v-card>
+            <v-card> COMERCIALIZADORA: {{company_name}} </v-card>
+            <v-card> OFERTA: {{ name }} </v-card>
           </v-card>
 
           <br />
@@ -49,18 +49,17 @@
           </v-card>
 
           <v-card class="d-flex flex-column offset font-weight-light caption">
-            {% if new.c_st_p1 %}
-            <v-card> <span class="first-word">P1:</span> {{ new.c_st_p1 }} </v-card>
-            {% endif %} {% if new.c_st_p2 %}
-            <v-card> <span class="first-word">P2:</span> {{ new.c_st_p2 }} </v-card>
-            {% endif %} {% if new.c_st_p3 %}
-            <v-card> <span class="first-word">P3:</span> {{ new.c_st_p3 }} </v-card>
-            {% endif %} {% if new.c_st_p4 %}
-            <v-card> <span class="first-word">P4:</span> {{ new.c_st_p4 }} </v-card>
-            {% endif %} {% if new.c_st_p5 %}
-            <v-card> <span class="first-word">P5:</span> {{ new.c_st_p5 }} </v-card>
-            {% endif %} {% if new.c_st_p6 %}
-            <v-card> <span class="first-word">P6:</span> {{ new.c_st_p6 }} </v-card>
+            <v-card> <span class="first-word">P1:</span> {{ up1 }} kW/h × {{ period }} dias × {{ p1 }} € = {{ st_p1 }} €  </v-card>
+            {% if c_st_p2 %}
+            <v-card> <span class="first-word">P2:</span> {{ c_st_p2 }} </v-card>
+            {% endif %} {% if c_st_p3 %}
+            <v-card> <span class="first-word">P3:</span> {{ c_st_p3 }} </v-card>
+            {% endif %} {% if c_st_p4 %}
+            <v-card> <span class="first-word">P4:</span> {{ c_st_p4 }} </v-card>
+            {% endif %} {% if c_st_p5 %}
+            <v-card> <span class="first-word">P5:</span> {{ c_st_p5 }} </v-card>
+            {% endif %} {% if c_st_p6 %}
+            <v-card> <span class="first-word">P6:</span> {{ c_st_p6 }} </v-card>
             {% endif %}
           </v-card>
 
@@ -71,18 +70,18 @@
           </v-card>
 
           <v-card class="d-flex flex-column offset font-weight-light caption">
-            {% if new.c_st_c1 %}
-            <v-card><span class="first-word">P1: </span>{{ new.c_st_c1 }}</v-card>
-            {% endif %} {% if new.c_st_c2 %}
-            <v-card><span class="first-word">P2: </span>{{ new.c_st_c2 }}</v-card>
-            {% endif %} {% if new.c_st_c3 %}
-            <v-card><span class="first-word">P3: </span>{{ new.c_st_c3 }}</v-card>
-            {% endif %} {% if new.c_st_c4 %}
-            <v-card><span class="first-word">P4: </span>{{ new.c_st_c4 }}</v-card>
-            {% endif %} {% if new.c_st_c5 %}
-            <v-card><span class="first-word">P5: </span>{{ new.c_st_c5 }}</v-card>
-            {% endif %} {% if new.c_st_c6 %}
-            <v-card><span class="first-word">P6: </span>{{ new.c_st_c6 }}</v-card>
+            {% if c_st_c1 %}
+            <v-card><span class="first-word">P1: </span>{{ c_st_c1 }}</v-card>
+            {% endif %} {% if c_st_c2 %}
+            <v-card><span class="first-word">P2: </span>{{ c_st_c2 }}</v-card>
+            {% endif %} {% if c_st_c3 %}
+            <v-card><span class="first-word">P3: </span>{{ c_st_c3 }}</v-card>
+            {% endif %} {% if c_st_c4 %}
+            <v-card><span class="first-word">P4: </span>{{ c_st_c4 }}</v-card>
+            {% endif %} {% if c_st_c5 %}
+            <v-card><span class="first-word">P5: </span>{{ c_st_c5 }}</v-card>
+            {% endif %} {% if c_st_c6 %}
+            <v-card><span class="first-word">P6: </span>{{ c_st_c6 }}</v-card>
             {% endif %}
           </v-card>
 
@@ -93,31 +92,31 @@
           </v-card>
 
           <v-card class="d-flex flex-column offset">
-            <v-card><span class="first-word">Energía reactiva:</span> {{ new.reactive }} €</v-card>
-            <v-card><span class="first-word">Alquiler equipos:</span> {{ new.rental }} €</v-card>
+            <v-card><span class="first-word">Energía reactiva:</span> {{ reactive }} €</v-card>
+            <v-card><span class="first-word">Alquiler equipos:</span> {{ rental }} €</v-card>
             <v-card>
               <span class="first-word">
-                {% if new.kind == 'luz' %} IMP. ELECTRICIDAD: {% else %} IMP. HIDROCARBUROS {% endif %}
-                <span> ({{ new.tax.percent}}%): </span>
+                {% if kind == 'luz' %} IMP. ELECTRICIDAD: {% else %} IMP. HIDROCARBUROS {% endif %}
+                <span> ({{ tax.percent}}%): </span>
               </span>
-              {{ new.tax.value }} €
+              {{ tax.value }} €
             </v-card>
             <v-card
               ><span class="first-word"
-                >{% if old.igic == 'true' %}IGIC{% else %}I.V.A{% endif %} ({{ new.iva.percent }}):</span
+                >{% if igic == 'true' %}IGIC{% else %}I.V.A{% endif %} ({{ iva.percent }}%):</span
               >
-              {{ new.iva.value }} €</v-card
+              {{ iva.value }} €</v-card
             >
           </v-card>
 
           <v-card class="d-flex justify-end text-h5 font-weight-bold"> TOTAL: 1 234 567,12 € </v-card>
 
           <v-card class="d-flex flex-column border">
-            <v-card> FACTURACIÓN ACTUAL: {{ old.total }} € </v-card>
-            <v-card> PROPUESTA DE FACTURACIÓN: {{ new.total }} € </v-card>
+            <v-card> FACTURACIÓN ACTUAL: {{ total }} € </v-card>
+            <v-card> PROPUESTA DE FACTURACIÓN: {{ total }} € </v-card>
             <br />
-            <v-card> AHORRO EN FACTURA: {{ new.profit }} € ({{ new.profit_percent }}%) </v-card>
-            <v-card> AHORRO ANUAL: {{ new.annual_profit }} € </v-card>
+            <v-card> AHORRO EN FACTURA: {{ profit }} € ({{ profit_percent }}%) </v-card>
+            <v-card> AHORRO ANUAL: {{ annual_profit }} € </v-card>
           </v-card>
 
           <br />

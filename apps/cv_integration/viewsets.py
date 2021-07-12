@@ -4,16 +4,19 @@ import logging
 import requests
 from django.conf import settings
 from django.contrib.auth import get_user_model
+from django.db import transaction
+from django.utils import timezone
 from rest_framework import viewsets
-from rest_framework.decorators import api_view, action
-from rest_framework.exceptions import ValidationError, AuthenticationFailed
+from rest_framework.decorators import action, api_view
+from rest_framework.exceptions import AuthenticationFailed, ValidationError
 from rest_framework.request import Request
 from rest_framework.response import Response
+from rest_framework_tracking.models import APIRequestLog
 
-from .models import CallVisitUser
-from .serializers import CallVisitUserSerializer
 from ..users.models import CustomUser, Punto
 from ..users.permissions import AdminPermission
+from .models import CallVisitUser
+from .serializers import CallVisitUserSerializer
 
 logger = logging.getLogger()
 logger.setLevel(logging.DEBUG)
@@ -111,6 +114,18 @@ class CallVisitUserViewSet(viewsets.ModelViewSet):
                             errors.append({client.id: response.text})
                 else:
                     errors.append({client.id: ["OK"]})
+
+                    with transaction.atomic():
+                        client.renovated = True
+                        client.save(update_fields=["renovated"])
+
+                        APIRequestLog.objects.create(
+                            requested_at=timezone.now(),
+                            view="apps.users.viewsets.ManageUsersViewSet",
+                            view_method="update",
+                            path="/api/users/manage_users/{pk}/",
+                            data={"renovated": True},
+                        )
 
         if errors:
             raise ValidationError(errors)
