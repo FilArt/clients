@@ -45,12 +45,7 @@ export const mutations = {
     state.cvusers = cvusers
   },
   resetCalculator(state) {
-    state.calculatorForm = {
-      kind: 'luz',
-      igic: false,
-      client_type: 1,
-      reactive: 0,
-    }
+    state.calculatorForm = { client_type: 1, kind: 'luz', igic: false }
   },
   setNames(state, names) {
     state.names = names

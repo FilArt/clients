@@ -145,7 +145,7 @@
           <v-row v-if="form.kind === 'luz'">
             <v-col v-for="letter in ['p', 'c']" :key="letter">
               <v-row v-for="number in [1, 2, 3, 4, 5, 6]" :key="number">
-                <v-col v-show="showInput(letter, number)">
+                <v-col v-show="fieldsToShow.includes(letter + number)">
                   <decimal-field
                     dense
                     :suffix="letter === 'p' ? 'kw' : 'kW/h'"
@@ -211,9 +211,12 @@
             </v-col>
           </v-row>
 
-          <v-row>
+          <v-card-actions>
+            <v-btn icon color="warning" @click="$store.commit('resetCalculator')">
+              <v-icon>mdi-eraser-variant</v-icon>
+            </v-btn>
             <submit-button :disabled="hasReactiveEnergy ? !form.reactive : false" block label="Comparar" />
-          </v-row>
+          </v-card-actions>
         </v-form>
       </v-card-text>
     </v-card>
@@ -259,6 +262,18 @@ export default {
     }
   },
   computed: {
+    fieldsToShow() {
+      const letters = ['p', 'c']
+      const numbers = [1, 2, 3, 4, 5, 6]
+      const tarif = this.form.tarif
+      const permutations = []
+      letters.forEach((letter) => {
+        numbers.forEach((number) => {
+          permutations.push(letter + number)
+        })
+      })
+      return permutations.filter((field) => constants.showInput(field[0], field[1], tarif))
+    },
     offers() {
       return this.$store.state.calculatedOffers
     },
@@ -299,18 +314,21 @@ export default {
     },
   },
   watch: {
-    'form.tarif': () => {
-      const fields = [
-        ['p', 2],
-        ['p', 3],
-        ['c', 2],
-        ['c', 3],
-      ]
-      fields.forEach((field) => {
-        if (!this.showInput(field[0], field[1])) {
-          this.updateForm(field[0] + field[1], null)
-        }
-      })
+    'form.tarif': {
+      handler() {
+        const fields = [
+          ['p', 2],
+          ['p', 3],
+          ['c', 2],
+          ['c', 3],
+        ]
+        fields.forEach((field) => {
+          if (!this.showInput(field[0], field[1])) {
+            this.updateForm(field[0] + field[1], null)
+          }
+        })
+      },
+      deep: true,
     },
   },
   methods: {
@@ -322,7 +340,7 @@ export default {
           }&showCalculatorDetails=true`
     },
     showInput(letter, number) {
-      return this.form && this.form.tarif && constants.showInput(letter, number, this.form.tarif)
+      return this.form.tarif && constants.showInput(letter, number, this.form.tarif)
     },
     updateForm(key, value) {
       this.$store.commit('updateCalculatorForm', {
