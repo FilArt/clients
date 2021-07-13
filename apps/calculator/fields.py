@@ -38,32 +38,6 @@ class IvaField(TaxField):
         }
 
 
-class ConsumoCalculationField(serializers.CharField):
-    PATTERN = "{user_value} kW/h × {price} € = {subtotal} €"
-
-    def __init__(self, **kwargs):
-        kwargs["read_only"] = True
-        kwargs["source"] = "*"
-        super().__init__(**kwargs)
-
-    def to_representation(self, value):
-        _, _, field_name = self.field_name.split("_")
-        initial_data = self.context["initial_data"]
-        user_value = initial_data.get(field_name)
-        if not user_value:
-            return None
-
-        subtotal = round(getattr(value, "st_%s" % field_name), 2)
-        price = getattr(value, field_name)
-        return self.PATTERN.format(
-            **{"user_value": user_value, "price": price, "subtotal": subtotal, "period": initial_data["period"]}
-        ).replace(".", ",")
-
-
-class PotenciaCalculationField(ConsumoCalculationField):
-    PATTERN = "{user_value} kW/h × {period} dias × {price} € = {subtotal} €"
-
-
 class ConsumoField(serializers.FloatField):
     def __init__(self, **kwargs):
         kwargs["min_value"] = 0

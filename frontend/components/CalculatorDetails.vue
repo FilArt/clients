@@ -7,7 +7,7 @@
         <v-icon>mdi-refresh</v-icon>
       </v-btn>
 
-      <v-dialog v-model="rewriteValuesFormDialog" max-width="750" scrollable>
+      <v-dialog v-model="rewriteValuesFormDialog" max-width="max-content" scrollable>
         <template v-slot:activator="{ on }">
           <v-btn v-on="on">Cambiar valores</v-btn>
         </template>
@@ -16,7 +16,7 @@
 
           <v-card-text>
             <v-card flat class="d-flex flex-wrap">
-              <v-card v-for="field in rewriteValuesForm" :key="field.name" class="mb-6 pa-2" flat>
+              <v-card v-for="field in rewriteValuesForm" :key="field.name" class="mb-4 pa-2" flat>
                 <div
                   v-if="field.items && field.items.length"
                   :style="newTax.key ? 'border: 1px solid green; padding: 20px;' : null"
@@ -36,7 +36,11 @@
                   <v-text-field v-if="newTax.key" v-model="newTax.percent" label="Percent" @input="onNewTaxInput" />
                   <v-text-field v-if="newTax.key" v-model="newTax.value" label="Valor" @input="onNewTaxInput" />
                 </div>
-                <decimal-field v-else-if="field.name.startsWith('u')" :label="field.text" />
+                <decimal-field
+                  v-else-if="field.name.length === 2 && (field.name.startsWith('p') || field.name.startsWith('c'))"
+                  v-model="field.value"
+                  :label="field.text"
+                />
                 <v-text-field v-else v-model="field.value" :label="field.text" />
               </v-card>
             </v-card>
@@ -136,64 +140,64 @@ const defaultFields = [
     name: 'impuesto',
   },
   {
-    text: 'P1 (potencia)',
+    text: 'P1 (precio de potencia)',
     value: null,
-    name: 'up1',
+    name: 'p1',
   },
   {
-    text: 'P2 (potencia)',
+    text: 'P2 (precio de potencia)',
     value: null,
-    name: 'up2',
+    name: 'p2',
   },
   {
-    text: 'P3 (potencia)',
+    text: 'P3 (precio de potencia)',
     value: null,
-    name: 'up3',
+    name: 'p3',
   },
   {
-    text: 'P4 (potencia)',
+    text: 'P4 (precio de potencia)',
     value: null,
-    name: 'up4',
+    name: 'p4',
   },
   {
-    text: 'P5 (potencia)',
+    text: 'P5 (precio de potencia)',
     value: null,
-    name: 'up5',
+    name: 'p5',
   },
   {
-    text: 'P6 (potencia)',
+    text: 'P6 (precio de potencia)',
     value: null,
-    name: 'up6',
+    name: 'p6',
   },
   {
-    text: 'P1 (consumo)',
+    text: 'P1 (precio de consumo)',
     value: null,
-    name: 'uc1',
+    name: 'c1',
   },
   {
-    text: 'P2 (consumo)',
+    text: 'P2 (precio de consumo)',
     value: null,
-    name: 'uc2',
+    name: 'c2',
   },
   {
-    text: 'P3 (consumo)',
+    text: 'P3 (precio de consumo)',
     value: null,
-    name: 'uc3',
+    name: 'c3',
   },
   {
-    text: 'P4 (consumo)',
+    text: 'P4 (precio de consumo)',
     value: null,
-    name: 'uc4',
+    name: 'c4',
   },
   {
-    text: 'P5 (consumo)',
+    text: 'P5 (precio de consumo)',
     value: null,
-    name: 'uc5',
+    name: 'c5',
   },
   {
-    text: 'P6 (consumo)',
+    text: 'P6 (precio de consumo)',
     value: null,
-    name: 'uc6',
+    name: 'c6',
   },
   {
     text: 'Nombre del asesor/a',

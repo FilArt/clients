@@ -1,19 +1,12 @@
+from clients.utils import PositiveNullableFloatField
 from django.db import models
-from django.db.models.expressions import Value, F
+from django.db.models.expressions import F, Value
 from django.db.models.query_utils import Q
 from rest_framework import serializers
 
-from .fields import (
-    TaxField,
-    IvaField,
-    ConsumoCalculationField,
-    PotenciaCalculationField,
-    ConsumoField,
-    PotenciaField,
-    BeautyFloatField,
-)
-from .models import Company, Tarif, Offer, CalculatorSettings
-from .validators import positive_number, casi_positive_number
+from .fields import BeautyFloatField, ConsumoField, IvaField, PotenciaField, TaxField
+from .models import CalculatorSettings, Company, Offer, Tarif
+from .validators import casi_positive_number, positive_number
 
 
 class CompanySerializer(serializers.ModelSerializer):
@@ -153,16 +146,6 @@ class CalculatorSerializer(serializers.ModelSerializer):
             "rental",
         ]
         extra_kwargs = {
-            "p2": {"read_only": True},
-            "p3": {"read_only": True},
-            "p4": {"read_only": True},
-            "p5": {"read_only": True},
-            "p6": {"read_only": True},
-            "c2": {"read_only": True},
-            "c3": {"read_only": True},
-            "c4": {"read_only": True},
-            "c5": {"read_only": True},
-            "c6": {"read_only": True},
             "name": {"read_only": True},
             "company": {"write_only": True},
             "is_price_permanent": {"read_only": True},
@@ -171,6 +154,9 @@ class CalculatorSerializer(serializers.ModelSerializer):
 
     def get_calculated(self, new_current_price: float = None):
         data = self.validated_data
+        rewrited_values = data.get("rewrite")
+        if rewrited_values:
+            data = {**data, **rewrited_values}
         kind = data.pop("kind")
         is_luz = kind == "luz"
         calculator_settings = CalculatorSettings.objects.first()
@@ -190,8 +176,8 @@ class CalculatorSerializer(serializers.ModelSerializer):
 
         consumptions = ic1, ic2, ic3, ic4, ic5, ic6
         annual_consumption = sum(consumptions) / data["period"] * 365
-        current_price = Value(new_current_price or data["current_price"], output_field=models.FloatField())
-        reactive = Value(data.get("reactive", 0), output_field=models.FloatField())
+        current_price = Value(new_current_price or data["current_price"], output_field=PositiveNullableFloatField())
+        reactive = Value(data.get("reactive", 0), output_field=PositiveNullableFloatField())
 
         offers = Offer.objects.exclude(company=data["company"]).filter(c1__isnull=False, p1__isnull=False)
         many = True
@@ -209,21 +195,20 @@ class CalculatorSerializer(serializers.ModelSerializer):
             tarif=data["tarif"],
             kind=kind,
         ).annotate(
-            up1=Value(ip1, output_field=models.FloatField()),
-            up2=Value(ip2, output_field=models.FloatField()),
-            up3=Value(ip3, output_field=models.FloatField()),
-            up4=Value(ip4, output_field=models.FloatField()),
-            up5=Value(ip5, output_field=models.FloatField()),
-            up6=Value(ip6, output_field=models.FloatField()),
-            uc1=Value(ic1, output_field=models.FloatField()),
-            uc2=Value(ic2, output_field=models.FloatField()),
-            uc3=Value(ic3, output_field=models.FloatField()),
-            uc4=Value(ic4, output_field=models.FloatField()),
-            uc5=Value(ic5, output_field=models.FloatField()),
-            uc6=Value(ic6, output_field=models.FloatField()),
+            up1=Value(ip1, output_field=PositiveNullableFloatField()),
+            up2=Value(ip2, output_field=PositiveNullableFloatField()),
+            up3=Value(ip3, output_field=PositiveNullableFloatField()),
+            up4=Value(ip4, output_field=PositiveNullableFloatField()),
+            up5=Value(ip5, output_field=PositiveNullableFloatField()),
+            up6=Value(ip6, output_field=PositiveNullableFloatField()),
+            uc1=Value(ic1, output_field=PositiveNullableFloatField()),
+            uc2=Value(ic2, output_field=PositiveNullableFloatField()),
+            uc3=Value(ic3, output_field=PositiveNullableFloatField()),
+            uc4=Value(ic4, output_field=PositiveNullableFloatField()),
+            uc5=Value(ic5, output_field=PositiveNullableFloatField()),
+            uc6=Value(ic6, output_field=PositiveNullableFloatField()),
             period=Value(data["period"], output_field=models.IntegerField()),
             igic=Value(igic, output_field=models.BooleanField()),
-            st_c1=F("c1") * Value(ic1),
         )
         if is_luz:
             qs = (
@@ -234,17 +219,60 @@ class CalculatorSerializer(serializers.ModelSerializer):
                     )
                 )
                 .annotate(
-                    st_p1=F("p1") * Value(ip1) * Value(data["period"]),
-                    st_p2=F("p2") * Value(ip2) * Value(data["period"]),
-                    st_p3=F("p3") * Value(ip3) * Value(data["period"]),
-                    st_p4=F("p4") * Value(ip4) * Value(data["period"]),
-                    st_p5=F("p5") * Value(ip5) * Value(data["period"]),
-                    st_p6=F("p6") * Value(ip6) * Value(data["period"]),
-                    st_c2=F("c2") * Value(ic2),
-                    st_c3=F("c3") * Value(ic3),
-                    st_c4=F("c4") * Value(ic4),
-                    st_c5=F("c5") * Value(ic5),
-                    st_c6=F("c6") * Value(ic6),
+                    st_p1=(
+                        Value(data.get("p1"), output_field=PositiveNullableFloatField()) if data.get("p1") else F("p1")
+                    )
+                    * Value(ip1)
+                    * Value(data["period"]),
+                    st_p2=(
+                        Value(data.get("p2"), output_field=PositiveNullableFloatField()) if data.get("p2") else F("p2")
+                    )
+                    * Value(ip2)
+                    * Value(data["period"]),
+                    st_p3=(
+                        Value(data.get("p3"), output_field=PositiveNullableFloatField()) if data.get("p3") else F("p3")
+                    )
+                    * Value(ip3)
+                    * Value(data["period"]),
+                    st_p4=(
+                        Value(data.get("p4"), output_field=PositiveNullableFloatField()) if data.get("p4") else F("p4")
+                    )
+                    * Value(ip4)
+                    * Value(data["period"]),
+                    st_p5=(
+                        Value(data.get("p5"), output_field=PositiveNullableFloatField()) if data.get("p5") else F("p5")
+                    )
+                    * Value(ip5)
+                    * Value(data["period"]),
+                    st_p6=(
+                        Value(data.get("p6"), output_field=PositiveNullableFloatField()) if data.get("p6") else F("p6")
+                    )
+                    * Value(ip6)
+                    * Value(data["period"]),
+                    st_c1=(
+                        Value(data.get("c1"), output_field=PositiveNullableFloatField()) if data.get("c1") else F("c1")
+                    )
+                    * Value(ic1),
+                    st_c2=(
+                        Value(data.get("c2"), output_field=PositiveNullableFloatField()) if data.get("c2") else F("c2")
+                    )
+                    * Value(ic2),
+                    st_c3=(
+                        Value(data.get("c3"), output_field=PositiveNullableFloatField()) if data.get("c3") else F("c3")
+                    )
+                    * Value(ic3),
+                    st_c4=(
+                        Value(data.get("c4"), output_field=PositiveNullableFloatField()) if data.get("c4") else F("c4")
+                    )
+                    * Value(ic4),
+                    st_c5=(
+                        Value(data.get("c5"), output_field=PositiveNullableFloatField()) if data.get("c5") else F("c5")
+                    )
+                    * Value(ic5),
+                    st_c6=(
+                        Value(data.get("c6"), output_field=PositiveNullableFloatField()) if data.get("c6") else F("c6")
+                    )
+                    * Value(ic6),
                 )
                 .annotate(
                     subtotal=F("st_c1")
@@ -263,7 +291,9 @@ class CalculatorSerializer(serializers.ModelSerializer):
             )
         else:
             qs = qs.annotate(
-                st_p1=F("p1") * Value(data["period"]),
+                st_p1=(Value(data.get("p1"), output_field=PositiveNullableFloatField()) if data.get("p1") else F("p1"))
+                * Value(ip1)
+                * Value(data["period"]),
                 st_c2=zero,
                 st_c3=zero,
                 st_p2=zero,
@@ -289,7 +319,7 @@ class CalculatorSerializer(serializers.ModelSerializer):
                 annual_profit=F("profit") / Value(data["period"]) * Value(365),
                 profit_percent=F("profit") / current_price * Value(100),
                 current_price=current_price,
-                rental=Value(rental, output_field=models.FloatField()),
+                rental=Value(rental, output_field=PositiveNullableFloatField()),
                 reactive=reactive,
             )
             .order_by("total")
