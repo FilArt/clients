@@ -15,6 +15,13 @@ class CompanySerializer(serializers.ModelSerializer):
         fields = "__all__"
 
 
+class NormalFloatField(serializers.FloatField):
+    def to_representation(self, value) -> str:
+        if value == 0:
+            return "0"
+        return super().to_representation(value)
+
+
 class RoundedField(serializers.FloatField):
     def to_representation(self, value):
         return round(value, 2) if value else value
@@ -63,12 +70,24 @@ class CalculatorSerializer(serializers.ModelSerializer):
     st_p5 = RoundedField(read_only=True)
     st_p6 = RoundedField(read_only=True)
 
+    c1 = NormalFloatField(read_only=True)
+    c2 = NormalFloatField(read_only=True)
+    c3 = NormalFloatField(read_only=True)
+    c4 = NormalFloatField(read_only=True)
+    c5 = NormalFloatField(read_only=True)
+    c6 = NormalFloatField(read_only=True)
+    p1 = NormalFloatField(read_only=True)
+    p2 = NormalFloatField(read_only=True)
+    p3 = NormalFloatField(read_only=True)
+    p4 = NormalFloatField(read_only=True)
+    p5 = NormalFloatField(read_only=True)
+    p6 = NormalFloatField(read_only=True)
+
     iva = IvaField(read_only=True)
     tax = TaxField(read_only=True)
 
     with_calculations = serializers.BooleanField(default=False, write_only=True)
 
-    # rental = BeautyFloatField(show_euro=True)
     rental = RoundedField(read_only=True)
     profit = BeautyFloatField(show_euro=True)
     profit_num = serializers.DecimalField(read_only=True, max_digits=15, decimal_places=2, source="profit")

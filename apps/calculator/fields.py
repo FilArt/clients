@@ -55,11 +55,9 @@ class BeautyFloatField(serializers.FloatField):
         self.show_euro = show_euro
         super().__init__(**kwargs)
 
-    def to_representation(self, value: float):
+    def to_representation(self, value: float) -> str:
+        if value == 0:
+            return "0"
         if not isinstance(value, float):
             raise ValueError("Value %s not float" % value)
-        result = decimal.Decimal.from_float(value).quantize(QUANT, decimal.ROUND_HALF_UP).normalize()
-        if self.show_euro:
-            # return f"{result} €"
-            return f"{result}"
-        return result
+        return decimal.Decimal.from_float(value).quantize(QUANT, decimal.ROUND_HALF_UP).normalize()

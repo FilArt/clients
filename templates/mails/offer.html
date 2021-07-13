@@ -106,7 +106,9 @@
           </v-card>
 
           <v-card class="d-flex flex-column offset">
+            {% if reactive %}
             <v-card><span class="first-word">Energía reactiva:</span> {{ reactive }} €</v-card>
+            {% endif %}
             <v-card><span class="first-word">Alquiler equipos:</span> {{ rental }} €</v-card>
             <v-card>
               <span class="first-word">
