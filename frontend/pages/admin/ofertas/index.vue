@@ -124,7 +124,9 @@
 
       <v-spacer />
 
-      <v-toolbar-items>
+      <v-toolbar-items class="align-center">
+        <calculator-settings-dialog v-if="$auth.user && $auth.user.role === 'admin'" />
+
         <v-btn nuxt to="/admin/ofertas/comercializadoras" color="warning">Comercializadoras</v-btn>
 
         <v-btn nuxt to="/admin/ofertas/nuevo_oferta" color="success">
@@ -200,7 +202,13 @@ import CloseButton from '@/components/buttons/closeButton'
 import constants from '@/lib/constants'
 
 export default {
-  components: { CloseButton, DeleteButton, OfferRequiredFields },
+  components: {
+    CloseButton,
+    DeleteButton,
+    OfferRequiredFields,
+
+    CalculatorSettingsDialog: () => import('@/components/dialogs/CalculatorSettingsDialog'),
+  },
   data() {
     const q = this.$route.query
     return {

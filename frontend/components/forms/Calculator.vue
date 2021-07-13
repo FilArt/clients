@@ -24,10 +24,6 @@
     </v-data-table>
 
     <v-card v-show="!showResults">
-      <v-card-text v-if="$auth.user && $auth.user.role === 'admin'">
-        <calculator-settings-dialog />
-      </v-card-text>
-
       <v-card-text>
         <v-form novalidate @submit.prevent="submit">
           <v-card class="text-center flex-row flex-nowrap d-flex">
@@ -234,7 +230,6 @@ import constants from '@/lib/constants'
 export default {
   name: 'Calculator',
   components: {
-    CalculatorSettingsDialog: () => import('@/components/dialogs/CalculatorSettingsDialog'),
     ClientTypeSelect: () => import('~/components/selects/ClientTypeSelect'),
     TarifSelect: () => import('~/components/selects/TarifSelect'),
     CompanySelect: () => import('~/components/selects/CompanySelect'),
