@@ -38,6 +38,9 @@ export const actions = {
     const provinces = await this.$axios.$get('/users/puntos/get_cities/')
     commit('setCities', provinces)
   },
+  setCalculatorForm({ commit }, form) {
+    commit('setCalculatorForm', form)
+  },
 }
 
 export const mutations = {
@@ -71,7 +74,7 @@ export const mutations = {
   setCalculatedOffers(state, offers) {
     state.calculatedOffers = offers
   },
-  updateCalculatorForm(state, { key, value }) {
-    state.calculatorForm[key] = value
+  setCalculatorForm(state, form) {
+    state.calculatorForm = form
   },
 }

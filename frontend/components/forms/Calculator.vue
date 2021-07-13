@@ -31,8 +31,8 @@
               :color="form.kind === 'luz' ? ourColor : null"
               :style="`width: 50%; ${form.kind === 'gas' ? 'opacity: 50%' : null}`"
               @click="
-                updateForm('kind', 'luz')
-                updateForm('tarif', null)
+                form.kind = 'luz'
+                form.tarif = null
               "
             >
               <v-card-title>Luz</v-card-title>
@@ -43,8 +43,8 @@
               :style="`width: 50%; ${form.kind === 'luz' ? 'opacity: 50%' : null}`"
               :color="form.kind === 'gas' ? ourColor : null"
               @click="
-                updateForm('kind', 'gas')
-                updateForm('tarif', null)
+                form.kind = 'gas'
+                form.tarif = null
               "
             >
               <v-card-title>Gas</v-card-title><v-icon large color="red" right>mdi-fire</v-icon>
@@ -54,12 +54,7 @@
           <v-row align="center" class="text-center">
             <v-col>
               Impuestos
-              <v-btn-toggle
-                mandatory
-                :value="form.igic || false"
-                :color="ourColor"
-                @change="updateForm('igic', $event)"
-              >
+              <v-btn-toggle v-model="form.igic" mandatory :value="form.igic || false" :color="ourColor">
                 <v-btn :value="false">Península</v-btn>
                 <v-btn :value="true">Islas Canarias</v-btn>
               </v-btn-toggle>
@@ -71,11 +66,10 @@
               Tipo de cliente
               <br />
               <client-type-select
-                :value="form.client_type"
+                v-model="form.client_type"
                 :error-messages="errorMessages.client_type"
                 hint
                 without-autonomo
-                @input="updateForm('client_type', $event)"
               />
             </v-col>
           </v-row>
@@ -83,21 +77,19 @@
           <v-row align="center">
             <v-col>
               <company-select
-                :value="form.company"
+                v-model="form.company"
                 :error-messages="errorMessages.company"
                 label="Comercializadora actual"
                 hint
-                @input="updateForm('company', $event)"
               />
             </v-col>
 
             <v-col>
               <tarif-select
+                v-model="form.tarif"
                 :error-messages="errorMessages.tarif"
                 hint
                 :gas="form.kind === 'gas'"
-                :value="form.tarif"
-                @input="updateForm('tarif', $event)"
               />
             </v-col>
           </v-row>
@@ -105,13 +97,12 @@
           <v-row>
             <v-col>
               <v-text-field
+                v-model.number="form.period"
                 label="Periodo"
                 name="period"
                 suffix="dias"
                 dense
-                :value="form.period"
                 :error-messages="errorMessages.period"
-                @input="updateForm('period', $event)"
               >
                 <template v-slot:append-outer>
                   <v-tooltip bottom open-on-hover open-on-focus open-on-click>
@@ -131,13 +122,12 @@
 
             <v-col>
               <decimal-field
+                v-model="form.current_price"
                 label="Cadidad de pago en la factura actual"
                 name="current_price"
                 prefix="€"
                 dense
-                :value="form.current_price"
                 :error-messages="errorMessages.current_price"
-                @input="updateForm('current_price', $event)"
               />
             </v-col>
           </v-row>
@@ -145,15 +135,14 @@
           <v-row v-if="form.kind === 'luz'">
             <v-col v-for="letter in ['p', 'c']" :key="letter">
               <v-row v-for="number in [1, 2, 3, 4, 5, 6]" :key="number">
-                <v-col v-show="fieldsToShow.includes(letter + number)">
+                <v-col v-show="showInput(letter, number)">
                   <decimal-field
+                    v-model="form['u' + letter + number]"
                     dense
                     :suffix="letter === 'p' ? 'kw' : 'kW/h'"
-                    :value="form['u' + letter + number]"
                     :label="(letter === 'p' ? 'Potencia' : 'Consumo') + ' P' + number"
                     :name="'P' + number"
                     :error-messages="errorMessages['u' + letter + number]"
-                    @input="updateForm('u' + letter + number, $event)"
                   >
                     <template v-slot:append-outer>
                       <v-tooltip bottom open-on-click open-on-focus open-on-hover z-index="1000">
@@ -180,42 +169,36 @@
           <v-row v-else>
             <v-col>
               <decimal-field
+                v-model="form.uc1"
                 label="Consumo"
                 suffix="kW/h"
                 dense
-                :value="form.c1"
                 :error-messages="errorMessages.c1"
-                @input="updateForm('c1', $event)"
               />
             </v-col>
           </v-row>
 
-          <v-row v-show="false" v-if="form.kind === 'luz'" align="center">
+          <!-- <v-row v-show="false" v-if="kind === 'luz'" align="center">
             <v-col>
-              <v-checkbox
-                v-model="hasReactiveEnergy"
-                label="Energía reactiva (opcional)"
-                @change="!$event ? updateForm('reactive', 0) : null"
-              />
+              <v-checkbox v-model="hasReactiveEnergy" label="Energía reactiva (opcional)" />
             </v-col>
 
             <v-col>
               <decimal-field
                 v-show="hasReactiveEnergy"
+                v-model="reactive"
                 prefix="€"
                 label="Cadidad de pago energía reactiva"
-                :value="form.reactive"
                 :error-messages="errorMessages.reactive"
-                @input="updateForm('reactive', $event && $event.length ? $event : null)"
               />
             </v-col>
-          </v-row>
+          </v-row> -->
 
           <v-card-actions>
-            <v-btn icon color="warning" @click="$store.commit('resetCalculator')">
+            <v-btn icon color="warning" @click="resetForm">
               <v-icon>mdi-eraser-variant</v-icon>
             </v-btn>
-            <submit-button :disabled="hasReactiveEnergy ? !form.reactive : false" block label="Comparar" />
+            <submit-button block label="Comparar" />
           </v-card-actions>
         </v-form>
       </v-card-text>
@@ -230,7 +213,27 @@
 <script>
 import constants from '@/lib/constants'
 import DecimalField from '../fields/decimalField.vue'
-
+const defaultForm = Object.freeze({
+  client_type: 1,
+  kind: 'luz',
+  tarif: null,
+  period: 0,
+  current_price: 0,
+  uc1: 0,
+  uc2: 0,
+  uc3: 0,
+  uc4: 0,
+  uc5: 0,
+  uc6: 0,
+  up1: 0,
+  up2: 0,
+  up3: 0,
+  up4: 0,
+  up5: 0,
+  up6: 0,
+  company: null,
+  igic: false,
+})
 export default {
   name: 'Calculator',
   components: {
@@ -254,31 +257,17 @@ export default {
   },
   data() {
     return {
-      hasReactiveEnergy: false,
+      // hasReactiveEnergy: false,
       ourColor: constants.ourColor,
       errorMessages: {},
       loading: false,
       showResults: false,
+      form: { ...defaultForm },
     }
   },
   computed: {
-    fieldsToShow() {
-      const letters = ['p', 'c']
-      const numbers = [1, 2, 3, 4, 5, 6]
-      const tarif = this.form.tarif
-      const permutations = []
-      letters.forEach((letter) => {
-        numbers.forEach((number) => {
-          permutations.push(letter + number)
-        })
-      })
-      return permutations.filter((field) => constants.showInput(field[0], field[1], tarif))
-    },
     offers() {
       return this.$store.state.calculatedOffers
-    },
-    form() {
-      return this.$store.state.calculatorForm
     },
     headers() {
       const _headers = [
@@ -314,24 +303,35 @@ export default {
     },
   },
   watch: {
-    'form.tarif': {
+    form: {
       handler() {
-        const fields = [
-          ['p', 2],
-          ['p', 3],
-          ['c', 2],
-          ['c', 3],
-        ]
-        fields.forEach((field) => {
-          if (!this.showInput(field[0], field[1])) {
-            this.updateForm(field[0] + field[1], null)
-          }
-        })
+        this.$store.dispatch('setCalculatorForm', { ...this.form })
       },
       deep: true,
     },
+    tarif() {
+      const fields = [
+        ['p', 1],
+        ['c', 1],
+        ['p', 2],
+        ['p', 3],
+        ['c', 2],
+        ['c', 3],
+      ]
+      fields.forEach((field) => {
+        if (!this.showInput(field[0], field[1])) {
+          this.form['u' + field[0] + field[1]] = null
+        }
+      })
+    },
+  },
+  mounted() {
+    this.form = { ...this.$store.state.calculatorForm }
   },
   methods: {
+    resetForm() {
+      this.form = { ...defaultForm }
+    },
     getDetailUrl(offer) {
       return this.detailUrl
         ? this.detailUrl.replace('place_for_id', String(offer.id))
@@ -342,17 +342,12 @@ export default {
     showInput(letter, number) {
       return this.form.tarif && constants.showInput(letter, number, this.form.tarif)
     },
-    updateForm(key, value) {
-      this.$store.commit('updateCalculatorForm', {
-        key,
-        value,
-      })
-    },
     submit() {
       this.errorMessages = {}
       this.loading = true
+      const form = { ...this.form }
       const values = Object.fromEntries(
-        Object.entries(this.form)
+        Object.entries(form)
           .filter((i) => [undefined, null, ''].indexOf(i[1]) === -1)
           .map((item) => {
             const [key, val] = item
