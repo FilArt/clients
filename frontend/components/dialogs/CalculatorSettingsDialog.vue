@@ -13,45 +13,45 @@
 
       <v-card-text>
         <v-form @submit.prevent="submit">
-          <v-text-field v-model="settings.iva" :error-messages="errors.iva" label="IVA" />
-          <v-text-field v-model="settings.igic" :error-messages="errors.igic" label="IGIC" />
-          <v-text-field v-model="settings.tax" :error-messages="errors.tax" label="Impuesto electrico" />
-          <v-text-field
+          <decimal-field v-model="settings.iva" :error-messages="errors.iva" label="IVA" @input="test" />
+          <decimal-field v-model="settings.igic" :error-messages="errors.igic" label="IGIC" />
+          <decimal-field v-model="settings.tax" :error-messages="errors.tax" label="Impuesto electrico" />
+          <decimal-field
             v-model="settings.carbon_tax"
             :error-messages="errors.carbon_tax"
             label="impuesto sobre el carbono"
           />
-          <v-text-field
+          <decimal-field
             v-model="settings.equip_rent_t20td"
             :error-messages="errors.equip_rent_t20td"
             label="Alquiler de equipos (2.0TD)"
           />
-          <v-text-field
+          <decimal-field
             v-model="settings.equip_rent_t30td"
             :error-messages="errors.equip_rent_t30td"
             label="Alquiler de equipos (3.0TD)"
           />
-          <v-text-field
+          <decimal-field
             v-model="settings.equip_rent_t61td"
             :error-messages="errors.equip_rent_t61td"
             label="Alquiler de equipos (6.1TD)"
           />
-          <v-text-field
+          <decimal-field
             v-model="settings.equip_rent_g31"
             :error-messages="errors.equip_rent_g31"
             label="Alquiler de equipos (3.1)"
           />
-          <v-text-field
+          <decimal-field
             v-model="settings.equip_rent_g32"
             :error-messages="errors.equip_rent_g32"
             label="Alquiler de equipos (3.2)"
           />
-          <v-text-field
+          <decimal-field
             v-model="settings.equip_rent_g33"
             :error-messages="errors.equip_rent_g33"
             label="Alquiler de equipos (3.3)"
           />
-          <v-text-field
+          <decimal-field
             v-model="settings.equip_rent_g34"
             :error-messages="errors.equip_rent_g34"
             label="Alquiler de equipos (3.4)"
@@ -76,6 +76,9 @@
 <script>
 export default {
   name: 'CalculatorSettingsDialog',
+  components: {
+    DecimalField: () => import('@/components/fields/decimalField'),
+  },
   data() {
     return {
       settings: {},
