@@ -24,7 +24,7 @@
     </v-data-table>
 
     <v-card v-show="!showResults">
-      <v-card-text v-if="$auth.user.role === 'admin'">
+      <v-card-text v-if="$auth.user && $auth.user.role === 'admin'">
         <calculator-settings-dialog />
       </v-card-text>
 
