@@ -20,24 +20,27 @@
               <img width="100%" src="https://intranet.gestiongroup.es/gg_logo_blue.png" />
             </v-card>
 
-            <v-card class="d-flex flex-column">
+            <v-card class="d-flex flex-column" style="font-style: italic;">
               <v-card style="text-align: right"> № {{ id }} </v-card>
               <v-card style="text-align: right"> Fecha de la propuesta: {{ date }} </v-card>
               <v-card style="text-align: right"> Periodo de validez: 7 Días </v-card>
             </v-card>
           </v-card>
 
-          <v-divider></v-divider>
+          <hr>
+
           <br />
 
-          <v-card class="d-flex justify-center text-h5">
+          <v-card class="d-flex justify-center text-h5 font-weight-bold">
             <v-card-title> PROPUESTA DE FACTURACIÓN </v-card-title>
           </v-card>
           <br />
 
-          <v-card class="d-flex flex-column font-italic">
+          <v-card class="d-flex flex-column align-center">
             <v-card> NOMBRE DEL CLIENTE: {{ client_name }} </v-card>
             <v-card> TARIFA: {{tarif}} </v-card>
+            <v-card> CUPS: {{ cups }}</v-card>
+            <v-card> EMAIL DE CLIENTE: {{ client_email }}</v-card>
             <v-card> COMERCIALIZADORA: {{company_name}} </v-card>
             <v-card> OFERTA: {{ name }} </v-card>
           </v-card>
@@ -109,26 +112,22 @@
             <v-card>
               <span class="first-word">
                 {% if kind == 'luz' %} IMP. ELECTRICIDAD: {% else %} IMP. HIDROCARBUROS {% endif %}
-                <span> ({{ tax.percent}}%): </span>
+                <span> ({{ tax.percent }}%): </span>
               </span>
               {{ tax.value }} €
             </v-card>
             <v-card>
               {% if igic %}
-              <span class="first-word">
-                IGIC ({{ tax.percent }}%):
-              </span>
-              {{ tax.value }} €
-              {% else %}
-              <span class="first-word">
-                IVA ({{ iva.percent }}%):
-              </span>
-              {{ iva.value }} €
-              {% endif %}
+              <span class="first-word"> IGIC ({{ tax.percent }}%): </span>
+              {{ tax.value }} € {% else %}
+              <span class="first-word"> IVA ({{ iva.percent }}%): </span>
+              {{ iva.value }} € {% endif %}
             </v-card>
           </v-card>
 
-          <v-card class="d-flex justify-end text-h5 font-weight-bold"> TOTAL: 1 234 567,12 € </v-card>
+          <!-- <v-card class="d-flex justify-end text-h5 font-weight-bold"> TOTAL: 1 234 567,12 € </v-card> -->
+
+          <br />
 
           <v-card class="d-flex flex-column border">
             <v-card> FACTURACIÓN ACTUAL: {{ total }} € </v-card>
@@ -182,7 +181,7 @@
       }
 
       .border {
-        border: 3px solid black;
+        border: 3px solid #004680;
         border-radius: 1cm;
         padding: 3px;
         text-align: center;

@@ -176,8 +176,8 @@ class CalculatorSerializer(serializers.ModelSerializer):
         calculator_settings = CalculatorSettings.objects.first()
         epd = calculator_settings.get_equip(data["tarif"])
         rental = epd * data["period"]
-        use_igic = data["igic"]
-        nds = calculator_settings.igic if use_igic else calculator_settings.iva
+        igic = data["igic"]
+        nds = calculator_settings.igic if igic else calculator_settings.iva
         zero = Value(0, output_field=models.FloatField())
 
         ip1, ip2, ip3 = data.get("up1", 0), data.get("up2", 0), data.get("up3", 0)
@@ -222,7 +222,7 @@ class CalculatorSerializer(serializers.ModelSerializer):
             uc5=Value(ic5, output_field=models.FloatField()),
             uc6=Value(ic6, output_field=models.FloatField()),
             period=Value(data["period"], output_field=models.IntegerField()),
-            igic=Value(use_igic, output_field=models.BooleanField()),
+            igic=Value(igic, output_field=models.BooleanField()),
             st_c1=F("c1") * Value(ic1),
         )
         if is_luz:
@@ -299,16 +299,13 @@ class CalculatorSerializer(serializers.ModelSerializer):
         if offers_count == 0:
             return []
         tax_percent = calculator_settings.tax if is_luz else calculator_settings.carbon_tax
-        tax_percent = round(tax_percent * 100, 2)
         return CalculatorSerializer(
             qs if many else qs.first(),
             many=many,
             context={
                 "initial_data": self.initial_data,
-                # "tax_percent": f'{"Imp. eléctrico" if is_luz else "Imp. hidrocarburos"} ({tax_percent}%)',
-                "tax_percent": tax_percent,
-                # "iva_percent": f'{"IGIC" if use_igic else "IVA general"} ({round(nds * 100, 2)}%)',
-                "iva_percent": f"{round(nds * 100)}",
+                "tax_percent": tax_percent * 100,
+                "iva_percent": round(nds * 100),
             },
         ).data
 
