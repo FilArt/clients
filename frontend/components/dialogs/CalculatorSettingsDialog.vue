@@ -15,11 +15,11 @@
         <v-form @submit.prevent="submit">
           <decimal-field v-model="settings.iva" :error-messages="errors.iva" label="IVA" @input="test" />
           <decimal-field v-model="settings.igic" :error-messages="errors.igic" label="IGIC" />
-          <decimal-field v-model="settings.tax" :error-messages="errors.tax" label="Impuesto electrico" />
+          <decimal-field v-model="settings.tax" :error-messages="errors.tax" label="Imp. electricidad" />
           <decimal-field
             v-model="settings.carbon_tax"
             :error-messages="errors.carbon_tax"
-            label="impuesto sobre el carbono"
+            label="Imp. hidrocarburos"
           />
           <decimal-field
             v-model="settings.equip_rent_t20td"

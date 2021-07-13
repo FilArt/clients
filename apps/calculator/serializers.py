@@ -33,7 +33,7 @@ class CalculatorSerializer(serializers.ModelSerializer):
     total = serializers.FloatField()
     company_name = serializers.CharField(source="company.name", read_only=True)
     company_logo = serializers.ImageField(source="company.logo", read_only=True)
-    period = serializers.IntegerField(min_value=1, write_only=True)
+    period = serializers.IntegerField(min_value=1)
     tarif = serializers.ChoiceField(choices=Tarif.choices())
     client_type = serializers.ChoiceField(choices=Offer.CLIENT_TYPE_CHOICES)
     uc1 = ConsumoField(required=True)
@@ -221,6 +221,7 @@ class CalculatorSerializer(serializers.ModelSerializer):
             uc4=Value(ic4, output_field=models.FloatField()),
             uc5=Value(ic5, output_field=models.FloatField()),
             uc6=Value(ic6, output_field=models.FloatField()),
+            period=Value(data["period"], output_field=models.IntegerField()),
             igic=Value(use_igic, output_field=models.BooleanField()),
             st_c1=F("c1") * Value(ic1),
         )
