@@ -1,13 +1,28 @@
 <template>
-  <div>
-    <v-text-field v-model="modelValue" :label="label" :errors-messages="errorMessages" />
-  </div>
+  <v-text-field v-model="modelValue" :label="label" :errors-messages="errorMessages" />
 </template>
 
 <script>
 export default {
   name: 'DecimalField',
   props: {
+    name: {
+      type: String,
+      default: '',
+    },
+    prefix: {
+      type: String,
+      default: '',
+    },
+    suffix: {
+      type: String,
+      default: '',
+    },
+    dense: {
+      type: Boolean,
+      default: false,
+    },
+
     value: {
       type: [String, Number],
       default: 0,

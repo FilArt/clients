@@ -130,7 +130,7 @@
             </v-col>
 
             <v-col>
-              <v-text-field
+              <decimal-field
                 label="Cadidad de pago en la factura actual"
                 name="current_price"
                 prefix="€"
@@ -146,7 +146,7 @@
             <v-col v-for="letter in ['p', 'c']" :key="letter">
               <v-row v-for="number in [1, 2, 3, 4, 5, 6]" :key="number">
                 <v-col v-show="showInput(letter, number)">
-                  <v-text-field
+                  <decimal-field
                     dense
                     :suffix="letter === 'p' ? 'kw' : 'kW/h'"
                     :value="form['u' + letter + number]"
@@ -171,7 +171,7 @@
                         </span>
                       </v-tooltip>
                     </template>
-                  </v-text-field>
+                  </decimal-field>
                 </v-col>
               </v-row>
             </v-col>
@@ -179,7 +179,7 @@
 
           <v-row v-else>
             <v-col>
-              <v-text-field
+              <decimal-field
                 label="Consumo"
                 suffix="kW/h"
                 dense
@@ -200,7 +200,7 @@
             </v-col>
 
             <v-col>
-              <v-text-field
+              <decimal-field
                 v-show="hasReactiveEnergy"
                 prefix="€"
                 label="Cadidad de pago energía reactiva"
@@ -226,6 +226,7 @@
 </template>
 <script>
 import constants from '@/lib/constants'
+import DecimalField from '../fields/decimalField.vue'
 
 export default {
   name: 'Calculator',
@@ -235,6 +236,8 @@ export default {
     CompanySelect: () => import('~/components/selects/CompanySelect'),
     SubmitButton: () => import('~/components/buttons/submitButton'),
     ReturnButton: () => import('~/components/buttons/returnButton'),
+    // DecimalField: () => import('@/components/fields/decimalField')
+    DecimalField,
   },
   props: {
     hideOfferNames: {
