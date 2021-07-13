@@ -1,5 +1,13 @@
 <template>
-  <v-text-field v-model="modelValue" :label="label" :errors-messages="errorMessages" />
+  <v-text-field
+    v-model="modelValue"
+    :label="label"
+    :prefix="prefix"
+    :suffix="suffix"
+    :dense="dense"
+    :name="name"
+    :errors-messages="errorMessages"
+  />
 </template>
 
 <script>

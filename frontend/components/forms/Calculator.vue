@@ -1,9 +1,9 @@
 <template>
   <v-card :loading="loading" flat class="d-flex flex-column align-center">
-    <v-alert v-show="showResults && !offers.length" type="warning">Nohay ofertas</v-alert>
+    <v-alert v-if="showResults && !offers.length" type="warning">Nohay ofertas</v-alert>
 
     <calculator-details
-      v-if="offer"
+      v-else-if="offer"
       :offer="offer"
       @return="
         offer = null
@@ -189,21 +189,24 @@
             </v-col>
           </v-row>
 
-          <!-- <v-row v-show="false" v-if="kind === 'luz'" align="center">
+          <v-row v-if="form.kind === 'luz' && form.tarif !== '2.0TD'" align="center">
             <v-col>
-              <v-checkbox v-model="hasReactiveEnergy" label="Energía reactiva (opcional)" />
+              <v-checkbox
+                v-model="hasReactiveEnergy"
+                label="Energía reactiva (opcional)"
+                @click="form.reactive = hasReactiveEnergy ? form.reactive : 0"
+              />
             </v-col>
 
-            <v-col>
+            <v-col v-show="hasReactiveEnergy">
               <decimal-field
-                v-show="hasReactiveEnergy"
-                v-model="reactive"
+                v-model="form.reactive"
                 prefix="€"
                 label="Cadidad de pago energía reactiva"
                 :error-messages="errorMessages.reactive"
               />
             </v-col>
-          </v-row> -->
+          </v-row>
 
           <v-card-actions>
             <v-btn icon color="warning" @click="resetForm">
@@ -267,7 +270,7 @@ export default {
   },
   data() {
     return {
-      // hasReactiveEnergy: false,
+      hasReactiveEnergy: false,
       ourColor: constants.ourColor,
       errorMessages: {},
       loading: false,

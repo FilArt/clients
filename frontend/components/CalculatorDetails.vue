@@ -9,13 +9,18 @@
 
       <v-dialog v-model="rewriteValuesFormDialog" max-width="750" scrollable>
         <template v-slot:activator="{ on }">
-          <v-btn v-on="on"> Cambiar valores </v-btn>
+          <v-btn v-on="on">Cambiar valores</v-btn>
         </template>
         <v-card>
+          <v-card-title>Cambiar valores</v-card-title>
+
           <v-card-text>
             <v-card flat class="d-flex flex-wrap">
               <v-card v-for="field in rewriteValuesForm" :key="field.name" class="mb-6 pa-2" flat>
-                <div v-if="field.items && field.items.length">
+                <div
+                  v-if="field.items && field.items.length"
+                  :style="newTax.key ? 'border: 1px solid green; padding: 20px;' : null"
+                >
                   <v-select
                     v-model="newTax.key"
                     :items="field.items"
@@ -31,6 +36,7 @@
                   <v-text-field v-if="newTax.key" v-model="newTax.percent" label="Percent" @input="onNewTaxInput" />
                   <v-text-field v-if="newTax.key" v-model="newTax.value" label="Valor" @input="onNewTaxInput" />
                 </div>
+                <decimal-field v-else-if="field.name.startsWith('u')" :label="field.text" />
                 <v-text-field v-else v-model="field.value" :label="field.text" />
               </v-card>
             </v-card>
@@ -94,6 +100,7 @@
 </template>
 
 <script>
+import decimalField from './fields/decimalField.vue'
 const defaultFields = [
   {
     text: 'Nombre del cliente',
@@ -120,89 +127,13 @@ const defaultFields = [
     value: null,
     name: 'rental',
   },
-
-  // {
-  //   id: 5004,
-  //   company_name: 'AXPO',
-  //   company_logo: '/media/6.png',
-  //   name: 'AXPO-LUZ-ANTIGUO',
-  //   tarif: '2.0TD',
-  //   p1: 0.0,
-  //   p2: 0.0,
-  //   p3: 0.0,
-  //   p4: 0.0,
-  //   p5: 0.0,
-  //   p6: 0.0,
-  //   c1: 0.0,
-  //   c2: 0.0,
-  //   c3: 0.0,
-  //   c4: 0.0,
-  //   c5: 0.0,
-  //   c6: 0.0,
-  //   is_price_permanent: 'Fijo',
-  //   client_type: 1,
-  //   description: 'AXPO-ANTIGUO',
-  //   c_st_p1: '21,12 kW/h × 10 dias × 0,0 € = 0,0 €',
-  //   c_st_p2: None,
-  //   c_st_p3: None,
-  //   c_st_p4: None,
-  //   c_st_p5: None,
-  //   c_st_p6: None,
-  //   c_st_c1: '22,12 kW/h × 0,0 € = 0,0 €',
-  //   c_st_c2: None,
-  //   c_st_c3: None,
-  //   c_st_c4: None,
-  //   c_st_c5: None,
-  //   c_st_c6: None,
-  //   st_p1: 0.0,
-  //   st_p2: 0.0,
-  //   st_p3: 0.0,
-  //   st_p4: 0.0,
-  //   st_p5: 0.0,
-  //   st_p6: 0.0,
-  //   st_c1: 0.0,
-  //   st_c2: 0.0,
-  //   st_c3: 0.0,
-  //   st_c4: 0.0,
-  //   st_c5: 0.0,
-  //   st_c6: 0.0,
-  //   tax: { percent: 5.11, value: '0.00' },
-  //   iva: { percent: '21%', value: '0.06' },
-  //   rental: 0.27,
-  //   total: '0.32',
-  //   current_price: 50.0,
-  //   profit: '49.68',
-  //   profit_num: '49.68',
-  //   profit_percent: 99,
-  //   annual_profit: '1813.2',
-  //   annual_profit_num: '1813.20',
-  //   kind: 'luz',
-  //   reactive: 0.0,
-  // },
-
   {
     text: 'Impuesto con desplegable',
     items: [
-      { key: 'tax', value: '0.00', text: 'IGIC' },
-      { key: 'iva', value: '0.06', text: 'IVA' },
-      { key: 'canarias', value: null, text: 'islas Canarias' },
+      { key: 'tax', value: null, text: 'IGIC' },
+      { key: 'iva', value: null, text: 'IVA' },
     ],
     name: 'impuesto',
-  },
-  {
-    text: 'Nombre del asesor/a',
-    value: null,
-    name: 'agent',
-  },
-  {
-    text: 'Teléfono del asesor/a',
-    value: null,
-    name: 'agent_phone',
-  },
-  {
-    text: 'Email del asesor/a',
-    value: null,
-    name: 'agent_email',
   },
   {
     text: 'P1 (potencia)',
@@ -264,9 +195,25 @@ const defaultFields = [
     value: null,
     name: 'uc6',
   },
+  {
+    text: 'Nombre del asesor/a',
+    value: null,
+    name: 'agent',
+  },
+  {
+    text: 'Teléfono del asesor/a',
+    value: null,
+    name: 'agent_phone',
+  },
+  {
+    text: 'Email del asesor/a',
+    value: null,
+    name: 'agent_email',
+  },
 ]
 export default {
   name: 'CalculatorDetails',
+  components: { decimalField },
   props: {
     offer: {
       type: Object,

@@ -14,20 +14,20 @@
   <body>
     <div id="app">
       <v-app>
-        <v-main>
+        <v-main class="our-color">
           <v-card class="d-flex align-center justify-space-between pa-1">
             <v-card class="d-flex" style="max-width: 50%">
               <img width="100%" src="https://intranet.gestiongroup.es/gg_logo_blue.png" />
             </v-card>
 
-            <v-card class="d-flex flex-column" style="font-style: italic;">
+            <v-card class="d-flex flex-column" style="font-style: italic">
               <v-card style="text-align: right"> № {{ id }} </v-card>
               <v-card style="text-align: right"> Fecha de la propuesta: {{ date }} </v-card>
               <v-card style="text-align: right"> Periodo de validez: 7 Días </v-card>
             </v-card>
           </v-card>
 
-          <hr>
+          <hr />
 
           <br />
 
@@ -36,16 +36,15 @@
           </v-card>
           <br />
 
-          <v-card class="d-flex flex-column align-center">
-            <v-card> NOMBRE DEL CLIENTE: {{ client_name }} </v-card>
-            <v-card> TARIFA: {{tarif}} </v-card>
-            <v-card> CUPS: {{ cups }}</v-card>
-            <v-card> EMAIL DE CLIENTE: {{ client_email }}</v-card>
-            <v-card> COMERCIALIZADORA: {{company_name}} </v-card>
-            <v-card> OFERTA: {{ name }} </v-card>
-          </v-card>
+          <div class="centered-list">
+            <p>NOMBRE DEL CLIENTE: {{ client_name }}</p>
+            <p>TARIFA: {{ tarif }}</p>
+            <p>CUPS: {{ cups }}</p>
+            <p>EMAIL DE CLIENTE: {{ client_email }}</p>
+            <p>COMERCIALIZADORA: {{ company_name }}</p>
+            <p>OFERTA: {{ name }}</p>
+          </div>
 
-          <br />
 
           <v-card class="d-flex flex-column font-italic font-weight-black">
             <v-card> POTENCIA: </v-card>
@@ -107,7 +106,7 @@
           </v-card>
 
           <v-card class="d-flex flex-column offset">
-            <v-card style="display: none"><span class="first-word">Energía reactiva:</span> {{ reactive }} €</v-card>
+            <v-card><span class="first-word">Energía reactiva:</span> {{ reactive }} €</v-card>
             <v-card><span class="first-word">Alquiler equipos:</span> {{ rental }} €</v-card>
             <v-card>
               <span class="first-word">
@@ -134,7 +133,7 @@
             <v-card> PROPUESTA DE FACTURACIÓN: {{ total }} € </v-card>
             <br />
             <v-card> AHORRO EN FACTURA: {{ profit }} € ({{ profit_percent }}%) </v-card>
-            <v-card> AHORRO ANUAL: {{ annual_profit }} € </v-card>
+            <v-card class="font-weight-bold"> AHORRO ESTIMADO ANUAL: {{ annual_profit }} € </v-card>
           </v-card>
 
           <br />
@@ -144,7 +143,7 @@
               <img height="60" src="https://intranet.gestiongroup.es/person.svg" />
             </v-card>
             <v-card class="d-flex flex-column" style="text-indent: 10px">
-              <v-card> Nombre del asesor: {{ agent }}</v-card>
+              <v-card> Nombre del asesor/a: {{ agent }}</v-card>
               <v-card> Teléfono: {{ agent_phone }}</v-card>
               <v-card> Email: {{ agent_email }}</v-card>
             </v-card>
@@ -169,6 +168,9 @@
     <style>
       #app {
         padding: 1em;
+      }
+
+      .our-color {
         color: #004680;
       }
 
@@ -185,6 +187,16 @@
         border-radius: 1cm;
         padding: 3px;
         text-align: center;
+      }
+  
+      .centered-list {
+        display: flex;
+        flex-direction: column;
+      }
+
+      .centered-list > p {
+        text-indent: 100px;
+        line-height: 4px;
       }
     </style>
   </body>
