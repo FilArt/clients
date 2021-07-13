@@ -2,11 +2,6 @@
   <v-card>
     <v-card-text>
       <v-row>
-        <v-col v-if="showCalcDetails" class="flex-grow-0">
-          <v-btn icon color="error" @click="$router.back()">
-            <v-icon>mdi-arrow-left</v-icon>
-          </v-btn>
-        </v-col>
         <v-col>
           <p class="text-center headline">
             {{ hideName ? `Oferta ${offer.id}` : offer.name }}
@@ -114,16 +109,12 @@
       </v-btn>
     </v-card-actions>
 
-    <v-card-actions v-else-if="showAddBtn && $auth.loggedIn && !showCalcDetails">
+    <v-card-actions v-else-if="showAddBtn && $auth.loggedIn">
       <v-btn rounded block outlined color="primary" @click="addBid">
         Añadir a cartera
         <v-icon right>mdi-briefcase</v-icon>
       </v-btn>
     </v-card-actions>
-
-    <v-card-text>
-      <calculator-details v-if="showCalcDetails" :offer="offer" />
-    </v-card-text>
   </v-card>
 </template>
 
@@ -137,7 +128,6 @@ export default {
     TarifSelect: () => import('@/components/selects/TarifSelect'),
     ClientTypeSelect: () => import('@/components/selects/ClientTypeSelect'),
     OfferSelect: () => import('@/components/selects/OfferSelect'),
-    CalculatorDetails: () => import('@/components/CalculatorDetails'),
   },
   props: {
     bidId: {
@@ -164,10 +154,6 @@ export default {
       type: Boolean,
       default: false,
     },
-    showCalculatorDetails: {
-      type: Boolean,
-      default: false,
-    },
     offer: {
       type: Object,
       default: () => null,
@@ -184,9 +170,6 @@ export default {
     }
   },
   computed: {
-    showCalcDetails() {
-      return this.showCalculatorDetails || this.$route.query.showCalculatorDetails
-    },
     powers() {
       return ['p1', 'p2', 'p3']
         .filter((power) => this.offer[power])

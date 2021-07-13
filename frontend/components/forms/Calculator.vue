@@ -1,12 +1,17 @@
 <template>
   <v-card :loading="loading" flat class="d-flex flex-column align-center">
     <v-alert v-show="showResults && !offers.length" type="warning">Nohay ofertas</v-alert>
-    <v-data-table
-      v-show="showResults && offers.length"
-      :headers="headers"
-      :items="offers"
-      @click:row="$auth.loggedIn ? $router.push(getDetailUrl($event)) : $emit('offer-choosed', $event)"
-    >
+
+    <calculator-details
+      v-if="offer"
+      :offer="offer"
+      @return="
+        offer = null
+        showResults = true
+      "
+    />
+
+    <v-data-table v-else-if="showResults && offers.length" :headers="headers" :items="offers">
       <template v-slot:[`item.company_logo`]="{ item }">
         <v-avatar width="100">
           <v-img :src="item['company_logo'] || '/no-image.svg'" />
@@ -17,13 +22,19 @@
       <template v-slot:[`item.annual_profit_num`]="{ item }"> {{ item['annual_profit_num'] }} € </template>
 
       <template v-slot:[`item.actions`]="{ item }">
-        <v-btn icon nuxt :to="getDetailUrl(item)">
+        <v-btn
+          icon
+          @click="
+            showResults = false
+            offer = item
+          "
+        >
           <v-icon>mdi-eye</v-icon>
         </v-btn>
       </template>
     </v-data-table>
 
-    <v-card v-show="!showResults">
+    <v-card v-else>
       <v-card-text>
         <v-form novalidate @submit.prevent="submit">
           <v-card class="text-center flex-row flex-nowrap d-flex">
@@ -212,7 +223,6 @@
 </template>
 <script>
 import constants from '@/lib/constants'
-import DecimalField from '../fields/decimalField.vue'
 const defaultForm = Object.freeze({
   client_type: 1,
   kind: 'luz',
@@ -242,8 +252,8 @@ export default {
     CompanySelect: () => import('~/components/selects/CompanySelect'),
     SubmitButton: () => import('~/components/buttons/submitButton'),
     ReturnButton: () => import('~/components/buttons/returnButton'),
-    // DecimalField: () => import('@/components/fields/decimalField')
-    DecimalField,
+    CalculatorDetails: () => import('@/components/CalculatorDetails'),
+    DecimalField: () => import('@/components/fields/decimalField'),
   },
   props: {
     hideOfferNames: {
@@ -261,6 +271,7 @@ export default {
       ourColor: constants.ourColor,
       errorMessages: {},
       loading: false,
+      offer: null,
       showResults: false,
       form: { ...defaultForm },
     }
@@ -331,13 +342,6 @@ export default {
   methods: {
     resetForm() {
       this.form = { ...defaultForm }
-    },
-    getDetailUrl(offer) {
-      return this.detailUrl
-        ? this.detailUrl.replace('place_for_id', String(offer.id))
-        : `/ofertas/${offer.client_type === 0 ? 'hogar' : 'pyme'}/${offer.id}/?id=${
-            offer.id
-          }&showCalculatorDetails=true`
     },
     showInput(letter, number) {
       return this.form.tarif && constants.showInput(letter, number, this.form.tarif)

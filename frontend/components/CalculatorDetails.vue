@@ -2,6 +2,7 @@
   <v-card elevation="0">
     <v-card-actions>
       <v-spacer />
+
       <v-btn style="margin-right: 7em" color="success" :disabled="loading || downloading" rounded @click="getDetails">
         <v-icon>mdi-refresh</v-icon>
       </v-btn>
@@ -71,16 +72,24 @@
     <v-card-text v-if="sendingEmail">
       <v-progress-linear v-if="loading" indeterminate />
       <v-alert v-else color="success">Enviado</v-alert>
-      <v-btn v-if="!loading" rounded outlined block color="#004680" @click="sendingEmail = false">
-        Atrás
-        <v-icon>mdi-keyboard-return</v-icon>
-      </v-btn>
     </v-card-text>
 
-    <v-card-text v-else>
+    <v-card-text v-else style="max-width: 600px">
       <!-- eslint-disable-next-line vue/no-v-html -->
       <v-sheet light v-html="htmlDetails" />
     </v-card-text>
+
+    <v-btn
+      v-if="!loading"
+      rounded
+      outlined
+      block
+      color="info"
+      @click="sendingEmail ? (sendingEmail = false) : $emit('return')"
+    >
+      Atrás
+      <v-icon>mdi-keyboard-return</v-icon>
+    </v-btn>
   </v-card>
 </template>
 
@@ -287,7 +296,7 @@ export default {
   },
   async mounted() {
     this.form = {
-      id: this.offer.id || this.$route.params.id,
+      id: this.offer.id,
       ...this.$store.state.calculatorForm,
       with_calculations: true,
     }
@@ -364,39 +373,14 @@ export default {
         const response = await this.$axios.$post('calculator/new_offer/', { ...data })
         if (download) this.downloadURL = `${location.origin}/${response}`
       } catch (e) {
-        await this.$swal({ title: 'Error', icon: 'error', text: JSON.parse(e.response.data) })
+        await this.$swal({
+          title: 'Error',
+          icon: 'error',
+          text: JSON.parse(e && e.response && e.response.data ? e.response.data : e),
+        })
       } finally {
         this.loading = this.downloading = false
       }
-    },
-    addBid() {
-      let data = { offer: this.offer.id }
-      if (this.$route.query.fromCalculator === 'true') {
-        data = { ...data, ...this.$store.state.calculatorForm }
-      }
-      this.$axios.$post('bids/bids/', data).then((createdBidData) => {
-        this.$swal({
-          title: 'Se ha agregado una solicitud de contrato a la cartera.',
-          icon: 'success',
-          buttons: {
-            cancel: true,
-            goToPortfel: {
-              text: 'Ir a Cartera',
-              value: 'bids',
-            },
-            goToBid: {
-              text: 'Contratar',
-              value: 'bid',
-            },
-          },
-        }).then((value) => {
-          if (value === 'bids') {
-            this.$router.push('/bids')
-          } else if (value === 'bid') {
-            this.$router.push(`/bids/${createdBidData.id}`)
-          }
-        })
-      })
     },
   },
 }

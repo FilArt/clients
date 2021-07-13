@@ -55,7 +55,7 @@ class CalculatorSerializer(serializers.ModelSerializer):
         required=False,
         validators=[casi_positive_number],
     )
-    igic = serializers.BooleanField(write_only=True)
+    igic = serializers.BooleanField()
 
     st_c1 = RoundedField(read_only=True)
     st_c2 = RoundedField(read_only=True)
@@ -221,6 +221,7 @@ class CalculatorSerializer(serializers.ModelSerializer):
             uc4=Value(ic4, output_field=models.FloatField()),
             uc5=Value(ic5, output_field=models.FloatField()),
             uc6=Value(ic6, output_field=models.FloatField()),
+            igic=Value(use_igic, output_field=models.BooleanField()),
             st_c1=F("c1") * Value(ic1),
         )
         if is_luz:

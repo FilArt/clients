@@ -16,7 +16,7 @@
       <v-app>
         <v-main>
           <v-card class="d-flex align-center justify-space-between pa-1">
-            <v-card class="d-flex" style="max-width: 50%;">
+            <v-card class="d-flex" style="max-width: 50%">
               <img width="100%" src="https://intranet.gestiongroup.es/gg_logo_blue.png" />
             </v-card>
 
@@ -49,17 +49,29 @@
           </v-card>
 
           <v-card class="d-flex flex-column offset font-weight-light caption">
-            <v-card> <span class="first-word">P1:</span> {{ up1 }} kW/h × {{ period }} dias × {{ p1 }} € = {{ st_p1 }} €  </v-card>
+            <v-card>
+              <span class="first-word">P1:</span> {{ up1 }} kW/h × {{ period }} dias × {{ p1 }} € = {{ st_p1 }} €
+            </v-card>
             {% if up2 %}
-            <v-card> <span class="first-word">P2:</span> {{ up2 }} kW/h × {{ period }} dias × {{ p2 }} € = {{ st_p2 }} €  </v-card>
+            <v-card>
+              <span class="first-word">P2:</span> {{ up2 }} kW/h × {{ period }} dias × {{ p2 }} € = {{ st_p2 }} €
+            </v-card>
             {% endif %} {% if up3 %}
-            <v-card> <span class="first-word">P3:</span> {{ up3 }} kW/h × {{ period }} dias × {{ p3 }} € = {{ st_p3 }} €  </v-card>
+            <v-card>
+              <span class="first-word">P3:</span> {{ up3 }} kW/h × {{ period }} dias × {{ p3 }} € = {{ st_p3 }} €
+            </v-card>
             {% endif %} {% if up4 %}
-            <v-card> <span class="first-word">P4:</span> {{ up4 }} kW/h × {{ period }} dias × {{ p4 }} € = {{ st_p4 }} €  </v-card>
+            <v-card>
+              <span class="first-word">P4:</span> {{ up4 }} kW/h × {{ period }} dias × {{ p4 }} € = {{ st_p4 }} €
+            </v-card>
             {% endif %} {% if up5 %}
-            <v-card> <span class="first-word">P5:</span> {{ up5 }} kW/h × {{ period }} dias × {{ p5 }} € = {{ st_p5 }} €  </v-card>
+            <v-card>
+              <span class="first-word">P5:</span> {{ up5 }} kW/h × {{ period }} dias × {{ p5 }} € = {{ st_p5 }} €
+            </v-card>
             {% endif %} {% if up6 %}
-            <v-card> <span class="first-word">P6:</span> {{ up6 }} kW/h × {{ period }} dias × {{ p6 }} € = {{ st_p6 }} €  </v-card>
+            <v-card>
+              <span class="first-word">P6:</span> {{ up6 }} kW/h × {{ period }} dias × {{ p6 }} € = {{ st_p6 }} €
+            </v-card>
             {% endif %}
           </v-card>
 
@@ -85,14 +97,14 @@
             {% endif %}
           </v-card>
 
-          <br>
+          <br />
 
           <v-card class="d-flex flex-column font-italic font-weight-black">
             <v-card>OTROS CONCEPTOS:</v-card>
           </v-card>
 
           <v-card class="d-flex flex-column offset">
-            <v-card><span class="first-word">Energía reactiva:</span> {{ reactive }} €</v-card>
+            <v-card style="display: none"><span class="first-word">Energía reactiva:</span> {{ reactive }} €</v-card>
             <v-card><span class="first-word">Alquiler equipos:</span> {{ rental }} €</v-card>
             <v-card>
               <span class="first-word">
@@ -101,12 +113,19 @@
               </span>
               {{ tax.value }} €
             </v-card>
-            <v-card
-              ><span class="first-word"
-                >{% if igic == 'true' %}IGIC{% else %}I.V.A{% endif %} ({{ iva.percent }}%):</span
-              >
-              {{ iva.value }} €</v-card
-            >
+            <v-card>
+              {% if igic %}
+              <span class="first-word">
+                IGIC ({{ tax.percent }}%):
+              </span>
+              {{ tax.value }} €
+              {% else %}
+              <span class="first-word">
+                IVA ({{ iva.percent }}%):
+              </span>
+              {{ iva.value }} €
+              {% endif %}
+            </v-card>
           </v-card>
 
           <v-card class="d-flex justify-end text-h5 font-weight-bold"> TOTAL: 1 234 567,12 € </v-card>
@@ -125,7 +144,7 @@
             <v-card>
               <img height="60" src="https://intranet.gestiongroup.es/person.svg" />
             </v-card>
-            <v-card class="d-flex flex-column" style="text-indent: 10px;">
+            <v-card class="d-flex flex-column" style="text-indent: 10px">
               <v-card> Nombre del asesor: {{ agent }}</v-card>
               <v-card> Teléfono: {{ agent_phone }}</v-card>
               <v-card> Email: {{ agent_email }}</v-card>
