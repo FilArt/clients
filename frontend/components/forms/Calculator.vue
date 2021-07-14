@@ -263,9 +263,9 @@ export default {
       type: Boolean,
       default: false,
     },
-    detailUrl: {
-      type: String,
-      default: null,
+    creador: {
+      type: Boolean,
+      default: false,
     },
   },
   data() {
@@ -352,7 +352,7 @@ export default {
     submit() {
       this.errorMessages = {}
       this.loading = true
-      const form = { ...this.form }
+      const form = { ...this.form, creador: this.creador }
       const values = Object.fromEntries(
         Object.entries(form)
           .filter((i) => [undefined, null, ''].indexOf(i[1]) === -1)

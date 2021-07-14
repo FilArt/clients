@@ -1,5 +1,7 @@
 import decimal
 
+from django.forms import ValidationError
+
 from clients.utils import PositiveNullableFloatField
 from django.db import models
 from django.db.models.expressions import F, Value
@@ -33,6 +35,7 @@ class NormalDecimalField(serializers.DecimalField):
 class CalculatorSerializer(serializers.ModelSerializer):
     id = serializers.IntegerField(required=False)
     rewrite = serializers.JSONField(write_only=True, required=False)
+    creador = serializers.BooleanField(write_only=True, default=False)
     total = NormalDecimalField(max_digits=10, decimal_places=2)
     company_name = serializers.CharField(source="company.name", read_only=True)
     company_logo = serializers.ImageField(source="company.logo", read_only=True)
@@ -104,6 +107,7 @@ class CalculatorSerializer(serializers.ModelSerializer):
     class Meta:
         model = Offer
         fields = [
+            "creador",
             "rewrite",
             "id",
             "company",
@@ -201,7 +205,27 @@ class CalculatorSerializer(serializers.ModelSerializer):
         current_price = Value(new_current_price or data["current_price"], output_field=PositiveNullableFloatField())
         reactive = Value(data.get("reactive", 0), output_field=PositiveNullableFloatField())
 
-        offers = Offer.objects.exclude(company=data["company"]).filter(c1__isnull=False, p1__isnull=False)
+        offers = Offer.objects.all()
+        if data["creador"]:
+            priority_offers = PriorityOffer.objects.filter(
+                Q(
+                    Q(consumption_max__isnull=True) | Q(consumption_max__gte=annual_consumption),
+                    Q(consumption_min__isnull=True) | Q(consumption_min__lte=annual_consumption),
+                ),
+                tarif=data["tarif"],
+                kind=kind,
+            )
+            if priority_offers.count() == 0:
+                raise ValidationError(f"No hay prioridad de ofertas")
+            elif priority_offers.count() > 1:
+                raise ValidationError(
+                    f'Hay mas de uno prioridades de ofertas: ID: {", ID: ".join(priority_offers.values_list("id", flat=True))}'
+                )
+            priority_offer = priority_offers.first()
+            offers = offers.filter(id__in=list(filter(None, [priority_offer.first_id, priority_offer.second_id, priority_offer.third_id])))
+        else:
+            offers = Offer.objects.exclude(company=data["company"]).filter(c1__isnull=False, p1__isnull=False)
+
         many = True
         if data.get("id"):
             many = False

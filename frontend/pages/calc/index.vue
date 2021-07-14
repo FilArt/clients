@@ -23,7 +23,7 @@
         </v-card-text>
       </v-card>
     </v-menu>
-    <calculator detail-url="/calc/place_for_id?nosupport" />
+    <calculator />
   </div>
 </template>
 
