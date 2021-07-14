@@ -32,11 +32,6 @@
             label="Alquiler de equipos (3.0TD)"
           />
           <decimal-field
-            v-model="settings.equip_rent_t61td"
-            :error-messages="errors.equip_rent_t61td"
-            label="Alquiler de equipos (6.1TD)"
-          />
-          <decimal-field
             v-model="settings.equip_rent_g31"
             :error-messages="errors.equip_rent_g31"
             label="Alquiler de equipos (3.1)"

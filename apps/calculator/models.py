@@ -33,7 +33,6 @@ class Tarif(Enum):
 
     T20TD = "2.0TD"
     T30TD = "3.0TD"
-    T61TD = "6.1TD"
 
     @staticmethod
     def all():
@@ -54,7 +53,6 @@ class CalculatorSettings(models.Model):
     carbon_tax = models.FloatField(default=0.00234)
     equip_rent_t20td = models.FloatField(default=1, validators=[is_positive])
     equip_rent_t30td = models.FloatField(default=1, validators=[is_positive])
-    equip_rent_t61td = models.FloatField(default=1, validators=[is_positive])
     equip_rent_g31 = models.FloatField(default=0.6, validators=[is_positive])
     equip_rent_g32 = models.FloatField(default=1.1, validators=[is_positive])
     equip_rent_g33 = models.FloatField(default=12.5, validators=[is_positive])
@@ -67,7 +65,6 @@ class CalculatorSettings(models.Model):
         return {
             Tarif.T20TD.value: self.equip_rent_t20td,
             Tarif.T30TD.value: self.equip_rent_t30td,
-            Tarif.T61TD.value: self.equip_rent_t61td,
             Tarif.G31.value: self.equip_rent_g31,
             Tarif.G32.value: self.equip_rent_g32,
             Tarif.G33.value: self.equip_rent_g33,
