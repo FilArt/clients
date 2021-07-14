@@ -1,12 +1,11 @@
 import decimal
 
-from django.forms import ValidationError
+from rest_framework.exceptions import ValidationError
 
 from clients.utils import PositiveNullableFloatField
 from django.db import models
 from django.db.models.expressions import F, Value
 from django.db.models.query_utils import Q
-from drf_dynamic_fields import DynamicFieldsMixin
 from rest_framework import serializers
 
 from .fields import IvaField, TaxField
@@ -216,31 +215,37 @@ class CalculatorSerializer(serializers.ModelSerializer):
                 kind=kind,
             )
             if priority_offers.count() == 0:
-                raise ValidationError(f"No hay prioridad de ofertas")
+                raise ValidationError({"error": f"No hay prioridad de ofertas"})
             elif priority_offers.count() > 1:
                 raise ValidationError(
-                    f'Hay mas de uno prioridades de ofertas: ID: {", ID: ".join(priority_offers.values_list("id", flat=True))}'
+                    {
+                        "error": f'Hay mas de uno prioridades de ofertas: ID: {", ID: ".join(priority_offers.values_list("id", flat=True))}'
+                    }
                 )
             priority_offer = priority_offers.first()
-            offers = offers.filter(id__in=list(filter(None, [priority_offer.first_id, priority_offer.second_id, priority_offer.third_id])))
+            offers = offers.filter(
+                id__in=list(filter(None, [priority_offer.first_id, priority_offer.second_id, priority_offer.third_id]))
+            )
         else:
-            offers = Offer.objects.exclude(company=data["company"]).filter(c1__isnull=False, p1__isnull=False)
+            offers = Offer.objects.exclude(company=data["company"]).filter(
+                Q(
+                    Q(consumption_max__isnull=True) | Q(consumption_max__gte=annual_consumption),
+                    Q(consumption_min__isnull=True) | Q(consumption_min__lte=annual_consumption),
+                    active=True,
+                    client_type=data["client_type"],
+                    tarif=data["tarif"],
+                    kind=kind,
+                    c1__isnull=False,
+                    p1__isnull=False,
+                ),
+            )
 
         many = True
         if data.get("id"):
             many = False
             offers = offers.filter(id=data.get("id"))
 
-        qs = offers.filter(
-            Q(
-                Q(consumption_max__isnull=True) | Q(consumption_max__gte=annual_consumption),
-                Q(consumption_min__isnull=True) | Q(consumption_min__lte=annual_consumption),
-            ),
-            active=True,
-            client_type=data["client_type"],
-            tarif=data["tarif"],
-            kind=kind,
-        ).annotate(
+        qs = offers.annotate(
             up1=Value(ip1, output_field=PositiveNullableFloatField()),
             up2=Value(ip2, output_field=PositiveNullableFloatField()),
             up3=Value(ip3, output_field=PositiveNullableFloatField()),
@@ -260,8 +265,8 @@ class CalculatorSerializer(serializers.ModelSerializer):
             qs = (
                 qs.filter(
                     Q(
-                        Q(power_max__isnull=True) | Q(power_max__gte=power_min),
-                        Q(power_min__isnull=True) | Q(power_min__lte=power_max),
+                        Q(power_max__isnull=True) | Q(power_max__gte=power_max),
+                        Q(power_min__isnull=True) | Q(power_min__lte=power_min),
                     )
                 )
                 .annotate(
