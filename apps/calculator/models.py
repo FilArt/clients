@@ -165,3 +165,24 @@ class Offer(models.Model):
         company, _ = Company.objects.get_or_create(name="OTRA")
         offer, _ = Offer.default.get_or_create(name=Offer.OTRA_OFFER_NAME, company=company, client_type=0)
         return offer
+
+
+class PriorityOffer(models.Model):
+    kind = models.CharField(default="luz", choices=Offer.OFFER_KIND_CHOICES, max_length=3)
+    tarif = models.CharField(max_length=10, choices=Tarif.choices())
+    power_min = models.FloatField()
+    power_max = models.FloatField()
+    consumption_min = models.FloatField()
+    consumption_max = models.FloatField()
+    first = models.ForeignKey(Offer, on_delete=models.CASCADE, related_name="first_offer")
+    second = models.ForeignKey(Offer, on_delete=models.CASCADE, null=True, related_name="second_offer")
+    third = models.ForeignKey(Offer, on_delete=models.CASCADE, null=True, related_name="third_offer")
+
+    def first_name(self):
+        return self.first.name
+
+    def second_name(self):
+        return self.second.name if self.second else ""
+
+    def third_name(self):
+        return self.third.name if self.third else ""

@@ -9,9 +9,12 @@ from rest_framework_tracking.mixins import LoggingMixin
 
 from apps.calculator.pagination import OffersPagination
 from clients.serializers import AdminOfferListSerializer, DetailOfferSerializer, OfferListSerializer
-from .models import CalculatorSettings, Company, Offer
+from .models import CalculatorSettings, Company, Offer, PriorityOffer
 from .permissions import CalculatorSettingsPermission, OffersPermission
-from .serializers import CalculatorSettingsSerializer, CompanySerializer
+from .serializers import CalculatorSettingsSerializer, CompanySerializer, PriorityOfferSerializer
+from apps.calculator import permissions
+
+from apps.calculator import serializers
 
 
 class CompanyViewSet(LoggingMixin, viewsets.ModelViewSet):
@@ -56,6 +59,7 @@ class OfferViewSet(viewsets.ReadOnlyModelViewSet):
         "kind": ("exact",),
     }
     permission_classes: Tuple = tuple()
+    search_fields = ("name",)
     ordering = ("name",)
 
     def get_queryset(self):
@@ -127,3 +131,10 @@ class CalculatorSettingsViewset(viewsets.ModelViewSet):
     queryset = CalculatorSettings.objects.all()
     serializer_class = CalculatorSettingsSerializer
     permission_classes = (CalculatorSettingsPermission,)
+
+
+class PriorityOfferViewSet(viewsets.ModelViewSet):
+    queryset = PriorityOffer.objects.all()
+    serializer_class = PriorityOfferSerializer
+    permission_classes = (OffersPermission,)
+    ordering = ("id",)

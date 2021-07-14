@@ -24,8 +24,7 @@ class TaxField(serializers.CharField):
     def to_representation(self, value):
         return {
             "percent": self.context["tax_percent"],
-            # "value": "{:.2f} €".format(value.tax),
-            "value": "{:.2f}".format(value.tax or 0),
+            "value": "{:.2f}".format(value.tax or 0).replace(".", ","),
         }
 
 
@@ -33,20 +32,8 @@ class IvaField(TaxField):
     def to_representation(self, value):
         return {
             "percent": self.context["iva_percent"],
-            # "value": "{:.2f} €".format(value.iva),
-            "value": "{:.2f}".format(value.iva or 0),
+            "value": "{:.2f}".format(value.iva or 0).replace(".", ","),
         }
-
-
-class ConsumoField(serializers.FloatField):
-    def __init__(self, **kwargs):
-        kwargs["min_value"] = 0
-        kwargs["required"] = kwargs.get("required", False)
-        super().__init__(**kwargs)
-
-
-class PotenciaField(ConsumoField):
-    ...
 
 
 class BeautyFloatField(serializers.FloatField):
@@ -60,4 +47,4 @@ class BeautyFloatField(serializers.FloatField):
             return "0"
         if not isinstance(value, float):
             raise ValueError("Value %s not float" % value)
-        return decimal.Decimal.from_float(value).quantize(QUANT, decimal.ROUND_HALF_UP).normalize()
+        return decimal.Decimal.from_float(value)

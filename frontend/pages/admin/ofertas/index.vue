@@ -127,6 +127,8 @@
       <v-toolbar-items class="align-center">
         <calculator-settings-dialog v-if="$auth.user && $auth.user.role === 'admin'" />
 
+        <v-btn nuxt to="/admin/ofertas/prioridad_de_ofertas" color="green">Prioridad de ofertas</v-btn>
+
         <v-btn nuxt to="/admin/ofertas/comercializadoras" color="warning">Comercializadoras</v-btn>
 
         <v-btn nuxt to="/admin/ofertas/nuevo_oferta" color="success">

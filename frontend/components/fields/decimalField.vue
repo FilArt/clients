@@ -6,7 +6,7 @@
     :suffix="suffix"
     :dense="dense"
     :name="name"
-    :errors-messages="errorMessages"
+    :error-messages="errorMessages"
   />
 </template>
 

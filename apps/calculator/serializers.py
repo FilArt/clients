@@ -1,11 +1,14 @@
+import decimal
+
 from clients.utils import PositiveNullableFloatField
 from django.db import models
 from django.db.models.expressions import F, Value
 from django.db.models.query_utils import Q
+from drf_dynamic_fields import DynamicFieldsMixin
 from rest_framework import serializers
 
-from .fields import BeautyFloatField, ConsumoField, IvaField, PotenciaField, TaxField
-from .models import CalculatorSettings, Company, Offer, Tarif
+from .fields import IvaField, TaxField
+from .models import CalculatorSettings, Company, Offer, PriorityOffer, Tarif
 from .validators import casi_positive_number, positive_number
 
 
@@ -15,41 +18,43 @@ class CompanySerializer(serializers.ModelSerializer):
         fields = "__all__"
 
 
-class NormalFloatField(serializers.FloatField):
+class NormalDecimalField(serializers.DecimalField):
     def to_representation(self, value) -> str:
         if value == 0:
             return "0"
-        return super().to_representation(value)
+        elif value % 1 == 0:
+            return round(value)
 
-
-class RoundedField(serializers.FloatField):
-    def to_representation(self, value):
-        return round(value, 2) if value else value
+        return (
+            decimal.Decimal.from_float(float(value)).quantize(decimal.Decimal(10) ** -self.decimal_places).normalize()
+        )
 
 
 class CalculatorSerializer(serializers.ModelSerializer):
     id = serializers.IntegerField(required=False)
     rewrite = serializers.JSONField(write_only=True, required=False)
-    total = serializers.FloatField()
+    total = NormalDecimalField(max_digits=10, decimal_places=2)
     company_name = serializers.CharField(source="company.name", read_only=True)
     company_logo = serializers.ImageField(source="company.logo", read_only=True)
     period = serializers.IntegerField(min_value=1)
     tarif = serializers.ChoiceField(choices=Tarif.choices())
     client_type = serializers.ChoiceField(choices=Offer.CLIENT_TYPE_CHOICES)
-    uc1 = ConsumoField(required=True)
-    uc2 = ConsumoField()
-    uc3 = ConsumoField()
-    uc4 = ConsumoField()
-    uc5 = ConsumoField()
-    uc6 = ConsumoField()
-    up1 = PotenciaField()
-    up2 = PotenciaField()
-    up3 = PotenciaField()
-    up4 = PotenciaField()
-    up5 = PotenciaField()
-    up6 = PotenciaField()
-    current_price = serializers.FloatField(min_value=0, validators=[positive_number])
-    reactive = serializers.FloatField(
+    uc1 = NormalDecimalField(max_digits=10, decimal_places=2, required=True)
+    uc2 = NormalDecimalField(max_digits=10, decimal_places=2, required=False)
+    uc3 = NormalDecimalField(max_digits=10, decimal_places=2, required=False)
+    uc4 = NormalDecimalField(max_digits=10, decimal_places=2, required=False)
+    uc5 = NormalDecimalField(max_digits=10, decimal_places=2, required=False)
+    uc6 = NormalDecimalField(max_digits=10, decimal_places=2, required=False)
+    up1 = NormalDecimalField(max_digits=10, decimal_places=2, required=True)
+    up2 = NormalDecimalField(max_digits=10, decimal_places=2, required=False)
+    up3 = NormalDecimalField(max_digits=10, decimal_places=2, required=False)
+    up4 = NormalDecimalField(max_digits=10, decimal_places=2, required=False)
+    up5 = NormalDecimalField(max_digits=10, decimal_places=2, required=False)
+    up6 = NormalDecimalField(max_digits=10, decimal_places=2, required=False)
+    current_price = NormalDecimalField(max_digits=10, decimal_places=2, min_value=0, validators=[positive_number])
+    reactive = NormalDecimalField(
+        max_digits=20,
+        decimal_places=10,
         min_value=0,
         allow_null=True,
         required=False,
@@ -57,46 +62,44 @@ class CalculatorSerializer(serializers.ModelSerializer):
     )
     igic = serializers.BooleanField()
 
-    st_c1 = RoundedField(read_only=True)
-    st_c2 = RoundedField(read_only=True)
-    st_c3 = RoundedField(read_only=True)
-    st_c4 = RoundedField(read_only=True)
-    st_c5 = RoundedField(read_only=True)
-    st_c6 = RoundedField(read_only=True)
-    st_p1 = RoundedField(read_only=True)
-    st_p2 = RoundedField(read_only=True)
-    st_p3 = RoundedField(read_only=True)
-    st_p4 = RoundedField(read_only=True)
-    st_p5 = RoundedField(read_only=True)
-    st_p6 = RoundedField(read_only=True)
+    st_c1 = NormalDecimalField(max_digits=10, decimal_places=2, read_only=True)
+    st_c2 = NormalDecimalField(max_digits=10, decimal_places=2, read_only=True)
+    st_c3 = NormalDecimalField(max_digits=10, decimal_places=2, read_only=True)
+    st_c4 = NormalDecimalField(max_digits=10, decimal_places=2, read_only=True)
+    st_c5 = NormalDecimalField(max_digits=10, decimal_places=2, read_only=True)
+    st_c6 = NormalDecimalField(max_digits=10, decimal_places=2, read_only=True)
+    st_p1 = NormalDecimalField(max_digits=10, decimal_places=2, read_only=True)
+    st_p2 = NormalDecimalField(max_digits=10, decimal_places=2, read_only=True)
+    st_p3 = NormalDecimalField(max_digits=10, decimal_places=2, read_only=True)
+    st_p4 = NormalDecimalField(max_digits=10, decimal_places=2, read_only=True)
+    st_p5 = NormalDecimalField(max_digits=10, decimal_places=2, read_only=True)
+    st_p6 = NormalDecimalField(max_digits=10, decimal_places=2, read_only=True)
 
-    c1 = NormalFloatField(read_only=True)
-    c2 = NormalFloatField(read_only=True)
-    c3 = NormalFloatField(read_only=True)
-    c4 = NormalFloatField(read_only=True)
-    c5 = NormalFloatField(read_only=True)
-    c6 = NormalFloatField(read_only=True)
-    p1 = NormalFloatField(read_only=True)
-    p2 = NormalFloatField(read_only=True)
-    p3 = NormalFloatField(read_only=True)
-    p4 = NormalFloatField(read_only=True)
-    p5 = NormalFloatField(read_only=True)
-    p6 = NormalFloatField(read_only=True)
+    p1 = NormalDecimalField(max_digits=20, decimal_places=10, read_only=True)
+    p2 = NormalDecimalField(max_digits=20, decimal_places=10, read_only=True)
+    p3 = NormalDecimalField(max_digits=20, decimal_places=10, read_only=True)
+    p4 = NormalDecimalField(max_digits=20, decimal_places=10, read_only=True)
+    p5 = NormalDecimalField(max_digits=20, decimal_places=10, read_only=True)
+    p6 = NormalDecimalField(max_digits=20, decimal_places=10, read_only=True)
+    c1 = NormalDecimalField(max_digits=20, decimal_places=10, read_only=True)
+    c2 = NormalDecimalField(max_digits=20, decimal_places=10, read_only=True)
+    c3 = NormalDecimalField(max_digits=20, decimal_places=10, read_only=True)
+    c4 = NormalDecimalField(max_digits=20, decimal_places=10, read_only=True)
+    c5 = NormalDecimalField(max_digits=20, decimal_places=10, read_only=True)
+    c6 = NormalDecimalField(max_digits=20, decimal_places=10, read_only=True)
 
     iva = IvaField(read_only=True)
     tax = TaxField(read_only=True)
 
     with_calculations = serializers.BooleanField(default=False, write_only=True)
 
-    rental = RoundedField(read_only=True)
-    profit = BeautyFloatField(show_euro=True)
-    profit_num = serializers.DecimalField(read_only=True, max_digits=15, decimal_places=2, source="profit")
+    rental = NormalDecimalField(max_digits=10, decimal_places=2, read_only=True)
+    profit = NormalDecimalField(max_digits=10, decimal_places=2, read_only=True)
+    profit_num = NormalDecimalField(read_only=True, max_digits=15, decimal_places=2, source="profit")
     profit_percent = serializers.IntegerField(read_only=True)
-    total = BeautyFloatField(show_euro=True)
-    annual_profit = BeautyFloatField(show_euro=True)
-    annual_profit_num = serializers.DecimalField(
-        read_only=True, max_digits=15, decimal_places=2, source="annual_profit"
-    )
+    total = NormalDecimalField(max_digits=10, decimal_places=2, read_only=True)
+    annual_profit = NormalDecimalField(max_digits=10, decimal_places=2, read_only=True)
+    annual_profit_num = NormalDecimalField(max_digits=15, decimal_places=2, source="annual_profit", read_only=True)
 
     class Meta:
         model = Offer
@@ -362,4 +365,14 @@ class CalculatorSerializer(serializers.ModelSerializer):
 class CalculatorSettingsSerializer(serializers.ModelSerializer):
     class Meta:
         model = CalculatorSettings
+        fields = "__all__"
+
+
+class PriorityOfferSerializer(serializers.ModelSerializer):
+    first_name = serializers.CharField(read_only=True)
+    second_name = serializers.CharField(read_only=True)
+    third_name = serializers.CharField(read_only=True)
+
+    class Meta:
+        model = PriorityOffer
         fields = "__all__"
