@@ -356,6 +356,16 @@ export default {
       const values = Object.fromEntries(
         Object.entries(form)
           .filter((i) => [undefined, null, ''].indexOf(i[1]) === -1)
+          .filter((i) => {
+            const key = i[0]
+            if (key.startsWith('u') && key.length === 3) {
+              return this.showInput(key[1], key[2]) ? true : false
+            }
+            if (key === 'reactive') {
+              return this.hasReactiveEnergy ? true : false
+            }
+            return true
+          })
           .map((item) => {
             const [key, val] = item
             if (typeof val === 'string' && val.includes(',')) {

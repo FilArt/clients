@@ -214,6 +214,11 @@ class CalculatorSerializer(serializers.ModelSerializer):
                 tarif=data["tarif"],
                 kind=kind,
             )
+            if is_luz:
+                priority_offers = priority_offers.filter(
+                    Q(power_max__isnull=True) | Q(power_max__gte=power_max),
+                    Q(power_min__isnull=True) | Q(power_min__lte=power_min),
+                )
             if priority_offers.count() == 0:
                 raise ValidationError({"error": f"No hay prioridad de ofertas"})
             elif priority_offers.count() > 1:
@@ -239,6 +244,10 @@ class CalculatorSerializer(serializers.ModelSerializer):
                     p1__isnull=False,
                 ),
             )
+            offers = offers.filter(
+                Q(power_max__isnull=True) | Q(power_max__gte=power_max),
+                Q(power_min__isnull=True) | Q(power_min__lte=power_min),
+            )
 
         many = True
         if data.get("id"):
@@ -262,83 +271,50 @@ class CalculatorSerializer(serializers.ModelSerializer):
             igic=Value(igic, output_field=models.BooleanField()),
         )
         if is_luz:
-            qs = (
-                qs.filter(
-                    Q(
-                        Q(power_max__isnull=True) | Q(power_max__gte=power_max),
-                        Q(power_min__isnull=True) | Q(power_min__lte=power_min),
-                    )
-                )
-                .annotate(
-                    st_p1=(
-                        Value(data.get("p1"), output_field=PositiveNullableFloatField()) if data.get("p1") else F("p1")
-                    )
-                    * Value(ip1)
-                    * Value(data["period"]),
-                    st_p2=(
-                        Value(data.get("p2"), output_field=PositiveNullableFloatField()) if data.get("p2") else F("p2")
-                    )
-                    * Value(ip2)
-                    * Value(data["period"]),
-                    st_p3=(
-                        Value(data.get("p3"), output_field=PositiveNullableFloatField()) if data.get("p3") else F("p3")
-                    )
-                    * Value(ip3)
-                    * Value(data["period"]),
-                    st_p4=(
-                        Value(data.get("p4"), output_field=PositiveNullableFloatField()) if data.get("p4") else F("p4")
-                    )
-                    * Value(ip4)
-                    * Value(data["period"]),
-                    st_p5=(
-                        Value(data.get("p5"), output_field=PositiveNullableFloatField()) if data.get("p5") else F("p5")
-                    )
-                    * Value(ip5)
-                    * Value(data["period"]),
-                    st_p6=(
-                        Value(data.get("p6"), output_field=PositiveNullableFloatField()) if data.get("p6") else F("p6")
-                    )
-                    * Value(ip6)
-                    * Value(data["period"]),
-                    st_c1=(
-                        Value(data.get("c1"), output_field=PositiveNullableFloatField()) if data.get("c1") else F("c1")
-                    )
-                    * Value(ic1),
-                    st_c2=(
-                        Value(data.get("c2"), output_field=PositiveNullableFloatField()) if data.get("c2") else F("c2")
-                    )
-                    * Value(ic2),
-                    st_c3=(
-                        Value(data.get("c3"), output_field=PositiveNullableFloatField()) if data.get("c3") else F("c3")
-                    )
-                    * Value(ic3),
-                    st_c4=(
-                        Value(data.get("c4"), output_field=PositiveNullableFloatField()) if data.get("c4") else F("c4")
-                    )
-                    * Value(ic4),
-                    st_c5=(
-                        Value(data.get("c5"), output_field=PositiveNullableFloatField()) if data.get("c5") else F("c5")
-                    )
-                    * Value(ic5),
-                    st_c6=(
-                        Value(data.get("c6"), output_field=PositiveNullableFloatField()) if data.get("c6") else F("c6")
-                    )
-                    * Value(ic6),
-                )
-                .annotate(
-                    subtotal=F("st_c1")
-                    + F("st_c2")
-                    + F("st_c3")
-                    + F("st_p1")
-                    + F("st_p2")
-                    + F("st_p3")
-                    + F("st_c4")
-                    + F("st_c5")
-                    + F("st_c6")
-                    + F("st_p4")
-                    + F("st_p5")
-                    + F("st_p6")
-                )
+            qs = qs.annotate(
+                st_p1=(Value(data.get("p1"), output_field=PositiveNullableFloatField()) if data.get("p1") else F("p1"))
+                * Value(ip1)
+                * Value(data["period"]),
+                st_p2=(Value(data.get("p2"), output_field=PositiveNullableFloatField()) if data.get("p2") else F("p2"))
+                * Value(ip2)
+                * Value(data["period"]),
+                st_p3=(Value(data.get("p3"), output_field=PositiveNullableFloatField()) if data.get("p3") else F("p3"))
+                * Value(ip3)
+                * Value(data["period"]),
+                st_p4=(Value(data.get("p4"), output_field=PositiveNullableFloatField()) if data.get("p4") else F("p4"))
+                * Value(ip4)
+                * Value(data["period"]),
+                st_p5=(Value(data.get("p5"), output_field=PositiveNullableFloatField()) if data.get("p5") else F("p5"))
+                * Value(ip5)
+                * Value(data["period"]),
+                st_p6=(Value(data.get("p6"), output_field=PositiveNullableFloatField()) if data.get("p6") else F("p6"))
+                * Value(ip6)
+                * Value(data["period"]),
+                st_c1=(Value(data.get("c1"), output_field=PositiveNullableFloatField()) if data.get("c1") else F("c1"))
+                * Value(ic1),
+                st_c2=(Value(data.get("c2"), output_field=PositiveNullableFloatField()) if data.get("c2") else F("c2"))
+                * Value(ic2),
+                st_c3=(Value(data.get("c3"), output_field=PositiveNullableFloatField()) if data.get("c3") else F("c3"))
+                * Value(ic3),
+                st_c4=(Value(data.get("c4"), output_field=PositiveNullableFloatField()) if data.get("c4") else F("c4"))
+                * Value(ic4),
+                st_c5=(Value(data.get("c5"), output_field=PositiveNullableFloatField()) if data.get("c5") else F("c5"))
+                * Value(ic5),
+                st_c6=(Value(data.get("c6"), output_field=PositiveNullableFloatField()) if data.get("c6") else F("c6"))
+                * Value(ic6),
+            ).annotate(
+                subtotal=F("st_c1")
+                + F("st_c2")
+                + F("st_c3")
+                + F("st_p1")
+                + F("st_p2")
+                + F("st_p3")
+                + F("st_c4")
+                + F("st_c5")
+                + F("st_c6")
+                + F("st_p4")
+                + F("st_p5")
+                + F("st_p6")
             )
         else:
             qs = qs.annotate(
