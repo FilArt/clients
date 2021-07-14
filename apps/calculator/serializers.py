@@ -405,3 +405,10 @@ class PriorityOfferSerializer(serializers.ModelSerializer):
     class Meta:
         model = PriorityOffer
         fields = "__all__"
+
+    def validate_first(self, offer: Offer):
+        if self.instance.kind != offer.kind:
+            raise ValidationError(f"Tipo {offer.kind} de oferta {offer} != {self.instance.kind}")
+        if self.instance.tarif != offer.tarif:
+            raise ValidationError(f"Tarifa {offer.tarif} de oferta {offer} != {self.instance.tarif}")
+        return offer
