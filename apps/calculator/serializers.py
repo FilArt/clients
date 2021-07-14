@@ -349,8 +349,9 @@ class CalculatorSerializer(serializers.ModelSerializer):
                 rental=Value(rental, output_field=PositiveNullableFloatField()),
                 reactive=reactive,
             )
-            .order_by("total")
         )
+        if not data["creador"]:
+            qs = qs.order_by("total")
 
         offers_count = qs.count()
         if offers_count == 0:
