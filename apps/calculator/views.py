@@ -24,7 +24,7 @@ class CalculateApiView(LoggingMixin, views.APIView):
     logging_methods = ["POST"]
 
     def post(self, request: Request):
-        serializer = CalculatorSerializer(data=request.data)
+        serializer = CalculatorSerializer(data=request.data, context={"request": request})
         serializer.is_valid(raise_exception=True)
         args = serializer.get_calculated()
         calculator = Calculator(**args)
