@@ -11,7 +11,7 @@
 
     <v-list>
       <v-list-item v-for="company in companies" :key="company.id">
-        <v-list-item-title v-text="company.name" />
+        <v-list-item-title v-text="`(ID: ${company.id}) ` + company.name" />
         <v-list-item-action>
           <v-checkbox
             v-model="company.offer_status_used"
