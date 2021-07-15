@@ -12,9 +12,6 @@ from clients.serializers import AdminOfferListSerializer, DetailOfferSerializer,
 from .models import CalculatorSettings, Company, Offer, PriorityOffer
 from .permissions import CalculatorSettingsPermission, OffersPermission
 from .serializers import CalculatorSettingsSerializer, CompanySerializer, PriorityOfferSerializer
-from apps.calculator import permissions
-
-from apps.calculator import serializers
 
 
 class CompanyViewSet(LoggingMixin, viewsets.ModelViewSet):

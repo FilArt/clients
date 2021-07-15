@@ -7,7 +7,6 @@ from django.db import models
 from django.db.models.expressions import F, Value
 from django.db.models.query_utils import Q
 from rest_framework import serializers
-
 from .fields import IvaField, TaxField
 from .models import CalculatorSettings, Company, Offer, PriorityOffer, Tarif
 from .validators import casi_positive_number, positive_number
@@ -228,9 +227,12 @@ class CalculatorSerializer(serializers.ModelSerializer):
                     }
                 )
             priority_offer = priority_offers.first()
-            offers = offers.filter(
-                id__in=list(filter(None, [priority_offer.first_id, priority_offer.second_id, priority_offer.third_id]))
-            )
+            ids = [priority_offer.first_id, priority_offer.second_id, priority_offer.third_id]
+            offers = Offer.objects.filter(id__in=ids)
+
+            order = map(Value, ids)
+            offers = offers.annotate(priority=Func("id", *order, function="FIELD")).order_by("priority")
+
         else:
             offers = Offer.objects.exclude(company=data["company"]).filter(
                 Q(

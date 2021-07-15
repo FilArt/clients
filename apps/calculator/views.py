@@ -49,7 +49,7 @@ class SendOfferView(LoggingMixin, views.APIView):
             **rewrited_values,
             "date": timezone.now().date().strftime("%d/%m/%Y"),
         }
-        email_to = serializer.validated_data.get("EMAIL DEL CLIENTE")
+        email_to = serializer.validated_data.get("client_email")
         response = None
 
         if "send" in request.data or "download" in request.data:
