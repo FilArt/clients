@@ -131,6 +131,10 @@
 
         <v-btn nuxt to="/admin/ofertas/comercializadoras" color="warning">Comercializadoras</v-btn>
 
+        <v-btn nuxt to="/admin/ofertas/update" color="success">
+          <v-icon>mdi-plus-box-multiple</v-icon>
+        </v-btn>
+
         <v-btn nuxt to="/admin/ofertas/nuevo_oferta" color="success">
           <v-icon>mdi-plus</v-icon>
         </v-btn>
@@ -409,6 +413,7 @@ export default {
 
     // hueta
     getRequiredFieldText(values) {
+      if (!values) return
       const str = this.requiredFieldsItems
         .filter((i) => values.includes(i.value))
         .map((i) => i.text)

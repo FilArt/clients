@@ -1,17 +1,25 @@
+import csv
 from typing import Tuple
 
-from rest_framework import mixins, viewsets, status
+from clients.serializers import AdminOfferListSerializer, DetailOfferSerializer, OfferListSerializer
+from rest_framework import mixins, status, viewsets
 from rest_framework.decorators import action
 from rest_framework.exceptions import ValidationError
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework_tracking.mixins import LoggingMixin
 
 from apps.calculator.pagination import OffersPagination
-from clients.serializers import AdminOfferListSerializer, DetailOfferSerializer, OfferListSerializer
+
 from .models import CalculatorSettings, Company, Offer, PriorityOffer
 from .permissions import CalculatorSettingsPermission, OffersPermission
-from .serializers import CalculatorSettingsSerializer, CompanySerializer, PriorityOfferSerializer
+from .serializers import (
+    CalculatorSettingsSerializer,
+    CompanySerializer,
+    CreateOfferSerializer,
+    PriorityOfferSerializer,
+)
 
 
 class CompanyViewSet(LoggingMixin, viewsets.ModelViewSet):
@@ -86,7 +94,7 @@ class OfferViewSet(viewsets.ReadOnlyModelViewSet):
 
 class PaginatedOfferViewSet(LoggingMixin, viewsets.ModelViewSet):
     queryset = Offer.objects.all()
-    permission_classes: Tuple = (OffersPermission,)
+    permission_classes: Tuple = (IsAuthenticated, OffersPermission)
     ordering = ("id",)
     ordering_fields = "__all__"
     pagination_class = OffersPagination
@@ -122,6 +130,46 @@ class PaginatedOfferViewSet(LoggingMixin, viewsets.ModelViewSet):
             raise ValidationError({"ids": ["Invalid data"]})
         Offer.objects.filter(id__in=offers_ids).delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
+
+    @action(
+        methods=["POST"],
+        detail=False,
+        permission_classes=(
+            IsAuthenticated,
+            OffersPermission,
+        ),
+    )
+    def bulk_create(self, request: Request):
+        csv_file = request.FILES.get("file")
+        if not csv_file:
+            raise ValidationError({"file": ["Requierido"]})
+
+        try:
+            lines: list[dict] = list(csv.DictReader(csv_file.read().decode().split("\n")))
+        except Exception as e:
+            raise ValidationError({"file": [str(e)]})
+
+        sers = [CreateOfferSerializer(data=line) for line in lines]
+        for ser in sers:
+            if ser.is_valid():
+                oid = ser.initial_data.get("id")
+                if oid:
+                    try:
+                        instance = Offer.objects.get(id=oid)
+                        ser.update(instance=instance, validated_data=ser.validated_data)
+                    except Offer.DoesNotExist:
+                        ser.errors = [{"id": f"No hay oferta con ID {oid}"}]
+                else:
+                    ser.save()
+        errors = [ser.errors for ser in sers]
+
+        if errors:
+            error_lines = [
+                {"id": l.get("id", e), **{k: "; ".join(v) for k, v in errors[e].items()}} for e, l in enumerate(lines)
+            ]
+            return Response(error_lines)
+
+        return Response("OK")
 
 
 class CalculatorSettingsViewset(viewsets.ModelViewSet):
