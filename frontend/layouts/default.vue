@@ -173,9 +173,6 @@ export default {
       }
       if (permissions.includes('calculator')) {
         items.push({ icon: 'mdi-calculator', title: 'COMPARADOR', to: '/comparador' })
-        if (role === 'admin') {
-          items.push({ icon: 'mdi-calculator', title: 'COMPARADOR 2', to: '/creador_de_propuesta' })
-        }
       }
       if (role) {
         items.push({ icon: 'mdi-information', title: 'INFO', to: '/info' })

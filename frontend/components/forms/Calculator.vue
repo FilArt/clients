@@ -11,7 +11,7 @@
       "
     />
 
-    <v-data-table v-else-if="showResults && offers.length" :headers="headers" :items="offers">
+    <v-data-table v-else-if="showResults && offers.length" :headers="headers" :items="offers" :sort-by="['total']">
       <template v-slot:[`item.company_logo`]="{ item }">
         <v-avatar width="100">
           <v-img :src="item['company_logo'] || '/no-image.svg'" />
@@ -263,10 +263,6 @@ export default {
       type: Boolean,
       default: false,
     },
-    creador: {
-      type: Boolean,
-      default: false,
-    },
   },
   data() {
     return {
@@ -298,14 +294,10 @@ export default {
           text: 'Comercializadora',
           value: 'company_name',
         },
-        {
-          text: 'Ahorro en factura',
-          value: 'profit_num',
-        },
-        {
-          text: 'Ahorro anual',
-          value: 'annual_profit_num',
-        },
+        // {
+        //   text: 'Total',
+        //   value: 'total',
+        // },
         {
           value: 'actions',
           sortable: false,
@@ -323,18 +315,24 @@ export default {
       },
       deep: true,
     },
-    tarif() {
+    'form.tarif'() {
       const fields = [
         ['p', 1],
-        ['c', 1],
         ['p', 2],
         ['p', 3],
+        ['p', 4],
+        ['p', 5],
+        ['p', 6],
+        ['c', 1],
         ['c', 2],
         ['c', 3],
+        ['c', 4],
+        ['c', 5],
+        ['c', 6],
       ]
       fields.forEach((field) => {
         if (!this.showInput(field[0], field[1])) {
-          this.form['u' + field[0] + field[1]] = null
+          delete this.form['u' + field[0] + field[1]]
         }
       })
     },
@@ -352,7 +350,7 @@ export default {
     submit() {
       this.errorMessages = {}
       this.loading = true
-      const form = { ...this.form, creador: this.creador }
+      const form = { ...this.form }
       const values = Object.fromEntries(
         Object.entries(form)
           .filter((i) => [undefined, null, ''].indexOf(i[1]) === -1)

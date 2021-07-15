@@ -33,25 +33,26 @@ class NormalDecimalField(serializers.DecimalField):
 class CalculatorSerializer(serializers.ModelSerializer):
     id = serializers.IntegerField(required=False)
     rewrite = serializers.JSONField(write_only=True, required=False)
-    creador = serializers.BooleanField(write_only=True, default=False)
     total = NormalDecimalField(max_digits=10, decimal_places=2)
     company_name = serializers.CharField(source="company.name", read_only=True)
     company_logo = serializers.ImageField(source="company.logo", read_only=True)
     period = serializers.IntegerField(min_value=1)
     tarif = serializers.ChoiceField(choices=Tarif.choices())
     client_type = serializers.ChoiceField(choices=Offer.CLIENT_TYPE_CHOICES)
-    uc1 = NormalDecimalField(max_digits=10, decimal_places=2, required=True)
+    uc1 = NormalDecimalField(max_digits=10, decimal_places=2, required=False)
     uc2 = NormalDecimalField(max_digits=10, decimal_places=2, required=False)
     uc3 = NormalDecimalField(max_digits=10, decimal_places=2, required=False)
     uc4 = NormalDecimalField(max_digits=10, decimal_places=2, required=False)
     uc5 = NormalDecimalField(max_digits=10, decimal_places=2, required=False)
     uc6 = NormalDecimalField(max_digits=10, decimal_places=2, required=False)
-    up1 = NormalDecimalField(max_digits=10, decimal_places=2, required=True)
+    up1 = NormalDecimalField(max_digits=10, decimal_places=2, required=False)
     up2 = NormalDecimalField(max_digits=10, decimal_places=2, required=False)
     up3 = NormalDecimalField(max_digits=10, decimal_places=2, required=False)
     up4 = NormalDecimalField(max_digits=10, decimal_places=2, required=False)
     up5 = NormalDecimalField(max_digits=10, decimal_places=2, required=False)
     up6 = NormalDecimalField(max_digits=10, decimal_places=2, required=False)
+    # ust_p = NormalDecimalField(max_digits=10, decimal_places=2, required=False)
+    # ust_c = NormalDecimalField(max_digits=10, decimal_places=2, required=False)
     current_price = NormalDecimalField(max_digits=10, decimal_places=2, min_value=0, validators=[positive_number])
     reactive = NormalDecimalField(
         max_digits=20,
@@ -94,7 +95,7 @@ class CalculatorSerializer(serializers.ModelSerializer):
 
     with_calculations = serializers.BooleanField(default=False, write_only=True)
 
-    rental = NormalDecimalField(max_digits=10, decimal_places=2, read_only=True)
+    rental = NormalDecimalField(max_digits=10, decimal_places=2, required=False)
     profit = NormalDecimalField(max_digits=10, decimal_places=2, read_only=True)
     profit_num = NormalDecimalField(read_only=True, max_digits=15, decimal_places=2, source="profit")
     profit_percent = serializers.IntegerField(read_only=True)
@@ -102,10 +103,13 @@ class CalculatorSerializer(serializers.ModelSerializer):
     annual_profit = NormalDecimalField(max_digits=10, decimal_places=2, read_only=True)
     annual_profit_num = NormalDecimalField(max_digits=15, decimal_places=2, source="annual_profit", read_only=True)
 
+    agent = serializers.CharField(required=False)
+    agent_email = serializers.CharField(required=False)
+    agent_phone = serializers.CharField(required=False)
+
     class Meta:
         model = Offer
         fields = [
-            "creador",
             "rewrite",
             "id",
             "company",
@@ -168,6 +172,9 @@ class CalculatorSerializer(serializers.ModelSerializer):
             "reactive",
             "igic",
             "rental",
+            "agent",
+            "agent_email",
+            "agent_phone",
         ]
         extra_kwargs = {
             "name": {"read_only": True},
@@ -175,6 +182,15 @@ class CalculatorSerializer(serializers.ModelSerializer):
             "is_price_permanent": {"read_only": True},
             "description": {"read_only": True},
         }
+
+    @property
+    def validated_data(self):
+        vd = super().validated_data
+        user = self.context["request"].user
+        vd["agent"] = vd.get("agent") or user.fullname
+        vd["agent_email"] = vd.get("agent_email") or user.fullname
+        vd["agent_phone"] = vd.get("agent_phone") or user.fullname
+        return vd
 
     def get_calculated(self, new_current_price: float = None):
         data = self.validated_data
@@ -184,8 +200,9 @@ class CalculatorSerializer(serializers.ModelSerializer):
         kind = data.pop("kind")
         is_luz = kind == "luz"
         calculator_settings = CalculatorSettings.objects.first()
-        epd = calculator_settings.get_equip(data["tarif"])
-        rental = epd * data["period"]
+        # epd = calculator_settings.get_equip(data["tarif"])
+        # epd = data.get("alquiler")
+        # rental = epd * data["period"]
         igic = data["igic"]
         nds = calculator_settings.igic if igic else calculator_settings.iva
         zero = Value(0, output_field=models.FloatField())
@@ -204,57 +221,42 @@ class CalculatorSerializer(serializers.ModelSerializer):
         reactive = Value(data.get("reactive", 0), output_field=PositiveNullableFloatField())
 
         offers = Offer.objects.all()
-        if data["creador"]:
-            priority_offers = PriorityOffer.objects.filter(
-                Q(
-                    Q(consumption_max__isnull=True) | Q(consumption_max__gte=annual_consumption),
-                    Q(consumption_min__isnull=True) | Q(consumption_min__lte=annual_consumption),
-                ),
+        offers = Offer.objects.exclude(company=data["company"]).filter(
+            Q(
+                Q(consumption_max__isnull=True) | Q(consumption_max__gte=annual_consumption),
+                Q(consumption_min__isnull=True) | Q(consumption_min__lte=annual_consumption),
+                active=True,
+                client_type=data["client_type"],
                 tarif=data["tarif"],
                 kind=kind,
-            )
-            if is_luz:
-                priority_offers = priority_offers.filter(
-                    Q(power_max__isnull=True) | Q(power_max__gte=power_max),
-                    Q(power_min__isnull=True) | Q(power_min__lte=power_min),
-                )
-            if priority_offers.count() == 0:
-                raise ValidationError({"error": f"No hay prioridad de ofertas"})
-            elif priority_offers.count() > 1:
-                raise ValidationError(
-                    {
-                        "error": f'Hay mas de uno prioridades de ofertas: ID: {", ID: ".join(priority_offers.values_list("id", flat=True))}'
-                    }
-                )
-            priority_offer = priority_offers.first()
-            ids = [priority_offer.first_id, priority_offer.second_id, priority_offer.third_id]
-            offers = Offer.objects.filter(id__in=ids)
-
-            order = map(Value, ids)
-            offers = offers.annotate(priority=Func("id", *order, function="FIELD")).order_by("priority")
-
-        else:
-            offers = Offer.objects.exclude(company=data["company"]).filter(
-                Q(
-                    Q(consumption_max__isnull=True) | Q(consumption_max__gte=annual_consumption),
-                    Q(consumption_min__isnull=True) | Q(consumption_min__lte=annual_consumption),
-                    active=True,
-                    client_type=data["client_type"],
-                    tarif=data["tarif"],
-                    kind=kind,
-                    c1__isnull=False,
-                    p1__isnull=False,
-                ),
-            )
-            offers = offers.filter(
-                Q(power_max__isnull=True) | Q(power_max__gte=power_max),
-                Q(power_min__isnull=True) | Q(power_min__lte=power_min),
-            )
+            ),
+        )
+        offers = offers.filter(
+            Q(power_max__isnull=True) | Q(power_max__gte=power_max),
+            Q(power_min__isnull=True) | Q(power_min__lte=power_min),
+        )
 
         many = True
         if data.get("id"):
             many = False
             offers = offers.filter(id=data.get("id"))
+
+        return {
+            "offers": offers,
+            "period": data["period"],
+            "up1": data.get("up1", 0),
+            "up2": data.get("up2", 0),
+            "up3": data.get("up3", 0),
+            "up4": data.get("up4", 0),
+            "up5": data.get("up5", 0),
+            "up6": data.get("up6", 0),
+            "uc1": data.get("uc1", 0),
+            "uc2": data.get("uc2", 0),
+            "uc3": data.get("uc3", 0),
+            "uc4": data.get("uc4", 0),
+            "uc5": data.get("uc5", 0),
+            "uc6": data.get("uc6", 0),
+        }
 
         qs = offers.annotate(
             up1=Value(ip1, output_field=PositiveNullableFloatField()),
@@ -331,11 +333,11 @@ class CalculatorSerializer(serializers.ModelSerializer):
 
         qs = (
             qs.annotate(
-                after_rental=F("subtotal") + Value(rental),
+                after_rental=F("subtotal") + Value(data.get("rental", 0)),
             )
             .annotate(
-                tax=F("subtotal") * Value(calculator_settings.tax if is_luz else calculator_settings.carbon_tax),
-                iva=F("after_rental") * nds,
+                tax=F("subtotal") * Value(data.get("tax", 1)),
+                iva=F("after_rental") * Value(nds),
             )
             .annotate(
                 pre_total=F("after_rental") + F("iva") + F("tax"),
@@ -348,12 +350,10 @@ class CalculatorSerializer(serializers.ModelSerializer):
                 annual_profit=F("profit") / Value(data["period"]) * Value(365),
                 profit_percent=F("profit") / current_price * Value(100),
                 current_price=current_price,
-                rental=Value(rental, output_field=PositiveNullableFloatField()),
                 reactive=reactive,
             )
         )
-        if not data["creador"]:
-            qs = qs.order_by("total")
+        qs = qs.order_by("total")
 
         offers_count = qs.count()
         if offers_count == 0:

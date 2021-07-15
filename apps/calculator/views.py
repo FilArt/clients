@@ -1,3 +1,4 @@
+from apps.calculator.calculator import Calculator
 import os
 import shutil
 
@@ -25,7 +26,11 @@ class CalculateApiView(LoggingMixin, views.APIView):
     def post(self, request: Request):
         serializer = CalculatorSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
-        return Response(serializer.get_calculated())
+        args = serializer.get_calculated()
+        calculator = Calculator(**args)
+        calculator.calculate()
+        return Response(calculator.results)
+        # return Response(serializer.get_calculated())
 
 
 class SendOfferView(LoggingMixin, views.APIView):
@@ -40,12 +45,15 @@ class SendOfferView(LoggingMixin, views.APIView):
     #     return render(request, "mails/offer.html", context=calculated)
 
     def post(self, request: Request):
-        serializer = CalculatorSerializer(data=request.data)
+        serializer = CalculatorSerializer(data=request.data, context={"request": request})
         serializer.is_valid(raise_exception=True)
-        calculated = serializer.get_calculated()
+        args = serializer.get_calculated()
+        calculator = Calculator(**args)
+        calculator.calculate()
         rewrited_values = {k: v for k, v in serializer.validated_data["rewrite"].items() if v is not None}
         ctx = {
-            **calculated,
+            **serializer.validated_data,
+            **calculator.results[0],
             **rewrited_values,
             "date": timezone.now().date().strftime("%d/%m/%Y"),
         }
@@ -55,7 +63,7 @@ class SendOfferView(LoggingMixin, views.APIView):
         if "send" in request.data or "download" in request.data:
             html_message = render_to_string("mails/offer.html", context=ctx)
             dt = timezone.now().strftime("%d_%m_%Y_%H_%M")
-            filename = f'{dt}_{calculated["id"]}.html'
+            filename = f'{dt}_{args["id"]}.html'
             filepath = f"/tmp/{filename}"
             with open(filepath, "w") as f:
                 f.write(html_message)
