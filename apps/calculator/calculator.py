@@ -27,10 +27,14 @@ class Calculator:
         uc5: Decimal,
         uc6: Decimal,
         rental: Decimal = 0,
-        tax: Decimal = 0,
-        nds: Decimal = 0,
+        tax_percent: Decimal = 0,
+        igic_percent: Decimal = 0,
+        iva_percent: Decimal = 0,
         reactive: Decimal = 0,
+        current_price: Decimal = 0,
     ) -> None:
+        if iva_percent and igic_percent:
+            raise Exception("Only iva or igic should be more than 0")
         self.offers = offers
         self.period = period
         self.p1 = up1
@@ -45,10 +49,12 @@ class Calculator:
         self.c4 = uc4
         self.c5 = uc5
         self.c6 = uc6
-        self.rental = rental
-        self.tax = tax
-        self.nds = nds
-        self.reactive = reactive
+        self.rental = rental or 0
+        self.tax_percent = tax_percent or 0
+        self.igic_percent = igic_percent or 0
+        self.iva_percent = iva_percent or 0
+        self.reactive = reactive or 0
+        self.current_price = current_price or 0
         self.results = [
             dict(
                 up1=dround(up1),
@@ -65,9 +71,11 @@ class Calculator:
                 uc6=dround(uc6),
                 period=period,
                 rental=rental,
-                tax=tax,
-                nds=nds,
+                tax_percent=tax_percent,
+                iva_percent=iva_percent,
+                igic_percent=igic_percent,
                 reactive=reactive,
+                current_price=current_price,
                 **dict(offer),
             )
             for offer in offers.annotate(company_name=F("company__name"), company_logo=F("company__logo")).values()
@@ -103,6 +111,37 @@ class Calculator:
 
     def _calculate_total(self):
         for idx, result in enumerate(self.results):
-            total = dround(result["power_total"] + result["consumption_total"])
-            result = {**result, "total": total}
+            total = result["power_total"] + result["consumption_total"]
+
+            total += self.reactive
+
+            # налоги
+            tax = Decimal(self.tax_percent) / Decimal(100) * total
+            total += tax
+
+            total += self.rental
+
+            iva = Decimal(self.iva_percent) / Decimal(100) * total
+            total += iva
+
+            igic = Decimal(self.igic_percent) / Decimal(100) * total
+            total += igic
+
+            profit = self.current_price - total
+
+            result = {
+                **result,
+                "reactive": dround(self.reactive),
+                "total": dround(total),
+                "rental": dround(self.rental),
+                "tax": dround(tax),
+                "tax_percent": dround(self.tax_percent),
+                "igic_percent": dround(self.igic_percent),
+                "igic": dround(igic),
+                "iva_percent": dround(self.iva_percent),
+                "iva": dround(iva),
+                "profit": dround(profit),
+                "profit_percent": 100 - dround(total / self.current_price * 100),
+                "profit_annual": dround(profit / self.period * 365),
+            }
             self.results[idx] = result

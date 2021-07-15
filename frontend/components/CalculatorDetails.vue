@@ -132,12 +132,19 @@ const defaultFields = [
     name: 'rental',
   },
   {
-    text: 'Impuesto con desplegable',
-    items: [
-      { key: 'tax', value: null, text: 'IGIC' },
-      { key: 'iva', value: null, text: 'IVA' },
-    ],
-    name: 'impuesto',
+    text: 'Impuesto electricidad (%)',
+    value: null,
+    name: 'tax_percent',
+  },
+  {
+    text: 'IVA (%)',
+    value: null,
+    name: 'iva_percent',
+  },
+  {
+    text: 'IGIC (%)',
+    value: null,
+    name: 'igic_percent',
   },
   {
     text: 'P1 (precio de potencia)',
@@ -274,7 +281,15 @@ export default {
     async getDetails() {
       this.loading = true
       const form = Object.fromEntries(
-        Object.entries(this.form)
+        Object.entries({
+          ...this.form,
+          ...Object.fromEntries(
+            this.rewriteValuesForm.map((item) => {
+              const { name, value } = item
+              return [name, value]
+            }),
+          ),
+        })
           .filter((i) => [undefined, null, ''].indexOf(i[1]) === -1)
           .map((item) => {
             const [key, val] = item
@@ -285,15 +300,7 @@ export default {
           }),
       )
       try {
-        this.htmlDetails = await this.$axios.$post('calculator/new_offer/', {
-          ...form,
-          rewrite: Object.fromEntries(
-            this.rewriteValuesForm.map((item) => {
-              const { name, value } = item
-              return [name, value]
-            }),
-          ),
-        })
+        this.htmlDetails = await this.$axios.$post('calculator/new_offer/', form)
       } catch (e) {
         let err = e.response.data
         err = err instanceof Array ? err.join('; ') : err

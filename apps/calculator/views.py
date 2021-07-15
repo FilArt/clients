@@ -50,13 +50,12 @@ class SendOfferView(LoggingMixin, views.APIView):
         args = serializer.get_calculated()
         calculator = Calculator(**args)
         calculator.calculate()
-        rewrited_values = {k: v for k, v in serializer.validated_data["rewrite"].items() if v is not None}
         ctx = {
             **serializer.validated_data,
             **calculator.results[0],
-            **rewrited_values,
             "date": timezone.now().date().strftime("%d/%m/%Y"),
         }
+        print(ctx)
         email_to = serializer.validated_data.get("client_email")
         response = None
 

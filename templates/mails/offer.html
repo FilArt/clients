@@ -112,16 +112,16 @@
             <v-card>
               <span class="first-word">
                 {% if kind == 'luz' %} IMP. ELECTRICIDAD: {% else %} IMP. HIDROCARBUROS {% endif %}
-                <span> ({{ tax.percent }}%): </span>
+                <span> ({{ tax_percent }}%): </span>
               </span>
-              {{ tax.value }} €
+              {{ tax }} €
             </v-card>
             <v-card>
-              {% if igic %}
-              <span class="first-word"> IGIC ({{ tax.percent }}%): </span>
-              {{ tax.value }} € {% else %}
-              <span class="first-word"> IVA ({{ iva.percent }}%): </span>
-              {{ iva.value }} € {% endif %}
+              {% if igic_percent %}
+              <span class="first-word"> IGIC ({{ igic_percent }}%): </span>
+              {{ igic }} € {% else %}
+              <span class="first-word"> IVA ({{ iva_percent }}%): </span>
+              {{ iva }} € {% endif %}
             </v-card>
           </v-card>
 
@@ -130,11 +130,11 @@
           <br />
 
           <v-card class="d-flex flex-column border">
-            <v-card> FACTURACIÓN ACTUAL: {{ total }} € </v-card>
+            <v-card> FACTURACIÓN ACTUAL: {{ current_price }} € </v-card>
             <v-card> PROPUESTA DE FACTURACIÓN: {{ total }} € </v-card>
             <br />
             <v-card> AHORRO EN FACTURA: {{ profit }} € ({{ profit_percent }}%) </v-card>
-            <v-card class="font-weight-bold"> AHORRO ESTIMADO ANUAL: {{ annual_profit }} € </v-card>
+            <v-card class="font-weight-bold"> AHORRO ESTIMADO ANUAL: {{ profit_annual }} € </v-card>
           </v-card>
 
           <br />
