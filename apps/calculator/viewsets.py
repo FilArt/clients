@@ -180,7 +180,7 @@ class PaginatedOfferViewSet(LoggingMixin, viewsets.ModelViewSet):
         ),
     )
     def get_offers(self, _: Request):
-        offers = Offer.objects.all()
+        offers = Offer.objects.order_by("id")
         ser = CreateOfferSerializer(offers, many=True)
         return Response(ser.data)
 
