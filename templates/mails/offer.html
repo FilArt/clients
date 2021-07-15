@@ -106,16 +106,22 @@
 
           <v-card class="d-flex flex-column offset">
             {% if reactive %}
-            <v-card><span class="first-word">Energía reactiva:</span> {{ reactive }} €</v-card>
+              <v-card><span class="first-word">Energía reactiva:</span> {{ reactive }} €</v-card>
             {% endif %}
-            <v-card><span class="first-word">Alquiler equipos:</span> {{ rental }} €</v-card>
-            <v-card>
-              <span class="first-word">
-                {% if kind == 'luz' %} IMP. ELECTRICIDAD: {% else %} IMP. HIDROCARBUROS {% endif %}
-                <span> ({{ tax_percent }}%): </span>
-              </span>
-              {{ tax }} €
-            </v-card>
+            {% if rental %}
+              <v-card><span class="first-word">Alquiler equipos:</span> {{ rental }} €</v-card>
+            {% endif %}
+
+            {% if tax %}
+              <v-card>
+                <span class="first-word">
+                  {% if kind == 'luz' %} IMP. ELECTRICIDAD: {% else %} IMP. HIDROCARBUROS {% endif %}
+                  <span> ({{ tax_percent }}%): </span>
+                </span>
+                {{ tax }} €
+              </v-card>
+            {% endif %}
+            {% if igic_percent or iva_percent %}
             <v-card>
               {% if igic_percent %}
               <span class="first-word"> IGIC ({{ igic_percent }}%): </span>
@@ -123,6 +129,7 @@
               <span class="first-word"> IVA ({{ iva_percent }}%): </span>
               {{ iva }} € {% endif %}
             </v-card>
+            {% endif %}
           </v-card>
 
           <!-- <v-card class="d-flex justify-end text-h5 font-weight-bold"> TOTAL: 1 234 567,12 € </v-card> -->

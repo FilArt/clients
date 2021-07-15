@@ -350,7 +350,7 @@ export default {
     submit() {
       this.errorMessages = {}
       this.loading = true
-      const form = { ...this.form }
+      const form = { ...this.form, reactive: this.hasReactiveEnergy ? this.reactive : 0 }
       const values = Object.fromEntries(
         Object.entries(form)
           .filter((i) => [undefined, null, ''].indexOf(i[1]) === -1)
