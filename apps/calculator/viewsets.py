@@ -171,6 +171,19 @@ class PaginatedOfferViewSet(LoggingMixin, viewsets.ModelViewSet):
 
         return Response("OK")
 
+    @action(
+        methods=["GET"],
+        detail=False,
+        permission_classes=(
+            IsAuthenticated,
+            OffersPermission,
+        ),
+    )
+    def get_offers(self, _: Request):
+        offers = Offer.objects.all()
+        ser = CreateOfferSerializer(offers, many=True)
+        return Response(ser.data)
+
 
 class CalculatorSettingsViewset(viewsets.ModelViewSet):
     queryset = CalculatorSettings.objects.all()
