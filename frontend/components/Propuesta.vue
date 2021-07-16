@@ -167,15 +167,24 @@
           <v-card flat class="d-flex flex-column" style="text-indent: 10px">
             <v-card flat>
               Nombre del asesor/a: {{ values.agent }}
-              <edit-field v-if="$auth.user.role === 'admin'" @click="editValue('agent', `nombre del asesor/a`)" />
+              <edit-field
+                v-if="$auth && $auth.user && $auth.user.role === 'admin'"
+                @click="editValue('agent', `nombre del asesor/a`)"
+              />
             </v-card>
             <v-card flat>
               Teléfono: {{ values.agent_phone }}
-              <edit-field v-if="$auth.user.role === 'admin'" @click="editValue('agent_phone', `teléfono`)" />
+              <edit-field
+                v-if="$auth && $auth.user && $auth.user.role === 'admin'"
+                @click="editValue('agent_phone', `teléfono`)"
+              />
             </v-card>
             <v-card flat>
               Email: {{ values.agent_email }}
-              <edit-field v-if="$auth.user.role === 'admin'" @click="editValue('agent_email', `email`)" />
+              <edit-field
+                v-if="$auth && $auth.user && $auth.user.role === 'admin'"
+                @click="editValue('agent_email', `email`)"
+              />
             </v-card>
             <v-card flat> Web: <a href="https://gestiongroup.es" target="_blank">gestiongroup.es</a> </v-card>
           </v-card>

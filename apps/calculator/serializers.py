@@ -230,10 +230,19 @@ class CalculatorSerializer(serializers.ModelSerializer):
     @property
     def validated_data(self):
         vd = super().validated_data
-        user = self.context["request"].user
-        vd["agent"] = vd.get("agent") or user.fullname if hasattr(user, "fullname") else ""
-        vd["agent_email"] = vd.get("agent_email") or user.email if hasattr(user, "email") else ""
-        vd["agent_phone"] = vd.get("agent_phone") or user.phone if hasattr(user, "phone") else ""
+        r = self.context["request"]
+        user = r.user
+        if user and hasattr(user, "role") and user.role != "admin":
+            return {
+                **vd,
+                "agent": user.fullname,
+                "agent_email": user.email,
+                "agent_phone": user.phone,
+            }
+
+        vd["agent"] = vd.get("agent") or r.data.get("agent") or ""
+        vd["agent_email"] = vd.get("agent_email") or r.data.get("agent_email") or ""
+        vd["agent_phone"] = vd.get("agent_phone") or r.data.get("agent_phone") or ""
         return vd
 
     def get_calculated(self, new_current_price: float = None):

@@ -60,6 +60,8 @@
 </template>
 
 <script>
+import qs from 'qs'
+
 export default {
   name: 'CalculatorDetails',
   components: { Propuesta: () => import('@/components/Propuesta') },
@@ -104,11 +106,13 @@ export default {
       await this.getHtmlDetails()
     },
     getForm() {
+      const data = {
+        ...this.form,
+        ...this.rewriteValuesForm,
+        ...qs.parse(location.search),
+      }
       return Object.fromEntries(
-        Object.entries({
-          ...this.form,
-          ...this.rewriteValuesForm,
-        })
+        Object.entries(data)
           .filter((i) => [undefined, null, ''].indexOf(i[1]) === -1)
           .map((item) => {
             const [key, val] = item
