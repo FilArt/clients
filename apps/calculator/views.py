@@ -51,8 +51,8 @@ class SendOfferView(LoggingMixin, views.APIView):
         calculator = Calculator(**args)
         calculator.calculate()
         ctx = {
-            **serializer.validated_data,
             **calculator.results[0],
+            **serializer.validated_data,
             "date": timezone.now().date().strftime("%d/%m/%Y"),
         }
         if "just_get" in request.data:
