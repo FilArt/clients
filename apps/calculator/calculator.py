@@ -171,6 +171,11 @@ class Calculator:
 
             result = {
                 **result,
+                **{
+                    k: dround(v)
+                    for k, v in result.items()
+                    if (k.startswith("p") or k.startswith("c")) and k.endswith("subtotal")
+                },
                 "reactive": dround(self.reactive),
                 "total": dround(total),
                 "rental": dround(self.rental),
