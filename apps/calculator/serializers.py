@@ -114,8 +114,6 @@ class CalculatorSerializer(serializers.ModelSerializer):
         max_digits=10, decimal_places=2, required=False, default=0, validators=[casi_positive_number]
     )
 
-    with_calculations = serializers.BooleanField(default=False, write_only=True)
-
     profit = NormalDecimalField(max_digits=10, decimal_places=2, read_only=True)
     profit_num = NormalDecimalField(read_only=True, max_digits=15, decimal_places=2, source="profit")
     profit_percent = serializers.IntegerField(read_only=True)
@@ -211,7 +209,6 @@ class CalculatorSerializer(serializers.ModelSerializer):
             "profit_percent",
             "annual_profit",
             "annual_profit_num",
-            "with_calculations",
             "kind",
             "reactive",
             "igic",

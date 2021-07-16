@@ -197,6 +197,14 @@ export default {
       values: this.value,
     }
   },
+  watch: {
+    value: {
+      handler(v) {
+        this.values = v
+      },
+      deep: true,
+    },
+  },
   methods: {
     editValue(name, field) {
       const newValue = prompt(`Cambiar ${field} a...`)

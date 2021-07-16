@@ -13,7 +13,7 @@
         <v-icon>mdi-refresh</v-icon>
       </v-btn>
 
-      <propuesta v-if="calculatedValues" v-model="calculatedValues" @update="onUpdateForm($event)" />
+      <propuesta v-model="calculatedValues" @update="onUpdateForm($event)" />
 
       <v-btn color="warning" :disabled="downloading" :loading="loading" rounded x-large @click="send(false)">
         <v-icon>mdi-email-send</v-icon>
@@ -71,6 +71,7 @@ export default {
     return {
       form: null,
       rewriteValuesForm: {},
+      calculatedValues: {},
       rewriteValuesFormDialog: false,
       sendingEmail: false,
       loading: false,
@@ -80,7 +81,6 @@ export default {
       descuento: null,
       error: null,
       downloadURL: null,
-      calculatedValues: null,
     }
   },
   computed: {
@@ -88,18 +88,17 @@ export default {
       return this.offer.kind === 'gas'
     },
   },
-  async mounted() {
+  async created() {
     this.form = {
       id: this.offer.id,
       ...this.$store.state.calculatorForm,
-      with_calculations: true,
     }
     await this.getHtmlDetails()
   },
   methods: {
     async onUpdateForm({ key, value }) {
-      this.calculatedValues[key] = value
       this.rewriteValuesForm[key] = value
+      this.calculatedValues[key] = value
       await this.getHtmlDetails()
     },
     async getHtmlDetails() {
