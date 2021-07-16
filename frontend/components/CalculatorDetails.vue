@@ -3,63 +3,17 @@
     <v-card-actions>
       <v-spacer />
 
-      <v-btn style="margin-right: 7em" color="success" :disabled="loading || downloading" rounded @click="getDetails">
+      <v-btn
+        style="margin-right: 7em"
+        color="success"
+        :disabled="loading || downloading"
+        rounded
+        @click="getHtmlDetails"
+      >
         <v-icon>mdi-refresh</v-icon>
       </v-btn>
 
-      <v-dialog v-model="rewriteValuesFormDialog" max-width="max-content" scrollable>
-        <template v-slot:activator="{ on }">
-          <v-btn v-on="on">Cambiar valores</v-btn>
-        </template>
-        <v-card>
-          <v-card-title>Cambiar valores</v-card-title>
-
-          <v-card-text>
-            <v-card flat class="d-flex flex-wrap">
-              <v-card v-for="field in rewriteValuesForm" :key="field.name" class="mb-4 pa-2" flat>
-                <div
-                  v-if="field.items && field.items.length"
-                  :style="newTax.key ? 'border: 1px solid green; padding: 20px;' : null"
-                >
-                  <v-select
-                    v-model="newTax.key"
-                    :items="field.items"
-                    :label="field.text"
-                    item-text="text"
-                    item-value="key"
-                    clearable
-                    @clear="
-                      newTax = {}
-                      onNewTaxInput()
-                    "
-                  />
-                  <v-text-field v-if="newTax.key" v-model="newTax.percent" label="Percent" @input="onNewTaxInput" />
-                  <v-text-field v-if="newTax.key" v-model="newTax.value" label="Valor" @input="onNewTaxInput" />
-                </div>
-                <decimal-field
-                  v-else-if="field.name.length === 2 && (field.name.startsWith('p') || field.name.startsWith('c'))"
-                  v-model="field.value"
-                  :label="field.text"
-                />
-                <v-text-field v-else v-model="field.value" :label="field.text" />
-              </v-card>
-            </v-card>
-          </v-card-text>
-
-          <v-card-actions>
-            <v-btn color="warning" @click="resetFormField">Cancelar</v-btn>
-            <v-btn
-              color="success"
-              @click="
-                rewriteValuesFormDialog = false
-                getDetails()
-              "
-            >
-              OK
-            </v-btn>
-          </v-card-actions>
-        </v-card>
-      </v-dialog>
+      <propuesta v-if="calculatedValues" v-model="calculatedValues" @update="onUpdateForm($event)" />
 
       <v-btn color="warning" :disabled="downloading" :loading="loading" rounded x-large @click="send(false)">
         <v-icon>mdi-email-send</v-icon>
@@ -104,122 +58,9 @@
 </template>
 
 <script>
-import decimalField from './fields/decimalField.vue'
-const defaultFields = [
-  {
-    text: 'Nombre del cliente',
-    value: null,
-    name: 'client_name',
-  },
-  {
-    text: 'Email del cliente',
-    value: null,
-    name: 'client_email',
-  },
-  {
-    text: 'Teléfono del cliente',
-    value: null,
-    name: 'client_phone',
-  },
-  {
-    text: 'CUPS',
-    value: null,
-    name: 'cups',
-  },
-  {
-    text: 'Importe alquiler equipo',
-    value: null,
-    name: 'rental',
-  },
-  {
-    text: 'IVA (%)',
-    value: null,
-    name: 'iva_percent',
-  },
-  {
-    text: 'IGIC (%)',
-    value: null,
-    name: 'igic_percent',
-  },
-  {
-    text: 'P1 (precio de potencia)',
-    value: null,
-    name: 'p1',
-  },
-  {
-    text: 'P2 (precio de potencia)',
-    value: null,
-    name: 'p2',
-  },
-  {
-    text: 'P3 (precio de potencia)',
-    value: null,
-    name: 'p3',
-  },
-  {
-    text: 'P4 (precio de potencia)',
-    value: null,
-    name: 'p4',
-  },
-  {
-    text: 'P5 (precio de potencia)',
-    value: null,
-    name: 'p5',
-  },
-  {
-    text: 'P6 (precio de potencia)',
-    value: null,
-    name: 'p6',
-  },
-  {
-    text: 'P1 (precio de consumo)',
-    value: null,
-    name: 'c1',
-  },
-  {
-    text: 'P2 (precio de consumo)',
-    value: null,
-    name: 'c2',
-  },
-  {
-    text: 'P3 (precio de consumo)',
-    value: null,
-    name: 'c3',
-  },
-  {
-    text: 'P4 (precio de consumo)',
-    value: null,
-    name: 'c4',
-  },
-  {
-    text: 'P5 (precio de consumo)',
-    value: null,
-    name: 'c5',
-  },
-  {
-    text: 'P6 (precio de consumo)',
-    value: null,
-    name: 'c6',
-  },
-  {
-    text: 'Nombre del asesor/a',
-    value: null,
-    name: 'agent',
-  },
-  {
-    text: 'Teléfono del asesor/a',
-    value: null,
-    name: 'agent_phone',
-  },
-  {
-    text: 'Email del asesor/a',
-    value: null,
-    name: 'agent_email',
-  },
-]
 export default {
   name: 'CalculatorDetails',
-  components: { decimalField },
+  components: { Propuesta: () => import('@/components/Propuesta') },
   props: {
     offer: {
       type: Object,
@@ -228,10 +69,9 @@ export default {
   },
   data() {
     return {
-      newTax: {},
       form: null,
+      rewriteValuesForm: {},
       rewriteValuesFormDialog: false,
-      rewriteValuesForm: defaultFields,
       sendingEmail: false,
       loading: false,
       downloading: false,
@@ -240,6 +80,7 @@ export default {
       descuento: null,
       error: null,
       downloadURL: null,
+      calculatedValues: null,
     }
   },
   computed: {
@@ -253,37 +94,20 @@ export default {
       ...this.$store.state.calculatorForm,
       with_calculations: true,
     }
-    await this.getDetails()
+    await this.getHtmlDetails()
   },
   methods: {
-    // showInput(letter, number) {
-    //   return this.form.tarif ? constants.showInput(letter, number, this.form.tarif) : false
-    // },
-    onNewTaxInput() {
-      if (this.newTax.value) {
-        this.rewriteValuesForm.push({
-          name: this.newTax.key,
-          value: { percent: this.newTax.percent, value: this.newTax.value },
-        })
-      } else {
-        this.rewriteValuesForm = this.rewriteValuesForm.filter((item) => item.name !== this.newTax.key)
-      }
+    async onUpdateForm({ key, value }) {
+      this.calculatedValues[key] = value
+      this.rewriteValuesForm[key] = value
+      await this.getHtmlDetails()
     },
-    resetFormField() {
-      this.rewriteValuesForm = defaultFields
-      this.rewriteValuesFormDialog = false
-    },
-    async getDetails() {
+    async getHtmlDetails() {
       this.loading = true
       const form = Object.fromEntries(
         Object.entries({
           ...this.form,
-          ...Object.fromEntries(
-            this.rewriteValuesForm.map((item) => {
-              const { name, value } = item
-              return [name, value]
-            }),
-          ),
+          ...this.rewriteValuesForm,
         })
           .filter((i) => [undefined, null, ''].indexOf(i[1]) === -1)
           .map((item) => {
@@ -295,6 +119,7 @@ export default {
           }),
       )
       try {
+        this.calculatedValues = await this.$axios.$post('calculator/new_offer/', { ...form, just_get: true })
         this.htmlDetails = await this.$axios.$post('calculator/new_offer/', form)
       } catch (e) {
         let err = e.response.data
@@ -305,7 +130,7 @@ export default {
       }
     },
     async send(download) {
-      if (!download && !this.rewriteValuesForm['EMAIL DEL CLIENTE']) {
+      if (!download && !this.rewriteValuesForm['client_email']) {
         await this.$swal({ title: 'Entrar correo', icon: 'error' })
         return
       }
@@ -316,7 +141,7 @@ export default {
       } else {
         this.loading = true
       }
-      const data = { ...this.form, rewrite: { ...this.rewriteValuesForm } }
+      const data = { ...this.form, ...this.rewriteValuesForm }
       if (download) {
         data.download = 'true'
       } else {

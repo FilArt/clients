@@ -55,6 +55,9 @@ class SendOfferView(LoggingMixin, views.APIView):
             **calculator.results[0],
             "date": timezone.now().date().strftime("%d/%m/%Y"),
         }
+        if "just_get" in request.data:
+            return Response({**serializer.data, **calculator.results[0]})
+
         email_to = serializer.validated_data.get("client_email")
         response = None
 

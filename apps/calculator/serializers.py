@@ -29,8 +29,10 @@ class NormalDecimalField(serializers.DecimalField):
 class CalculatorSerializer(serializers.ModelSerializer):
     id = serializers.IntegerField(required=False)
     total = NormalDecimalField(max_digits=10, decimal_places=2)
+    client_name = serializers.CharField(required=False)
     company_name = serializers.CharField(source="company.name", read_only=True)
     company_logo = serializers.ImageField(source="company.logo", read_only=True)
+    cups = serializers.CharField(required=False)
     period = serializers.IntegerField(min_value=1)
     tarif = serializers.ChoiceField(choices=Tarif.choices())
     client_type = serializers.ChoiceField(choices=Offer.CLIENT_TYPE_CHOICES)
@@ -164,6 +166,8 @@ class CalculatorSerializer(serializers.ModelSerializer):
         fields = [
             "id",
             "company",
+            "client_name",
+            "cups",
             "company_name",
             "company_logo",
             "annual_consumption",
@@ -228,9 +232,9 @@ class CalculatorSerializer(serializers.ModelSerializer):
     def validated_data(self):
         vd = super().validated_data
         user = self.context["request"].user
-        vd["agent"] = vd.get("agent") or user.fullname
-        vd["agent_email"] = vd.get("agent_email") or user.email
-        vd["agent_phone"] = vd.get("agent_phone") or user.phone
+        vd["agent"] = vd.get("agent") or user.fullname if hasattr(user, "fullname") else ""
+        vd["agent_email"] = vd.get("agent_email") or user.email if hasattr(user, "email") else ""
+        vd["agent_phone"] = vd.get("agent_phone") or user.phone if hasattr(user, "phone") else ""
         return vd
 
     def get_calculated(self, new_current_price: float = None):
@@ -306,8 +310,8 @@ class CalculatorSerializer(serializers.ModelSerializer):
             "tax_percent": calculator_settings.tax if is_luz else calculator_settings.carbon_tax,
             "igic_percent": data["igic_percent"],
             "rental": data["rental"],
-            "pago_power": data['pago_power'],
-            "pago_consumption": data['pago_consumption'],
+            "pago_power": data["pago_power"],
+            "pago_consumption": data["pago_consumption"],
         }
 
 

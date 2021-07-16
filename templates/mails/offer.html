@@ -12,18 +12,18 @@
     <title>PROPUESTA DE FACTURACIÓN</title>
   </head>
   <body>
-    <div id="app">
+    <div id="offer-app">
       <v-app>
         <v-main class="our-color">
-          <v-card class="d-flex align-center justify-space-between pa-1">
-            <v-card class="d-flex" style="max-width: 50%">
+          <v-card flat class="d-flex align-center justify-space-between pa-1">
+            <v-card flat class="d-flex" style="max-width: 50%">
               <img width="100%" src="https://intranet.gestiongroup.es/gg_logo_blue.png" />
             </v-card>
 
-            <v-card class="d-flex flex-column" style="font-style: italic">
-              <v-card style="text-align: right"> № {{ id }} </v-card>
-              <v-card style="text-align: right"> Fecha de la propuesta: {{ date }} </v-card>
-              <v-card style="text-align: right"> Periodo de validez: 7 Días </v-card>
+            <v-card flat class="d-flex flex-column" style="font-style: italic">
+              <v-card flat style="text-align: right"> № {{ id }} </v-card>
+              <v-card flat style="text-align: right"> Fecha de la propuesta: {{ date }} </v-card>
+              <v-card flat style="text-align: right"> Periodo de validez: 7 Días </v-card>
             </v-card>
           </v-card>
 
@@ -31,7 +31,7 @@
 
           <br />
 
-          <v-card class="d-flex justify-center text-h5 font-weight-bold">
+          <v-card flat class="d-flex justify-center text-h5 font-weight-bold">
             <v-card-title> PROPUESTA DE FACTURACIÓN </v-card-title>
           </v-card>
           <br />
@@ -45,11 +45,11 @@
             <p>OFERTA: {{ name }}</p>
           </div>
 
-          <v-card class="d-flex flex-column font-italic font-weight-black">
+          <v-card flat class="d-flex flex-column font-italic font-weight-black">
             <v-card> POTENCIA: </v-card>
           </v-card>
 
-          <v-card class="d-flex flex-column offset font-weight-light caption">
+          <v-card flat class="d-flex flex-column offset font-weight-light caption">
             <v-card>
               <span class="first-word">P1:</span> {{ up1 }} kW/h × {{ period }} dias × {{ p1 }} € = {{ p1_subtotal }} €
             </v-card>
@@ -78,11 +78,11 @@
 
           <br />
 
-          <v-card class="d-flex flex-column font-italic font-weight-black">
+          <v-card flat class="d-flex flex-column font-italic font-weight-black">
             <v-card>CONSUMO:</v-card>
           </v-card>
 
-          <v-card class="d-flex flex-column offset font-weight-light caption">
+          <v-card flat class="d-flex flex-column offset font-weight-light caption">
             {% if uc1 %}
             <v-card><span class="first-word">P1: </span>{{ uc1 }} X {{ c1 }} (€/kWh) = {{ c1_subtotal }} €</v-card>
             {% endif %} {% if uc2 %}
@@ -100,28 +100,24 @@
 
           <br />
 
-          <v-card class="d-flex flex-column font-italic font-weight-black">
+          <v-card flat class="d-flex flex-column font-italic font-weight-black">
             <v-card>OTROS CONCEPTOS:</v-card>
           </v-card>
 
-          <v-card class="d-flex flex-column offset">
+          <v-card flat class="d-flex flex-column offset">
             {% if reactive %}
-              <v-card><span class="first-word">Energía reactiva:</span> {{ reactive }} €</v-card>
-            {% endif %}
-            {% if rental %}
-              <v-card><span class="first-word">Alquiler equipos:</span> {{ rental }} €</v-card>
-            {% endif %}
-
-            {% if tax %}
-              <v-card>
-                <span class="first-word">
-                  {% if kind == 'luz' %} IMP. ELECTRICIDAD: {% else %} IMP. HIDROCARBUROS {% endif %}
-                  <span> ({{ tax_percent }}%): </span>
-                </span>
-                {{ tax }} €
-              </v-card>
-            {% endif %}
-            {% if igic_percent or iva_percent %}
+            <v-card><span class="first-word">Energía reactiva:</span> {{ reactive }} €</v-card>
+            {% endif %} {% if rental %}
+            <v-card><span class="first-word">Alquiler de equipos:</span> {{ rental }} €</v-card>
+            {% endif %} {% if tax %}
+            <v-card>
+              <span class="first-word">
+                {% if kind == 'luz' %} IMP. ELECTRICIDAD: {% else %} IMP. HIDROCARBUROS {% endif %}
+                <span> ({{ tax_percent }}%): </span>
+              </span>
+              {{ tax }} €
+            </v-card>
+            {% endif %} {% if igic_percent or iva_percent %}
             <v-card>
               {% if igic_percent %}
               <span class="first-word"> IGIC ({{ igic_percent }}%): </span>
@@ -132,25 +128,25 @@
             {% endif %}
           </v-card>
 
-          <!-- <v-card class="d-flex justify-end text-h5 font-weight-bold"> TOTAL: 1 234 567,12 € </v-card> -->
+          <!-- <v-card flat class="d-flex justify-end text-h5 font-weight-bold"> TOTAL: 1 234 567,12 € </v-card> -->
 
           <br />
 
-          <v-card class="d-flex flex-column border">
+          <v-card flat class="d-flex flex-column border">
             <v-card> FACTURACIÓN ACTUAL: {{ current_price }} € </v-card>
             <v-card> PROPUESTA DE FACTURACIÓN: {{ total }} € </v-card>
             <br />
             <v-card> AHORRO EN FACTURA: {{ profit }} € ({{ profit_percent }}%) </v-card>
-            <v-card class="font-weight-bold"> AHORRO ESTIMADO ANUAL: {{ profit_annual }} € </v-card>
+            <v-card flat class="font-weight-bold"> AHORRO ESTIMADO ANUAL: {{ profit_annual }} € </v-card>
           </v-card>
 
           <br />
 
-          <v-card class="d-flex flex-row">
+          <v-card flat class="d-flex flex-row">
             <v-card>
               <img height="60" src="https://intranet.gestiongroup.es/person.svg" />
             </v-card>
-            <v-card class="d-flex flex-column" style="text-indent: 10px">
+            <v-card flat class="d-flex flex-column" style="text-indent: 10px">
               <v-card> Nombre del asesor/a: {{ agent }}</v-card>
               <v-card> Teléfono: {{ agent_phone }}</v-card>
               <v-card> Email: {{ agent_email }}</v-card>
@@ -165,13 +161,13 @@
     <script src="https://cdn.jsdelivr.net/npm/vuetify@2.x/dist/vuetify.js"></script>
     <script>
       new Vue({
-        el: '#app',
+        el: '#offer-app',
         vuetify: new Vuetify(),
       })
     </script>
 
     <style>
-      #app {
+      #offer-app {
         padding: 1em;
       }
 
