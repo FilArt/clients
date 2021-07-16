@@ -37,83 +37,35 @@ class CalculatorSerializer(serializers.ModelSerializer):
     period = serializers.IntegerField(min_value=1)
     tarif = serializers.ChoiceField(choices=Tarif.choices())
     client_type = serializers.ChoiceField(choices=Offer.CLIENT_TYPE_CHOICES)
-    uc1 = NormalDecimalField(
-        max_digits=10, decimal_places=2, required=False, default=0, validators=[casi_positive_number]
-    )
-    uc2 = NormalDecimalField(
-        max_digits=10, decimal_places=2, required=False, default=0, validators=[casi_positive_number]
-    )
-    uc3 = NormalDecimalField(
-        max_digits=10, decimal_places=2, required=False, default=0, validators=[casi_positive_number]
-    )
-    uc4 = NormalDecimalField(
-        max_digits=10, decimal_places=2, required=False, default=0, validators=[casi_positive_number]
-    )
-    uc5 = NormalDecimalField(
-        max_digits=10, decimal_places=2, required=False, default=0, validators=[casi_positive_number]
-    )
-    uc6 = NormalDecimalField(
-        max_digits=10, decimal_places=2, required=False, default=0, validators=[casi_positive_number]
-    )
-    up1 = NormalDecimalField(
-        max_digits=10, decimal_places=2, required=False, default=0, validators=[casi_positive_number]
-    )
-    up2 = NormalDecimalField(
-        max_digits=10, decimal_places=2, required=False, default=0, validators=[casi_positive_number]
-    )
-    up3 = NormalDecimalField(
-        max_digits=10, decimal_places=2, required=False, default=0, validators=[casi_positive_number]
-    )
-    up4 = NormalDecimalField(
-        max_digits=10, decimal_places=2, required=False, default=0, validators=[casi_positive_number]
-    )
-    up5 = NormalDecimalField(
-        max_digits=10, decimal_places=2, required=False, default=0, validators=[casi_positive_number]
-    )
-    up6 = NormalDecimalField(
-        max_digits=10, decimal_places=2, required=False, default=0, validators=[casi_positive_number]
-    )
+    uc1 = NormalDecimalField(max_digits=10, decimal_places=2, required=False, validators=[casi_positive_number])
+    uc2 = NormalDecimalField(max_digits=10, decimal_places=2, required=False, validators=[casi_positive_number])
+    uc3 = NormalDecimalField(max_digits=10, decimal_places=2, required=False, validators=[casi_positive_number])
+    uc4 = NormalDecimalField(max_digits=10, decimal_places=2, required=False, validators=[casi_positive_number])
+    uc5 = NormalDecimalField(max_digits=10, decimal_places=2, required=False, validators=[casi_positive_number])
+    uc6 = NormalDecimalField(max_digits=10, decimal_places=2, required=False, validators=[casi_positive_number])
+    up1 = NormalDecimalField(max_digits=10, decimal_places=2, required=False, validators=[casi_positive_number])
+    up2 = NormalDecimalField(max_digits=10, decimal_places=2, required=False, validators=[casi_positive_number])
+    up3 = NormalDecimalField(max_digits=10, decimal_places=2, required=False, validators=[casi_positive_number])
+    up4 = NormalDecimalField(max_digits=10, decimal_places=2, required=False, validators=[casi_positive_number])
+    up5 = NormalDecimalField(max_digits=10, decimal_places=2, required=False, validators=[casi_positive_number])
+    up6 = NormalDecimalField(max_digits=10, decimal_places=2, required=False, validators=[casi_positive_number])
     current_price = NormalDecimalField(max_digits=10, decimal_places=2, min_value=0, validators=[positive_number])
     annual_consumption = NormalDecimalField(
         max_digits=10, decimal_places=2, min_value=0, validators=[positive_number], required=True, write_only=True
     )
 
-    c1 = NormalDecimalField(
-        max_digits=10, decimal_places=2, required=False, default=0, validators=[casi_positive_number]
-    )
-    c2 = NormalDecimalField(
-        max_digits=10, decimal_places=2, required=False, default=0, validators=[casi_positive_number]
-    )
-    c3 = NormalDecimalField(
-        max_digits=10, decimal_places=2, required=False, default=0, validators=[casi_positive_number]
-    )
-    c4 = NormalDecimalField(
-        max_digits=10, decimal_places=2, required=False, default=0, validators=[casi_positive_number]
-    )
-    c5 = NormalDecimalField(
-        max_digits=10, decimal_places=2, required=False, default=0, validators=[casi_positive_number]
-    )
-    c6 = NormalDecimalField(
-        max_digits=10, decimal_places=2, required=False, default=0, validators=[casi_positive_number]
-    )
-    p1 = NormalDecimalField(
-        max_digits=10, decimal_places=2, required=False, default=0, validators=[casi_positive_number]
-    )
-    p2 = NormalDecimalField(
-        max_digits=10, decimal_places=2, required=False, default=0, validators=[casi_positive_number]
-    )
-    p3 = NormalDecimalField(
-        max_digits=10, decimal_places=2, required=False, default=0, validators=[casi_positive_number]
-    )
-    p4 = NormalDecimalField(
-        max_digits=10, decimal_places=2, required=False, default=0, validators=[casi_positive_number]
-    )
-    p5 = NormalDecimalField(
-        max_digits=10, decimal_places=2, required=False, default=0, validators=[casi_positive_number]
-    )
-    p6 = NormalDecimalField(
-        max_digits=10, decimal_places=2, required=False, default=0, validators=[casi_positive_number]
-    )
+    c1 = NormalDecimalField(max_digits=10, decimal_places=2, required=False, validators=[casi_positive_number])
+    c2 = NormalDecimalField(max_digits=10, decimal_places=2, required=False, validators=[casi_positive_number])
+    c3 = NormalDecimalField(max_digits=10, decimal_places=2, required=False, validators=[casi_positive_number])
+    c4 = NormalDecimalField(max_digits=10, decimal_places=2, required=False, validators=[casi_positive_number])
+    c5 = NormalDecimalField(max_digits=10, decimal_places=2, required=False, validators=[casi_positive_number])
+    c6 = NormalDecimalField(max_digits=10, decimal_places=2, required=False, validators=[casi_positive_number])
+    p1 = NormalDecimalField(max_digits=10, decimal_places=2, required=False, validators=[casi_positive_number])
+    p2 = NormalDecimalField(max_digits=10, decimal_places=2, required=False, validators=[casi_positive_number])
+    p3 = NormalDecimalField(max_digits=10, decimal_places=2, required=False, validators=[casi_positive_number])
+    p4 = NormalDecimalField(max_digits=10, decimal_places=2, required=False, validators=[casi_positive_number])
+    p5 = NormalDecimalField(max_digits=10, decimal_places=2, required=False, validators=[casi_positive_number])
+    p6 = NormalDecimalField(max_digits=10, decimal_places=2, required=False, validators=[casi_positive_number])
 
     profit = NormalDecimalField(max_digits=10, decimal_places=2, read_only=True)
     profit_num = NormalDecimalField(read_only=True, max_digits=15, decimal_places=2, source="profit")
@@ -132,7 +84,8 @@ class CalculatorSerializer(serializers.ModelSerializer):
         validators=[casi_positive_number],
         default=0,
     )
-    igic = serializers.BooleanField()
+    is_igic = serializers.BooleanField()
+    igic = NormalDecimalField(max_digits=10, decimal_places=2, read_only=True)
     rental = NormalDecimalField(max_digits=10, decimal_places=2, required=False, default=0)
     iva_percent = NormalDecimalField(max_digits=4, decimal_places=2, required=False, default=0)
     igic_percent = NormalDecimalField(max_digits=4, decimal_places=2, required=False, default=0)
@@ -214,6 +167,7 @@ class CalculatorSerializer(serializers.ModelSerializer):
             "kind",
             "reactive",
             "igic",
+            "is_igic",
             "agent",
             "agent_email",
             "agent_phone",
@@ -302,18 +256,18 @@ class CalculatorSerializer(serializers.ModelSerializer):
             "uc4": data["uc4"],
             "uc5": data["uc5"],
             "uc6": data["uc6"],
-            "p1": data["p1"],
-            "p2": data["p2"],
-            "p3": data["p3"],
-            "p4": data["p4"],
-            "p5": data["p5"],
-            "p6": data["p6"],
-            "c1": data["c1"],
-            "c2": data["c2"],
-            "c3": data["c3"],
-            "c4": data["c4"],
-            "c5": data["c5"],
-            "c6": data["c6"],
+            "p1": data.get("p1"),
+            "p2": data.get("p2"),
+            "p3": data.get("p3"),
+            "p4": data.get("p4"),
+            "p5": data.get("p5"),
+            "p6": data.get("p6"),
+            "c1": data.get("c1"),
+            "c2": data.get("c2"),
+            "c3": data.get("c3"),
+            "c4": data.get("c4"),
+            "c5": data.get("c5"),
+            "c6": data.get("c6"),
             "iva_percent": data["iva_percent"],
             "tax_percent": calculator_settings.tax if is_luz else calculator_settings.carbon_tax,
             "igic_percent": data["igic_percent"],

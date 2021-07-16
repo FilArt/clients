@@ -76,12 +76,12 @@
 
           <v-row align="center" class="text-center">
             <v-col>
-              <v-btn-toggle v-model="form.igic" mandatory :value="form.igic || false" :color="ourColor">
+              <v-btn-toggle v-model="form.is_igic" mandatory :value="form.is_igic || false" :color="ourColor">
                 <v-btn :value="false">Península</v-btn>
                 <v-btn :value="true">Islas Canarias</v-btn>
               </v-btn-toggle>
-              <v-alert v-if="errorMessages.igic" type="error">
-                {{ errorMessages.igic.join('; ') }}
+              <v-alert v-if="errorMessages.is_igic" type="error">
+                {{ errorMessages.is_igic.join('; ') }}
               </v-alert>
             </v-col>
             <v-col>
@@ -285,7 +285,7 @@ const defaultForm = Object.freeze({
   up5: 0,
   up6: 0,
   company: null,
-  igic: false,
+  is_igic: false,
 })
 export default {
   name: 'Calculator',

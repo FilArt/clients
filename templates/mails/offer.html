@@ -108,9 +108,8 @@
           <div flat class="d-flex flex-column offset">
             {% if reactive %}
             <p flat><span class="first-word">Energía reactiva:</span> {{ reactive }} €</p>
-            {% endif %} {% if rental %}
+            {% endif %}
             <p flat><span class="first-word">Alquiler de equipos:</span> {{ rental }} €</p>
-            {% endif %} {% if tax %}
             <p flat>
               <span class="first-word">
                 {% if kind == 'luz' %} IMP. ELECTRICIDAD: {% else %} IMP. HIDROCARBUROS {% endif %}
@@ -118,15 +117,13 @@
               </span>
               {{ tax }} €
             </p>
-            {% endif %} {% if igic_percent or iva_percent %}
             <p flat>
-              {% if igic_percent %}
+              {% if is_igic %}
               <span class="first-word"> IGIC ({{ igic_percent }}%): </span>
               {{ igic }} € {% else %}
               <span class="first-word"> IVA ({{ iva_percent }}%): </span>
               {{ iva }} € {% endif %}
             </p>
-            {% endif %}
           </div>
 
           <!-- <div flat class="d-flex justify-end text-h5 font-weight-bold"> TOTAL: 1 234 567,12 € </div> -->

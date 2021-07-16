@@ -130,7 +130,9 @@ class Calculator:
             calculated_subtotals = {}
             for field in fields:
                 price = getattr(self, field) or Decimal.from_float(getattr(offer, field))
-                value = getattr(self, "u" + field) * period * price
+                value = getattr(self, "u" + field) * price
+                if field.startswith("p"):
+                    value *= period
                 calculated_subtotals[f"{field}_subtotal"] = value
 
             self.results[idx] = {**self.results[idx], **calculated_subtotals}
@@ -178,13 +180,13 @@ class Calculator:
                 },
                 "reactive": dround(self.reactive),
                 "total": dround(total),
-                "rental": dround(self.rental),
+                "rental": dround(self.rental) or "N/A",
                 "tax": dround(tax),
                 "tax_percent": self.tax_percent * 100,
-                "igic_percent": self.igic_percent,
-                "igic": dround(igic),
-                "iva_percent": self.iva_percent,
-                "iva": dround(iva),
+                "igic_percent": self.igic_percent or "N/A",
+                "igic": dround(igic) or "N/A",
+                "iva_percent": self.iva_percent or "N/A",
+                "iva": dround(iva) or "N/A",
                 "profit": dround(profit),
                 "profit_percent": 100 - dround(total / self.current_price * 100),
                 "profit_annual": dround(profit / self.period * 365),
