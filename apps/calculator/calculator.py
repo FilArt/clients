@@ -165,8 +165,8 @@ class Calculator:
 
             profit = self.current_price - total
 
-            ranking_price = (result["power_total"] + result["consumption_total"]) - (
-                self.pago_power + self.pago_consumption
+            ranking_price = (
+                self.pago_power + self.pago_consumption - result["power_total"] - result["consumption_total"]
             )
 
             result = {
