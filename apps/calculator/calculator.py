@@ -180,7 +180,7 @@ class Calculator:
                 "total": dround(total),
                 "rental": dround(self.rental),
                 "tax": dround(tax),
-                "tax_percent": self.tax_percent,
+                "tax_percent": self.tax_percent * 100,
                 "igic_percent": self.igic_percent,
                 "igic": dround(igic),
                 "iva_percent": self.iva_percent,

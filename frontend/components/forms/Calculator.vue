@@ -72,9 +72,10 @@
             </v-btn>
           </v-card>
 
+          <br />
+
           <v-row align="center" class="text-center">
             <v-col>
-              Impuestos
               <v-btn-toggle v-model="form.igic" mandatory :value="form.igic || false" :color="ourColor">
                 <v-btn :value="false">Península</v-btn>
                 <v-btn :value="true">Islas Canarias</v-btn>
@@ -84,8 +85,6 @@
               </v-alert>
             </v-col>
             <v-col>
-              Tipo de cliente
-              <br />
               <client-type-select
                 v-model="form.client_type"
                 :error-messages="errorMessages.client_type"
