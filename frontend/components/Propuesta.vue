@@ -1,5 +1,5 @@
 <template>
-  <v-dialog v-model="dialog" max-width="650" scrollable>
+  <v-dialog v-model="dialog" scrollable :fullscreen="isMobile" max-width="650">
     <template v-slot:activator="{ on }">
       <v-btn color="warning" rounded v-on="on">
         Cambiar valores
@@ -202,6 +202,7 @@ export default {
   },
   data() {
     return {
+      isMobile: this.$vuetify.breakpoint.mobile,
       dialog: false,
       values: this.value,
     }
