@@ -13,8 +13,6 @@
 
       <v-card-text>
         <v-form @submit.prevent="submit">
-          <decimal-field v-model="settings.iva" :error-messages="errors.iva" label="IVA" />
-          <decimal-field v-model="settings.igic" :error-messages="errors.igic" label="IGIC" />
           <decimal-field v-model="settings.tax" :error-messages="errors.tax" label="Imp. electricidad" />
           <decimal-field
             v-model="settings.carbon_tax"
