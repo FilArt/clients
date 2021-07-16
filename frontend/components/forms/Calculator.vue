@@ -15,7 +15,7 @@
       v-else-if="showResults && offers.length"
       :headers="headers"
       :items="offers"
-      :sort-by="['total']"
+      :sort-by="['ranking_price']"
       :sort-desc="[true]"
     >
       <template v-slot:[`item.company_logo`]="{ item }">
