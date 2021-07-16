@@ -5,6 +5,12 @@
     </template>
 
     <v-card class="pa-1">
+      <v-card-title>
+        <v-alert border="right" prominent type="error">
+          Solo informar de precios de potencias y consumos si el comparador no devuelve datos o son erróneos
+        </v-alert>
+      </v-card-title>
+
       <v-card-text>
         <v-card flat class="d-flex align-center justify-space-between pa-1">
           <v-card flat class="d-flex" style="max-width: 50%">
