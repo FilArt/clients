@@ -132,11 +132,6 @@ const defaultFields = [
     name: 'rental',
   },
   {
-    text: 'Impuesto electricidad (%)',
-    value: null,
-    name: 'tax_percent',
-  },
-  {
     text: 'IVA (%)',
     value: null,
     name: 'iva_percent',

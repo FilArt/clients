@@ -21,36 +21,6 @@
             :error-messages="errors.carbon_tax"
             label="Imp. hidrocarburos"
           />
-          <decimal-field
-            v-model="settings.equip_rent_t20td"
-            :error-messages="errors.equip_rent_t20td"
-            label="Alquiler de equipos (2.0TD)"
-          />
-          <decimal-field
-            v-model="settings.equip_rent_t30td"
-            :error-messages="errors.equip_rent_t30td"
-            label="Alquiler de equipos (3.0TD)"
-          />
-          <decimal-field
-            v-model="settings.equip_rent_g31"
-            :error-messages="errors.equip_rent_g31"
-            label="Alquiler de equipos (3.1)"
-          />
-          <decimal-field
-            v-model="settings.equip_rent_g32"
-            :error-messages="errors.equip_rent_g32"
-            label="Alquiler de equipos (3.2)"
-          />
-          <decimal-field
-            v-model="settings.equip_rent_g33"
-            :error-messages="errors.equip_rent_g33"
-            label="Alquiler de equipos (3.3)"
-          />
-          <decimal-field
-            v-model="settings.equip_rent_g34"
-            :error-messages="errors.equip_rent_g34"
-            label="Alquiler de equipos (3.4)"
-          />
         </v-form>
       </v-card-text>
 

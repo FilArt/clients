@@ -189,6 +189,36 @@
             </v-col>
           </v-row>
 
+          <v-row>
+            <v-col>
+              <decimal-field
+                v-model="form.pago_power"
+                label="Pago de potencia"
+                prefix="€"
+                :error-messages="errorMessages.pago_power"
+              />
+            </v-col>
+            <v-col>
+              <decimal-field
+                v-model="form.pago_consumption"
+                label="Pago de consumo"
+                prefix="€"
+                :error-messages="errorMessages.pago_consumption"
+              />
+            </v-col>
+          </v-row>
+
+          <v-row>
+            <v-col>
+              <decimal-field
+                v-model="form.annual_consumption"
+                label="Consumo annual"
+                prefix="kW"
+                :error-messages="errorMessages.annual_consumption"
+              />
+            </v-col>
+          </v-row>
+
           <v-row v-if="form.kind === 'luz' && form.tarif !== '2.0TD'" align="center">
             <v-col>
               <v-checkbox
@@ -294,10 +324,10 @@ export default {
           text: 'Comercializadora',
           value: 'company_name',
         },
-        // {
-        //   text: 'Total',
-        //   value: 'total',
-        // },
+        {
+          text: 'Rank',
+          value: 'ranking_price',
+        },
         {
           value: 'actions',
           sortable: false,

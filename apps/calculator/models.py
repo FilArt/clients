@@ -1,15 +1,15 @@
 import logging
 from enum import Enum, unique
 
+from clients.utils import PositiveNullableFloatField
 from django.contrib.postgres.fields import ArrayField
 from django.db import models
 from django.db.models import Manager
 from django.utils.translation import gettext_lazy as _
 
 from apps.calculator.fields import NameField
-from clients.utils import PositiveNullableFloatField
+
 from .managers import WithoutOtraManager
-from .validators import is_positive
 
 logger = logging.getLogger(__name__)
 
@@ -47,29 +47,8 @@ assert [t for t in Tarif]
 
 
 class CalculatorSettings(models.Model):
-    iva = models.FloatField(default=1)
-    igic = models.FloatField(default=0.03)
     tax = models.FloatField(default=1)
     carbon_tax = models.FloatField(default=0.00234)
-    equip_rent_t20td = models.FloatField(default=1, validators=[is_positive])
-    equip_rent_t30td = models.FloatField(default=1, validators=[is_positive])
-    equip_rent_g31 = models.FloatField(default=0.6, validators=[is_positive])
-    equip_rent_g32 = models.FloatField(default=1.1, validators=[is_positive])
-    equip_rent_g33 = models.FloatField(default=12.5, validators=[is_positive])
-    equip_rent_g34 = models.FloatField(default=12.5, validators=[is_positive])
-
-    def get_iva(self):
-        return self.iva + 1
-
-    def get_equip(self, tarif):
-        return {
-            Tarif.T20TD.value: self.equip_rent_t20td,
-            Tarif.T30TD.value: self.equip_rent_t30td,
-            Tarif.G31.value: self.equip_rent_g31,
-            Tarif.G32.value: self.equip_rent_g32,
-            Tarif.G33.value: self.equip_rent_g33,
-            Tarif.G34.value: self.equip_rent_g34,
-        }[tarif]
 
 
 class Company(models.Model):
