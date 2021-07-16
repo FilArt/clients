@@ -271,7 +271,6 @@ class CalculatorSerializer(serializers.ModelSerializer):
         if data.get("id"):
             offers = offers.filter(id=data.get("id"))
 
-        ranking_price = data.get("pago_power", 0) + data.get("pago_consumption", 0)
         calculator_settings = CalculatorSettings.objects.first()
 
         return {
@@ -307,7 +306,8 @@ class CalculatorSerializer(serializers.ModelSerializer):
             "tax_percent": calculator_settings.tax if is_luz else calculator_settings.carbon_tax,
             "igic_percent": data["igic_percent"],
             "rental": data["rental"],
-            "ranking_price": ranking_price,
+            "pago_power": data['pago_power'],
+            "pago_consumption": data['pago_consumption'],
         }
 
 

@@ -11,11 +11,21 @@
       "
     />
 
-    <v-data-table v-else-if="showResults && offers.length" :headers="headers" :items="offers" :sort-by="['total']">
+    <v-data-table
+      v-else-if="showResults && offers.length"
+      :headers="headers"
+      :items="offers"
+      :sort-by="['total']"
+      :sort-desc="[true]"
+    >
       <template v-slot:[`item.company_logo`]="{ item }">
         <v-avatar width="100">
           <v-img :src="item['company_logo'] || '/no-image.svg'" />
         </v-avatar>
+      </template>
+
+      <template v-slot:[`item.ranking_price`]="{ item }">
+        {{ String(item.ranking_price).replace('.', ',') }} €
       </template>
 
       <template v-slot:[`item.profit_num`]="{ item }"> {{ item['profit_num'] }} € </template>
@@ -325,7 +335,7 @@ export default {
           value: 'company_name',
         },
         {
-          text: 'Rank',
+          text: 'Ahorro',
           value: 'ranking_price',
         },
         {

@@ -48,7 +48,8 @@ class Calculator:
         iva_percent: Decimal = zero,
         reactive: Decimal = zero,
         current_price: Decimal = zero,
-        ranking_price: Decimal = zero,
+        pago_power: Decimal = zero,
+        pago_consumption: Decimal = zero,
     ) -> None:
         if iva_percent and igic_percent:
             raise Exception("Only iva or igic should be more than 0")
@@ -86,7 +87,8 @@ class Calculator:
         self.iva_percent = iva_percent or 0
         self.reactive = reactive or 0
         self.current_price = current_price or 0
-        self.ranking_price = ranking_price
+        self.pago_power = pago_power
+        self.pago_consumption = pago_consumption
         self.results = [
             dict(
                 up1=dround(up1),
@@ -163,6 +165,10 @@ class Calculator:
 
             profit = self.current_price - total
 
+            ranking_price = (result["power_total"] + result["consumption_total"]) - (
+                self.pago_power + self.pago_consumption
+            )
+
             result = {
                 **result,
                 "reactive": dround(self.reactive),
@@ -177,6 +183,6 @@ class Calculator:
                 "profit": dround(profit),
                 "profit_percent": 100 - dround(total / self.current_price * 100),
                 "profit_annual": dround(profit / self.period * 365),
-                "ranking_price": total - self.ranking_price,
+                "ranking_price": dround(ranking_price),
             }
             self.results[idx] = result
