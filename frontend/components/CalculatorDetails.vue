@@ -123,7 +123,7 @@ export default {
       } catch (e) {
         let err = e.response.data
         err = err instanceof Array ? err.join('; ') : err
-        await this.$swal({ title: 'Error', icon: 'error', text: err })
+        await this.$swal({ title: 'Error', icon: 'error', text: JSON.stringify(err) })
       } finally {
         this.loading = false
       }
