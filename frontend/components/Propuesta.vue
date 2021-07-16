@@ -91,11 +91,11 @@
         <br />
 
         <v-card flat class="d-flex flex-column font-italic font-weight-black">
-          <v-card>CONSUMO:</v-card>
+          <v-card flat>CONSUMO:</v-card>
         </v-card>
 
         <v-card flat class="d-flex flex-column offset font-weight-light caption">
-          <v-card v-if="values.uc1">
+          <v-card v-if="values.uc1" flat>
             <span class="first-word">P1: </span>{{ values.uc1 }} X {{ values.c1 }} (€/kWh) = {{ values.c1_subtotal }} €
             <edit-field @click="editValue('c1', 'Precio de consumo P1')" />
           </v-card>
@@ -124,11 +124,11 @@
         <br />
 
         <v-card flat class="d-flex flex-column font-italic font-weight-black">
-          <v-card>OTROS CONCEPTOS:</v-card>
+          <v-card flat>OTROS CONCEPTOS:</v-card>
         </v-card>
 
         <v-card flat class="d-flex flex-column offset">
-          <v-card v-if="values.reactive">
+          <v-card v-if="values.reactive" flat>
             <span class="first-word">Energía reactiva:</span> {{ values.reactive }} €
           </v-card>
           <v-card flat>
