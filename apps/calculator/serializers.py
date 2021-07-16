@@ -30,6 +30,7 @@ class CalculatorSerializer(serializers.ModelSerializer):
     id = serializers.IntegerField(required=False)
     total = NormalDecimalField(max_digits=10, decimal_places=2)
     client_name = serializers.CharField(required=False)
+    client_email = serializers.CharField(required=False)
     company_name = serializers.CharField(source="company.name", read_only=True)
     company_logo = serializers.ImageField(source="company.logo", read_only=True)
     cups = serializers.CharField(required=False)
@@ -165,6 +166,7 @@ class CalculatorSerializer(serializers.ModelSerializer):
             "id",
             "company",
             "client_name",
+            "client_email",
             "cups",
             "company_name",
             "company_logo",
