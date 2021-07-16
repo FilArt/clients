@@ -18,19 +18,17 @@
     <v-app-bar v-if="$auth.loggedIn" fixed app clipped-left>
       <v-app-bar-nav-icon color="primary" @click.stop="drawer = !drawer" />
       <v-toolbar-title v-text="title" />
+
       <v-spacer />
 
-      <v-chip>
-        {{ $auth.user ? 'id ' + $auth.user.id : '' }}
-      </v-chip>
+      <notys v-if="$auth.user.role" />
 
       <v-btn icon nuxt to="/profile">
         <v-icon color="primary"> mdi-account </v-icon>
       </v-btn>
 
-      <notys v-if="$auth.user.role" />
-
       <theme-switcher />
+
       <v-btn v-if="$auth" icon @click.stop="$auth.logout">
         <v-icon color="primary"> mdi-logout </v-icon>
       </v-btn>
@@ -53,7 +51,7 @@ export default {
   data() {
     return {
       drawer: true,
-      title: 'Gestion Group',
+      title: this.$vuetify.breakpoint.mobile ? '' : 'Gestion Group',
     }
   },
   computed: {

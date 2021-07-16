@@ -1,8 +1,8 @@
 <template>
   <v-menu offset-y :close-on-content-click="false">
     <template v-slot:activator="{ on, attrs }">
-      <v-badge :content="total" :value="total" color="error" overlap>
-        <v-btn icon :loading="loading" color="primary" v-bind="attrs" v-on="on">
+      <v-badge :content="total" :value="total" color="error" overlapp left>
+        <v-btn x-small icon :loading="loading" color="primary" v-bind="attrs" v-on="on">
           <v-icon>mdi-eye</v-icon>
         </v-btn>
       </v-badge>

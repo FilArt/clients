@@ -20,10 +20,10 @@
               <img width="100%" src="https://intranet.gestiongroup.es/gg_logo_blue.png" />
             </v-card>
 
-            <v-card flat class="d-flex flex-column" style="font-style: italic">
-              <v-card flat style="text-align: right"> № {{ id }} </v-card>
-              <v-card flat style="text-align: right"> Fecha de la propuesta: {{ date }} </v-card>
-              <v-card flat style="text-align: right"> Periodo de validez: 7 Días </v-card>
+            <v-card flat class="dates d-flex flex-column">
+              <v-card flat> № {{ id }} </v-card>
+              <v-card flat> Fecha de la propuesta: {{ date }} </v-card>
+              <v-card flat> Periodo de validez: 7 Días </v-card>
             </v-card>
           </v-card>
 
@@ -32,8 +32,11 @@
           <br />
 
           <v-card flat class="d-flex justify-center text-h5 font-weight-bold">
-            <v-card-title> PROPUESTA DE FACTURACIÓN </v-card-title>
+            <v-card-title>
+            PROPUESTA DE FACTURACIÓN
+            </v-card-title>
           </v-card>
+
           <br />
 
           <div class="centered-list">
@@ -84,17 +87,29 @@
 
           <v-card flat class="d-flex flex-column offset font-weight-light caption">
             {% if uc1 %}
-            <v-card flat><span class="first-word">P1: </span>{{ uc1 }} X {{ c1 }} (€/kWh) = {{ c1_subtotal }} €</v-card>
+            <v-card flat
+              ><span class="first-word">P1: </span>{{ uc1 }} X {{ c1 }} (€/kWh) = {{ c1_subtotal }} €</v-card
+            >
             {% endif %} {% if uc2 %}
-            <v-card flat><span class="first-word">P2: </span>{{ uc2 }} X {{ c2 }} (€/kWh) = {{ c2_subtotal }} €</v-card>
+            <v-card flat
+              ><span class="first-word">P2: </span>{{ uc2 }} X {{ c2 }} (€/kWh) = {{ c2_subtotal }} €</v-card
+            >
             {% endif %} {% if uc3 %}
-            <v-card flat><span class="first-word">P3: </span>{{ uc3 }} X {{ c3 }} (€/kWh) = {{ c3_subtotal }} €</v-card>
+            <v-card flat
+              ><span class="first-word">P3: </span>{{ uc3 }} X {{ c3 }} (€/kWh) = {{ c3_subtotal }} €</v-card
+            >
             {% endif %} {% if uc4 %}
-            <v-card flat><span class="first-word">P4: </span>{{ uc4 }} X {{ c4 }} (€/kWh) = {{ c4_subtotal }} €</v-card>
+            <v-card flat
+              ><span class="first-word">P4: </span>{{ uc4 }} X {{ c4 }} (€/kWh) = {{ c4_subtotal }} €</v-card
+            >
             {% endif %} {% if uc5 %}
-            <v-card flat><span class="first-word">P5: </span>{{ uc5 }} X {{ c5 }} (€/kWh) = {{ c5_subtotal }} €</v-card>
+            <v-card flat
+              ><span class="first-word">P5: </span>{{ uc5 }} X {{ c5 }} (€/kWh) = {{ c5_subtotal }} €</v-card
+            >
             {% endif %} {% if uc6 %}
-            <v-card flat><span class="first-word">P6: </span>{{ uc6 }} X {{ c6 }} (€/kWh) = {{ c6_subtotal }} €</v-card>
+            <v-card flat
+              ><span class="first-word">P6: </span>{{ uc6 }} X {{ c6 }} (€/kWh) = {{ c6_subtotal }} €</v-card
+            >
             {% endif %}
           </v-card>
 
@@ -144,13 +159,14 @@
 
           <v-card flat class="d-flex flex-row">
             <v-card flat>
-              <img height="60" src="https://intranet.gestiongroup.es/person.svg" />
+              <img height="100" src="https://intranet.gestiongroup.es/person.svg" />
             </v-card>
-            <v-card flat class="d-flex flex-column" style="text-indent: 10px">
-              <v-card flat> Nombre del asesor/a: {{ agent }}</v-card>
-              <v-card flat> Teléfono: {{ agent_phone }}</v-card>
-              <v-card flat> Email: {{ agent_email }}</v-card>
-              <v-card flat> Web: <a href="https://gestiongroup.es" target="_blank">gestiongroup.es</a> </v-card>
+            
+            <v-card flat class="d-flex flex-column" style="margin-left: 1rem">
+              <v-card flat>Nombre del asesor/a: {{ agent }}</v-card>
+              <v-card flat>Teléfono: {{ agent_phone }}</v-card>
+              <v-card flat>Email: {{ agent_email }}</v-card>
+              <v-card flat>Web: <a href="https://gestiongroup.es" target="_blank">gestiongroup.es</a> </v-card>
             </v-card>
           </v-card>
         </v-main>
@@ -176,7 +192,7 @@
       }
 
       .offset {
-        text-indent: 6em;
+        text-indent: 6rem;
       }
 
       .first-word {
@@ -196,8 +212,29 @@
       }
 
       .centered-list > p {
-        text-indent: 100px;
+        text-indent: 6rem;
         line-height: 4px;
+      }
+
+      .dates {
+        font-style: italic
+      }
+      .dates > v-card {
+        text-align: right
+      }
+
+      @media only screen and (max-device-width: 768px) {
+        #offer-app {
+          font-size: 75%;
+        }
+
+        .offset {
+          text-indent: 0;
+        }
+        .centered-list > p {
+          text-indent: 0;
+          line-height: 4px;
+        }
       }
     </style>
   </body>

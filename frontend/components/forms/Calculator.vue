@@ -44,7 +44,7 @@
       </template>
     </v-data-table>
 
-    <v-card v-else>
+    <v-card v-else flat>
       <v-card-text>
         <v-form novalidate @submit.prevent="submit">
           <v-card class="text-center flex-row flex-nowrap d-flex">
@@ -252,7 +252,8 @@
             <v-btn icon color="warning" @click="resetForm">
               <v-icon>mdi-eraser-variant</v-icon>
             </v-btn>
-            <submit-button block label="Comparar" />
+            <v-spacer />
+            <submit-button label="Comparar" />
           </v-card-actions>
         </v-form>
       </v-card-text>

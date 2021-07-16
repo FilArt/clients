@@ -64,7 +64,7 @@ class SendOfferView(LoggingMixin, views.APIView):
         if "send" in request.data or "download" in request.data:
             html_message = render_to_string("mails/offer.html", context=ctx)
             dt = timezone.now().strftime("%d_%m_%Y_%H_%M")
-            filename = f'{dt}_{args["id"]}.html'
+            filename = f'{dt}_{ctx["id"]}.html'
             filepath = f"/tmp/{filename}"
             with open(filepath, "w") as f:
                 f.write(html_message)

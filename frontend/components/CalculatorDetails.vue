@@ -1,37 +1,39 @@
 <template>
   <v-card elevation="0">
-    <v-card-actions>
-      <v-spacer />
+    <v-card-text>
+      <v-row class="text-center">
+        <v-col>
+          <v-btn rounded color="success" icon @click="getHtmlDetails">
+            <v-icon>mdi-refresh</v-icon>
+          </v-btn>
+        </v-col>
 
-      <v-btn
-        style="margin-right: 7em"
-        color="success"
-        :disabled="loading || downloading"
-        rounded
-        @click="getHtmlDetails"
-      >
-        <v-icon>mdi-refresh</v-icon>
-      </v-btn>
+        <v-col>
+          <v-btn class="pa-0" color="warning" :disabled="downloading" :loading="loading" rounded @click="send(false)">
+            <v-icon>mdi-email-send</v-icon>
+          </v-btn>
+        </v-col>
 
-      <propuesta v-model="calculatedValues" @update="onUpdateForm($event)" />
+        <v-col>
+          <v-btn
+            target="_blank"
+            :href="downloadURL"
+            color="info"
+            :loading="downloading"
+            :disabled="loading"
+            rounded
+            @click="downloadURL ? (downloadURL = null) : send(true)"
+          >
+            <span v-if="downloadURL">PDF</span>
+            <v-icon v-else>mdi-download</v-icon>
+          </v-btn>
+        </v-col>
 
-      <v-btn color="warning" :disabled="downloading" :loading="loading" rounded x-large @click="send(false)">
-        <v-icon>mdi-email-send</v-icon>
-      </v-btn>
-      <v-btn
-        target="_blank"
-        :href="downloadURL"
-        color="info"
-        :loading="downloading"
-        :disabled="loading"
-        rounded
-        x-large
-        @click="downloadURL ? (downloadURL = null) : send(true)"
-      >
-        <span v-if="downloadURL">PDF</span>
-        <v-icon v-else>mdi-download</v-icon>
-      </v-btn>
-    </v-card-actions>
+        <v-col>
+          <propuesta v-model="calculatedValues" @update="onUpdateForm($event)" />
+        </v-col>
+      </v-row>
+    </v-card-text>
 
     <v-card-text v-if="sendingEmail">
       <v-progress-linear v-if="loading" indeterminate />
@@ -101,9 +103,8 @@ export default {
       this.calculatedValues[key] = value
       await this.getHtmlDetails()
     },
-    async getHtmlDetails() {
-      this.loading = true
-      const form = Object.fromEntries(
+    getForm() {
+      return Object.fromEntries(
         Object.entries({
           ...this.form,
           ...this.rewriteValuesForm,
@@ -117,6 +118,10 @@ export default {
             return [key, val]
           }),
       )
+    },
+    async getHtmlDetails() {
+      this.loading = true
+      const form = this.getForm()
       try {
         this.calculatedValues = await this.$axios.$post('calculator/new_offer/', { ...form, just_get: true })
         this.htmlDetails = await this.$axios.$post('calculator/new_offer/', form)
@@ -140,14 +145,14 @@ export default {
       } else {
         this.loading = true
       }
-      const data = { ...this.form, ...this.rewriteValuesForm }
+      const data = this.getForm()
       if (download) {
         data.download = 'true'
       } else {
         data.send = 'true'
       }
       try {
-        const response = await this.$axios.$post('calculator/new_offer/', { ...data })
+        const response = await this.$axios.$post('calculator/new_offer/', data)
         if (download) this.downloadURL = `${location.origin}/${response}`
       } catch (e) {
         await this.$swal({

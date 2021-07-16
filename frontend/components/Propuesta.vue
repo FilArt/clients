@@ -1,7 +1,10 @@
 <template>
   <v-dialog v-model="dialog" max-width="650" scrollable>
     <template v-slot:activator="{ on }">
-      <v-btn v-on="on">Cambiar valores</v-btn>
+      <v-btn color="warning" rounded v-on="on">
+        Cambiar valores
+        <v-icon right>mdi-pencil</v-icon>
+      </v-btn>
     </template>
 
     <v-card class="pa-1">
