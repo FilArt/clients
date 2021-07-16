@@ -123,6 +123,7 @@ class Offer(models.Model):
     default = Manager()
 
     active = models.BooleanField(default=True)
+    calculator = models.BooleanField(default=True)
     kind = models.CharField(default="luz", choices=OFFER_KIND_CHOICES, max_length=3)
     company = models.ForeignKey(Company, on_delete=models.CASCADE)
     name = NameField(max_length=255, db_index=True)

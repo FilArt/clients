@@ -263,6 +263,18 @@ export default {
           },
         },
         {
+          label: 'Comparador',
+          field: 'calculator',
+          formatFn: this.booleanFormat,
+          filterOptions: {
+            enabled: true,
+            filterDropdownItems: [
+              { text: 'Si', value: true },
+              { text: 'No', value: false },
+            ],
+          },
+        },
+        {
           label: 'Tipo',
           field: 'kind',
           filterOptions: {
