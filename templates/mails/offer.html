@@ -15,27 +15,25 @@
     <div id="offer-app">
       <v-app>
         <v-main class="our-color">
-          <v-card flat class="d-flex align-center justify-space-between pa-1">
-            <v-card flat class="d-flex" style="max-width: 50%">
+          <div flat class="d-flex align-center justify-space-between pa-1">
+            <div flat class="d-flex" style="max-width: 50%">
               <img width="100%" src="https://intranet.gestiongroup.es/gg_logo_blue.png" />
-            </v-card>
+            </div>
 
-            <v-card flat class="dates d-flex flex-column">
-              <v-card flat> № {{ id }} </v-card>
-              <v-card flat> Fecha de la propuesta: {{ date }} </v-card>
-              <v-card flat> Periodo de validez: 7 Días </v-card>
-            </v-card>
-          </v-card>
+            <div flat class="dates d-flex flex-column">
+              <div flat> № {{ id }} </div>
+              <div flat> Fecha de la propuesta: {{ date }} </div>
+              <div flat> Periodo de validez: 7 Días </div>
+            </div>
+          </div>
 
           <hr />
 
           <br />
 
-          <v-card flat class="d-flex justify-center text-h5 font-weight-bold">
-            <v-card-title>
-            PROPUESTA DE FACTURACIÓN
-            </v-card-title>
-          </v-card>
+          <div flat class="d-flex justify-center text-h5 font-weight-bold">
+            <div-title> PROPUESTA DE FACTURACIÓN </div-title>
+          </div>
 
           <br />
 
@@ -48,127 +46,118 @@
             <p>OFERTA: {{ name }}</p>
           </div>
 
-          <v-card flat class="d-flex flex-column font-italic font-weight-black">
-            <v-card flat> POTENCIA: </v-card>
-          </v-card>
+          <div flat class="d-flex flex-column font-italic font-weight-black">
+            <p flat>POTENCIA:</p>
+          </div>
 
-          <v-card flat class="d-flex flex-column offset font-weight-light caption">
-            <v-card flat>
+          <div flat class="d-flex flex-column offset font-weight-light caption">
+            <p flat>
               <span class="first-word">P1:</span> {{ up1 }} kW/h × {{ period }} dias × {{ p1 }} € = {{ p1_subtotal }} €
-            </v-card>
+            </p>
             {% if up2 %}
-            <v-card flat>
+            <p flat>
               <span class="first-word">P2:</span> {{ up2 }} kW/h × {{ period }} dias × {{ p2 }} € = {{ p2_subtotal }} €
-            </v-card>
+            </p>
             {% endif %} {% if up3 %}
-            <v-card flat>
+            <p flat>
               <span class="first-word">P3:</span> {{ up3 }} kW/h × {{ period }} dias × {{ p3 }} € = {{ p3_subtotal }} €
-            </v-card>
+            </p>
             {% endif %} {% if up4 %}
-            <v-card flat>
+            <p flat>
               <span class="first-word">P4:</span> {{ up4 }} kW/h × {{ period }} dias × {{ p4 }} € = {{ p4_subtotal }} €
-            </v-card>
+            </p>
             {% endif %} {% if up5 %}
-            <v-card flat>
+            <p flat>
               <span class="first-word">P5:</span> {{ up5 }} kW/h × {{ period }} dias × {{ p5 }} € = {{ p5_subtotal }} €
-            </v-card>
+            </p>
             {% endif %} {% if up6 %}
-            <v-card flat>
+            <p flat>
               <span class="first-word">P6:</span> {{ up6 }} kW/h × {{ period }} dias × {{ p6 }} € = {{ p6_subtotal }} €
-            </v-card>
+            </p>
             {% endif %}
-          </v-card>
+          </div>
 
           <br />
 
-          <v-card flat class="d-flex flex-column font-italic font-weight-black">
-            <v-card flat>CONSUMO:</v-card>
-          </v-card>
+          <div flat class="d-flex flex-column font-italic font-weight-black">
+            <p flat>CONSUMO:</p>
+          </div>
 
-          <v-card flat class="d-flex flex-column offset font-weight-light caption">
+          <div flat class="d-flex flex-column offset font-weight-light caption">
             {% if uc1 %}
-            <v-card flat
-              ><span class="first-word">P1: </span>{{ uc1 }} X {{ c1 }} (€/kWh) = {{ c1_subtotal }} €</v-card
-            >
+            <p flat><span class="first-word">P1: </span>{{ uc1 }} X {{ c1 }} (€/kWh) = {{ c1_subtotal }} €</p>
             {% endif %} {% if uc2 %}
-            <v-card flat
-              ><span class="first-word">P2: </span>{{ uc2 }} X {{ c2 }} (€/kWh) = {{ c2_subtotal }} €</v-card
-            >
+            <p flat><span class="first-word">P2: </span>{{ uc2 }} X {{ c2 }} (€/kWh) = {{ c2_subtotal }} €</p>
             {% endif %} {% if uc3 %}
-            <v-card flat
-              ><span class="first-word">P3: </span>{{ uc3 }} X {{ c3 }} (€/kWh) = {{ c3_subtotal }} €</v-card
-            >
+            <p flat><span class="first-word">P3: </span>{{ uc3 }} X {{ c3 }} (€/kWh) = {{ c3_subtotal }} €</p>
             {% endif %} {% if uc4 %}
-            <v-card flat
-              ><span class="first-word">P4: </span>{{ uc4 }} X {{ c4 }} (€/kWh) = {{ c4_subtotal }} €</v-card
-            >
+            <p flat><span class="first-word">P4: </span>{{ uc4 }} X {{ c4 }} (€/kWh) = {{ c4_subtotal }} €</p>
             {% endif %} {% if uc5 %}
-            <v-card flat
-              ><span class="first-word">P5: </span>{{ uc5 }} X {{ c5 }} (€/kWh) = {{ c5_subtotal }} €</v-card
-            >
+            <p flat><span class="first-word">P5: </span>{{ uc5 }} X {{ c5 }} (€/kWh) = {{ c5_subtotal }} €</p>
             {% endif %} {% if uc6 %}
-            <v-card flat
-              ><span class="first-word">P6: </span>{{ uc6 }} X {{ c6 }} (€/kWh) = {{ c6_subtotal }} €</v-card
-            >
+            <p flat><span class="first-word">P6: </span>{{ uc6 }} X {{ c6 }} (€/kWh) = {{ c6_subtotal }} €</p>
             {% endif %}
-          </v-card>
+          </div>
 
           <br />
 
-          <v-card flat class="d-flex flex-column font-italic font-weight-black">
-            <v-card flat>OTROS CONCEPTOS:</v-card>
-          </v-card>
+          <div flat class="d-flex flex-column font-italic font-weight-black">
+            <p flat>OTROS CONCEPTOS:</p>
+          </div>
 
-          <v-card flat class="d-flex flex-column offset">
+          <div flat class="d-flex flex-column offset">
             {% if reactive %}
-            <v-card flat><span class="first-word">Energía reactiva:</span> {{ reactive }} €</v-card>
+            <p flat><span class="first-word">Energía reactiva:</span> {{ reactive }} €</p>
             {% endif %} {% if rental %}
-            <v-card flat><span class="first-word">Alquiler de equipos:</span> {{ rental }} €</v-card>
+            <p flat><span class="first-word">Alquiler de equipos:</span> {{ rental }} €</p>
             {% endif %} {% if tax %}
-            <v-card flat>
+            <p flat>
               <span class="first-word">
                 {% if kind == 'luz' %} IMP. ELECTRICIDAD: {% else %} IMP. HIDROCARBUROS {% endif %}
                 <span> ({{ tax_percent }}%): </span>
               </span>
               {{ tax }} €
-            </v-card>
+            </p>
             {% endif %} {% if igic_percent or iva_percent %}
-            <v-card flat>
+            <p flat>
               {% if igic_percent %}
               <span class="first-word"> IGIC ({{ igic_percent }}%): </span>
               {{ igic }} € {% else %}
               <span class="first-word"> IVA ({{ iva_percent }}%): </span>
               {{ iva }} € {% endif %}
-            </v-card>
+            </p>
             {% endif %}
-          </v-card>
+          </div>
 
-          <!-- <v-card flat class="d-flex justify-end text-h5 font-weight-bold"> TOTAL: 1 234 567,12 € </v-card> -->
-
-          <br />
-
-          <v-card flat class="d-flex flex-column border">
-            <v-card flat> FACTURACIÓN ACTUAL: {{ current_price }} € </v-card>
-            <v-card flat> PROPUESTA DE FACTURACIÓN: {{ total }} € </v-card>
-            <br />
-            <v-card flat> AHORRO EN FACTURA: {{ profit }} € ({{ profit_percent }}%) </v-card>
-            <v-card flat class="font-weight-bold"> AHORRO ESTIMADO ANUAL: {{ profit_annual }} € </v-card>
-          </v-card>
+          <!-- <div flat class="d-flex justify-end text-h5 font-weight-bold"> TOTAL: 1 234 567,12 € </div> -->
 
           <br />
 
-          <v-card flat class="d-flex flex-row">
-            <v-card flat>
+          <div flat class="d-flex flex-column border">
+            <div>
+              <br>
+              <p flat>FACTURACIÓN ACTUAL: {{ current_price }} €</p>
+              <p flat>PROPUESTA DE FACTURACIÓN: {{ total }} €</p>
+              <br />
+              <p flat>AHORRO EN FACTURA: {{ profit }} € ({{ profit_percent }}%)</p>
+              <p flat class="font-weight-bold">AHORRO ESTIMADO ANUAL: {{ profit_annual }} €</p>
+            </div>
+          </div>
+
+          <br />
+
+          <div flat class="d-flex flex-row">
+            <div flat>
               <img height="100" src="https://intranet.gestiongroup.es/person.svg" />
-            </v-card>
-            
-            <v-card flat class="d-flex flex-column" style="margin-left: 1rem">
-              <v-card flat>Nombre del asesor/a: {{ agent }}</v-card>
-              <v-card flat>Teléfono: {{ agent_phone }}</v-card>
-              <v-card flat>Email: {{ agent_email }}</v-card>
-              <v-card flat>Web: <a href="https://gestiongroup.es" target="_blank">gestiongroup.es</a> </v-card>
-            </v-card>
-          </v-card>
+            </div>
+
+            <div flat class="d-flex flex-column" style="margin-left: 1rem">
+              <p flat>Nombre del asesor/a: {{ agent }}</p>
+              <p flat>Teléfono: {{ agent_phone }}</p>
+              <p flat>Email: {{ agent_email }}</p>
+              <p flat>Web: <a href="https://gestiongroup.es" target="_blank">gestiongroup.es</a></p>
+            </div>
+          </div>
         </v-main>
       </v-app>
     </div>
@@ -185,6 +174,10 @@
     <style>
       #offer-app {
         padding: 1em;
+      }
+
+      p {
+        line-height: 4px;
       }
 
       .our-color {
@@ -217,10 +210,10 @@
       }
 
       .dates {
-        font-style: italic
+        font-style: italic;
       }
-      .dates > v-card {
-        text-align: right
+      .dates > div {
+        text-align: right;
       }
 
       @media only screen and (max-device-width: 768px) {

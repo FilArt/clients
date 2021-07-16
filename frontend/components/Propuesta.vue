@@ -8,10 +8,8 @@
     </template>
 
     <v-card class="pa-1">
-      <v-card-title>
-        <v-alert dense border="right" prominent type="error" :style="isMobile ? 'font-size: 50%;' : null">
-          Solo informar de precios de potencias y consumos si el comparador no devuelve datos o son erróneos
-        </v-alert>
+      <v-card-title style="color: red">
+        Solo informar de precios de potencias y consumos si el comparador no devuelve datos o son erróneos
       </v-card-title>
 
       <v-card-text>
