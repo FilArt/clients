@@ -29,13 +29,7 @@ class CalculateApiView(LoggingMixin, views.APIView):
         args = serializer.get_calculated()
         calculator = Calculator(**args)
         calculator.calculate()
-        logos = [{"name": o.name, "logo": o.company.logo.url, "cname": o.company.name} for o in args["offers"]]
-        return Response(
-            [
-                {**o, "name": logos[i]["name"], "company_logo": logos[i]["logo"], "company_name": logos[i]["cname"]}
-                for i, o in enumerate(calculator.results)
-            ]
-        )
+        return Response(calculator.results)
 
 
 class SendOfferView(LoggingMixin, views.APIView):
@@ -50,13 +44,14 @@ class SendOfferView(LoggingMixin, views.APIView):
         calculator = Calculator(**args)
         calculator.calculate()
         ctx = {
+            **serializer.data,
             **calculator.results[0],
             **serializer.validated_data,
             "date": timezone.now().date().strftime("%d/%m/%Y"),
             "reactive": calculator.results[0]["reactive"],
         }
         if "just_get" in request.data:
-            return Response({**serializer.data, **calculator.results[0]})
+            return Response({**calculator.results[0], **serializer.data})
 
         email_to = serializer.validated_data.get("client_email")
         response = None

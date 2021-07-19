@@ -214,15 +214,10 @@ class CalculatorSerializer(serializers.ModelSerializer):
         power_min = min(filter((lambda n: n != 0), ps)) if is_luz else None
         power_max = max(filter((lambda n: n != 0), ps)) if is_luz else None
 
-        # ic1, ic2, ic3 = data.get("uc1", 0), data.get("uc2", 0), data.get("uc3", 0)
-        # ic4, ic5, ic6 = data.get("uc4", 0), data.get("uc5", 0), data.get("uc6", 0)
-        # consumptions = ic1, ic2, ic3, ic4, ic5, ic6
-        # annual_consumption = sum(consumptions) / data["period"] * 365
         annual_consumption = data["annual_consumption"]
         current_price = new_current_price or data["current_price"]
         reactive = data.get("reactive", 0)
 
-        offers = Offer.objects.all()
         offers = Offer.objects.exclude(company=data["company"]).filter(
             Q(
                 Q(consumption_max__isnull=True) | Q(consumption_max__gte=annual_consumption),

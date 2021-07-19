@@ -123,8 +123,11 @@ class Calculator:
                 igic_percent=igic_percent,
                 reactive=reactive,
                 current_price=current_price,
+                name=offer.name,
+                company_name=offer.company_name,
+                company_logo=offer.company_logo,
             )
-            for offer in offers
+            for offer in offers.annotate(company_name=F("company__name"), company_logo=F("company__logo"))
         ]
 
     def calculate(self):
