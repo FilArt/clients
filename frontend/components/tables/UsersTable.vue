@@ -20,13 +20,13 @@
                       actionsSnackbar = false
                     "
                   >
-                    <v-icon>mdi-cloud-upload</v-icon>
+                    <v-icon>mdi-cloud-upload-outline</v-icon>
                   </v-btn>
                 </template>
                 <span>Enviar en Clientes</span>
               </v-tooltip>
 
-              <v-tooltip v-else bottom>
+              <v-tooltip bottom>
                 <template v-slot:activator="{ on, attrs }">
                   <v-btn
                     icon

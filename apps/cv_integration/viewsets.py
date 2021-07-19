@@ -120,6 +120,7 @@ class CallVisitUserViewSet(viewsets.ModelViewSet):
                         client.save(update_fields=["renovated"])
 
                         APIRequestLog.objects.create(
+                            remote_addr=request.headers.get("X-Real-IP", "127.0.0.1"),
                             requested_at=timezone.now(),
                             view="apps.users.viewsets.ManageUsersViewSet",
                             view_method="update",
