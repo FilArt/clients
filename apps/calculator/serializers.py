@@ -186,22 +186,26 @@ class CalculatorSerializer(serializers.ModelSerializer):
         vd = super().validated_data
         r = self.context["request"]
         user = r.user
-        if user and hasattr(user, "role") and user.role != "admin":
-            return {
-                **vd,
-                "agent": user.fullname,
-                "agent_email": user.email,
-                "agent_phone": user.phone,
-            }
+        default_vals = {
+            "agent": vd.get("agent") or r.data.get("agent") or "",
+            "agent_email": vd.get("agent_email") or r.data.get("agent_email") or "",
+            "agent_phone": vd.get("agent_phone") or r.data.get("agent_phone") or "",
+        }
+        if user and hasattr(user, "role"):
+            if user.role != "admin":
+                return {**vd, **default_vals}
 
-        vd["agent"] = vd.get("agent") or r.data.get("agent") or ""
-        vd["agent_email"] = vd.get("agent_email") or r.data.get("agent_email") or ""
-        vd["agent_phone"] = vd.get("agent_phone") or r.data.get("agent_phone") or ""
-        return vd
+            if not default_vals["agent"]:
+                default_vals["agent"] = user.fullname
+            if not default_vals["agent_email"]:
+                default_vals["agent_email"] = user.email
+            if not default_vals["agent_phone"]:
+                default_vals["agent_phone"] = user.phone
+        return {**vd, **default_vals}
 
     def get_calculated(self, new_current_price: float = None):
         data = self.validated_data
-        kind = data.pop("kind")
+        kind = data["kind"]
         is_luz = kind == "luz"
 
         ip1, ip2, ip3 = data.get("up1", 0), data.get("up2", 0), data.get("up3", 0)

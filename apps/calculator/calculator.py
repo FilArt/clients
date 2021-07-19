@@ -91,18 +91,19 @@ class Calculator:
         self.pago_consumption = pago_consumption
         self.results = [
             dict(
-                up1=dround(up1),
-                up2=dround(up2),
-                up3=dround(up3),
-                up4=dround(up4),
-                up5=dround(up5),
-                up6=dround(up6),
-                uc1=dround(uc1),
-                uc2=dround(uc2),
-                uc3=dround(uc3),
-                uc4=dround(uc4),
-                uc5=dround(uc5),
-                uc6=dround(uc6),
+                id=offer.id,
+                up1=up1,
+                up2=up2,
+                up3=up3,
+                up4=up4,
+                up5=up5,
+                up6=up6,
+                uc1=uc1,
+                uc2=uc2,
+                uc3=uc3,
+                uc4=uc4,
+                uc5=uc5,
+                uc6=uc6,
                 period=period,
                 rental=rental,
                 tax_percent=tax_percent,
@@ -110,9 +111,8 @@ class Calculator:
                 igic_percent=igic_percent,
                 reactive=reactive,
                 current_price=current_price,
-                **dict(offer),
             )
-            for offer in offers.annotate(company_name=F("company__name"), company_logo=F("company__logo")).values()
+            for offer in offers
         ]
 
     def calculate(self):
@@ -130,9 +130,11 @@ class Calculator:
             calculated_subtotals = {}
             for field in fields:
                 price = getattr(self, field) or Decimal.from_float(getattr(offer, field))
-                value = getattr(self, "u" + field) * price
-                if field.startswith("p"):
-                    value *= period
+                value = getattr(self, "u" + field) or 0
+                if value:
+                    value *= price
+                    if field.startswith("p"):
+                        value *= period
                 calculated_subtotals[f"{field}_subtotal"] = value
 
             self.results[idx] = {**self.results[idx], **calculated_subtotals}

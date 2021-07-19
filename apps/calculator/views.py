@@ -29,20 +29,19 @@ class CalculateApiView(LoggingMixin, views.APIView):
         args = serializer.get_calculated()
         calculator = Calculator(**args)
         calculator.calculate()
-        return Response(calculator.results)
-        # return Response(serializer.get_calculated())
+        logos = [{"name": o.name, "logo": o.company.logo.url, "cname": o.company.name} for o in args["offers"]]
+        return Response(
+            [
+                {**o, "name": logos[i]["name"], "company_logo": logos[i]["logo"], "company_name": logos[i]["cname"]}
+                for i, o in enumerate(calculator.results)
+            ]
+        )
 
 
 class SendOfferView(LoggingMixin, views.APIView):
     permission_classes = []
     http_method_names = ["post", "get"]
     logging_methods = ["POST"]
-
-    # def post(self, request: Request):
-    #     serializer = CalculatorSerializer(data=request.data)
-    #     serializer.is_valid(raise_exception=True)
-    #     calculated = serializer.get_calculated()
-    #     return render(request, "mails/offer.html", context=calculated)
 
     def post(self, request: Request):
         serializer = CalculatorSerializer(data=request.data, context={"request": request})
@@ -54,6 +53,7 @@ class SendOfferView(LoggingMixin, views.APIView):
             **calculator.results[0],
             **serializer.validated_data,
             "date": timezone.now().date().strftime("%d/%m/%Y"),
+            "reactive": calculator.results[0]["reactive"],
         }
         if "just_get" in request.data:
             return Response({**calculator.results[0], **serializer.data})
