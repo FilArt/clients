@@ -299,10 +299,16 @@ class PriorityOfferSerializer(serializers.ModelSerializer):
         return offer
 
 
+class RequiredFieldsSerializer(serializers.ListSerializer):
+    def to_internal_value(self, data):
+        if isinstance(data, str):
+            data = data.split(",")
+        return super().to_internal_value(data)
+
+
 class CreateOfferSerializer(serializers.ModelSerializer):
+    required_fields = RequiredFieldsSerializer(child=serializers.CharField())
+
     class Meta:
         model = Offer
         fields = "__all__"
-
-    def validate_required_fields(self, val):
-        return str(val).split(",")
