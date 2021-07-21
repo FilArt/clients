@@ -145,7 +145,9 @@ class PaginatedOfferViewSet(LoggingMixin, viewsets.ModelViewSet):
             raise ValidationError({"file": ["Requierido"]})
 
         try:
-            lines: list[dict] = list(csv.DictReader(csv_file.read().decode().split("\n")))
+            content = csv_file.read().decode()
+            delimiter = "\t" if "\t" in content else ","
+            lines: list[dict] = list(csv.DictReader(content.split("\n"), delimiter=delimiter))
         except Exception as e:
             raise ValidationError({"file": [str(e)]})
 
