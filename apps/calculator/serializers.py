@@ -303,3 +303,6 @@ class CreateOfferSerializer(serializers.ModelSerializer):
     class Meta:
         model = Offer
         fields = "__all__"
+
+    def validate_required_fields(self, val):
+        return str(val).split(",")
