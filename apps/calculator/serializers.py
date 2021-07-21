@@ -299,6 +299,11 @@ class PriorityOfferSerializer(serializers.ModelSerializer):
         return offer
 
 
+class OfferNameSerializer(serializers.CharField):
+    def to_internal_value(self, data):
+        return super().to_internal_value(data.upper())
+
+
 class RequiredFieldsSerializer(serializers.ListSerializer):
     def to_internal_value(self, data):
         if isinstance(data, str):
@@ -307,6 +312,7 @@ class RequiredFieldsSerializer(serializers.ListSerializer):
 
 
 class CreateOfferSerializer(serializers.ModelSerializer):
+    name = OfferNameSerializer()
     required_fields = RequiredFieldsSerializer(child=serializers.CharField())
 
     class Meta:
