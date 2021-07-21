@@ -123,6 +123,11 @@ class PaginatedOfferViewSet(LoggingMixin, viewsets.ModelViewSet):
         "consumption_max",
     ]
 
+    def get_serializer_class(self):
+        if self.action == 'create':
+            return CreateOfferSerializer
+        return super().get_serializer_class()
+
     @action(methods=["POST"], detail=False, permission_classes=(OffersPermission,))
     def bulk_delete(self, request: Request):
         offers_ids = request.data.get("ids")
