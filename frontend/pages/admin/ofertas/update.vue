@@ -13,7 +13,7 @@
     </v-card-title>
     <v-form @submit.prevent="submit">
       <v-card-text>
-        <v-file-input v-model="file" label="Archivo" accept="text/csv" />
+        <v-file-input v-model="file" label="Archivo" accept="text/csv,text/tsv" />
       </v-card-text>
       <v-card-actions>
         <submit-button block :loading="loading" label="Salvar" />
