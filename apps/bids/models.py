@@ -24,7 +24,7 @@ class Bid(models.Model):
 
     user = models.ForeignKey(get_user_model(), on_delete=models.CASCADE, related_name="bids")
     # noinspection PyUnresolvedReferences
-    offer = models.ForeignKey("calculator.Offer", on_delete=models.CASCADE)
+    offer = models.ForeignKey("calculator.Offer", null=True, on_delete=models.SET_NULL)
     # noinspection PyUnresolvedReferences
     punto = models.ForeignKey("users.Punto", on_delete=models.CASCADE)
     created_at = models.DateTimeField(auto_now_add=True)
