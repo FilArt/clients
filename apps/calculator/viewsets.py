@@ -121,6 +121,7 @@ class PaginatedOfferViewSet(LoggingMixin, viewsets.ModelViewSet):
         "power_max",
         "consumption_min",
         "consumption_max",
+        "calculator",
     ]
 
     def get_serializer_class(self):
