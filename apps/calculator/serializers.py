@@ -218,15 +218,19 @@ class CalculatorSerializer(serializers.ModelSerializer):
         current_price = new_current_price or data["current_price"]
         reactive = data.get("reactive", 0)
 
-        offers = Offer.objects.exclude(company=data["company"]).filter(
-            Q(
-                Q(consumption_max__isnull=True) | Q(consumption_max__gte=annual_consumption),
-                Q(consumption_min__isnull=True) | Q(consumption_min__lte=annual_consumption),
-                active=True,
-                client_type=data["client_type"],
-                tarif=data["tarif"],
-                kind=kind,
-            ),
+        offers = (
+            Offer.objects.filter(calculator=True)
+            .exclude(company=data["company"])
+            .filter(
+                Q(
+                    Q(consumption_max__isnull=True) | Q(consumption_max__gte=annual_consumption),
+                    Q(consumption_min__isnull=True) | Q(consumption_min__lte=annual_consumption),
+                    active=True,
+                    client_type=data["client_type"],
+                    tarif=data["tarif"],
+                    kind=kind,
+                ),
+            )
         )
         offers = offers.filter(
             Q(power_max__isnull=True) | Q(power_max__gte=power_max),
