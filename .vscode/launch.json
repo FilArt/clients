@@ -5,15 +5,19 @@
   "version": "0.2.0",
   "configurations": [
     {
+      "name": "restore",
+      "type": "python",
+      "request": "launch",
+      "program": "${workspaceFolder}/manage.py",
+      "args": ["restore"],
+      "django": true
+    },
+    {
       "name": "Python: Django",
       "type": "python",
       "request": "launch",
       "program": "${workspaceFolder}/manage.py",
-      "args": [
-        "runserver",
-        "8001",
-        "--noreload"
-      ],
+      "args": ["runserver", "8001", "--noreload"],
       "django": true,
       "justMyCode": false
     }

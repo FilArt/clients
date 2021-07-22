@@ -232,10 +232,11 @@ class CalculatorSerializer(serializers.ModelSerializer):
                 ),
             )
         )
-        offers = offers.filter(
-            Q(power_max__isnull=True) | Q(power_max__gte=power_max),
-            Q(power_min__isnull=True) | Q(power_min__lte=power_min),
-        )
+        if is_luz:
+            offers = offers.filter(
+                Q(power_max__isnull=True) | Q(power_max__gte=power_max),
+                Q(power_min__isnull=True) | Q(power_min__lte=power_min),
+            )
 
         if data.get("id"):
             offers = offers.filter(id=data.get("id"))

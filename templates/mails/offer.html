@@ -12,29 +12,33 @@
     <title>PROPUESTA DE FACTURACIÓN</title>
   </head>
   <body>
-    <div id="offer-app">
+    <div id="offer-app" >
       <v-app>
-        <v-main class="our-color">
+        <div id="xxx">
+
+        <header>
           <div flat class="d-flex align-center justify-space-between pa-1">
             <div flat class="d-flex" style="max-width: 50%">
-              <img width="100%" src="https://intranet.gestiongroup.es/gg_logo_blue.png" />
+              <img width="70%" src="https://intranet.gestiongroup.es/gg_logo_blue.png" />
             </div>
 
             <div flat class="dates d-flex flex-column">
-              <div flat> № {{ id }} </div>
-              <div flat> Fecha de la propuesta: {{ date }} </div>
-              <div flat> Periodo de validez: 7 Días </div>
+              <div flat>№ {{ id }}</div>
+              <div flat>Fecha de la propuesta: {{ date }}</div>
+              <div flat>Periodo de validez: 7 Días</div>
             </div>
           </div>
 
           <hr />
-
           <br />
+        </header>
 
-          <div flat class="d-flex justify-center text-h5 font-weight-bold">
+        <article>
+          <div flat class="d-flex justify-center text-h4 font-weight-bold">
             <div-title> PROPUESTA DE FACTURACIÓN </div-title>
           </div>
 
+          <br />
           <br />
 
           <div class="centered-list">
@@ -46,15 +50,18 @@
             <p>OFERTA: {{ name }}</p>
           </div>
 
+          {% if up1 %}
           <div flat class="d-flex flex-column font-italic font-weight-black">
             <p flat>POTENCIA:</p>
           </div>
+          {% endif %}
 
           <div flat class="d-flex flex-column offset font-weight-light caption">
+            {% if up1 %}
             <p flat>
               <span class="first-word">P1:</span> {{ up1 }} kW/h × {{ period }} dias × {{ p1 }} € = {{ p1_subtotal }} €
             </p>
-            {% if up2 %}
+            {% endif %} {% if up2 %}
             <p flat>
               <span class="first-word">P2:</span> {{ up2 }} kW/h × {{ period }} dias × {{ p2 }} € = {{ p2_subtotal }} €
             </p>
@@ -132,7 +139,7 @@
 
           <div flat class="d-flex flex-column border">
             <div>
-              <br>
+              <br />
               <p flat>FACTURACIÓN ACTUAL: {{ current_price }} €</p>
               <p flat>PROPUESTA DE FACTURACIÓN: {{ total }} €</p>
               <br />
@@ -142,10 +149,12 @@
           </div>
 
           <br />
+        </article>
 
+        <footer>
           <div flat class="d-flex flex-row">
             <div flat>
-              <img height="100" src="https://intranet.gestiongroup.es/person.svg" />
+              <img style="height: 5rem" src="https://intranet.gestiongroup.es/person.svg" />
             </div>
 
             <div flat class="d-flex flex-column" style="margin-left: 1rem">
@@ -155,8 +164,9 @@
               <p flat>Web: <a href="https://gestiongroup.es" target="_blank">gestiongroup.es</a></p>
             </div>
           </div>
-        </v-main>
-      </v-app>
+        </footer>
+      </div>
+    </v-app>
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/vue@2.x/dist/vue.js"></script>
@@ -171,13 +181,14 @@
     <style>
       #offer-app {
         padding: 1em;
+        font-size: 16px;
       }
 
       p {
         line-height: 4px;
       }
 
-      .our-color {
+      * {
         color: #004680;
       }
 
@@ -203,7 +214,6 @@
 
       .centered-list > p {
         text-indent: 6rem;
-        line-height: 4px;
       }
 
       .dates {
@@ -214,6 +224,9 @@
       }
 
       @media only screen and (max-device-width: 768px) {
+        p {
+          line-height: 100%;
+        }
         #offer-app {
           font-size: 75%;
         }
@@ -223,7 +236,6 @@
         }
         .centered-list > p {
           text-indent: 0;
-          line-height: 4px;
         }
       }
     </style>

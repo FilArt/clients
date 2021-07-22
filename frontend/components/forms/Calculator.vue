@@ -390,7 +390,15 @@ export default {
     submit() {
       this.errorMessages = {}
       this.loading = true
-      const form = { ...this.form, reactive: this.hasReactiveEnergy ? this.form.reactive : 0 }
+
+      if (!this.hasReactiveEnergy) {
+        this.$store.dispatch('setCalculatorForm', {
+          ...this.form,
+          reactive: this.hasReactiveEnergy ? this.form.reactive : null,
+        })
+      }
+
+      const form = { ...this.form }
       const values = Object.fromEntries(
         Object.entries(form)
           .filter((i) => [undefined, null, ''].indexOf(i[1]) === -1)

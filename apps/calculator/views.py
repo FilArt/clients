@@ -50,6 +50,9 @@ class SendOfferView(LoggingMixin, views.APIView):
             "date": timezone.now().date().strftime("%d/%m/%Y"),
             "reactive": calculator.results[0]["reactive"],
         }
+
+        print(ctx.get('p1'))
+
         if "just_get" in request.data:
             return Response({**calculator.results[0], **serializer.data})
 
