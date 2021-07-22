@@ -30,7 +30,6 @@ export default {
       type: Boolean,
       default: false,
     },
-
     value: {
       type: [String, Number],
       default: 0,
@@ -47,7 +46,7 @@ export default {
   computed: {
     modelValue: {
       get() {
-        return String(this.value).replace('.', ',')
+        return this.value ? String(this.value).replace('.', ',') : ''
       },
       set(val) {
         const v = parseFloat(String(val).replace(',', '.')) || 0

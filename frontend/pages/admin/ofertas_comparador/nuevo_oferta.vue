@@ -37,50 +37,50 @@
               :gas="newOffer.kind === 'gas'"
             />
             <client-type-select v-model="newOffer.client_type" :error-messages="errorMessages.client_type" />
-            <v-text-field
+            <decimal-field
               v-model="newOffer.power_min"
               label="Potencia min"
               :error-messages="errorMessages.power_min"
             />
-            <v-text-field
+            <decimal-field
               v-model="newOffer.power_max"
               label="Potencia max"
               :error-messages="errorMessages.power_max"
             />
-            <v-text-field
+            <decimal-field
               v-model="newOffer.consumption_min"
               label="Consumo min"
               :error-messages="errorMessages.consumption_min"
             />
-            <v-text-field
+            <decimal-field
               v-model="newOffer.consumption_max"
               label="Consumo max"
               :error-messages="errorMessages.consumption_max"
             />
-            <v-text-field v-model="newOffer.p1" label="P1" :error-messages="errorMessages.p1" />
-            <v-text-field v-model="newOffer.p2" label="P2" :error-messages="errorMessages.p2" />
-            <v-text-field v-model="newOffer.p3" label="P3" :error-messages="errorMessages.p3" />
-            <v-text-field v-model="newOffer.p4" label="P4" :error-messages="errorMessages.p4" />
-            <v-text-field v-model="newOffer.p5" label="P5" :error-messages="errorMessages.p5" />
-            <v-text-field v-model="newOffer.p6" label="P6" :error-messages="errorMessages.p6" />
-            <v-text-field v-model="newOffer.c1" label="C1" :error-messages="errorMessages.c1" />
-            <v-text-field v-model="newOffer.c2" label="C2" :error-messages="errorMessages.c2" />
-            <v-text-field v-model="newOffer.c3" label="C3" :error-messages="errorMessages.c3" />
-            <v-text-field v-model="newOffer.c4" label="C4" :error-messages="errorMessages.c4" />
-            <v-text-field v-model="newOffer.c5" label="C5" :error-messages="errorMessages.c5" />
-            <v-text-field v-model="newOffer.c6" label="C6" :error-messages="errorMessages.c6" />
+            <decimal-field v-model="newOffer.p1" label="P1" :error-messages="errorMessages.p1" />
+            <decimal-field v-model="newOffer.p2" label="P2" :error-messages="errorMessages.p2" />
+            <decimal-field v-model="newOffer.p3" label="P3" :error-messages="errorMessages.p3" />
+            <decimal-field v-model="newOffer.p4" label="P4" :error-messages="errorMessages.p4" />
+            <decimal-field v-model="newOffer.p5" label="P5" :error-messages="errorMessages.p5" />
+            <decimal-field v-model="newOffer.p6" label="P6" :error-messages="errorMessages.p6" />
+            <decimal-field v-model="newOffer.c1" label="C1" :error-messages="errorMessages.c1" />
+            <decimal-field v-model="newOffer.c2" label="C2" :error-messages="errorMessages.c2" />
+            <decimal-field v-model="newOffer.c3" label="C3" :error-messages="errorMessages.c3" />
+            <decimal-field v-model="newOffer.c4" label="C4" :error-messages="errorMessages.c4" />
+            <decimal-field v-model="newOffer.c5" label="C5" :error-messages="errorMessages.c5" />
+            <decimal-field v-model="newOffer.c6" label="C6" :error-messages="errorMessages.c6" />
             <v-select
               v-model="newOffer.is_price_permanent"
               label="Tipo de precio"
               :items="['Fijo', 'Indexado']"
               :error-messages="errorMessages.is_price_permanent"
             />
-            <v-text-field
+            <decimal-field
               v-model="newOffer.agent_commission"
               label="Agente comisiones"
               :error-messages="errorMessages.agent_commission"
             />
-            <v-text-field
+            <decimal-field
               v-model="newOffer.canal_commission"
               label="Canal comisiones"
               :error-messages="errorMessages.canal_commission"
@@ -103,6 +103,7 @@ import CompanySelect from '@/components/selects/CompanySelect'
 import TarifSelect from '@/components/selects/TarifSelect'
 import ClientTypeSelect from '@/components/selects/ClientTypeSelect'
 import OfferRequiredFields from '@/components/selects/OfferRequiredFields'
+import DecimalField from '../../../components/fields/decimalField.vue'
 const offerObject = {
   name: null,
   kind: null,
@@ -131,7 +132,7 @@ const offerObject = {
   required_fields: [],
 }
 export default {
-  components: { OfferRequiredFields, ClientTypeSelect, TarifSelect, CompanySelect },
+  components: { OfferRequiredFields, ClientTypeSelect, TarifSelect, CompanySelect, DecimalField },
   data() {
     return {
       loading: false,
