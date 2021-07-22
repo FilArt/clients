@@ -145,7 +145,8 @@
             {{ values.tax }} €
           </v-card>
           <v-card flat>
-            <span v-if="values.kind === 'gas'">
+            {{ values.is_igic }}
+            <span v-if="values.is_igic">
               <span class="first-word"> IGIC ({{ values.igic_percent }}%): </span> {{ values.igic }} €
               <edit-field @click="editValue('igic_percent', `IGIC (%)`)" />
             </span>

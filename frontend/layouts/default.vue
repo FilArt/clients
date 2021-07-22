@@ -98,6 +98,11 @@ export default {
           },
           {
             icon: 'mdi-table',
+            title: 'OFERTAS COMPARADOR',
+            to: '/admin/ofertas_comparador',
+          },
+          {
+            icon: 'mdi-table',
             title: 'OFERTAS',
             to: '/admin/ofertas',
           },
