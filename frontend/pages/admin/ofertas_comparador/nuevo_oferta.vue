@@ -144,7 +144,7 @@ export default {
       this.loading = true
       try {
         await this.$axios.$post('/calculator/admin_offers/', this.newOffer)
-        await this.$router.push('/admin/ofertas')
+        await this.$router.push('/admin/ofertas_comparador')
       } catch (e) {
         this.errorMessages = e.response.data
       } finally {
