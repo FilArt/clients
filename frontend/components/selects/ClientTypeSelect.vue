@@ -7,7 +7,7 @@
         <v-btn v-if="!withoutAutonomo" :value="2">AUTÓNOMO</v-btn>
       </v-btn-toggle>
 
-      <v-alert v-show="errorMessages" type="error">
+      <v-alert v-if="errorMessages && errorMessages.length" type="error">
         {{ errorMessages.join('\n') }}
       </v-alert>
     </v-col>
