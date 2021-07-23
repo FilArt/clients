@@ -113,8 +113,6 @@ class CallVisitUserViewSet(viewsets.ModelViewSet):
                         except json.JSONDecodeError:
                             errors.append({client.id: response.text})
                 else:
-                    errors.append({client.id: ["OK"]})
-
                     with transaction.atomic():
                         client.renovated = True
                         client.save(update_fields=["renovated"])
