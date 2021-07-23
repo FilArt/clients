@@ -125,9 +125,14 @@
       <v-spacer />
 
       <v-toolbar-items class="align-center">
-        <calculator-settings-dialog v-if="$auth.user && $auth.user.role === 'admin'" />
+        <calculator-settings-dialog v-if="!calculator && $auth.user && $auth.user.role === 'admin'" />
 
-        <v-btn nuxt :to="`/admin/ofertas_comparador/prioridad_de_ofertas?comparador=${calculator}`" color="green">
+        <v-btn
+          v-if="!calculator"
+          nuxt
+          :to="`/admin/ofertas_comparador/prioridad_de_ofertas?comparador=${calculator}`"
+          color="green"
+        >
           Prioridad de ofertas
         </v-btn>
 
