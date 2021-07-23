@@ -1,4 +1,5 @@
 from decimal import Decimal
+from typing import List
 
 from apps.calculator.models import Offer
 
@@ -13,7 +14,7 @@ zero = Decimal.from_float(0)
 class Calculator:
     def __init__(
         self,
-        offers: list[Offer],
+        offers: List[Offer],
         period: int,
         up1: Decimal,
         up2: Decimal,
