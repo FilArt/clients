@@ -1,8 +1,5 @@
 from decimal import Decimal
 
-from django.db.models import F
-from django.db.models.query import QuerySet
-
 from apps.calculator.models import Offer
 
 
@@ -16,7 +13,7 @@ zero = Decimal.from_float(0)
 class Calculator:
     def __init__(
         self,
-        offers: QuerySet[Offer],
+        offers: list[Offer],
         period: int,
         up1: Decimal,
         up2: Decimal,
@@ -124,10 +121,10 @@ class Calculator:
                 reactive=reactive,
                 current_price=current_price,
                 name=offer.name,
-                company_name=offer.company_name,
-                company_logo=offer.company_logo,
+                company_name=offer.company.name,
+                company_logo=offer.company.logo.url,
             )
-            for offer in offers.annotate(company_name=F("company__name"), company_logo=F("company__logo"))
+            for offer in offers
         ]
 
     def calculate(self):
@@ -144,9 +141,14 @@ class Calculator:
         for idx, offer in enumerate(self.offers):
             calculated_subtotals = {}
             for field in fields:
-                price = getattr(self, field) or Decimal.from_float(getattr(offer, field))
+                price = getattr(self, field)
+                if not price:
+                    price = getattr(offer, field)
+                    if price and isinstance(price, (int, float, Decimal)):
+                        price = Decimal.from_float(price)
+
                 value = getattr(self, "u" + field) or 0
-                if value:
+                if value and price:
                     value *= price
                     if field.startswith("p"):
                         value *= period

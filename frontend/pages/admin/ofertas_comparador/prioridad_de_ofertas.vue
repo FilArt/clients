@@ -93,7 +93,6 @@ export default {
       this.items = await this.$axios.$get(`calculator/priority_offers/`)
       this.loading = false
     },
-    async updateOffer() {},
     async deleteOffer(offer) {
       const isDelete = await this.$swal({
         title: `Eliminar prioridad de ofertas ${offer.id}?`,

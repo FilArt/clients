@@ -1,30 +1,36 @@
 <template>
-  <v-autocomplete
-    v-model="model"
-    :items="entries"
-    :loading="isLoading"
-    :search-input.sync="search"
-    hide-no-data
-    hide-selected
-    item-text="name"
-    item-value="id"
-    :label="label"
-    placeholder="Start typing to Search"
-    prepend-icon="mdi-database-search"
-    :return-object="returnObject"
-    :error-messages="errorMessages"
-    @input="$emit('input', $event)"
-  >
-    <template v-slot:item="{ item }">
-      <v-list-item-content @click="model = item">
-        <v-list-item-subtitle> ID: {{ item.id }} </v-list-item-subtitle>
-        <v-list-item-subtitle> {{ item.tarif }} - {{ item.company }} </v-list-item-subtitle>
-        <v-list-item-title>
-          {{ item.name }}
-        </v-list-item-title>
-      </v-list-item-content>
-    </template>
-  </v-autocomplete>
+  <v-container>
+    <v-menu offset-y close-on-content-click>
+      <template v-slot:activator="{ on }">
+        <v-responsive min-width="300" width="500">
+          <v-text-field
+            v-model="search"
+            :label="label"
+            outlined
+            clearable
+            :error-messages="errorMessages"
+            v-on="on"
+            @click:clear="give(null)"
+          />
+        </v-responsive>
+      </template>
+
+      <v-card min-width="300">
+        <v-card-text>
+          <v-progress-linear v-if="loading" indeterminate />
+          <v-virtual-scroll v-else-if="entries.length" :items="entries" height="300" item-height="64">
+            <template v-slot:default="{ item }">
+              <v-list-item v-if="item" :key="item.id" @click="give(item)">
+                <v-list-item-title> {{ item.id }}. {{ item.name }} </v-list-item-title>
+              </v-list-item>
+              <v-divider></v-divider>
+            </template>
+          </v-virtual-scroll>
+          <v-alert v-else-if="entries.length === 0" type="warning">No hay ofertas</v-alert>
+        </v-card-text>
+      </v-card>
+    </v-menu>
+  </v-container>
 </template>
 
 <script>
@@ -54,23 +60,31 @@ export default {
   data() {
     return {
       entries: [...this.defaultItems],
-      isLoading: false,
+      loading: false,
       model: this.value,
-      search: null,
+      search: (this.defaultItems.find((e) => e === this.value || (e && e.id === this.value)) || {}).name || '',
     }
   },
   watch: {
     async search(val) {
-      if (typeof val !== 'string' || this.isLoading) return
-      this.isLoading = true
+      if (!val || typeof val !== 'string' || this.loading) return
+      this.loading = true
       try {
         const res = await this.$axios.$get(`calculator/offers/?search=${val}&fields=id,name,tarif,company`)
         this.entries = res
       } catch (err) {
         this.$toast.error(err.response && err.response.data ? JSON.stringify(err.response.data) : err)
       } finally {
-        this.isLoading = false
+        this.loading = false
       }
+    },
+  },
+  methods: {
+    give(newOffer) {
+      console.log(newOffer)
+      this.model = newOffer
+      this.search = newOffer ? newOffer.name : ''
+      this.$emit('input', newOffer ? newOffer.id : null)
     },
   },
 }

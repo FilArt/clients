@@ -37,35 +37,35 @@ class CalculatorSerializer(serializers.ModelSerializer):
     period = serializers.IntegerField(min_value=1)
     tarif = serializers.ChoiceField(choices=Tarif.choices())
     client_type = serializers.ChoiceField(choices=Offer.CLIENT_TYPE_CHOICES)
-    uc1 = NormalDecimalField(max_digits=10, decimal_places=2, required=False, validators=[casi_positive_number])
-    uc2 = NormalDecimalField(max_digits=10, decimal_places=2, required=False, validators=[casi_positive_number])
-    uc3 = NormalDecimalField(max_digits=10, decimal_places=2, required=False, validators=[casi_positive_number])
-    uc4 = NormalDecimalField(max_digits=10, decimal_places=2, required=False, validators=[casi_positive_number])
-    uc5 = NormalDecimalField(max_digits=10, decimal_places=2, required=False, validators=[casi_positive_number])
-    uc6 = NormalDecimalField(max_digits=10, decimal_places=2, required=False, validators=[casi_positive_number])
-    up1 = NormalDecimalField(max_digits=10, decimal_places=2, required=False, validators=[casi_positive_number])
-    up2 = NormalDecimalField(max_digits=10, decimal_places=2, required=False, validators=[casi_positive_number])
-    up3 = NormalDecimalField(max_digits=10, decimal_places=2, required=False, validators=[casi_positive_number])
-    up4 = NormalDecimalField(max_digits=10, decimal_places=2, required=False, validators=[casi_positive_number])
-    up5 = NormalDecimalField(max_digits=10, decimal_places=2, required=False, validators=[casi_positive_number])
-    up6 = NormalDecimalField(max_digits=10, decimal_places=2, required=False, validators=[casi_positive_number])
+    uc1 = NormalDecimalField(max_digits=10, decimal_places=3, required=False, validators=[casi_positive_number])
+    uc2 = NormalDecimalField(max_digits=10, decimal_places=3, required=False, validators=[casi_positive_number])
+    uc3 = NormalDecimalField(max_digits=10, decimal_places=3, required=False, validators=[casi_positive_number])
+    uc4 = NormalDecimalField(max_digits=10, decimal_places=3, required=False, validators=[casi_positive_number])
+    uc5 = NormalDecimalField(max_digits=10, decimal_places=3, required=False, validators=[casi_positive_number])
+    uc6 = NormalDecimalField(max_digits=10, decimal_places=3, required=False, validators=[casi_positive_number])
+    up1 = NormalDecimalField(max_digits=10, decimal_places=3, required=False, validators=[casi_positive_number])
+    up2 = NormalDecimalField(max_digits=10, decimal_places=3, required=False, validators=[casi_positive_number])
+    up3 = NormalDecimalField(max_digits=10, decimal_places=3, required=False, validators=[casi_positive_number])
+    up4 = NormalDecimalField(max_digits=10, decimal_places=3, required=False, validators=[casi_positive_number])
+    up5 = NormalDecimalField(max_digits=10, decimal_places=3, required=False, validators=[casi_positive_number])
+    up6 = NormalDecimalField(max_digits=10, decimal_places=3, required=False, validators=[casi_positive_number])
     current_price = NormalDecimalField(max_digits=10, decimal_places=2, min_value=0, validators=[positive_number])
     annual_consumption = NormalDecimalField(
         max_digits=10, decimal_places=2, min_value=0, validators=[positive_number], required=True, write_only=True
     )
 
-    c1 = NormalDecimalField(max_digits=10, decimal_places=2, required=False, validators=[casi_positive_number])
-    c2 = NormalDecimalField(max_digits=10, decimal_places=2, required=False, validators=[casi_positive_number])
-    c3 = NormalDecimalField(max_digits=10, decimal_places=2, required=False, validators=[casi_positive_number])
-    c4 = NormalDecimalField(max_digits=10, decimal_places=2, required=False, validators=[casi_positive_number])
-    c5 = NormalDecimalField(max_digits=10, decimal_places=2, required=False, validators=[casi_positive_number])
-    c6 = NormalDecimalField(max_digits=10, decimal_places=2, required=False, validators=[casi_positive_number])
-    p1 = NormalDecimalField(max_digits=10, decimal_places=2, required=False, validators=[casi_positive_number])
-    p2 = NormalDecimalField(max_digits=10, decimal_places=2, required=False, validators=[casi_positive_number])
-    p3 = NormalDecimalField(max_digits=10, decimal_places=2, required=False, validators=[casi_positive_number])
-    p4 = NormalDecimalField(max_digits=10, decimal_places=2, required=False, validators=[casi_positive_number])
-    p5 = NormalDecimalField(max_digits=10, decimal_places=2, required=False, validators=[casi_positive_number])
-    p6 = NormalDecimalField(max_digits=10, decimal_places=2, required=False, validators=[casi_positive_number])
+    c1 = NormalDecimalField(max_digits=10, decimal_places=3, required=False, validators=[casi_positive_number])
+    c2 = NormalDecimalField(max_digits=10, decimal_places=3, required=False, validators=[casi_positive_number])
+    c3 = NormalDecimalField(max_digits=10, decimal_places=3, required=False, validators=[casi_positive_number])
+    c4 = NormalDecimalField(max_digits=10, decimal_places=3, required=False, validators=[casi_positive_number])
+    c5 = NormalDecimalField(max_digits=10, decimal_places=3, required=False, validators=[casi_positive_number])
+    c6 = NormalDecimalField(max_digits=10, decimal_places=3, required=False, validators=[casi_positive_number])
+    p1 = NormalDecimalField(max_digits=10, decimal_places=3, required=False, validators=[casi_positive_number])
+    p2 = NormalDecimalField(max_digits=10, decimal_places=3, required=False, validators=[casi_positive_number])
+    p3 = NormalDecimalField(max_digits=10, decimal_places=3, required=False, validators=[casi_positive_number])
+    p4 = NormalDecimalField(max_digits=10, decimal_places=3, required=False, validators=[casi_positive_number])
+    p5 = NormalDecimalField(max_digits=10, decimal_places=3, required=False, validators=[casi_positive_number])
+    p6 = NormalDecimalField(max_digits=10, decimal_places=3, required=False, validators=[casi_positive_number])
 
     profit = NormalDecimalField(max_digits=10, decimal_places=2, read_only=True)
     profit_num = NormalDecimalField(read_only=True, max_digits=15, decimal_places=2, source="profit")
@@ -203,50 +203,68 @@ class CalculatorSerializer(serializers.ModelSerializer):
                 default_vals["agent_phone"] = user.phone
         return {**vd, **default_vals}
 
-    def get_calculated(self, new_current_price: float = None):
+    def get_calculated(self):
         data = self.validated_data
         kind = data["kind"]
         is_luz = kind == "luz"
 
-        ip1, ip2, ip3 = data.get("up1", 0), data.get("up2", 0), data.get("up3", 0)
-        ip4, ip5, ip6 = data.get("up4", 0), data.get("up5", 0), data.get("up6", 0)
-        ps = ip1, ip2, ip3, ip4, ip5, ip6
-        power_min = min(filter((lambda n: n != 0), ps)) if is_luz else None
-        power_max = max(filter((lambda n: n != 0), ps)) if is_luz else None
+        if data.get("id"):
+            offers = Offer.objects.filter(id=data.get("id"))
+        else:
+            annual_consumption = data["annual_consumption"]
+            power_max = power_min = None
 
-        annual_consumption = data["annual_consumption"]
-        current_price = new_current_price or data["current_price"]
-        reactive = data.get("reactive", 0)
-
-        offers = (
-            Offer.objects.filter(calculator=True)
-            .exclude(company=data["company"])
-            .filter(
+            priority_offers = PriorityOffer.objects.filter(
                 Q(
                     Q(consumption_max__isnull=True) | Q(consumption_max__gte=annual_consumption),
                     Q(consumption_min__isnull=True) | Q(consumption_min__lte=annual_consumption),
-                    active=True,
-                    client_type=data["client_type"],
-                    tarif=data["tarif"],
-                    kind=kind,
                 ),
-            )
-        )
-        if is_luz:
-            offers = offers.filter(
-                Q(power_max__isnull=True) | Q(power_max__gte=power_max),
-                Q(power_min__isnull=True) | Q(power_min__lte=power_min),
+                kind=kind,
+                tarif=data["tarif"],
             )
 
-        if data.get("id"):
-            offers = offers.filter(id=data.get("id"))
+            if is_luz:
+                ip1, ip2, ip3 = data.get("up1", 0), data.get("up2", 0), data.get("up3", 0)
+                ip4, ip5, ip6 = data.get("up4", 0), data.get("up5", 0), data.get("up6", 0)
+                ps = list(filter(None, (ip1, ip2, ip3, ip4, ip5, ip6)))
+                if ps:
+                    power_min = min(filter((lambda n: n != 0), ps)) if is_luz else None
+                    power_max = max(filter((lambda n: n != 0), ps)) if is_luz else None
+                    priority_offers = priority_offers.filter(
+                        Q(power_max__isnull=True) | Q(power_max__gte=power_max),
+                        Q(power_min__isnull=True) | Q(power_min__lte=power_min),
+                    )
+
+            if priority_offers.count():
+                priority_offer = priority_offers.first()
+                offers = [priority_offer.first, priority_offer.second, priority_offer.third]
+            else:
+                offers = (
+                    Offer.objects.filter(calculator=True)
+                    .exclude(company=data["company"])
+                    .filter(
+                        Q(
+                            Q(consumption_max__isnull=True) | Q(consumption_max__gte=annual_consumption),
+                            Q(consumption_min__isnull=True) | Q(consumption_min__lte=annual_consumption),
+                            active=True,
+                            client_type=data["client_type"],
+                            tarif=data["tarif"],
+                            kind=kind,
+                        ),
+                    )
+                )
+                if is_luz and power_min and power_max:
+                    offers = offers.filter(
+                        Q(power_max__isnull=True) | Q(power_max__gte=power_max),
+                        Q(power_min__isnull=True) | Q(power_min__lte=power_min),
+                    )
 
         calculator_settings = CalculatorSettings.objects.first()
 
         return {
-            "current_price": current_price,
-            "reactive": reactive,
-            "offers": offers,
+            "current_price": data["current_price"],
+            "reactive": data["reactive"],
+            "offers": list(offers),
             "period": data["period"],
             "up1": data.get("up1"),
             "up2": data.get("up2"),
@@ -295,13 +313,6 @@ class PriorityOfferSerializer(serializers.ModelSerializer):
     class Meta:
         model = PriorityOffer
         fields = "__all__"
-
-    def validate_first(self, offer: Offer):
-        if self.instance.kind != offer.kind:
-            raise ValidationError(f"Tipo {offer.kind} de oferta {offer} != {self.instance.kind}")
-        if self.instance.tarif != offer.tarif:
-            raise ValidationError(f"Tarifa {offer.tarif} de oferta {offer} != {self.instance.tarif}")
-        return offer
 
 
 class OfferNameSerializer(serializers.CharField):
