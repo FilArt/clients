@@ -8,7 +8,7 @@
         mode="renovated"
         :statuses="statuses"
         :headers="headers"
-        detail-url="/admin/renovated"
+        detail-url="/admin/clientes"
         use-full-name
         company-filters
       />
