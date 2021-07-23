@@ -1,10 +1,11 @@
 import csv
 from typing import Tuple
 
-from clients.serializers import AdminOfferListSerializer, DetailOfferSerializer, OfferListSerializer
+from clients.serializers import (AdminOfferListSerializer,
+                                 DetailOfferSerializer, OfferListSerializer)
 from rest_framework import mixins, status, viewsets
 from rest_framework.decorators import action
-from rest_framework.exceptions import ValidationError
+from rest_framework.exceptions import PermissionDenied, ValidationError
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.request import Request
 from rest_framework.response import Response
@@ -14,12 +15,8 @@ from apps.calculator.pagination import OffersPagination
 
 from .models import CalculatorSettings, Company, Offer, PriorityOffer
 from .permissions import CalculatorSettingsPermission, OffersPermission
-from .serializers import (
-    CalculatorSettingsSerializer,
-    CompanySerializer,
-    CreateOfferSerializer,
-    PriorityOfferSerializer,
-)
+from .serializers import (CalculatorSettingsSerializer, CompanySerializer,
+                          CreateOfferSerializer, PriorityOfferSerializer)
 
 
 class CompanyViewSet(LoggingMixin, viewsets.ModelViewSet):
@@ -62,6 +59,7 @@ class OfferViewSet(viewsets.ReadOnlyModelViewSet):
         "power_min": ("gt", "lt", "gte", "lte"),
         "power_max": ("gt", "lt", "gte", "lte"),
         "kind": ("exact",),
+        "calculator": ("exact",),
     }
     permission_classes: Tuple = tuple()
     search_fields = ("name",)
@@ -124,8 +122,12 @@ class PaginatedOfferViewSet(LoggingMixin, viewsets.ModelViewSet):
         "calculator",
     ]
 
+    def destroy(self, request: Request, *args, **kwargs) -> Response:
+        raise PermissionDenied
+        # return super().destroy(request, *args, **kwargs)
+
     def get_serializer_class(self):
-        if self.action == 'create':
+        if self.action == "create":
             return CreateOfferSerializer
         return super().get_serializer_class()
 

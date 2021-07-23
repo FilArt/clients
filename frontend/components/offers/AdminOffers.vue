@@ -1,7 +1,148 @@
 <template>
   <v-card>
+    <v-snackbar v-model="actionsSnackbar" :timeout="-1" :value="true" color="deep-purple accent-4" elevation="24">
+      <v-row align="center">
+        <v-col class="flex-grow-1"> Acciones con ofertas </v-col>
+        <v-col class="flex-grow-0">
+          <close-button @click="actionsSnackbar = false" />
+        </v-col>
+      </v-row>
+
+      <v-divider />
+
+      <v-row>
+        <v-col>
+          <v-btn icon color="primary" @click="editDialog = true">
+            <v-icon>mdi-pencil</v-icon>
+          </v-btn>
+        </v-col>
+        <!-- <v-col>
+          <delete-button @click="deleteRowsDialog = !deleteRowsDialog" />
+        </v-col> -->
+      </v-row>
+    </v-snackbar>
+
+    <v-dialog v-model="addNewNameDialog">
+      <v-card>
+        <v-card-title>Anadir nombre</v-card-title>
+        <v-card-text>
+          <v-form
+            @submit.prevent="
+              $store.commit('setNames', [newName, ...names])
+              addNewNameDialog = false
+            "
+          >
+            <v-text-field v-model="newName" label="Nuevo nombre" @input="newName = $event.toUpperCase()" />
+            <v-btn color="success" type="submit"> Anadir </v-btn>
+          </v-form>
+        </v-card-text>
+      </v-card>
+    </v-dialog>
+    <!-- 
+    <v-dialog v-model="deleteRowsDialog" max-width="500">
+      <v-card>
+        <v-card-title>Eliminar ofertas</v-card-title>
+
+        <v-card-text v-if="selectedRows.length">
+          {{ selectedRows.map((o) => o.id).join(', ') }}
+        </v-card-text>
+
+        <v-card-actions>
+          <v-btn color="error" block @click="deleteRows"> Enviar </v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog> -->
+
+    <v-dialog v-model="editDialog" max-width="290">
+      <v-card>
+        <v-form
+          @submit.prevent="
+            save({ [fieldToEdit.field]: newValue })
+            editDialog = false
+          "
+        >
+          <v-card-title class="headline">
+            Editar {{ fieldToEdit ? fieldToEdit.label.toLowerCase() : 'ofertas' }}
+          </v-card-title>
+
+          <v-card-text v-if="!fieldToEdit">
+            <v-select
+              v-model="fieldToEdit"
+              :items="columns.filter((c) => c.field !== 'id')"
+              item-text="label"
+              label="Eligir campo"
+              return-object
+            />
+          </v-card-text>
+
+          <v-card-text v-if="fieldToEdit">
+            <offer-required-fields v-if="fieldToEdit.field === 'required_fields'" v-model="newValue" />
+
+            <v-overflow-btn
+              v-else-if="fieldToEdit.field === 'name'"
+              v-model="newValue"
+              label="Nuevo valor"
+              editable
+              segmented
+              :items="names"
+              append-outer-icon="mdi-plus"
+              @click:append-outer="addNewNameDialog = true"
+            />
+
+            <v-select
+              v-else-if="fieldToEdit.filterOptions && fieldToEdit.filterOptions.filterDropdownItems"
+              v-model="newValue"
+              label="Nuevo valor"
+              :items="
+                fieldToEdit.field === 'required_fields'
+                  ? requiredFieldsItems
+                  : fieldToEdit.filterOptions.filterDropdownItems
+              "
+              :multiple="fieldToEdit.multiple"
+            />
+
+            <v-text-field v-else v-model="newValue" autofocus label="Nuevo valor" />
+          </v-card-text>
+
+          <v-card-actions>
+            <v-spacer></v-spacer>
+
+            <v-btn color="green darken-1" icon text @click="editDialog = false">
+              <v-icon>mdi-cancel</v-icon>
+            </v-btn>
+
+            <v-btn color="green darken-1" icon text type="submit">
+              <v-icon>mdi-content-save</v-icon>
+            </v-btn>
+          </v-card-actions>
+        </v-form>
+      </v-card>
+    </v-dialog>
+
     <v-toolbar>
       <v-toolbar-title> Ofertas </v-toolbar-title>
+
+      <v-spacer />
+
+      <v-toolbar-items class="align-center">
+        <calculator-settings-dialog v-if="$auth.user && $auth.user.role === 'admin'" />
+
+        <v-btn nuxt :to="`/admin/ofertas_comparador/prioridad_de_ofertas?comparador=${calculator}`" color="green">
+          Prioridad de ofertas
+        </v-btn>
+
+        <v-btn nuxt :to="`/admin/ofertas_comparador/comercializadoras?comparador=${calculator}`" color="warning">
+          Comercializadoras
+        </v-btn>
+
+        <v-btn nuxt :to="`/admin/ofertas_comparador/update?comparador=${calculator}`" color="success">
+          <v-icon>mdi-plus-box-multiple</v-icon>
+        </v-btn>
+
+        <v-btn nuxt :to="`/admin/ofertas_comparador/nuevo_oferta?comparador=${calculator}`" color="success">
+          <v-icon>mdi-plus</v-icon>
+        </v-btn>
+      </v-toolbar-items>
     </v-toolbar>
 
     <v-card-text>
@@ -23,11 +164,24 @@
         :rows="rows"
         :columns="columns"
         :search-options="{ enabled: true }"
+        :select-options="{
+          enabled: true,
+          selectOnCheckboxOnly: true, // only select when checkbox is clicked instead of the row
+          selectionText: 'rows selected',
+          clearSelectionText: 'clear',
+          disableSelectInfo: true, // disable the select info panel on top
+          selectAllByGroup: true, // when used in combination with a grouped table, add a checkbox in the header row to check/uncheck the entire group
+        }"
         @on-page-change="onPageChange"
         @on-column-filter="onColumnFilter"
         @on-sort-change="onSortChange"
         @on-per-page-change="onPerPageChange"
         @on-search="onSearch"
+        @on-cell-click="onCellClick"
+        @on-selected-rows-change="
+          selectedRows = $event.selectedRows
+          actionsSnackbar = selectedRows.length > 0
+        "
       >
         <template slot="table-row" slot-scope="props">
           <div v-if="props.column.field === 'description'">
@@ -52,20 +206,44 @@
 
 <script>
 import { mapState } from 'vuex'
+import OfferRequiredFields from '@/components/selects/OfferRequiredFields'
+// import DeleteButton from '@/components/buttons/deleteButton'
+import CloseButton from '@/components/buttons/closeButton'
 import constants from '@/lib/constants'
-
 export default {
+  name: 'AdminOffers',
+  components: {
+    CloseButton,
+    // DeleteButton,
+    OfferRequiredFields,
+    CalculatorSettingsDialog: () => import('@/components/dialogs/CalculatorSettingsDialog'),
+  },
+  props: {
+    calculator: {
+      type: Boolean,
+      default: false,
+    },
+  },
   data() {
     const q = this.$route.query
     return {
+      actionsSnackbar: false,
+      deleteRowsDialog: false,
+      selectedRows: [],
+      newName: '',
+      addNewNameDialog: false,
+      editDialog: false,
+      fieldToEdit: '',
+      newValue: null,
+
       total: 0,
+      timeout: null,
       loading: false,
       rows: [],
       query: {
         ...q,
         page: q.page ? parseInt(q.page) : 1,
         itemsPerPage: q.itemsPerPage ? parseInt(q.itemsPerPage) : 10,
-        comparador: false,
       },
       requiredFieldsItems: [
         { value: 'photo_cif', text: 'Foto CIF' },
@@ -199,6 +377,17 @@ export default {
     })
   },
   methods: {
+    async deleteRows() {
+      this.loading = true
+      try {
+        await this.$axios.$post('calculator/admin_offers/bulk_delete/', { ids: this.selectedRows.map((r) => r.id) })
+        this.deleteRowsDialog = false
+        this.updateParams({ page: 1 })
+        await this.refresh()
+      } finally {
+        this.loading = false
+      }
+    },
     updateParams(newProps) {
       if (this.loading) return
       this.loading = true
@@ -231,9 +420,11 @@ export default {
     },
     async refresh() {
       const fullPath = this.$route.fullPath
-      let getParamsString = fullPath.includes('?') ? fullPath.split('?')[1] : 'page=1&itemsPerPage=10&calculator=false'
+      let getParamsString = fullPath.includes('?') ? fullPath.split('?')[1] : 'page=1&itemsPerPage=10'
       try {
-        const data = await this.$axios.$get(`calculator/admin_offers/?${getParamsString}`)
+        const data = await this.$axios.$get(
+          `calculator/admin_offers/?${getParamsString}&calculator=${this.calculator}`,
+        )
         this.total = data.count
         this.rows = data.results
       } catch (e) {
@@ -243,13 +434,7 @@ export default {
       }
     },
 
-    formatClientType: (val) => constants.clientTypes[val],
-    formatCompany(id) {
-      return this.companies.find((company) => company.value === id).text
-    },
-    booleanFormat(val) {
-      return val ? 'Si' : 'No'
-    },
+    // hueta
     getRequiredFieldText(values) {
       if (!values) return
       const str = this.requiredFieldsItems
@@ -258,6 +443,32 @@ export default {
         .join(', ')
       const len = 17
       return str.length > len ? str.substr(0, len) + '...' : str
+    },
+    onCellClick({ row, column }) {
+      this.selectedRows = [row]
+      this.fieldToEdit = column
+      this.newValue = row[column.field]
+      this.editDialog = true
+    },
+    async save(data) {
+      for await (const row of this.selectedRows) {
+        const id = row.id
+        try {
+          await this.$axios.$patch(`calculator/admin_offers/${id}/`, data)
+        } catch (e) {
+          const err = JSON.stringify(e.response.data)
+          await this.$swal({ title: 'Error', text: err, icon: 'error' })
+        }
+      }
+      await this.refresh()
+      this.fieldToEdit = this.newValue = null
+    },
+    formatClientType: (val) => constants.clientTypes[val],
+    formatCompany(id) {
+      return this.companies.find((company) => company.value === id).text
+    },
+    booleanFormat(val) {
+      return val ? 'Si' : 'No'
     },
   },
 }

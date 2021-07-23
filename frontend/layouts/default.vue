@@ -103,8 +103,8 @@ export default {
           },
           {
             icon: 'mdi-table',
-            title: 'OFERTAS',
-            to: '/admin/ofertas',
+            title: 'OFERTAS TRAMITACIÓN',
+            to: '/admin/ofertas_tramitacion',
           },
           {
             icon: 'mdi-math-log',

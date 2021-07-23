@@ -143,8 +143,9 @@ export default {
   methods: {
     async submit() {
       this.loading = true
+      const calculator = this.$route.query.comparador === 'true'
       try {
-        await this.$axios.$post('/calculator/admin_offers/', this.newOffer)
+        await this.$axios.$post('/calculator/admin_offers/', { ...this.newOffer, calculator })
         await this.$router.push('/admin/ofertas_comparador')
       } catch (e) {
         this.errorMessages = e.response.data

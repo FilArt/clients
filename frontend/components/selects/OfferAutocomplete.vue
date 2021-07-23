@@ -70,7 +70,9 @@ export default {
       if (!val || typeof val !== 'string' || this.loading) return
       this.loading = true
       try {
-        const res = await this.$axios.$get(`calculator/offers/?search=${val}&fields=id,name,tarif,company`)
+        const res = await this.$axios.$get(
+          `calculator/offers/?search=${val}&fields=id,name,tarif,company&calculator=true`,
+        )
         this.entries = res
       } catch (err) {
         this.$toast.error(err.response && err.response.data ? JSON.stringify(err.response.data) : err)

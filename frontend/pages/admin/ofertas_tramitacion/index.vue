@@ -1,5 +1,5 @@
 <template>
-  <admin-offers calculator />
+  <admin-offers />
 </template>
 <script>
 import AdminOffers from '@/components/offers/AdminOffers.vue'
