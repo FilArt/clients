@@ -198,7 +198,7 @@
             </v-col>
           </v-row>
 
-          <v-row>
+          <v-row v-if="form.kind === 'luz'">
             <v-col>
               <decimal-field
                 v-model="form.pago_power"
@@ -217,7 +217,7 @@
             </v-col>
           </v-row>
 
-          <v-row>
+          <v-row v-if="form.kind === 'luz'">
             <v-col>
               <decimal-field
                 v-model="form.annual_consumption"
@@ -343,9 +343,11 @@ export default {
           sortable: false,
         },
       ]
-      return this.hideOfferNames
-        ? _headers.map((h) => ({ ...h, value: h.value === 'name' ? 'id' : h.value }))
-        : _headers
+      const isPriority = !this.offers.some((o) => parseFloat(o.ranking_price) !== 0)
+
+      return _headers
+        .filter((h) => (h.value === 'ranking_price' ? !isPriority : true))
+        .map((h) => ({ ...h, value: this.hideOfferNames && h.value === 'name' ? 'id' : h.value }))
     },
   },
   watch: {

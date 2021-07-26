@@ -3,11 +3,9 @@
     v-model="offer"
     :items="offers"
     :loading="loading"
-    label="Oferta"
+    :label="label"
+    :return-object="returnObject"
     item-value="id"
-    return-object
-    chips
-    deletable-chips
     style="min-width: 150px"
     @input="$emit('input', offer)"
   >
@@ -62,10 +60,19 @@
 </template>
 
 <script>
+import qs from 'qs'
 import constants from '@/lib/constants'
 export default {
   name: 'OfferSelect',
   props: {
+    returnObject: {
+      type: Boolean,
+      default: true,
+    },
+    label: {
+      type: String,
+      default: 'Ofertas',
+    },
     company: {
       type: Number,
       default: null,
@@ -74,23 +81,30 @@ export default {
       type: [String, Number],
       default: null,
     },
-    // consumo: {
-    //   type: [String, Number],
-    //   default: null,
-    // },
     tarif: {
       type: String,
       default: null,
     },
+    kind: {
+      type: String,
+      default: null,
+    },
+    value: {
+      type: [Number, Object],
+      default: () => null,
+    },
   },
   data() {
     return {
-      loading: true,
-      offer: null,
+      loading: false,
+      offer: this.value,
       offers: [],
     }
   },
   watch: {
+    kind() {
+      this.refresh()
+    },
     company() {
       this.refresh()
     },
@@ -100,36 +114,41 @@ export default {
     tarif() {
       this.refresh()
     },
-    // consumo() {
-    //   this.refresh()
-    // },
   },
-  mounted() {
-    this.refresh()
+  async mounted() {
+    await this.refresh()
   },
   methods: {
     closeItem() {
       this.offer = null
       this.$emit('input', null)
     },
-    refresh() {
+    async refresh() {
       this.loading = true
-      const params = Object.entries(
-        constants.cleanEmpty({
-          company: this.company,
-          client_type: this.clientType,
-          // consumption_min__lt: this.consumo,
-          // consumption_max__gt: this.consumo,
-          tarif: this.tarif,
-        }),
-      )
-        .map((pair) => `${pair[0]}=${pair[1]}`)
-        .join('&')
-
-      this.$axios
-        .$get(`calculator/offers/?name=&${params}`)
-        .then((offers) => (this.offers = offers))
-        .finally(() => (this.loading = false))
+      const obj = {
+        company: this.company,
+        client_type: this.clientType,
+        tarif: this.tarif,
+        kind: this.kind,
+        calculator: true,
+        active: true,
+        // consumption_min__lt: this.consumo,
+        // consumption_max__gt: this.consumo,
+      }
+      const cleanObj = constants.cleanEmpty(obj)
+      const getParamsString = qs.stringify(cleanObj)
+      this.offers = await this.$axios.$get(`calculator/offers/?${getParamsString}`)
+      if (!this.offer && this.value) {
+        this.offer = this.offers.find((o) => {
+          console.log(o.id, this.value)
+          if (this.value instanceof Number) {
+            o.id === this.value
+          } else {
+            o.id === this.value.id
+          }
+        })
+      }
+      this.loading = false
     },
   },
 }

@@ -128,7 +128,7 @@
         <calculator-settings-dialog v-if="!calculator && $auth.user && $auth.user.role === 'admin'" />
 
         <v-btn
-          v-if="!calculator"
+          v-if="calculator"
           nuxt
           :to="`/admin/ofertas_comparador/prioridad_de_ofertas?comparador=${calculator}`"
           color="green"

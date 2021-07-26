@@ -51,8 +51,6 @@ class SendOfferView(LoggingMixin, views.APIView):
             "reactive": calculator.results[0]["reactive"],
         }
 
-        print(ctx.get('p1'))
-
         if "just_get" in request.data:
             return Response({**calculator.results[0], **serializer.data})
 

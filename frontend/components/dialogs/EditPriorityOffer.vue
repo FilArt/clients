@@ -35,21 +35,31 @@
             label="Potencia max"
             :error-messages="newOfferErrors.consumption_max"
           />
-          <offer-autocomplete
+
+          <offer-select
             v-model="newOffer.first"
             label="Primero"
+            :return-object="false"
+            :kind="newOffer.kind || offer.kind"
+            :tarif="newOffer.tarif || offer.tarif"
             :error-messages="newOfferErrors.first"
             :default-items="updating ? [{ id: newOffer.first, name: newOffer.first_name }] : []"
           />
-          <offer-autocomplete
+          <offer-select
             v-model="newOffer.second"
             label="Segundo"
+            :return-object="false"
+            :kind="newOffer.kind || offer.kind"
+            :tarif="newOffer.tarif || offer.tarif"
             :error-messages="newOfferErrors.second"
             :default-items="updating ? [{ id: newOffer.second, name: newOffer.second_name }] : []"
           />
-          <offer-autocomplete
+          <offer-select
             v-model="newOffer.third"
             label="Tercero"
+            :return-object="false"
+            :kind="newOffer.kind || offer.kind"
+            :tarif="newOffer.tarif || offer.tarif"
             :error-messages="newOfferErrors.third"
             :default-items="updating ? [{ id: newOffer.third, name: newOffer.third_name }] : []"
           />
@@ -69,7 +79,7 @@ import CloseButton from '@/components/buttons/closeButton.vue'
 import submitButton from '@/components/buttons/submitButton.vue'
 import DecimalField from '@/components/fields/decimalField.vue'
 import TarifSelect from '@/components/selects/TarifSelect.vue'
-import OfferAutocomplete from '@/components/selects/OfferAutocomplete.vue'
+import OfferSelect from '@/components/selects/OfferSelect.vue'
 
 const defaultNewOffer = {
   kind: 'luz',
@@ -84,7 +94,7 @@ const defaultNewOffer = {
 }
 export default {
   name: 'EditPriorityOffer',
-  components: { submitButton, CloseButton, TarifSelect, DecimalField, OfferAutocomplete },
+  components: { submitButton, CloseButton, TarifSelect, DecimalField, OfferSelect },
   props: {
     updating: {
       type: Boolean,

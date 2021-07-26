@@ -48,6 +48,7 @@ class Calculator:
         current_price: Decimal = zero,
         pago_power: Decimal = zero,
         pago_consumption: Decimal = zero,
+        is_priority: bool = False,
     ) -> None:
         if iva_percent and igic_percent:
             raise Exception("Only iva or igic should be more than 0")
@@ -87,6 +88,7 @@ class Calculator:
         self.current_price = current_price or 0
         self.pago_power = pago_power
         self.pago_consumption = pago_consumption
+        self.is_priority = is_priority
         self.results = [
             dict(
                 id=offer.id,
@@ -188,7 +190,9 @@ class Calculator:
             profit = self.current_price - total
 
             ranking_price = (
-                self.pago_power + self.pago_consumption - result["power_total"] - result["consumption_total"]
+                0
+                if self.is_priority
+                else self.pago_power + self.pago_consumption - result["power_total"] - result["consumption_total"]
             )
 
             result = {

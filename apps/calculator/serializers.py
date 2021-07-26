@@ -86,7 +86,7 @@ class CalculatorSerializer(serializers.ModelSerializer):
     )
     is_igic = serializers.BooleanField()
     igic = NormalDecimalField(max_digits=10, decimal_places=2, read_only=True)
-    rental = NormalDecimalField(max_digits=10, decimal_places=2, required=False, default=0)
+    rental = NormalDecimalField(max_digits=10, decimal_places=3, required=False, default=0)
     iva_percent = NormalDecimalField(max_digits=4, decimal_places=2, required=False, default=0)
     igic_percent = NormalDecimalField(max_digits=4, decimal_places=2, required=False, default=0)
 
@@ -207,6 +207,7 @@ class CalculatorSerializer(serializers.ModelSerializer):
         data = self.validated_data
         kind = data["kind"]
         is_luz = kind == "luz"
+        is_priority = False
 
         if data.get("id"):
             offers = Offer.objects.filter(id=data.get("id"))
@@ -236,6 +237,7 @@ class CalculatorSerializer(serializers.ModelSerializer):
                     )
 
             if priority_offers.count():
+                is_priority = True
                 priority_offer = priority_offers.first()
                 offers = [priority_offer.first, priority_offer.second, priority_offer.third]
             else:
@@ -262,6 +264,7 @@ class CalculatorSerializer(serializers.ModelSerializer):
         calculator_settings = CalculatorSettings.objects.first()
 
         return {
+            "is_priority": is_priority,
             "current_price": data["current_price"],
             "reactive": data["reactive"],
             "offers": list(offers),
