@@ -125,7 +125,7 @@
       <v-spacer />
 
       <v-toolbar-items class="align-center">
-        <calculator-settings-dialog v-if="!calculator && $auth.user && $auth.user.role === 'admin'" />
+        <calculator-settings-dialog v-if="calculator && $auth.user && $auth.user.role === 'admin'" />
 
         <v-btn
           v-if="calculator"

@@ -177,6 +177,7 @@ class Calculator:
 
             # налоги
             tax = Decimal(self.tax_percent) / Decimal(100) * total
+            after_tax = total + tax
             total += tax
 
             total += self.rental
@@ -206,6 +207,7 @@ class Calculator:
                 "total": dround(total),
                 "rental": dround(self.rental) or "N/A",
                 "tax": dround(tax),
+                "after_tax": dround(after_tax),
                 "tax_percent": self.tax_percent * 100,
                 "igic_percent": self.igic_percent or "N/A",
                 "igic": dround(igic) or "N/A",
