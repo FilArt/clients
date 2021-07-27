@@ -60,16 +60,16 @@ class RegisterSerializer(serializers.ModelSerializer):
             user.save(update_fields=["password"])
             return user
 
-        subject = _("¡Bienvenido a Gestion Group! ")
-        kwargs = {"email": user.email, "password": password}
-        html_message = render_to_string("user/register_email.html", kwargs)
-        plain_message = strip_tags(html_message)
-        try:
-            user.email_user(
-                subject=subject, message=plain_message, from_email=settings.EMAIL_HOST_USER, html_message=html_message
-            )
-        except Exception as e:
-            raise ValidationError(str(e))
+        # subject = _("¡Bienvenido a Gestion Group! ")
+        # kwargs = {"email": user.email, "password": password}
+        # html_message = render_to_string("user/register_email.html", kwargs)
+        # plain_message = strip_tags(html_message)
+        # try:
+        #     user.email_user(
+        #         subject=subject, message=plain_message, from_email=settings.EMAIL_HOST_USER, html_message=html_message
+        #     )
+        # except Exception as e:
+        #     raise ValidationError(str(e))
         return user
 
     def reset_password(self):
