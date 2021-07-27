@@ -1,8 +1,7 @@
 import csv
 from typing import Tuple
 
-from clients.serializers import (AdminOfferListSerializer,
-                                 DetailOfferSerializer, OfferListSerializer)
+from clients.serializers import AdminOfferListSerializer, DetailOfferSerializer, OfferListSerializer
 from rest_framework import mixins, status, viewsets
 from rest_framework.decorators import action
 from rest_framework.exceptions import PermissionDenied, ValidationError
@@ -15,8 +14,12 @@ from apps.calculator.pagination import OffersPagination
 
 from .models import CalculatorSettings, Company, Offer, PriorityOffer
 from .permissions import CalculatorSettingsPermission, OffersPermission
-from .serializers import (CalculatorSettingsSerializer, CompanySerializer,
-                          CreateOfferSerializer, PriorityOfferSerializer)
+from .serializers import (
+    CalculatorSettingsSerializer,
+    CompanySerializer,
+    CreateOfferSerializer,
+    PriorityOfferSerializer,
+)
 
 
 class CompanyViewSet(LoggingMixin, viewsets.ModelViewSet):
@@ -73,15 +76,15 @@ class OfferViewSet(viewsets.ReadOnlyModelViewSet):
 
     def filter_queryset(self, queryset):
         queryset = super(OfferViewSet, self).filter_queryset(queryset)
-        power_values = [val for val in [self.request.query_params.get(key) for key in ("p1", "p2", "p3")] if val]
+        power_values = [
+            val for val in [self.request.query_params.get(key) for key in ("p1", "p2", "p3", "p4", "p5", "p6")] if val
+        ]
         if power_values:
-            try:
-                power_max = max(filter((lambda n: n != 0), map(float, power_values)))
-            except (ValueError, TypeError) as e:
-                raise ValidationError({"p1": [e]})
-
-            if power_max:
-                queryset = queryset.filter(power_min__lte=power_max, power_max__gte=power_max)
+            power_values = tuple(map(float, power_values))
+            power_max = max(power_values)
+            power_min = min(power_values)
+            print(power_max, power_min)
+            queryset = queryset.filter(power_min__lte=power_min, power_max__gte=power_max)
         return queryset
 
     def get_serializer_class(self):

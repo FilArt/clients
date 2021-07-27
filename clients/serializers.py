@@ -127,28 +127,7 @@ class OfferListSerializer(DynamicFieldsMixin, serializers.ModelSerializer):
 
     class Meta:
         model = Offer
-        fields = [
-            "id",
-            "company",
-            "company_logo",
-            "c1",
-            "c2",
-            "c3",
-            "p1",
-            "p2",
-            "p3",
-            "tarif",
-            "description",
-            "name",
-            "power_min",
-            "power_max",
-            "consumption_min",
-            "consumption_max",
-            "client_type",
-            "is_price_permanent",
-            "required_fields",
-            "kind",
-        ]
+        fields = "__all__"
 
 
 class AdminOfferListSerializer(DynamicFieldsMixin, serializers.ModelSerializer):
