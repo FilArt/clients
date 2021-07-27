@@ -161,6 +161,8 @@ class UserViewSet(
                 qs = CustomUser.objects.clients().exclude(renovated=True)
             elif mode == "renovated":
                 qs = CustomUser.objects.clients().filter(renovated=True)
+            elif mode == "borradores":
+                qs = CustomUser.objects.filter(bids__isnull=True)
 
             if statuses:
                 users = Bid.objects.with_status().filter(status__in=statuses.split(",")).values("user")

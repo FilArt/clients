@@ -240,7 +240,6 @@ export default {
       editDialog: false,
       fieldToEdit: '',
       newValue: null,
-
       total: 0,
       timeout: null,
       loading: false,
