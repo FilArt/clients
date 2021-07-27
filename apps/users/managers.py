@@ -127,10 +127,10 @@ class CustomUserManager(BaseUserManager):
         from ..bids.models import Bid
 
         bids = Bid.objects.with_status().filter(status__in=FACTURACION_STATUSES)
-        users = bids.values("user")
+        users = bids.values("user").distinct()
         return (
             self.get_queryset()
-            .filter(id__in=users, role__isnull=True, ko=False)
+            .filter(id__in=users, role__isnull=True)
             .exclude(ko=True)
             .annotate(bids_count=Count("bids", filter=Q(bids__in=bids), distinct=True))
         )
@@ -139,7 +139,7 @@ class CustomUserManager(BaseUserManager):
         from ..bids.models import Bid
 
         bids = Bid.objects.with_status().filter(status__in=TRAMITACION_STATUSES)
-        users = bids.values("user")
+        users = bids.values("user").distinct()
         return (
             self.get_queryset()
             .filter(Q(id__in=users) | Q(bids__isnull=True), role__isnull=True)
@@ -151,7 +151,7 @@ class CustomUserManager(BaseUserManager):
         from ..bids.models import Bid
 
         bids = Bid.objects.with_status().filter(status__in=CLIENT_STATUSES)
-        users = bids.values("user")
+        users = bids.values("user").distinct()
         return (
             self.get_queryset()
             .filter(Q(id__in=users) | Q(bids__isnull=True), role__isnull=True)
