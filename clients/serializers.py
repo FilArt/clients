@@ -137,6 +137,12 @@ class OfferListSerializer(DynamicFieldsMixin, serializers.ModelSerializer):
     c4 = ConsumoPotenciaField()
     c5 = ConsumoPotenciaField()
     c6 = ConsumoPotenciaField()
+    power_min = serializers.DecimalField(max_digits=20, decimal_places=2, localize=True)
+    power_max = serializers.DecimalField(max_digits=20, decimal_places=2, localize=True)
+    consumption_min = serializers.DecimalField(max_digits=20, decimal_places=2, localize=True)
+    consumption_max = serializers.DecimalField(max_digits=20, decimal_places=2, localize=True)
+    canal_commission = serializers.DecimalField(max_digits=6, decimal_places=2, localize=True)
+    agent_commission = serializers.DecimalField(max_digits=6, decimal_places=2, localize=True)
 
     class Meta:
         model = Offer
