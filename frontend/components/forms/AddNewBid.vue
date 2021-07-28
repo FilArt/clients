@@ -12,7 +12,13 @@
 
     <v-form @submit.prevent="submit">
       <v-card-text>
-        <select-offer v-model="offer" label="Elejir oferta" />
+        <company-select v-model="company" />
+        <tarif-select v-model="tarif" all />
+        <client-type-select v-model="clientType" />
+      </v-card-text>
+
+      <v-card-text>
+        <offer-select v-model="offer" :tarif="tarif" :company="company" :client-type="clientType" />
       </v-card-text>
 
       <v-card-text>
@@ -46,12 +52,16 @@
 </template>
 
 <script>
-import SelectOffer from '@/components/selects/SelectOffer'
-import AddPunto from '@/components/puntos/AddPunto'
-import SubmitButton from '@/components/buttons/submitButton'
 export default {
   name: 'AddNewBid',
-  components: { SubmitButton, AddPunto, SelectOffer },
+  components: {
+    SubmitButton: () => import('@/components/buttons/submitButton'),
+    AddPunto: () => import('@/components/puntos/AddPunto'),
+    OfferSelect: () => import('@/components/selects/OfferSelect'),
+    ClientTypeSelect: () => import('@/components/selects/ClientTypeSelect'),
+    TarifSelect: () => import('@/components/selects/TarifSelect'),
+    CompanySelect: () => import('@/components/selects/CompanySelect'),
+  },
   props: {
     userId: {
       type: Number,
@@ -60,6 +70,9 @@ export default {
   },
   data() {
     return {
+      company: null,
+      tarif: null,
+      clientType: null,
       offer: null,
       punto: null,
       puntos: [],

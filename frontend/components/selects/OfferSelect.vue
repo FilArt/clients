@@ -12,8 +12,7 @@
     <template v-slot:selection="{ item }">
       <v-chip close @click:close="closeItem">
         <v-avatar>
-          <v-img v-if="item['company_logo']" :src="item['company_logo']" />
-          <v-icon v-else> mdi-cancel </v-icon>
+          <v-img :src="item['company_logo']" :alt="item.company_name" />
         </v-avatar>
         <v-col>
           <v-row>
@@ -35,8 +34,7 @@
       <v-row align="center">
         <v-col class="flex-grow-0">
           <v-avatar>
-            <v-img v-if="item['company_logo']" :src="item['company_logo']" />
-            <v-icon v-else> mdi-cancel </v-icon>
+            <v-img :src="item['company_logo']" :alt="item.company_name" />
           </v-avatar>
         </v-col>
 
@@ -130,10 +128,7 @@ export default {
         client_type: this.clientType,
         tarif: this.tarif,
         kind: this.kind,
-        calculator: true,
         active: true,
-        // consumption_min__lt: this.consumo,
-        // consumption_max__gt: this.consumo,
       }
       const cleanObj = constants.cleanEmpty(obj)
       const getParamsString = qs.stringify(cleanObj)
