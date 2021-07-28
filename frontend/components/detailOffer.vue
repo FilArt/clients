@@ -79,23 +79,10 @@
 
     <v-card-text v-if="changeable">
       Editar oferta
-      <v-row align="center">
-        <v-col>
-          <v-select v-model="kind" :items="['luz', 'gas']" label="Luz o gas?" />
-        </v-col>
-        <v-col>
-          <company-select v-model="company" />
-        </v-col>
-        <v-col>
-          <tarif-select v-model="tarif" :gas="kind === 'gas'" />
-        </v-col>
-        <v-col>
-          <client-type-select v-model="clientType" />
-        </v-col>
-        <v-col v-if="company && tarif && clientType">
-          <offer-select v-model="newOffer" :company="company" :tarif="tarif" :client-type="clientType" />
-        </v-col>
-      </v-row>
+      <company-select v-model="company" />
+      <tarif-select v-model="tarif" />
+      <client-type-select v-model="clientType" />
+      <offer-select v-model="newOffer" :company="company" :tarif="tarif" :client-type="clientType" />
 
       <v-btn :disabled="!newOffer || newOffer.id === offer.id" block color="success" @click="changeOffer">
         Guardar
@@ -164,7 +151,6 @@ export default {
       company: null,
       tarif: null,
       clientType: null,
-      kind: null,
       newOffer: null,
       clientTypes: constants.clientTypes,
     }

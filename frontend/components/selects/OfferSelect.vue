@@ -10,47 +10,40 @@
     @input="$emit('input', offer)"
   >
     <template v-slot:selection="{ item }">
-      <v-chip close @click:close="closeItem">
-        <v-avatar>
-          <v-img :src="item['company_logo']" :alt="item.company_name" />
-        </v-avatar>
+      <v-row class="align-center">
         <v-col>
-          <v-row>
-            {{ item.name }}
-          </v-row>
-          <v-row>
-            <i style="font-size: 10px">
-              <span>Consumo: {{ item.consumption_min }} kW/año - {{ item.consumption_max }} kW/año.</span>
-              <span>
-                Tarif:
-                {{ item.tarif }}
-              </span>
-            </i>
-          </v-row>
+          <v-list-item-avatar>
+            <v-img :src="getLogo(item.company_logo)"></v-img>
+          </v-list-item-avatar>
+          {{ item.name }}
         </v-col>
-      </v-chip>
+        <v-col>
+          <v-chip x-small>Consumo: {{ item.consumption_min }} kW/año - {{ item.consumption_max }} kW/año </v-chip>
+          <v-chip v-if="item.power_max" x-small> Potencia: {{ item.power_min }} kW - {{ item.power_max }} kW </v-chip>
+          <v-chip x-small>Tarif: {{ item.tarif }}</v-chip>
+          <v-chip x-small>Tipo de precio: {{ item.is_price_permanent }}</v-chip>
+          <v-chip x-small>
+            {{ item.client_type === 0 ? 'Fisico' : item.client_type === 1 ? 'Juridico' : 'Autónomo' }}
+          </v-chip>
+        </v-col>
+      </v-row>
     </template>
     <template v-slot:item="{ item }">
-      <v-row align="center">
-        <v-col class="flex-grow-0">
-          <v-avatar>
-            <v-img :src="item['company_logo']" :alt="item.company_name" />
-          </v-avatar>
-        </v-col>
-
+      <v-row class="align-center">
         <v-col>
-          <v-row>
-            {{ item.name }}
-          </v-row>
-          <v-row>
-            <i style="font-size: 10px">
-              <span>Consumo: {{ item.consumption_min }} kW/año - {{ item.consumption_max }} kW/año.</span>
-              <span>
-                Tarif:
-                {{ item.tarif }}
-              </span>
-            </i>
-          </v-row>
+          <v-list-item-avatar>
+            <v-img :src="getLogo(item.company_logo)"></v-img>
+          </v-list-item-avatar>
+          {{ item.name }}
+        </v-col>
+        <v-col>
+          <v-chip x-small>Consumo: {{ item.consumption_min }} kW/año - {{ item.consumption_max }} kW/año </v-chip>
+          <v-chip v-if="item.power_max" x-small> Potencia: {{ item.power_min }} kW - {{ item.power_max }} kW </v-chip>
+          <v-chip x-small>Tarif: {{ item.tarif }}</v-chip>
+          <v-chip x-small>Tipo de precio: {{ item.is_price_permanent }}</v-chip>
+          <v-chip x-small>
+            {{ item.client_type === 0 ? 'Fisico' : item.client_type === 1 ? 'Juridico' : 'Autónomo' }}
+          </v-chip>
         </v-col>
       </v-row>
     </template>
@@ -117,10 +110,6 @@ export default {
     await this.refresh()
   },
   methods: {
-    closeItem() {
-      this.offer = null
-      this.$emit('input', null)
-    },
     async refresh() {
       this.loading = true
       const obj = {

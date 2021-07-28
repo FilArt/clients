@@ -1,7 +1,6 @@
-import logging
 from enum import Enum, unique
 
-from clients.utils import PositiveNullableFloatField
+from clients.utils import ConsumoPotenciaModelField
 from django.contrib.postgres.fields import ArrayField
 from django.db import models
 from django.db.models import Manager
@@ -10,8 +9,6 @@ from django.utils.translation import gettext_lazy as _
 from apps.calculator.fields import NameField
 
 from .managers import WithoutOtraManager
-
-logger = logging.getLogger(__name__)
 
 
 def str_to_float(some):
@@ -113,18 +110,18 @@ class Offer(models.Model):
     consumption_min = models.FloatField(blank=True, null=True)
     consumption_max = models.FloatField(blank=True, null=True)
     client_type = models.IntegerField(choices=CLIENT_TYPE_CHOICES)
-    p1 = PositiveNullableFloatField()
-    p2 = PositiveNullableFloatField()
-    p3 = PositiveNullableFloatField()
-    p4 = PositiveNullableFloatField()
-    p5 = PositiveNullableFloatField()
-    p6 = PositiveNullableFloatField()
-    c1 = PositiveNullableFloatField()
-    c2 = PositiveNullableFloatField()
-    c3 = PositiveNullableFloatField()
-    c4 = PositiveNullableFloatField()
-    c5 = PositiveNullableFloatField()
-    c6 = PositiveNullableFloatField()
+    p1 = ConsumoPotenciaModelField()
+    p2 = ConsumoPotenciaModelField()
+    p3 = ConsumoPotenciaModelField()
+    p4 = ConsumoPotenciaModelField()
+    p5 = ConsumoPotenciaModelField()
+    p6 = ConsumoPotenciaModelField()
+    c1 = ConsumoPotenciaModelField()
+    c2 = ConsumoPotenciaModelField()
+    c3 = ConsumoPotenciaModelField()
+    c4 = ConsumoPotenciaModelField()
+    c5 = ConsumoPotenciaModelField()
+    c6 = ConsumoPotenciaModelField()
     is_price_permanent = models.CharField(max_length=20, choices=PRICE_CHOICES)
     canal_commission = models.DecimalField(max_digits=6, decimal_places=2, default=0)
     agent_commission = models.DecimalField(max_digits=6, decimal_places=2, default=0)

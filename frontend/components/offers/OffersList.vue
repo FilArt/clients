@@ -3,7 +3,7 @@
     <v-col v-for="offer in offers" :key="offer.id" class="flex-grow-0">
       <v-card :to="detailOfferUrl(offer)" nuxt class="mx-auto">
         <v-img max-height="150" max-width="300" :src="offer.company_logo || '/no-image.svg'" />
-        <v-card-subtitle v-text="'Comercializadora: ' + offer.company" />
+        <v-card-subtitle v-text="'Comercializadora: ' + offer.company_name" />
         <v-card-text>{{ offer.name }}</v-card-text>
       </v-card>
     </v-col>

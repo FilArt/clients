@@ -1,7 +1,7 @@
 import csv
 from typing import Tuple
 
-from clients.serializers import AdminOfferListSerializer, DetailOfferSerializer, OfferListSerializer
+from clients.serializers import DetailOfferSerializer, OfferListSerializer
 from rest_framework import mixins, status, viewsets
 from rest_framework.decorators import action
 from rest_framework.exceptions import PermissionDenied, ValidationError
@@ -99,7 +99,7 @@ class PaginatedOfferViewSet(LoggingMixin, viewsets.ModelViewSet):
     ordering = ("id",)
     ordering_fields = "__all__"
     pagination_class = OffersPagination
-    serializer_class = AdminOfferListSerializer
+    serializer_class = OfferListSerializer
     search_fields = ["name", "tarif", "company__name"]
     filterset_fields = [
         "active",

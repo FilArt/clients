@@ -6,10 +6,17 @@ from django.db import models
 from telegram import Bot
 
 
-class PositiveNullableFloatField(models.FloatField):
+class PositiveNullableFloatField(models.DecimalField):
+    ...
+
+
+class ConsumoPotenciaModelField(models.DecimalField):
     def __init__(self, *args, **kwargs):
+        kwargs["max_digits"] = kwargs.get("max_digits", 7)
+        kwargs["decimal_places"] = kwargs.get("decimal_places", 6)
+        kwargs["blank"] = kwargs.get("blank", True)
+        kwargs["null"] = kwargs.get("null", True)
         super().__init__(*args, **kwargs)
-        self.blank = self.null = True
         self.validators.append(validators.MinValueValidator(0))
 
 

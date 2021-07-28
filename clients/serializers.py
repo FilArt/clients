@@ -1,3 +1,4 @@
+from apps.calculator.fields import ConsumoPotenciaField
 import logging
 from typing import List
 
@@ -122,15 +123,21 @@ class AccountSerializer(serializers.ModelSerializer):
 
 
 class OfferListSerializer(DynamicFieldsMixin, serializers.ModelSerializer):
-    company = serializers.CharField(source="company.name", read_only=True)
+    company_name = serializers.CharField(source="company.name", read_only=True)
     company_logo = serializers.ImageField(source="company.logo", read_only=True)
+    p1 = ConsumoPotenciaField()
+    p2 = ConsumoPotenciaField()
+    p3 = ConsumoPotenciaField()
+    p4 = ConsumoPotenciaField()
+    p5 = ConsumoPotenciaField()
+    p6 = ConsumoPotenciaField()
+    c1 = ConsumoPotenciaField()
+    c2 = ConsumoPotenciaField()
+    c3 = ConsumoPotenciaField()
+    c4 = ConsumoPotenciaField()
+    c5 = ConsumoPotenciaField()
+    c6 = ConsumoPotenciaField()
 
-    class Meta:
-        model = Offer
-        fields = "__all__"
-
-
-class AdminOfferListSerializer(DynamicFieldsMixin, serializers.ModelSerializer):
     class Meta:
         model = Offer
         fields = "__all__"
