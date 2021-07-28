@@ -30,7 +30,11 @@
                     <v-list-item-subtitle> FF: {{ bid.fecha_firma || '-' }} </v-list-item-subtitle>
                   </v-list-item-content>
                   <v-list-item-action>
-                    <v-dialog v-model="dialogs[bid.id]" max-width="500px">
+                    <v-dialog
+                      v-if="$auth.user && $auth.user.role === 'admin'"
+                      v-model="dialogs[bid.id]"
+                      max-width="500px"
+                    >
                       <template v-slot:activator="{ on }">
                         <v-btn color="info" icon v-on="on"><v-icon>mdi-pencil</v-icon></v-btn>
                       </template>
@@ -56,7 +60,7 @@
                       </v-card>
                     </v-dialog>
 
-                    <delete-button @click="deleteBid(bid.id)" />
+                    <delete-button v-if="allowDelete" @click="deleteBid(bid.id)" />
                   </v-list-item-action>
                 </v-list-item>
               </v-col>
@@ -99,6 +103,10 @@ export default {
   components: { DateTimeFilter, DeleteButton, AddNewBid },
   props: {
     userId: {
+      type: Number,
+      default: null,
+    },
+    allowDelete: {
       type: Number,
       default: null,
     },

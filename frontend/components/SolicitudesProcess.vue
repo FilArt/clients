@@ -1,7 +1,12 @@
 <template>
   <v-row class="flex-wrap" align="top" justify="center">
     <v-col class="flex-grow-0">
-      <solicitudes-bar :user-id="user.id" @bid-added="$emit('bid-added')" @bid-deleted="$emit('bid-deleted')" />
+      <solicitudes-bar
+        :allow-delete="allowDelete"
+        :user-id="user.id"
+        @bid-added="$emit('bid-added')"
+        @bid-deleted="$emit('bid-deleted')"
+      />
     </v-col>
 
     <v-col class="flex-grow-1">
@@ -31,6 +36,10 @@ export default {
       default: () => null,
     },
     facturacion: {
+      type: Boolean,
+      default: false,
+    },
+    allowDelete: {
       type: Boolean,
       default: false,
     },

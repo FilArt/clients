@@ -28,6 +28,7 @@ PERMISSIONS_CHOICES = (
     ("offers", _("Offers")),
     ("calculator", _("Calculator")),
     ("leeds_access", _("Leeds")),
+    ("facturacion", _("Facturacion")),
 )
 
 

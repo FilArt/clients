@@ -75,6 +75,7 @@
         <v-tabs-items v-model="tabs">
           <v-tab-item>
             <solicitudes-process
+              allow-delete
               :user="user"
               @bid-added="refresh"
               @tramitate="refresh"
@@ -84,6 +85,7 @@
           </v-tab-item>
           <v-tab-item>
             <solicitudes-process
+              allow-delete
               :user="user"
               facturacion
               @bid-added="refresh"

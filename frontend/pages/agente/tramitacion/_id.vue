@@ -16,7 +16,7 @@
     <v-divider />
 
     <v-card-text>
-      <solicitudes-process :user="user" @bid-added="refresh" />
+      <solicitudes-process allow-delete :user="user" @bid-added="refresh" />
     </v-card-text>
   </v-card>
 </template>

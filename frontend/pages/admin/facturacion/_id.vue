@@ -17,6 +17,7 @@
 
     <v-card-text>
       <solicitudes-process
+        allow-delete
         :user="user"
         facturacion
         @bid-added="refresh"

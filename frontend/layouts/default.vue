@@ -125,11 +125,6 @@ export default {
             to: '/agente/tramitacion',
           },
           {
-            icon: 'mdi-currency-eur',
-            title: 'FACTURACIÓN',
-            to: '/agente/facturacion',
-          },
-          {
             icon: 'mdi-call-merge',
             title: 'Call&Visit',
             href: 'https://call-visit.gestiongroup.es',
@@ -176,6 +171,13 @@ export default {
       }
       if (permissions.includes('calculator')) {
         items.push({ icon: 'mdi-calculator', title: 'COMPARADOR', to: '/comparador' })
+      }
+      if (permissions.includes('facturacion')) {
+        items.push({
+          icon: 'mdi-currency-eur',
+          title: 'FACTURACIÓN',
+          to: '/agente/facturacion',
+        })
       }
       if (role) {
         items.push({ icon: 'mdi-information', title: 'INFO', to: '/info' })

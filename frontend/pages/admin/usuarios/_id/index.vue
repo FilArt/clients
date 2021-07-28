@@ -109,6 +109,10 @@
                 text: 'Comparador',
                 value: 'calculator',
               },
+              {
+                text: 'Facturacion',
+                value: 'facturacion',
+              },
             ]"
             :append-icon="user.permissions !== settings.permissions ? 'mdi-content-save' : null"
             @click:append="update({ permissions: settings.permissions })"
