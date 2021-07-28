@@ -425,10 +425,9 @@ export default {
     async refresh() {
       const fullPath = this.$route.fullPath
       let getParamsString = fullPath.includes('?') ? fullPath.split('?')[1] : 'page=1&itemsPerPage=10'
+      if (this.calculator) getParamsString = getParamsString + '&calculator=true'
       try {
-        const data = await this.$axios.$get(
-          `calculator/admin_offers/?${getParamsString}&calculator=${this.calculator}`,
-        )
+        const data = await this.$axios.$get(`calculator/admin_offers/?${getParamsString}`)
         this.total = data.count
         this.rows = data.results
       } catch (e) {
