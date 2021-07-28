@@ -22,8 +22,12 @@ export const actions = {
       '/api/users/'
     commit('setCvUsers', await this.$axios.$post('cv_integration/x', { url }))
   },
-  async fetchResponsibles({ commit }) {
-    const users = (await this.$axios.$get('users/users/?role=agent&fields=id,fullname&itemsPerPage=100')).results
+  async fetchResponsibles({ commit }, isAgent) {
+    const users = (
+      await this.$axios.$get(
+        `users/${isAgent ? 'canal_agents' : 'users'}/?role=agent&fields=id,fullname&itemsPerPage=100`,
+      )
+    ).results
     commit('setResponsibles', users)
   },
   async fetchCompanies({ commit }) {

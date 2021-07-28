@@ -2,7 +2,6 @@ import logging
 import re
 from json import JSONDecodeError
 from typing import Tuple
-
 from clients.serializers import (
     AccountSerializer,
     AdditionalContractOnlineSerializer,
@@ -16,7 +15,7 @@ from clients.serializers import (
 from django.conf import settings
 from django.contrib.auth.models import Group
 from django.db import transaction
-from django.db.models import Sum
+from django.db.models import Q, Sum
 from django.http import Http404, HttpResponseBadRequest
 from drf_dynamic_fields import DynamicFieldsMixin
 from notifications.models import Notification
@@ -592,7 +591,8 @@ class CanalAgents(viewsets.ReadOnlyModelViewSet):
     pagination_class = UserViewSet.pagination_class
 
     def filter_queryset(self, queryset):
-        return super().filter_queryset(queryset).filter(canal=self.request.user)
+        user = self.request.user
+        return super().filter_queryset(queryset).filter(Q(canal=user) | Q(id=user.id))
 
 
 class AgentClients(viewsets.ReadOnlyModelViewSet):

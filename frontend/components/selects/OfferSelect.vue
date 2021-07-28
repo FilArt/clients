@@ -13,7 +13,7 @@
       <v-row class="align-center">
         <v-col>
           <v-list-item-avatar>
-            <v-img :src="getLogo(item.company_logo)"></v-img>
+            <v-img :src="item.company_logo"></v-img>
           </v-list-item-avatar>
           {{ item.name }}
         </v-col>
@@ -32,7 +32,7 @@
       <v-row class="align-center">
         <v-col>
           <v-list-item-avatar>
-            <v-img :src="getLogo(item.company_logo)"></v-img>
+            <v-img :src="item.company_logo"></v-img>
           </v-list-item-avatar>
           {{ item.name }}
         </v-col>

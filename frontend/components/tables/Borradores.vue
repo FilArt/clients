@@ -3,7 +3,7 @@
     <v-card-title> Borradores </v-card-title>
 
     <v-card-text>
-      <users-table mode="borradores" :headers="headers" detail-url="/agente/tramitacion" use-full-name />
+      <users-table mode="borradores" allow-delete :headers="headers" detail-url="/agente/tramitacion" use-full-name />
     </v-card-text>
   </v-card>
 </template>
@@ -15,7 +15,7 @@ export default {
   components: { UsersTable },
   data() {
     return {
-      headers: ['id', 'fullname'],
+      headers: ['id', 'fullname', 'actions'],
     }
   },
 }

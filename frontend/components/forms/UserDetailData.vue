@@ -71,7 +71,6 @@
           <v-autocomplete
             v-model="responsible"
             dense
-            :readonly="readonly"
             prepend-icon="mdi-account"
             label="Responsable"
             item-text="fullname"
@@ -95,7 +94,7 @@
           @click:append="updateUser('observations', user['observations'])"
         />
       </v-col>
-      <v-col>
+      <v-col v-if="$auth.user && $auth.user.role === 'admin'">
         <v-list>
           <v-list-item>
             <v-list-item-subtitle> Teleconcetador </v-list-item-subtitle>
@@ -234,18 +233,21 @@ export default {
       'cif_nif',
     ]
     const user = await this.$axios.$get(`users/users/${this.userId}/?fields=${fields}`)
-    try {
-      this.cvData = await this.$axios.$get(`users/users/${this.userId}/get_cv_data/`)
-    } catch (e) {
-      console.log(e)
-      this.$toast.error(e && e.response && e.response.data ? e.response.data : e, { timeout: 3000, duration: 3000 })
+    if (this.$auth.user && this.$auth.role === 'admin') {
+      try {
+        this.cvData = await this.$axios.$get(`users/users/${this.userId}/get_cv_data/`)
+      } catch (e) {
+        console.log(e)
+        this.$toast.error(e && e.response && e.response.data ? e.response.data : e, { timeout: 3000, duration: 3000 })
+      }
     }
     this.user = user
     this.responsible = user.responsible
     this.source = user.source
 
     if (!this.responsibles.length) {
-      await this.$store.dispatch('fetchResponsibles')
+      const isAgent = this.$auth.user && this.$auth.user.role === 'agent'
+      await this.$store.dispatch('fetchResponsibles', isAgent)
     }
   },
   methods: {

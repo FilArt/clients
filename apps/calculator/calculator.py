@@ -147,7 +147,7 @@ class Calculator:
                 price = getattr(self, field)
                 if not price:
                     price = getattr(offer, field)
-                    if price and isinstance(price, (int, float, Decimal)):
+                    if price and isinstance(price, (int, float)):
                         price = Decimal.from_float(price)
 
                 value = getattr(self, "u" + field) or 0

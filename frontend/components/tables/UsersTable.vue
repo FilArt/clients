@@ -347,7 +347,7 @@
         </v-badge>
       </template>
 
-      <template v-if="allowDelete && $auth.user.role === 'admin'" v-slot:[`item.actions`]="{ item }">
+      <template v-if="allowDelete" v-slot:[`item.actions`]="{ item }">
         <delete-button @click="deleteUser(item)" />
       </template>
 
