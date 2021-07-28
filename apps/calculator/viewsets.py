@@ -83,8 +83,8 @@ class OfferViewSet(viewsets.ReadOnlyModelViewSet):
         ]
         if power_values:
             power_values = tuple(map(float, power_values))
-            power_min, power_max = min(power_values), max(power_values)
-            queryset = queryset.filter(power_min__lte=power_min, power_max__gte=power_max)
+            power_max = max(power_values)
+            queryset = queryset.filter(power_min__lte=power_max, power_max__gte=power_max)
         return queryset
 
     def get_serializer_class(self):
