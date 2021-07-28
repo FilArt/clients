@@ -21,7 +21,7 @@ class Migration(migrations.Migration):
     ]
 
     operations = [
-        migrations.RunPython(set_default_permissions, reversed=migrations.RunPython.noop),
+        migrations.RunPython(set_default_permissions, reverse_code=migrations.RunPython.noop),
         migrations.AlterField(
             model_name="customuser",
             name="permissions",
