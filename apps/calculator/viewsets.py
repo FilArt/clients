@@ -77,13 +77,13 @@ class OfferViewSet(viewsets.ReadOnlyModelViewSet):
     def filter_queryset(self, queryset):
         queryset = super(OfferViewSet, self).filter_queryset(queryset)
         power_values = [
-            val for val in [self.request.query_params.get(key) for key in ("p1", "p2", "p3", "p4", "p5", "p6")] if val
+            str(val).replace(",", ".")
+            for val in [self.request.query_params.get(key) for key in ("p1", "p2", "p3", "p4", "p5", "p6")]
+            if val
         ]
         if power_values:
             power_values = tuple(map(float, power_values))
-            power_max = max(power_values)
-            power_min = min(power_values)
-            print(power_max, power_min)
+            power_min, power_max = min(power_values), max(power_values)
             queryset = queryset.filter(power_min__lte=power_min, power_max__gte=power_max)
         return queryset
 

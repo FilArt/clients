@@ -197,7 +197,9 @@ class BidListSerializer(DynamicFieldsMixin, serializers.ModelSerializer):
 
     # noinspection PyMethodMayBeStatic
     def get_offer_status_accesible(self, bid: Bid) -> bool:
-        return bid.offer.company.offer_status_used
+        if bid.offer:
+            return bid.offer.company.offer_status_used
+        return False
 
     # noinspection PyMethodMayBeStatic
     def get_fecha_firma(self, bid: Bid) -> str:
