@@ -115,7 +115,11 @@
               },
             ]"
             append-icon="mdi-content-save"
-            @click:append="update({ permissions: settings.permissions })"
+            @click:append="
+              update({
+                permissions: settings.permissions,
+              })
+            "
           />
         </v-col>
 

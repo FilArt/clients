@@ -230,7 +230,11 @@ class ManageUserSerializer(UserListSerializer):
             "groups",
             "renovated",
         ]
-        extra_kwargs = {"password": {"write_only": True}, "agent_type": {"allow_null": True}}
+        extra_kwargs = {
+            "password": {"write_only": True},
+            "agent_type": {"allow_null": True},
+            "permissions": {"allow_empty": True},
+        }
 
     def update(self, user: CustomUser, validated_data):
         if "password" in validated_data:

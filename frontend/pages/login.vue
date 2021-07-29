@@ -158,7 +158,7 @@ export default {
             await this.$router.push('/profile')
           }
         } else {
-          const path = role === 'admin' ? '/admin/dashboard' : '/agente/clientes'
+          const path = role === 'admin' ? '/admin/dashboard' : '/agente/tramitacion'
           await this.$router.push(path)
         }
       } catch (e) {
