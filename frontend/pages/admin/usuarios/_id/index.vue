@@ -114,7 +114,7 @@
                 value: 'facturacion',
               },
             ]"
-            :append-icon="user.permissions !== settings.permissions ? 'mdi-content-save' : null"
+            append-icon="mdi-content-save"
             @click:append="update({ permissions: settings.permissions })"
           />
         </v-col>

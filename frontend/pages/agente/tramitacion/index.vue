@@ -15,7 +15,7 @@ export default {
   },
   data() {
     return {
-      headers: ['id', 'fecha_registro', 'fullname', 'bids_count', 'docs', 'scorings', 'calls', 'offer_status'],
+      headers: ['id', 'fecha_registro', 'fullname', 'bids_count'],
     }
   },
 }
