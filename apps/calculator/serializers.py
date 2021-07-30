@@ -213,7 +213,7 @@ class CalculatorSerializer(serializers.ModelSerializer):
             offers = Offer.objects.filter(id=data.get("id"))
         else:
             annual_consumption = data["annual_consumption"]
-            power_max = power_min = None
+            power_value = None
 
             priority_offers = PriorityOffer.objects.filter(
                 Q(
@@ -229,15 +229,10 @@ class CalculatorSerializer(serializers.ModelSerializer):
                 ip4, ip5, ip6 = data.get("up4", 0), data.get("up5", 0), data.get("up6", 0)
                 ps = list(filter(None, (ip1, ip2, ip3, ip4, ip5, ip6)))
                 if ps:
-                    if data["tarif"] == Tarif.T30TD.value:
-                        power_min, power_max = ip6, ip6
-                    else:
-                        power_min = min(filter((lambda n: n != 0), ps)) if is_luz else None
-                        power_max = max(filter((lambda n: n != 0), ps)) if is_luz else None
-
+                    power_value = ip6 if data["tarif"] == Tarif.T30TD.value else max(filter((lambda n: n != 0), ps))
                     priority_offers = priority_offers.filter(
-                        Q(power_max__isnull=True) | Q(power_max__gte=power_max),
-                        Q(power_min__isnull=True) | Q(power_min__lte=power_min),
+                        Q(power_max__isnull=True) | Q(power_max__gte=power_value),
+                        Q(power_min__isnull=True) | Q(power_min__lte=power_value),
                     )
 
             if priority_offers.count():
@@ -259,10 +254,10 @@ class CalculatorSerializer(serializers.ModelSerializer):
                         ),
                     )
                 )
-                if is_luz and power_min and power_max:
+                if is_luz and power_value:
                     offers = offers.filter(
-                        Q(power_max__isnull=True) | Q(power_max__gte=power_max),
-                        Q(power_min__isnull=True) | Q(power_min__lte=power_min),
+                        Q(power_max__isnull=True) | Q(power_max__gte=power_value),
+                        Q(power_min__isnull=True) | Q(power_min__lte=power_value),
                     )
 
         calculator_settings = CalculatorSettings.objects.first()
