@@ -10,7 +10,6 @@ export const state = () => ({
   privacyAccepted: false,
   companies: [],
   responsibles: [],
-  names: [],
   bidToChange: null,
   cvusers: [],
 })
@@ -34,10 +33,6 @@ export const actions = {
     const companies = await this.$axios.$get('/calculator/companies/')
     commit('setCompanies', companies)
   },
-  async fetchNames({ commit }) {
-    const names = (await this.$axios.$get('/calculator/offers/?fields=name')).map((item) => item.name)
-    commit('setNames', names)
-  },
   async fetchProvinces({ commit }) {
     const provinces = await this.$axios.$get('/users/puntos/get_cities/')
     commit('setCities', provinces)
@@ -53,9 +48,6 @@ export const mutations = {
   },
   resetCalculator(state) {
     state.calculatorForm = { client_type: 1, kind: 'luz', igic: false }
-  },
-  setNames(state, names) {
-    state.names = names
   },
   setBidToChange(state, bid) {
     state.bidToChange = bid

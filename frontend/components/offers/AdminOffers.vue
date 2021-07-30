@@ -22,22 +22,6 @@
       </v-row>
     </v-snackbar>
 
-    <v-dialog v-model="addNewNameDialog">
-      <v-card>
-        <v-card-title>Anadir nombre</v-card-title>
-        <v-card-text>
-          <v-form
-            @submit.prevent="
-              $store.commit('setNames', [newName, ...names])
-              addNewNameDialog = false
-            "
-          >
-            <v-text-field v-model="newName" label="Nuevo nombre" @input="newName = $event.toUpperCase()" />
-            <v-btn color="success" type="submit"> Anadir </v-btn>
-          </v-form>
-        </v-card-text>
-      </v-card>
-    </v-dialog>
     <!-- 
     <v-dialog v-model="deleteRowsDialog" max-width="500">
       <v-card>
@@ -77,17 +61,6 @@
 
           <v-card-text v-if="fieldToEdit">
             <offer-required-fields v-if="fieldToEdit.field === 'required_fields'" v-model="newValue" />
-
-            <v-overflow-btn
-              v-else-if="fieldToEdit.field === 'name'"
-              v-model="newValue"
-              label="Nuevo valor"
-              editable
-              segmented
-              :items="names"
-              append-outer-icon="mdi-plus"
-              @click:append-outer="addNewNameDialog = true"
-            />
 
             <v-select
               v-else-if="fieldToEdit.filterOptions && fieldToEdit.filterOptions.filterDropdownItems"
@@ -153,8 +126,11 @@
     <v-card-text>
       <vue-good-table
         mode="remote"
+        fixed-headers
         line-numbers
+        :compact-mode="$vuetify.breakpoint.mobile"
         :theme="$vuetify.theme['isDark'] ? 'nocturnal' : 'black-rhino'"
+        :row-style-class="rowStyleClassFn"
         :pagination-options="{
           enabled: true,
           mode: 'pages',
@@ -178,7 +154,6 @@
           selectAllByGroup: true, // when used in combination with a grouped table, add a checkbox in the header row to check/uncheck the entire group
         }"
         @on-page-change="onPageChange"
-        @on-column-filter="onColumnFilter"
         @on-sort-change="onSortChange"
         @on-per-page-change="onPerPageChange"
         @on-search="onSearch"
@@ -188,6 +163,23 @@
           actionsSnackbar = selectedRows.length > 0
         "
       >
+        <template slot="column-filter" slot-scope="{ column }">
+          <v-select
+            v-if="isSelect(column)"
+            :items="column.filterOptions.filterDropdownItems"
+            :value="$route.query[column.field]"
+            multiple
+            clearable
+            @input="updateParams2(`${column.field}__in`, ($event || []).join(','))"
+          />
+          <v-text-field
+            v-else-if="column.filterOptions.enabled"
+            clearable
+            :value="$route.query[column.field]"
+            @input="updateParams2(column.field, $event)"
+          />
+        </template>
+
         <template slot="table-row" slot-scope="props">
           <div v-if="props.column.field === 'description'">
             <div style="max-width: 100px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">
@@ -236,7 +228,6 @@ export default {
       deleteRowsDialog: false,
       selectedRows: [],
       newName: '',
-      addNewNameDialog: false,
       editDialog: false,
       fieldToEdit: '',
       newValue: null,
@@ -280,7 +271,7 @@ export default {
           field: 'calculator',
           formatFn: this.booleanFormat,
           filterOptions: {
-            enabled: true,
+            enabled: false,
             filterDropdownItems: [
               { text: 'Si', value: true },
               { text: 'No', value: false },
@@ -307,10 +298,9 @@ export default {
         {
           label: 'Nombre',
           field: 'name',
-          width: '200px',
-          filterOptions: { enabled: true, filterDropdownItems: this.names },
+          filterOptions: { enabled: true },
         },
-        { label: 'Descripcion', field: 'description', sortable: false, width: '50px' },
+        { label: 'Descripcion', field: 'description', sortable: false, filterOptions: {} },
         { label: 'P1', field: 'p1', filterOptions: { enabled: true } },
         { label: 'P2', field: 'p2', filterOptions: { enabled: true } },
         { label: 'P3', field: 'p3', filterOptions: { enabled: true } },
@@ -351,7 +341,6 @@ export default {
           label: 'Campos obligatorio',
           field: 'required_fields',
           sortable: false,
-          width: '200px',
           multiple: true,
           filterOptions: { filterDropdownItems: this.requiredFieldsItems },
         },
@@ -362,25 +351,32 @@ export default {
     ...mapState({
       companies: (state) => state.companies.map((c) => ({ text: c.name, value: c.id })),
       tarifs: (state) => state.tarifs,
-      names: (state) => state.names,
     }),
   },
   async mounted() {
     if (!this.companies.length) await this.$store.dispatch('fetchCompanies')
     await this.refresh()
-    if (!this.names.length) await this.$store.dispatch('fetchNames')
     this.columns = this.columns.map((column) => {
       if (column.field === 'company') {
         column.filterOptions.filterDropdownItems = this.companies
       } else if (column.field === 'tarif') {
         column.filterOptions.filterDropdownItems = constants.tarifs.concat(constants.tarifsGas)
-      } else if (column.field === 'name') {
-        column.filterOptions.filterDropdownItems = this.names
       }
       return column
     })
   },
   methods: {
+    isSelect(column) {
+      return (
+        column.filterOptions &&
+        column.filterOptions.enabled &&
+        column.filterOptions.filterDropdownItems &&
+        column.filterOptions.filterDropdownItems.length
+      )
+    },
+    rowStyleClassFn(row) {
+      return row.active ? '' : 'red'
+    },
     async deleteRows() {
       this.loading = true
       try {
@@ -392,11 +388,14 @@ export default {
         this.loading = false
       }
     },
+    updateParams2(f, v) {
+      this.updateParams({ [f]: v })
+    },
     updateParams(newProps) {
       if (this.loading) return
       this.loading = true
       const query = Object.entries(Object.assign({}, this.query, newProps)).reduce(
-        (a, [k, v]) => (v ? ((a[k] = v), a) : a),
+        (a, [k, v]) => (v || v === false ? ((a[k] = v), a) : a),
         {},
       )
       this.query = query
@@ -418,9 +417,6 @@ export default {
     },
     onPerPageChange(params) {
       this.updateParams({ itemsPerPage: params.currentPerPage, page: 1 })
-    },
-    onColumnFilter(params) {
-      this.updateParams({ ...params.columnFilters, page: 1 })
     },
     async refresh() {
       const fullPath = this.$route.fullPath
