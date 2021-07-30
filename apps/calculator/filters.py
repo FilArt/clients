@@ -1,10 +1,27 @@
 from decimal import Decimal
+
+from rest_framework.exceptions import ValidationError
 from apps.calculator.models import Offer
 import django_filters
 
 
+def number_with_comma_to_float(val: str) -> float:
+    return float(val.replace(",", "."))
+
+
 def filter_decimal(queryset, name, value):
-    value = float(value.replace(",", "."))
+    if "-" in value:
+        try:
+            from_value, to_value = tuple(map(number_with_comma_to_float, value.split("-")))
+            print(from_value, to_value)
+            return queryset.filter(**{f"{name}__gte": from_value, f"{name}__lte": to_value})
+        except ValueError as e:
+            raise ValidationError(dict(name=str(e)))
+
+    try:
+        value = number_with_comma_to_float(value)
+    except ValueError as e:
+        raise ValidationError(dict(name=str(e)))
     return queryset.filter(**{name: value})
 
 
