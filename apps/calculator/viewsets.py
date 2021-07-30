@@ -1,3 +1,4 @@
+from apps.calculator.filters import OfferFilterSet
 import csv
 from typing import Tuple
 
@@ -101,29 +102,7 @@ class PaginatedOfferViewSet(LoggingMixin, viewsets.ModelViewSet):
     pagination_class = OffersPagination
     serializer_class = OfferListSerializer
     search_fields = ["name", "tarif", "company__name"]
-    filterset_fields = [
-        "active",
-        "kind",
-        "id",
-        "name",
-        "company",
-        "tarif",
-        "client_type",
-        "is_price_permanent",
-        "canal_commission",
-        "agent_commission",
-        "p1",
-        "p2",
-        "p3",
-        "c1",
-        "c2",
-        "c3",
-        "power_min",
-        "power_max",
-        "consumption_min",
-        "consumption_max",
-        "calculator",
-    ]
+    filterset_class = OfferFilterSet
 
     def destroy(self, request: Request, *args, **kwargs) -> Response:
         raise PermissionDenied
