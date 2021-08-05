@@ -286,13 +286,6 @@ class ManageUsersViewSet(UserViewSet, mixins.CreateModelMixin, mixins.DestroyMod
     def perform_create(self, serializer) -> None:
         serializer.save(invited_by=self.request.user)
 
-    @action(methods=["POST"], detail=False, permission_classes=(AdminPermission,))
-    def upload_to_call_visit(self, request: Request):
-        ser = UploadToCallVisitSerializer(data=request.data, many=True)
-        ser.is_valid(raise_exception=True)
-        # clients = ser.data
-        return Response("OK")
-
     @action(methods=["GET"], detail=False, permission_classes=(AdminPermission,))
     def analytic(self, request: Request):
         clients = self.filter_queryset(CustomUser.objects.with_statuses().filter(role__isnull=True))

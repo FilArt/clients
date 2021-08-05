@@ -489,6 +489,9 @@ class AgentContractSerializer(serializers.ModelSerializer):
         validated_data["email"] = self.initial_data["email"]
 
         created_client: CustomUser = self._user or super().create(validated_data)
+        created_client.renovated = False
+        created_client.save(update_fields=["renovated"])
+
         # hack
         if created_client.cif_nif == created_client.email.split("@")[0]:
             created_client.email = validated_data["email"]
