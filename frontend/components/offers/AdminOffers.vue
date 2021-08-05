@@ -164,8 +164,14 @@
         "
       >
         <template slot="column-filter" slot-scope="{ column }">
+          <v-checkbox
+            v-if="column.filterOptions.isBoolean"
+            :value="JSON.parse($route.query[column.field] || 'null')"
+            :indeterminate="!['true', 'false'].includes($route.query[column.field])"
+            @change="updateBooleanParam(column.field)"
+          />
           <v-select
-            v-if="isSelect(column)"
+            v-else-if="isSelect(column)"
             :items="column.filterOptions.filterDropdownItems"
             :value="$route.query[column.field]"
             multiple
@@ -260,10 +266,7 @@ export default {
           formatFn: this.booleanFormat,
           filterOptions: {
             enabled: true,
-            filterDropdownItems: [
-              { text: 'Si', value: true },
-              { text: 'No', value: false },
-            ],
+            isBoolean: true,
           },
         },
         {
@@ -366,6 +369,24 @@ export default {
     })
   },
   methods: {
+    updateBooleanParam(name) {
+      const oldRawValue = this.$route.query[name]
+      const oldValue = oldRawValue === 'true' ? true : oldRawValue === 'false' ? false : undefined
+      let newValue
+
+      switch (oldValue) {
+        case true:
+          newValue = undefined
+          break
+        case false:
+          newValue = true
+          break
+        default:
+          newValue = false
+          break
+      }
+      this.updateParams2(name, newValue)
+    },
     isSelect(column) {
       return (
         column.filterOptions &&
