@@ -15,10 +15,29 @@
         <company-select v-model="company" />
         <tarif-select v-model="tarif" all />
         <client-type-select v-model="clientType" />
+        <decimal-field v-model="p1" label="P1" />
+        <decimal-field v-model="p2" label="P2" />
+        <decimal-field v-model="p3" label="P3" />
+        <decimal-field v-model="p4" label="P4" />
+        <decimal-field v-model="p5" label="P5" />
+        <decimal-field v-model="p6" label="P6" />
+        <decimal-field v-model="consumo" label="Consumo anual" />
       </v-card-text>
 
       <v-card-text>
-        <offer-select v-model="offer" :tarif="tarif" :company="company" :client-type="clientType" />
+        <offer-select
+          v-model="offer"
+          :tarif="tarif"
+          :company="company"
+          :client-type="clientType"
+          :consumo="consumo"
+          :p1="p1"
+          :p2="p2"
+          :p3="p3"
+          :p4="p4"
+          :p5="p5"
+          :p6="p6"
+        />
       </v-card-text>
 
       <v-card-text>
@@ -67,6 +86,7 @@ export default {
     ClientTypeSelect: () => import('@/components/selects/ClientTypeSelect'),
     TarifSelect: () => import('@/components/selects/TarifSelect'),
     CompanySelect: () => import('@/components/selects/CompanySelect'),
+    DecimalField: () => import('@/components/fields/decimalField.vue'),
   },
   props: {
     userId: {
@@ -81,6 +101,13 @@ export default {
       clientType: null,
       offer: null,
       punto: null,
+      p1: null,
+      p2: null,
+      p3: null,
+      p4: null,
+      p5: null,
+      p6: null,
+      consumo: null,
       puntos: [],
     }
   },

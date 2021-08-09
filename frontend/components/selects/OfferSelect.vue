@@ -80,6 +80,34 @@ export default {
       type: String,
       default: null,
     },
+    consumo: {
+      type: Number,
+      default: null,
+    },
+    p1: {
+      type: Number,
+      default: null,
+    },
+    p2: {
+      type: Number,
+      default: null,
+    },
+    p3: {
+      type: Number,
+      default: null,
+    },
+    p4: {
+      type: Number,
+      default: null,
+    },
+    p5: {
+      type: Number,
+      default: null,
+    },
+    p6: {
+      type: Number,
+      default: null,
+    },
     value: {
       type: [Number, Object],
       default: () => null,
@@ -105,6 +133,27 @@ export default {
     tarif() {
       this.refresh()
     },
+    consumo() {
+      this.refresh()
+    },
+    p1() {
+      this.refresh()
+    },
+    p2() {
+      this.refresh()
+    },
+    p3() {
+      this.refresh()
+    },
+    p4() {
+      this.refresh()
+    },
+    p5() {
+      this.refresh()
+    },
+    p6() {
+      this.refresh()
+    },
   },
   async mounted() {
     await this.refresh()
@@ -117,8 +166,16 @@ export default {
         client_type: this.clientType,
         tarif: this.tarif,
         kind: this.kind,
+        p1: this.p1,
+        p2: this.p2,
+        p3: this.p3,
+        p4: this.p4,
+        p5: this.p5,
+        p6: this.p6,
         active: true,
       }
+      if (this.consumo) obj.consumption_min__lte = this.consumo
+      if (this.consumo) obj.consumption_max__gte = this.consumo
       const cleanObj = constants.cleanEmpty(obj)
       const getParamsString = qs.stringify(cleanObj)
       this.offers = await this.$axios.$get(`calculator/offers/?${getParamsString}`)
