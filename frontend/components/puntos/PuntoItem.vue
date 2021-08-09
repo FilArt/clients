@@ -49,6 +49,20 @@
                   "
                 />
 
+                <tarif-select
+                  v-else-if="header.value === 'tarif_luz'"
+                  v-model="punto[header.value]"
+                  :label="header.text"
+                  @input="save({ id: punto.id, field: 'tarif_luz', value: $event })"
+                />
+                <tarif-select
+                  v-else-if="header.value === 'tarif_gas'"
+                  v-model="punto[header.value]"
+                  gas
+                  :label="header.text"
+                  @input="save({ id: punto.id, field: 'tarif_gas', value: $event })"
+                />
+
                 <client-type-select
                   v-else-if="header.value === 'client_type'"
                   :label="header.text"
@@ -151,7 +165,6 @@
 
 <script>
 import constants from '@/lib/constants'
-
 export default {
   name: 'PuntoItem',
   components: {
@@ -159,6 +172,7 @@ export default {
     DeleteButton: () => import('@/components/buttons/deleteButton'),
     CloseButton: () => import('@/components/buttons/closeButton'),
     CompanySelect: () => import('@/components/selects/CompanySelect'),
+    TarifSelect: () => import('@/components/selects/TarifSelect.vue'),
   },
   props: {
     punto: {

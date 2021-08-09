@@ -132,7 +132,7 @@ export default Object.freeze({
       },
     },
     tarif_luz: {
-      text: 'Tarif luz',
+      text: 'Tarifa',
       value: 'tarif_luz',
       onlyAdmin: true,
       group: {
@@ -231,7 +231,7 @@ export default Object.freeze({
       },
     },
     tarif_gas: {
-      text: 'Tarif gas',
+      text: 'Tarifa',
       value: 'tarif_gas',
       onlyAdmin: true,
       group: {

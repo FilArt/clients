@@ -59,8 +59,11 @@ export default {
     }
   },
   watch: {
-    value(val) {
-      this.tarif = val
+    value: {
+      handler(val) {
+        this.tarif = val
+      },
+      deep: true,
     },
   },
 }
