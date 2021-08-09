@@ -427,10 +427,6 @@ class PuntoViewSet(LoggingMixin, viewsets.ModelViewSet):
                 bid_serializer.is_valid(raise_exception=True)
                 bid_serializer.save(user_id=user)
 
-    @action(methods=["GET"], detail=False)
-    def get_categories(self, _):
-        return Response([{"name": f[1], "value": f[0]} for f in Punto.CATEGORY_CHOICES])
-
     @action(methods=["GET"], detail=False, permission_classes=[])
     def get_cities(self, _):
         return Response(Punto.CITIES)

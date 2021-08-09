@@ -64,7 +64,7 @@ class CallVisitUserViewSet(viewsets.ModelViewSet):
                         "cups_gas": punto.cups_gas,
                         "tarif": punto.tarif_luz,
                         "tarif_gas": punto.tarif_gas,
-                        "client_type": "J" if punto.category == "business" else "F",
+                        "client_type": "F" if punto.client_type == 0 else "J",
                         "persona_contacto": punto.legal_representative or client.legal_representative,
                         "commers": punto.company_luz.name if punto.company_luz else None,
                         "province": punto.province,

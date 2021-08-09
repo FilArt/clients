@@ -14,7 +14,7 @@
       </v-card-title>
 
       <v-card-text>
-        <add-new-client @added="onAdded" />
+        <add-new-client />
       </v-card-text>
     </v-card>
   </v-dialog>
@@ -31,12 +31,6 @@ export default {
     return {
       dialog: false,
     }
-  },
-  methods: {
-    onAdded() {
-      this.$emit('added')
-      this.dialog = false
-    },
   },
 }
 </script>

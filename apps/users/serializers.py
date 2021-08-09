@@ -90,7 +90,7 @@ class RegisterSerializer(serializers.ModelSerializer):
 class RegisterByAdminSerializer(RegisterSerializer):
     class Meta:
         model = CustomUser
-        fields = ("email", "password", "role", "first_name", "last_name")
+        fields = "__all__"
         extra_kwargs = RegisterSerializer.Meta.extra_kwargs
 
 
@@ -369,13 +369,7 @@ class NotificationSerializer(serializers.ModelSerializer):
 class CreateClientSerializer(RegisterSerializer):
     class Meta:
         model = CustomUser
-        fields = [
-            "id",
-            "email",
-            "company_name",
-            "phone",
-            "cif_nif",
-        ]
+        fields = "__all__"
         extra_kwargs = {"id": {"read_only": True}}
 
 

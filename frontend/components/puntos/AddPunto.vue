@@ -10,22 +10,8 @@
     <v-card-text>
       <v-form @submit.prevent="addPunto">
         <div v-for="field in puntoFields" :key="field.value">
-          <v-radio-group
-            v-if="field.value === 'category'"
-            v-model="newPunto.category"
-            label="Seleccione categoría de cliente"
-            mandatory
-          >
-            <v-radio
-              v-for="category in categories"
-              :key="category.value"
-              :label="category.name"
-              :value="category.value"
-            />
-          </v-radio-group>
-
           <v-switch
-            v-else-if="field.value === 'is_name_changed'"
+            v-if="field.value === 'is_name_changed'"
             v-model="newPunto.is_name_changed"
             label="Cambio de nombre"
           />
@@ -61,9 +47,9 @@
           <template
             v-if="
               !(
-                (['cif1', 'recibo1'].includes(fileField.name) && newPunto.category === 'physical') ||
-                (newPunto.category === 'autonomous' && fileField.name === 'cif1') ||
-                (newPunto.category === 'business' && fileField.name === 'recibo1')
+                (['cif1', 'recibo1'].includes(fileField.name) && offerClientType === 0) ||
+                (offerClientType === 2 && fileField.name === 'cif1') ||
+                (offerClientType === 1 && fileField.name === 'recibo1')
               )
             "
           >
@@ -140,10 +126,9 @@ export default {
   },
   data() {
     const newPunto = this.punto || {}
-    if (!newPunto.category) newPunto.category = 'physical'
     return {
       puntoFields: Object.values(constants.puntoFields)
-        .filter((field) => this.admin || !field.onlyAdmin)
+        .filter((field) => (this.admin || !field.onlyAdmin) && field.value !== 'client_type')
         .map((field) => {
           return {
             text: field.text,
@@ -194,13 +179,14 @@ export default {
     admin() {
       return this.$auth.user.role === 'admin'
     },
-    categories() {
-      return this.$store.state.puntoCategories.filter((cat) => {
-        return !(this.offerClientType === 1 && cat.value === 'physical')
-      })
-    },
     cities() {
       return this.$store.state.cities
+    },
+    getNewPunto() {
+      return {
+        ...this.newPunto,
+        client_type: this.offerClientType,
+      }
     },
   },
   watch: {
@@ -213,9 +199,6 @@ export default {
   async mounted() {
     if (this.punto) {
       this.newPunto = this.punto
-    }
-    if (!this.categories || !this.categories.length) {
-      this.$store.commit('setPuntoCategories', await this.$axios.$get('/users/puntos/get_categories/'))
     }
     if (!this.cities || !this.cities.length) {
       await this.$store.dispatch('fetchProvinces')
@@ -259,7 +242,7 @@ export default {
     async addPunto() {
       if (this.punto) {
         try {
-          await this.$axios.$patch(`/users/puntos/${this.punto.id}/`, this.newPunto)
+          await this.$axios.$patch(`/users/puntos/${this.punto.id}/`, this.getNewPunto)
         } catch (e) {
           this.errors = e.response.data
           return
@@ -270,7 +253,7 @@ export default {
       } else {
         try {
           const punto = await this.$axios.$post('/users/puntos/', {
-            ...this.newPunto,
+            ...this.getNewPunto,
             bid: { ...this.bid, offer: this.bid.offer.id },
             user: this.userId,
           })

@@ -8,6 +8,8 @@ from django.db import models
 from django.utils.translation import gettext_lazy as _
 from django.utils.translation import pgettext_lazy
 
+from apps.calculator.models import Offer
+
 from .managers import CustomUserManager
 from .validators import cups_validator
 
@@ -254,7 +256,6 @@ class Punto(models.Model):
         "ZAMORA",
         "ZARAGOZA",
     )
-    CATEGORY_CHOICES = (("physical", _("Physical")), ("autonomous", _("Autonomous")), ("business", _("Business")))
     PROVINCE_CHOICES = [(c, c) for c in CITIES]
 
     user = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name="puntos")
@@ -310,7 +311,7 @@ class Punto(models.Model):
     c6 = models.FloatField(blank=True, null=True)
     consumo_annual_luz = models.FloatField(verbose_name=_("Annual consumption"), blank=True, null=True)
     consumo_annual_gas = models.FloatField(verbose_name=_("Annual consumption (gas)"), blank=True, null=True)
-    category = models.CharField(choices=CATEGORY_CHOICES, max_length=20)
+    client_type = models.IntegerField(choices=Offer.CLIENT_TYPE_CHOICES, default=0)
 
     legal_representative = models.CharField(max_length=200, blank=True, null=True)
     dni = models.CharField(max_length=200, blank=True, null=True)

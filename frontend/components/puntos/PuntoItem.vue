@@ -49,12 +49,11 @@
                   "
                 />
 
-                <v-select
-                  v-else-if="header.value === 'category'"
+                <client-type-select
+                  v-else-if="header.value === 'client_type'"
                   :label="header.text"
-                  :items="categories"
-                  :value="punto.category"
-                  @input="save({ id: punto.id, field: 'category', value: $event })"
+                  :value="punto.client_type"
+                  @input="save({ id: punto.id, field: 'client_type', value: $event })"
                 />
 
                 <v-select
@@ -156,9 +155,10 @@ import constants from '@/lib/constants'
 export default {
   name: 'PuntoItem',
   components: {
+    ClientTypeSelect: () => import('@/components/selects/ClientTypeSelect'),
     DeleteButton: () => import('@/components/buttons/deleteButton'),
     CloseButton: () => import('@/components/buttons/closeButton'),
-    CompanySelect: () => import('~/components/selects/CompanySelect'),
+    CompanySelect: () => import('@/components/selects/CompanySelect'),
   },
   props: {
     punto: {
@@ -171,11 +171,6 @@ export default {
 
     return {
       puntoDialog: false,
-      categories: [
-        { text: 'Físico', value: 'physical' },
-        { text: 'Autónomo', value: 'autonomous' },
-        { text: 'Jurídico', value: 'business' },
-      ],
       attachmentsItems: [
         { value: 'factura', text: 'Factura' },
         { value: 'factura_1', text: 'Factura reverso' },
@@ -246,14 +241,10 @@ export default {
     async save({ id, field, value }) {
       const data = {}
       value = value === undefined ? null : value
-      data[field] = value || this.values[field]
+      data[field] = value === 0 ? value : value || this.values[field]
       try {
         await this.$axios.$patch(`users/puntos/${id}/`, data)
-        await this.$swal({
-          title: 'Salvado',
-          text: `${field.toUpperCase()} esta cambiado ${value || this.values[field] || 'null'}`,
-          icon: 'success',
-        })
+        this.$toast.global.done()
         this.$emit('punto-updated')
       } catch (e) {
         const errorMsg = e.response.data

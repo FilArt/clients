@@ -55,9 +55,9 @@ export default Object.freeze({
     },
   },
   puntoFields: {
-    category: {
+    client_type: {
       text: 'Tipo de cliente',
-      value: 'category',
+      value: 'client_type',
       group: {
         text: 'Documentacion',
         value: 'doc',

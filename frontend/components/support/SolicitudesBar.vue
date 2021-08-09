@@ -107,8 +107,8 @@ export default {
       default: null,
     },
     allowDelete: {
-      type: Number,
-      default: null,
+      type: Boolean,
+      default: false,
     },
   },
   data() {

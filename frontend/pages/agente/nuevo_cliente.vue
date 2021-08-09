@@ -5,7 +5,7 @@
     </v-toolbar>
 
     <v-card-text>
-      <add-new-client @added="onAdded" />
+      <add-new-client />
     </v-card-text>
 
     <v-card-text>
@@ -20,10 +20,5 @@ import Borradores from '@/components/tables/Borradores.vue'
 export default {
   name: 'NuevoCliente',
   components: { AddNewClient, Borradores },
-  methods: {
-    onAdded(newClient) {
-      this.$router.push(`/agente/tramitacion/${newClient.id}`)
-    },
-  },
 }
 </script>

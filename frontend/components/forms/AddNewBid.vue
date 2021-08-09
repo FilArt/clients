@@ -45,7 +45,13 @@
       <v-divider />
 
       <v-card-text>
-        <add-punto v-if="offer" :bid="{ offer }" :user-id="userId" @punto-added="$emit('bid-added')" />
+        <add-punto
+          v-if="offer"
+          :bid="{ offer }"
+          :offer-client-type="clientType"
+          :user-id="userId"
+          @punto-added="$emit('bid-added')"
+        />
       </v-card-text>
     </v-form>
   </v-card>
