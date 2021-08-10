@@ -7,22 +7,24 @@
       </v-btn>
     </template>
 
-    <add-new-bid
-      :user-id="userId"
+    <create-bid
+      v-if="userId"
+      :for-client="userId"
       @close="dialog = false"
       @bid-added="
-        $emit('bid-added')
         dialog = false
+        $emit('bid-added')
       "
     />
   </v-dialog>
 </template>
 
 <script>
-import AddNewBid from '@/components/forms/AddNewBid'
 export default {
   name: 'AddNewBidDialog',
-  components: { AddNewBid },
+  components: {
+    CreateBid: () => import('@/components/forms/CreateBid'),
+  },
   props: {
     label: {
       type: String,

@@ -20,6 +20,8 @@
 
           <company-select v-else-if="field.value === 'company_gas' && admin" v-model="newPunto.company_gas" />
 
+          <decimal-field v-else-if="isDecimal(field)" v-model="newPunto[field.value]" :label="field.text" />
+
           <v-autocomplete
             v-else-if="field.value === 'province'"
             v-model="newPunto.province"
@@ -86,13 +88,25 @@
 </template>
 <script>
 import constants from '@/lib/constants'
-
+const requiredFieldsMap = {
+  photo_cif: ['cif1'],
+  photo_dni: ['dni1', 'dni2'],
+  photo_factura: ['factura', 'factura_1'],
+  photo_recibo: ['recibo1'],
+  name_changed_doc: ['name_changed'],
+  contrato_arredamiento: ['arredamiento'],
+  contrato: ['contrato'],
+  cif: ['cif'],
+  dni: ['dni'],
+  phone: ['phone'],
+}
 export default {
   name: 'AddPunto',
   components: {
     SubmitButton: () => import('~/components/buttons/submitButton'),
     CloseButton: () => import('~/components/buttons/closeButton'),
     CompanySelect: () => import('~/components/selects/CompanySelect'),
+    DecimalField: () => import('@/components/fields/decimalField.vue'),
   },
   props: {
     closeable: {
@@ -127,19 +141,24 @@ export default {
   data() {
     const newPunto = this.punto || {}
     return {
-      puntoFields: Object.values(constants.puntoFields)
-        .filter((field) => (this.admin || !field.onlyAdmin) && field.value !== 'client_type')
-        .map((field) => {
-          return {
-            text: field.text,
-            value: field.value,
-            icon: field.icon,
-          }
-        }),
       newPunto,
       errors: {},
       attachments: (this.punto || {}).attachments || [],
-      fileFields: [
+
+      files: {
+        factura: null,
+        factura_1: null,
+        dni1: null,
+        dni2: null,
+        cif1: null,
+      },
+      fileErrors: {},
+    }
+  },
+  computed: {
+    fileFields() {
+      const requiredFields = (this.bid.offer.required_fields || []).map((rf) => requiredFieldsMap[rf]).flat()
+      return [
         {
           name: 'factura',
           label: 'Foto factura actual (anverso)',
@@ -164,18 +183,19 @@ export default {
           name: 'recibo1',
           label: 'Foto recibo de Autónomo',
         },
-      ],
-      files: {
-        factura: null,
-        factura_1: null,
-        dni1: null,
-        dni2: null,
-        cif1: null,
-      },
-      fileErrors: {},
-    }
-  },
-  computed: {
+      ].filter((fileField) => requiredFields.includes(fileField.name))
+    },
+    puntoFields() {
+      return Object.values(constants.puntoFields)
+        .filter((field) => (this.admin || !field.onlyAdmin) && field.value !== 'client_type')
+        .map((field) => {
+          return {
+            text: field.text,
+            value: field.value,
+            icon: field.icon,
+          }
+        })
+    },
     admin() {
       return this.$auth.user.role === 'admin'
     },
@@ -185,7 +205,7 @@ export default {
     getNewPunto() {
       return {
         ...this.newPunto,
-        client_type: this.offerClientType,
+        client_type: this.offerClientType || this.bid.offer.client_type,
       }
     },
   },
@@ -205,6 +225,9 @@ export default {
     }
   },
   methods: {
+    isDecimal(field) {
+      return ['p1', 'p2', 'p3', 'p4', 'p5', 'p6', 'consumo_annual_gas', 'consumo_annual_luz'].includes(field.value)
+    },
     deleteAttachment(attachmentId) {
       this.$swal({
         title: `Borrar el archivo adjunto ${attachmentId}?`,

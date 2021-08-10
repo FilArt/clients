@@ -67,25 +67,14 @@
             </v-row>
           </template>
 
-          <v-dialog v-model="addNewBidDialog" max-width="750">
-            <template v-slot:activator="{ on }">
-              <v-list-item v-on="on">
-                <v-list-item-avatar>
-                  <v-icon color="success">mdi-plus</v-icon>
-                </v-list-item-avatar>
-                <v-list-item-title>Añadir nuevo solicitud</v-list-item-title>
-              </v-list-item>
-            </template>
-
-            <add-new-bid
-              :user-id="userId"
-              @close="addNewBidDialog = false"
-              @bid-added="
-                $emit('bid-added')
-                addNewBidDialog = false
-              "
-            />
-          </v-dialog>
+          <add-new-bid-dialog
+            :user-id="userId"
+            label="Añadir nuevo solicitud"
+            @bid-added="
+              $emit('bid-added')
+              fetchBids()
+            "
+          />
         </v-col>
       </v-list>
     </v-card-text>
@@ -93,14 +82,14 @@
 </template>
 
 <script>
-import AddNewBid from '@/components/forms/AddNewBid'
+import AddNewBidDialog from '@/components/dialogs/AddNewBidDialog'
 import DeleteButton from '@/components/buttons/deleteButton'
 import { mapState } from 'vuex'
 import DateTimeFilter from '@/components/DateTimeFilter'
 import { parse } from 'date-fns'
 export default {
   name: 'SolicitudesBar',
-  components: { DateTimeFilter, DeleteButton, AddNewBid },
+  components: { DateTimeFilter, DeleteButton, AddNewBidDialog },
   props: {
     userId: {
       type: Number,
