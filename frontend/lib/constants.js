@@ -63,18 +63,18 @@ export default Object.freeze({
         value: 'doc',
       },
     },
-    name: {
-      text: 'Nuevo nombre',
-      value: 'name',
+    is_name_changed: {
+      type: 'switch',
+      text: 'Cambio de nombre',
+      value: 'is_name_changed',
       group: {
         text: 'Documentacion',
         value: 'doc',
       },
     },
-    is_name_changed: {
-      type: 'switch',
-      text: 'Cambio de nombre',
-      value: 'is_name_changed',
+    name: {
+      text: 'Nuevo nombre',
+      value: 'name',
       group: {
         text: 'Documentacion',
         value: 'doc',
@@ -125,7 +125,6 @@ export default Object.freeze({
     cups_luz: {
       text: 'CUPS luz',
       value: 'cups_luz',
-      onlyAdmin: true,
       group: {
         text: 'Luz',
         value: 'luz',
@@ -224,7 +223,6 @@ export default Object.freeze({
     cups_gas: {
       text: 'CUPS gas',
       value: 'cups_gas',
-      onlyAdmin: true,
       group: {
         text: 'Gas',
         value: 'gas',

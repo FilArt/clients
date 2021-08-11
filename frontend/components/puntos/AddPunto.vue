@@ -34,6 +34,7 @@
           />
 
           <v-text-field
+            v-show="field.value === 'name' ? newPunto.is_name_changed : true"
             v-else
             v-model="newPunto[field.value]"
             class="pa-3"
