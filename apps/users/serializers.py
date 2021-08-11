@@ -33,12 +33,10 @@ class RegisterSerializer(serializers.ModelSerializer):
         model = CustomUser
         fields = [
             "email",
-            "password",
             "role",
             "cif_nif",
         ]
         extra_kwargs = {
-            "password": {"required": False, "write_only": True},
             "role": {"required": False, "write_only": True},
             "cif_nif": {"required": True, "allow_null": False, "allow_blank": False},
         }
@@ -369,7 +367,7 @@ class NotificationSerializer(serializers.ModelSerializer):
 class CreateClientSerializer(RegisterSerializer):
     class Meta:
         model = CustomUser
-        fields = "__all__"
+        exclude = ["password"]
         extra_kwargs = {"id": {"read_only": True}}
 
 
