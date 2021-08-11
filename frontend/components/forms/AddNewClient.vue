@@ -43,7 +43,8 @@ export default {
       const url = this.$auth.user.role === 'agent' ? 'users/new_client/' : 'users/manage_users/'
       try {
         const { id } = await this.$axios.$post(url, this.user)
-        const { role } = this.$auth.user
+        let { role } = this.$auth.user
+        role = role === 'agent' ? 'agente' : role
         this.$router.push(`/${role}/tramitacion/${id}`)
       } catch (e) {
         if (e && e.response && e.response.data) {
