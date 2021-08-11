@@ -4,19 +4,15 @@
     <v-card-text>
       <v-stepper v-model="stepModel">
         <v-stepper-header>
-          <template v-for="(step, idx) in steps">
-            <v-stepper-step :key="`${idx}-step`" :complete="stepModel > idx" :step="idx">
-              {{ step.text }}
-            </v-stepper-step>
-
-            <v-divider v-if="idx !== steps.length" :key="idx"></v-divider>
-          </template>
+          <v-stepper-step :complete="!!offer" :step="1"> Elejir oferta </v-stepper-step>
+          <v-divider />
+          <v-stepper-step :complete="!!punto" :step="2"> Elejir punto </v-stepper-step>
         </v-stepper-header>
         <v-stepper-items>
           <v-stepper-content :step="1">
             <select-offer-form v-model="offer" />
             <v-btn
-              v-if="offer"
+              :disabled="!offer"
               block
               color="primary"
               @click="
@@ -24,40 +20,47 @@
                 fetchPuntos()
               "
             >
-              Continue
+              OK
             </v-btn>
           </v-stepper-content>
           <v-stepper-content :step="2">
-            <v-col v-if="offer">
-              <v-row>
-                <v-col>
-                  <v-btn
-                    v-for="p in puntos"
-                    :key="p.id"
-                    class="pa-2"
-                    :color="punto && punto.id === p.id ? 'success' : null"
-                    @click="punto = p"
-                  >
-                    Punto {{ p.id }}. {{ p.name || p.cups_luz || p.cups_gas }}
-                  </v-btn>
+            <div v-if="offer" tile>
+              <v-card-text>
+                <v-btn
+                  v-for="p in puntos"
+                  :key="p.id"
+                  class="pa-2"
+                  :color="punto && punto.id === p.id ? 'success' : null"
+                  @click="punto = p"
+                >
+                  Punto {{ p.id }}. {{ p.name || p.cups_luz || p.cups_gas }}
+                </v-btn>
 
-                  <add-punto-dialog
-                    :user-id="forClient"
-                    :bid="{ offer }"
-                    :offer-client-type="offer.client_type"
-                    closeable
-                    @punto-added="fetchPuntos"
-                  />
-                </v-col>
-              </v-row>
+                <br />
+                <br />
 
-              <v-row>
-                <v-col>
-                  <v-btn color="warning" @click="stepModel--">Atras</v-btn>
-                  <submit-button label="Guardar" @click="submit" />
-                </v-col>
-              </v-row>
-            </v-col>
+                <v-row class="text-center">
+                  <v-col>
+                    <add-punto-dialog
+                      block
+                      :user-id="forClient"
+                      :bid="{ offer }"
+                      :offer-client-type="offer.client_type"
+                      closeable
+                      @punto-added="fetchPuntos"
+                    />
+                  </v-col>
+                </v-row>
+              </v-card-text>
+
+              <hr />
+
+              <v-card-actions>
+                <v-btn color="warning" @click="stepModel--">Atras</v-btn>
+                <v-spacer />
+                <submit-button :disabled="!offer || !punto" label="Guardar" @click="submit" />
+              </v-card-actions>
+            </div>
           </v-stepper-content>
         </v-stepper-items>
       </v-stepper>
@@ -84,14 +87,6 @@ export default {
       offer: null,
       punto: null,
       stepModel: 1,
-      steps: [
-        {
-          text: 'Elejir oferta',
-        },
-        {
-          text: 'Elejir punto',
-        },
-      ],
       puntos: [],
     }
   },
@@ -103,6 +98,9 @@ export default {
       try {
         await this.$axios.$post('bids/bids/', { user: this.forClient, offer: this.offer.id, punto: this.punto.id })
         this.$emit('bid-added')
+        this.$toast.global.done()
+        this.offer = this.punto = null
+        this.stepModel = 1
       } catch (e) {
         console.error(e)
         await this.$swal({ title: 'Error', text: e.response.data, icon: 'error' })

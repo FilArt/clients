@@ -181,7 +181,6 @@ export default {
       this.offers = await this.$axios.$get(`calculator/offers/?${getParamsString}`)
       if (!this.offer && this.value) {
         this.offer = this.offers.find((o) => {
-          console.log(o.id, this.value)
           if (this.value instanceof Number) {
             o.id === this.value
           } else {
