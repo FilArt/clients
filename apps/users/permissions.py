@@ -71,6 +71,9 @@ class NotyPermissions(BasePermission):
 
 class PuntoPermissions(BasePermission):
     def has_object_permission(self, request, view, obj: Punto) -> bool:
+        role = request.user.role if hasattr(request.user, "role") else None
+        if role == "agent" and view.action in ("update", "partial_update", "destroy"):
+            return obj.created_by == request.user
         if view.action == "destroy":
-            return hasattr(request.user, "role") and request.user.role in ("admin", "support")
+            return role in ("admin", "support")
         return True

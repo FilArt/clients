@@ -81,6 +81,7 @@
               @tramitate="refresh"
               @punto-deleted="refresh"
               @bid-deleted="refresh"
+              @punto-updated="refresh"
             />
           </v-tab-item>
           <v-tab-item>
@@ -92,6 +93,7 @@
               @tramitate="refresh"
               @punto-deleted="refresh"
               @bid-deleted="refresh"
+              @punto-updated="refresh"
             />
           </v-tab-item>
           <v-tab-item>

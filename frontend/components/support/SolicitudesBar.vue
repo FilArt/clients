@@ -12,8 +12,8 @@
 
         <v-col dense nav>
           <template v-for="bid in bids">
-            <v-row :key="bid.id" align="center" dense>
-              <v-col>
+            <v-card :key="bid.id" class="d-flex align-center">
+              <v-card-text>
                 <v-list-item three-line nuxt :to="getNewUrl(bid.id)" exact>
                   <v-list-item-avatar>
                     <v-icon v-if="bid['offer_kind'] === 'luz'" color="warning">mdi-flash</v-icon>
@@ -29,42 +29,38 @@
 
                     <v-list-item-subtitle> FF: {{ bid.fecha_firma || '-' }} </v-list-item-subtitle>
                   </v-list-item-content>
-                  <v-list-item-action>
-                    <v-dialog
-                      v-if="$auth.user && $auth.user.role === 'admin'"
-                      v-model="dialogs[bid.id]"
-                      max-width="500px"
-                    >
-                      <template v-slot:activator="{ on }">
-                        <v-btn color="info" icon v-on="on"><v-icon>mdi-pencil</v-icon></v-btn>
-                      </template>
-                      <v-card>
-                        <v-card-title> Fecha firma </v-card-title>
-                        <v-card-text>
-                          <v-row>
-                            <v-col>
-                              <date-time-filter v-model="bid['fecha_firma']" format="DD/MM/YYYY HH:mm" inline />
-                            </v-col>
-                          </v-row>
-                          <v-row>
-                            <v-col class="flex-grow-0">
-                              <v-btn color="warning" @click="dialogs[bid.id] = false"> Cancellar </v-btn>
-                            </v-col>
-                            <v-col>
-                              <v-btn block color="info" @click="updateBid(bid.id, 'fecha_firma', bid['fecha_firma'])">
-                                Salvar
-                              </v-btn>
-                            </v-col>
-                          </v-row>
-                        </v-card-text>
-                      </v-card>
-                    </v-dialog>
-
-                    <delete-button v-if="allowDelete" @click="deleteBid(bid.id)" />
-                  </v-list-item-action>
                 </v-list-item>
-              </v-col>
-            </v-row>
+              </v-card-text>
+              <v-card-text>
+                <v-dialog v-if="$auth.user && $auth.user.role === 'admin'" v-model="dialogs[bid.id]" max-width="500px">
+                  <template v-slot:activator="{ on }">
+                    <v-btn color="info" icon v-on.prevent="on"><v-icon>mdi-pencil</v-icon></v-btn>
+                  </template>
+                  <v-card>
+                    <v-card-title> Fecha firma </v-card-title>
+                    <v-card-text>
+                      <v-row>
+                        <v-col>
+                          <date-time-filter v-model="bid['fecha_firma']" format="DD/MM/YYYY HH:mm" inline />
+                        </v-col>
+                      </v-row>
+                      <v-row>
+                        <v-col class="flex-grow-0">
+                          <v-btn color="warning" @click="dialogs[bid.id] = false"> Cancellar </v-btn>
+                        </v-col>
+                        <v-col>
+                          <v-btn block color="info" @click="updateBid(bid.id, 'fecha_firma', bid['fecha_firma'])">
+                            Salvar
+                          </v-btn>
+                        </v-col>
+                      </v-row>
+                    </v-card-text>
+                  </v-card>
+                </v-dialog>
+
+                <delete-button v-if="allowDelete" @click="deleteBid(bid.id)" />
+              </v-card-text>
+            </v-card>
           </template>
 
           <add-new-bid-dialog

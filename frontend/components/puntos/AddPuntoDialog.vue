@@ -1,9 +1,9 @@
 <template>
   <v-dialog v-model="dialog" max-width="750px">
     <template v-slot:activator="{ on }">
-      <v-btn color="success" v-on="on">
-        <v-icon left color="succes">mdi-plus</v-icon>
-        Añadir
+      <v-btn :color="color" v-on="on">
+        <v-icon v-if="!punto" left :color="color">mdi-plus</v-icon>
+        {{ punto ? punto.name : 'Añadir' }}
       </v-btn>
     </template>
 
@@ -16,7 +16,18 @@
       :punto="punto"
       :bid="bid"
       @close="dialog = false"
-      @punto-added="$emit('punto-added', $event)"
+      @punto-updated="
+        dialog = false
+        $emit('punto-updated')
+      "
+      @punto-deleted="
+        dialog = false
+        $emit('punto-updated')
+      "
+      @punto-added="
+        dialog = false
+        $emit('punto-added', $event)
+      "
     />
   </v-dialog>
 </template>
@@ -41,7 +52,7 @@ export default {
     },
     color: {
       type: String,
-      default: null,
+      default: 'success',
     },
     label: {
       type: [String, Number],

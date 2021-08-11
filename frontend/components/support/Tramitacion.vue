@@ -170,7 +170,7 @@
 
       <v-col>
         <v-card-title>Punto</v-card-title>
-        <punto-item :punto="bid.punto" @punto-updated="fetchBid" @punto-deleted="$emit('punto-deleted')" />
+        <punto-item :punto="bid.punto" @punto-updated="$emit('punto-updated')" />
         <add-punto-dialog v-if="!bid.punto" closeable :bid-id="bid.id" @punto-added="fetchBid" />
       </v-col>
     </v-row>

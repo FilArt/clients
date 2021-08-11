@@ -21,13 +21,14 @@
 
     <v-divider />
 
-    <v-card-text>
+    <v-card-text :key="user ? user.id : null">
       <solicitudes-process
         allow-delete
         :user="user"
         @bid-added="refresh"
-        @tramitate="onTramitate"
-        @bid-deleted="refresh"
+        @tramitate="refresh"
+        @bid-deleted="onDelete"
+        @punto-updated="refresh"
       />
     </v-card-text>
   </v-card>
@@ -48,17 +49,22 @@ export default {
     }
   },
   methods: {
-    async onTramitate() {
-      const user = await this.$axios.$get(`users/users/${this.$route.params.id}/`)
-      await this.$store.dispatch('bids/fetchBids', { params: `user=${user.id}` })
-      this.values = { ...user }
-    },
     async moveToKo() {
       await this.$axios.$patch(`users/users/${this.user.id}/`, { ko: true })
       await this.$router.push(`/admin/ko/${this.user.id}`)
     },
     async refresh() {
-      this.user = await this.$axios.$get(`users/users/${this.user.id}/`)
+      const user = await this.$axios.$get(`users/users/${this.$route.params.id}/`)
+      await this.$store.dispatch('bids/fetchBids', { params: `user=${user.id}` })
+      this.user = user
+      this.values = { ...user }
+    },
+    async onDelete() {
+      if (this.$route.query) {
+        await this.$router.replace({ query: null })
+        return
+      }
+      await this.refresh()
     },
   },
 }

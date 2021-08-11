@@ -16,7 +16,7 @@
     <v-divider />
 
     <v-card-text>
-      <solicitudes-process :user="user" @bid-added="refresh" />
+      <solicitudes-process :user="user" @bid-added="refresh" @punto-updated="refresh" />
     </v-card-text>
   </v-card>
 </template>
@@ -36,13 +36,11 @@ export default {
     }
   },
   methods: {
-    async onTramitate() {
+    async refresh() {
       const user = await this.$axios.$get(`users/users/${this.$route.params.id}/`)
       await this.$store.dispatch('bids/fetchBids', { params: `user=${user.id}` })
       this.user = user
       this.values = { ...user }
-    },
-    async refresh() {
       this.user = await this.$axios.$get(`users/users/${this.user.id}/`)
     },
   },

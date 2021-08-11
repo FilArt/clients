@@ -1,15 +1,8 @@
 from decimal import Decimal
 
-from django.contrib.auth import get_user_model
-from django.db import transaction
-from django.utils import timezone
 from rest_framework import serializers
-from rest_framework.exceptions import PermissionDenied
 
-from clients.serializers import BidListSerializer, DetailOfferSerializer, PuntoSerializer
-from clients.utils import humanize
 from .models import Bid, BidStory
-from ..users.utils import PENDIENTE_PAGO
 
 
 class CommissionField(serializers.DecimalField):

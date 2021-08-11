@@ -26,15 +26,22 @@
           <v-stepper-content :step="2">
             <div v-if="offer" tile>
               <v-card-text>
-                <v-btn
-                  v-for="p in puntos"
-                  :key="p.id"
-                  class="pa-2"
-                  :color="punto && punto.id === p.id ? 'success' : null"
-                  @click="punto = p"
-                >
-                  Punto {{ p.id }}. {{ p.name || p.cups_luz || p.cups_gas }}
-                </v-btn>
+                <template v-for="p in puntos">
+                  <v-row :key="p.id">
+                    <v-col>
+                      <v-simple-checkbox :value.sync="(punto || {}).id === p.id" @click="punto = p" />
+                    </v-col>
+                    <v-col>
+                      <add-punto-dialog
+                        :color="p.id === (punto || {}).id ? 'success' : null"
+                        :punto="p"
+                        :user-id="forClient"
+                        :bid="{ offer }"
+                        @punto-updated="fetchPuntos"
+                      />
+                    </v-col>
+                  </v-row>
+                </template>
 
                 <br />
                 <br />
@@ -92,6 +99,7 @@ export default {
   },
   methods: {
     async fetchPuntos() {
+      this.puntos = []
       this.puntos = await this.$axios.$get(`/users/puntos/?user=${this.forClient}`)
     },
     async submit() {

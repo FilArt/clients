@@ -26,8 +26,9 @@
         allow-delete
         :user="user"
         @bid-added="refresh"
-        @tramitate="onTramitate"
+        @tramitate="refresh"
         @bid-deleted="refresh"
+        @punto-updated="refresh"
       />
     </v-card-text>
   </v-card>
@@ -48,11 +49,6 @@ export default {
     }
   },
   methods: {
-    async onTramitate() {
-      const user = await this.$axios.$get(`users/users/${this.$route.params.id}/`)
-      this.user = user
-      this.values = { phones: [user.phone], ...user }
-    },
     bidStatusColor(status) {
       let color
       switch (status) {
@@ -73,7 +69,9 @@ export default {
       await this.$router.push(`/admin/tramitacion/${this.user.id}`)
     },
     async refresh() {
-      this.user = await this.$axios.$get(`users/users/${this.user.id}/`)
+      const user = await this.$axios.$get(`users/users/${this.$route.params.id}/`)
+      this.user = user
+      this.values = { phones: [user.phone], ...user }
     },
   },
 }

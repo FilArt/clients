@@ -417,15 +417,15 @@ class PuntoViewSet(LoggingMixin, viewsets.ModelViewSet):
                 raise ValidationError({"profileNotFilled": True})
             serializer.save()
         else:
-            user = self.request.data.get("user")
-            if not user:
+            client = self.request.data.get("user")
+            if not client:
                 raise ValidationError({"user": ["Requiredo."]})
             with transaction.atomic():
-                punto = serializer.save(user_id=user)
+                punto = serializer.save(user_id=client, created_by=user)
                 data = {"punto": punto.id, **(self.request.data.get("bid") or {})}
                 bid_serializer = CreateBidSerializer(data=data)
                 bid_serializer.is_valid(raise_exception=True)
-                bid_serializer.save(user_id=user)
+                bid_serializer.save(user_id=client)
 
     @action(methods=["GET"], detail=False, permission_classes=[])
     def get_cities(self, _):

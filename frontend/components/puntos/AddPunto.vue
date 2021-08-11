@@ -82,7 +82,11 @@
           </template>
         </v-row>
 
-        <submit-button :label="punto ? 'Guardar' : 'Anadir nuevo punto suministro'" block />
+        <v-card-actions>
+          <delete-button label="Eliminar punto" @click="deletePunto" />
+          <v-spacer />
+          <submit-button :label="punto ? 'Guardar' : 'Anadir nuevo punto suministro'" />
+        </v-card-actions>
       </v-form>
     </v-card-text>
   </v-card>
@@ -105,6 +109,7 @@ export default {
   name: 'AddPunto',
   components: {
     SubmitButton: () => import('~/components/buttons/submitButton'),
+    DeleteButton: () => import('~/components/buttons/deleteButton'),
     CloseButton: () => import('~/components/buttons/closeButton'),
     CompanySelect: () => import('~/components/selects/CompanySelect'),
     DecimalField: () => import('@/components/fields/decimalField.vue'),
@@ -140,7 +145,7 @@ export default {
     },
   },
   data() {
-    const newPunto = this.punto || {}
+    const newPunto = { ...this.punto } || {}
     return {
       newPunto,
       errors: {},
@@ -218,14 +223,18 @@ export default {
     },
   },
   async mounted() {
-    if (this.punto) {
-      this.newPunto = this.punto
-    }
-    if (!this.cities || !this.cities.length) {
-      await this.$store.dispatch('fetchProvinces')
-    }
+    if (!this.cities || !this.cities.length) await this.$store.dispatch('fetchProvinces')
   },
   methods: {
+    async deletePunto() {
+      try {
+        await this.$axios.$delete(`users/puntos/${this.punto.id}/`)
+        this.$toast.global.done()
+        this.$emit('punto-deleted')
+      } catch (e) {
+        this.$swal.error(e && e.response && e.response.data ? JSON.stringify(e.response.data) : e)
+      }
+    },
     isDecimal(field) {
       return ['p1', 'p2', 'p3', 'p4', 'p5', 'p6', 'consumo_annual_gas', 'consumo_annual_luz'].includes(field.value)
     },
@@ -265,8 +274,17 @@ export default {
     },
     async addPunto() {
       if (this.punto) {
+        const newPunto = {}
+        Object.keys(this.newPunto).forEach((puntoKey) => {
+          const newValue = this.newPunto[puntoKey]
+          console.log(this.punto[puntoKey], newValue)
+          if (this.punto[puntoKey] !== newValue) {
+            newPunto[puntoKey] = newValue
+          }
+        })
         try {
-          await this.$axios.$patch(`/users/puntos/${this.punto.id}/`, this.getNewPunto)
+          await this.$axios.$patch(`/users/puntos/${this.punto.id}/`, newPunto)
+          this.$emit('punto-updated')
         } catch (e) {
           this.errors = e.response.data
           return

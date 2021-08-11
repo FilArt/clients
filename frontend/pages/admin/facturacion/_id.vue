@@ -22,7 +22,8 @@
         facturacion
         @bid-added="refresh"
         @bid-deleted="refresh"
-        @tramitate="onTramitate"
+        @tramitate="refresh"
+        @punto-updated="refresh"
       />
     </v-card-text>
   </v-card>
@@ -45,7 +46,7 @@ export default {
     }
   },
   methods: {
-    async onTramitate() {
+    async refresh() {
       const user = await this.$axios.$get(`users/users/${this.$route.params.id}/`)
       await this.$store.dispatch('bids/fetchBids', { params: `user=${user.id}` })
       this.user = user
@@ -65,9 +66,6 @@ export default {
           break
       }
       return color
-    },
-    async refresh() {
-      this.user = await this.$axios.$get(`users/users/${this.user.id}/`)
     },
   },
 }

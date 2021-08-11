@@ -15,7 +15,7 @@
           <tramitacion
             :facturacion="facturacion"
             @tramitate="$emit('tramitate')"
-            @punto-deleted="$emit('punto-deleted')"
+            @punto-updated="$emit('punto-updated')"
           />
         </v-card-text>
       </v-card>

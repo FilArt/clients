@@ -3,7 +3,7 @@
     <v-dialog v-if="punto" v-model="puntoDialog" max-width="1500">
       <template v-slot:activator="{ on }">
         <v-list-item-title>
-          <v-btn v-on="on"> (id: {{ punto.id }}) {{ punto.name || punto.cups_luz || punto.cups_gas }} </v-btn>
+          <v-btn v-on="on"> (id: {{ punto.id }}) {{ punto.name }} </v-btn>
         </v-list-item-title>
       </template>
 
@@ -89,7 +89,7 @@
                 />
 
                 <v-text-field
-                  v-else
+                  v-else-if="punto[header.value] === 'name' ? punto.is_name_changed : true"
                   v-model="punto[header.value]"
                   dense
                   :label="header.text"
@@ -97,6 +97,7 @@
                   @input="values[header.value] = $event"
                   @click:append="save({ id: punto.id, field: header.value })"
                 />
+                {{ punto[header.value] }}
               </v-card-text>
 
               <v-row
@@ -228,8 +229,12 @@ export default {
         dangerMode: true,
       })
       if (!willDelete) return
-      await this.$axios.$delete(`/users/puntos/${punto.id}/`)
-      this.$emit('punto-deleted')
+      try {
+        await this.$axios.$delete(`/users/puntos/${punto.id}/`)
+      } catch (e) {
+        this.$swal.error(e.response && e.response.data ? JSON.stringify(e.response.data) : e)
+      }
+      this.$emit('punto-updated')
       await this.$router.replace({ query: null })
     },
     getColor(attachmentId) {
