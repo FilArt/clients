@@ -42,6 +42,7 @@
                   </v-btn>
 
                   <add-punto-dialog
+                    :user-id="forClient"
                     :bid="{ offer }"
                     :offer-client-type="offer.client_type"
                     closeable

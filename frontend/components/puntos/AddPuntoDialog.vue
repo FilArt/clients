@@ -8,6 +8,7 @@
     </template>
 
     <add-punto
+      :user-id="userId"
       :closeable="closeable"
       :color="color"
       :offer-client-type="offerClientType"
@@ -44,6 +45,10 @@ export default {
     },
     label: {
       type: [String, Number],
+      default: null,
+    },
+    userId: {
+      type: Number,
       default: null,
     },
     punto: {

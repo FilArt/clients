@@ -135,8 +135,8 @@ export default {
       default: () => null,
     },
     userId: {
-      type: [String, Number],
-      default: () => null,
+      type: Number,
+      default: null,
     },
   },
   data() {
