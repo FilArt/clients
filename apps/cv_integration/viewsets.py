@@ -73,7 +73,7 @@ class CallVisitUserViewSet(viewsets.ModelViewSet):
                         "fecha_firma": process_date(bid.fecha_firma),
                         "fecha_cambio": process_date(punto.last_time_company_luz_changed),
                         "email": client.email,
-                        "oferta": bid.offer.name,
+                        "oferta": bid.offer.name if hasattr(bid.offer) and bid.offer else None,
                         "p1": punto.p1,
                         "p2": punto.p2,
                         "p3": punto.p3,
