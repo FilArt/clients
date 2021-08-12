@@ -3,7 +3,7 @@
     <template v-slot:activator="{ on }">
       <v-btn :color="color" v-on="on">
         <v-icon v-if="!punto" left :color="color">mdi-plus</v-icon>
-        {{ punto ? punto.name : 'Añadir' }}
+        {{ punto ? punto.name || punto.cups_luz || punto.cups_gas || punto.id : 'Añadir' }}
       </v-btn>
     </template>
 

@@ -1,5 +1,13 @@
 <template>
   <v-form>
+    <v-select
+      v-model="form.kind"
+      :items="[
+        { text: 'Luz', value: 'luz' },
+        { text: 'Gas', value: 'gas' },
+      ]"
+      label="Typo de oferta"
+    />
     <company-select v-model="form.company" />
     <tarif-select v-model="form.tarif" all />
     <client-type-select v-model="form.client_type" />
@@ -12,6 +20,7 @@
     <offer-select
       v-model="offer"
       :company="form.company"
+      :kind="form.kind"
       :tarif="form.tarif"
       :client-type="form.client_type"
       :p1="form.p1"
@@ -26,7 +35,6 @@
   </v-form>
 </template>
 <script>
-import constants from '../../lib/constants'
 export default {
   name: 'SelectOfferForm',
   components: {
@@ -40,6 +48,7 @@ export default {
     return {
       offer: null,
       form: {
+        kind: null,
         company: null,
         tarif: null,
         client_type: null,
@@ -57,8 +66,8 @@ export default {
     decimalFields() {
       if (!this.form.tarif) return []
       return [
-        ...[1, 2, 3, 4, 5, 6]
-          .filter((number) => constants.showInput('p', number, this.form.tarif))
+        ...[1, 2, 6]
+          .filter((number) => (number === 6 ? this.form.tarif === '3.0TD' : this.form.tarif === '2.0TD'))
           .map((number) => ({ text: `P${number}`, value: `p${number}` })),
         {
           text: 'Consumo',

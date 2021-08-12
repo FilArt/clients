@@ -13,7 +13,7 @@ from rest_framework_tracking.mixins import LoggingMixin
 
 from apps.calculator.pagination import OffersPagination
 
-from .models import CalculatorSettings, Company, Offer, PriorityOffer
+from .models import CalculatorSettings, Company, Offer, PriorityOffer, Tarif
 from .permissions import CalculatorSettingsPermission, OffersPermission
 from .serializers import (
     CalculatorSettingsSerializer,
@@ -77,15 +77,20 @@ class OfferViewSet(viewsets.ReadOnlyModelViewSet):
 
     def filter_queryset(self, queryset):
         queryset = super(OfferViewSet, self).filter_queryset(queryset)
-        power_values = [
-            str(val).replace(",", ".")
-            for val in [self.request.query_params.get(key) for key in ("p1", "p2", "p3", "p4", "p5", "p6")]
-            if val
-        ]
-        if power_values:
-            power_values = tuple(map(float, power_values))
-            power_max = max(power_values)
-            queryset = queryset.filter(power_min__lte=power_max, power_max__gte=power_max)
+        tarif = self.request.query_params.get("tarif")
+        if tarif:
+            if tarif == Tarif.T20TD.value:
+                p1, p2 = self.request.query_params.get("p1"), self.request.query_params.get("p2")
+                if p1 or p2:
+                    maxp = max(map(float, filter(None, (p1, p2))))
+                    queryset = queryset.filter(power_min__lte=maxp, power_max__gte=maxp)
+
+            elif tarif == Tarif.T30TD.value:
+                p6 = float(self.request.query_params.get("p6", 0))
+                print(p6)
+                if p6:
+                    queryset = queryset.filter(power_min__lte=p6, power_max__gte=p6)
+
         return queryset
 
     def get_serializer_class(self):
