@@ -1,16 +1,27 @@
 <template>
   <v-form>
-    <v-select
-      v-model="form.kind"
-      :items="[
-        { text: 'Luz', value: 'luz' },
-        { text: 'Gas', value: 'gas' },
-      ]"
-      label="Typo de oferta"
-    />
+    <v-card-text class="text-center">
+      <v-btn-toggle v-model="form.client_type">
+        <v-btn :value="0">Residencial - Físico</v-btn>
+        <v-btn :value="1">Jurídico (empresa)</v-btn>
+        <v-btn :value="2">PYME - Físico (autonomo)</v-btn>
+      </v-btn-toggle>
+    </v-card-text>
+
+    <v-card-text class="text-center">
+      <v-btn-toggle v-model="form.kind" mandatory>
+        <v-btn value="luz">
+          Luz
+          <v-icon color="warning" right>mdi-flash</v-icon>
+        </v-btn>
+        <v-btn value="gas">
+          Gas
+          <v-icon color="blue" right>mdi-fire</v-icon>
+        </v-btn>
+      </v-btn-toggle>
+    </v-card-text>
     <company-select v-model="form.company" />
     <tarif-select v-model="form.tarif" all />
-    <client-type-select v-model="form.client_type" />
     <decimal-field
       v-for="(decimalField, idx) in decimalFields"
       :key="idx"
@@ -41,7 +52,6 @@ export default {
     DecimalField: () => import('@/components/fields/decimalField'),
     CompanySelect: () => import('@/components/selects/CompanySelect'),
     TarifSelect: () => import('@/components/selects/TarifSelect'),
-    ClientTypeSelect: () => import('@/components/selects/ClientTypeSelect'),
     OfferSelect: () => import('@/components/selects/OfferSelect'),
   },
   data() {
