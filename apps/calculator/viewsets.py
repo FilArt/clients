@@ -64,6 +64,7 @@ class OfferViewSet(viewsets.ReadOnlyModelViewSet):
         "power_max": ("gt", "lt", "gte", "lte"),
         "kind": ("exact",),
         "calculator": ("exact",),
+        "active": ("exact",),
     }
     permission_classes: Tuple = tuple()
     search_fields = ("name",)
