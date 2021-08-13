@@ -3,7 +3,7 @@
     <v-dialog v-if="punto" v-model="puntoDialog" max-width="1500">
       <template v-slot:activator="{ on }">
         <v-list-item-title>
-          <v-btn v-on="on"> (id: {{ punto.id }}) {{ punto.name }} </v-btn>
+          <v-btn v-on="on"> (id: {{ punto.id }}) {{ punto.name || punto.cups_luz || punto.cups_gas }} </v-btn>
         </v-list-item-title>
       </template>
 
@@ -97,7 +97,6 @@
                   @input="values[header.value] = $event"
                   @click:append="save({ id: punto.id, field: header.value })"
                 />
-                {{ punto[header.value] }}
               </v-card-text>
 
               <v-row
