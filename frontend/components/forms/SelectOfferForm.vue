@@ -76,8 +76,8 @@ export default {
     decimalFields() {
       if (!this.form.tarif) return []
       return [
-        ...[1, 2, 6]
-          .filter((number) => (number === 6 ? this.form.tarif === '3.0TD' : this.form.tarif === '2.0TD'))
+        ...[1, 2, 3, 4, 5, 6]
+          .filter((number) => (this.form.tarif === '2.0TD' ? [1, 2].includes(number) : true))
           .map((number) => ({ text: `P${number}`, value: `p${number}` })),
         {
           text: 'Consumo',
