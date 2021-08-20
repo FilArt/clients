@@ -1,5 +1,6 @@
 from django.core import validators
 from django.db import models
+from django.utils.translation import gettext_lazy as _
 from rest_framework import serializers
 
 from apps.calculator.validators import validate_uppercase
@@ -8,6 +9,7 @@ from apps.calculator.validators import validate_uppercase
 class NameField(models.CharField):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
+        self.verbose_name = _("Name")
         self.validators.append(validators.MinLengthValidator(1))
         self.validators.append(validate_uppercase)
 

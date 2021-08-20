@@ -4,6 +4,16 @@ from drf_dynamic_fields import DynamicFieldsMixin
 from rest_framework import serializers
 from rest_framework_tracking.models import APIRequestLog
 
+from apps.bids.models import Bid, BidStory
+from apps.calculator.models import CalculatorSettings, Company
+from apps.users.models import Attachment, CustomUser, Punto, UserSettings
+
+
+def translate_fields(json_obj: dict):
+    models = [CustomUser, Bid, BidStory, Punto, Attachment, UserSettings, Company, CalculatorSettings]
+    names = {field.name: field.verbose_name for model in models for field in model._meta.fields}
+    return {names.get(k, k) or k: v for k, v in json_obj.items()}
+
 
 class PrettyJsonField(serializers.JSONField):
     def to_representation(self, value=None):
@@ -12,8 +22,12 @@ class PrettyJsonField(serializers.JSONField):
             return value
         elif isinstance(value, str) and "{" in value and "}" in value:
             try:
-                value = value.replace("'", '"').replace("True", "true").replace("False", "false")
-                return yaml.dump(ujson.loads(value))
+                value = (
+                    value.replace("'", '"').replace("True", "true").replace("False", "false").replace("None", "null")
+                )
+                json_obj = ujson.loads(value)
+                json_obj = translate_fields(json_obj)
+                return yaml.dump(json_obj)
             except ValueError:
                 pass
 

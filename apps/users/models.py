@@ -263,7 +263,7 @@ class Punto(models.Model):
     )
     user = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name="puntos")
     name = MyCharField(verbose_name=_("Name"))
-    is_name_changed = models.BooleanField(blank=True, null=True)
+    is_name_changed = models.BooleanField(verbose_name=_("Is name changed"), blank=True, null=True)
     company_luz = models.ForeignKey(
         verbose_name=_("Company light"),
         to="calculator.Company",
