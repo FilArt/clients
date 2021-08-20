@@ -1,24 +1,19 @@
-from apps.calculator.fields import ConsumoPotenciaField
 import logging
 from typing import List
 
+from apps.bids.models import Bid, BidStory
+from apps.calculator.fields import ConsumoPotenciaField
+from apps.calculator.models import Offer
+from apps.users.models import Attachment, CustomUser, Punto, UserSettings
+from apps.users.utils import PENDIENTE_TRAMITACION, TRAMITACION
 from django.contrib.auth.base_user import BaseUserManager
 from django.db import transaction
 from django.utils import timezone
 from drf_dynamic_fields import DynamicFieldsMixin
-from email_validator import validate_email, EmailSyntaxError, EmailNotValidError
+from email_validator import EmailNotValidError, EmailSyntaxError, validate_email
 from rest_framework import serializers
-from rest_framework.exceptions import ValidationError, PermissionDenied
+from rest_framework.exceptions import PermissionDenied, ValidationError
 
-from apps.bids.models import Bid, BidStory
-from apps.calculator.models import Offer
-from apps.users.models import (
-    Attachment,
-    CustomUser,
-    Punto,
-    UserSettings,
-)
-from apps.users.utils import PENDIENTE_TRAMITACION, TRAMITACION
 from clients.utils import notify_telegram
 
 logger = logging.getLogger(__name__)
@@ -511,6 +506,7 @@ class AgentContractSerializer(serializers.ModelSerializer):
 
         ff = timezone.now()
         for pkey, punto_data in enumerate(puntos):
+            punto_data["created_by"] = responsible
             offer = punto_data.pop("offer") if "offer" in punto_data else None
             if (
                 offer
