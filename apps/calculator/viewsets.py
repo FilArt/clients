@@ -1,4 +1,3 @@
-from apps.calculator.filters import OfferFilterSet
 import csv
 from typing import Tuple
 
@@ -11,6 +10,7 @@ from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework_tracking.mixins import LoggingMixin
 
+from apps.calculator.filters import OfferFilterSet
 from apps.calculator.pagination import OffersPagination
 
 from .models import CalculatorSettings, Company, Offer, PriorityOffer, Tarif
@@ -87,10 +87,12 @@ class OfferViewSet(viewsets.ReadOnlyModelViewSet):
                     queryset = queryset.filter(power_min__lte=maxp, power_max__gte=maxp)
 
             elif tarif == Tarif.T30TD.value:
-                p6 = float(self.request.query_params.get("p6", 0))
-                print(p6)
-                if p6:
-                    queryset = queryset.filter(power_min__lte=p6, power_max__gte=p6)
+                try:
+                    p6 = float(str(self.request.query_params.get("p6", "0")).replace(",", "."))
+                    if p6:
+                        queryset = queryset.filter(power_min__lte=p6, power_max__gte=p6)
+                except ValueError:
+                    pass
 
         return queryset
 
