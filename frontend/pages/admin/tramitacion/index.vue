@@ -1,7 +1,13 @@
 <template>
   <v-card>
     <v-card-text>
-      <users-table-expandable :statuses="statuses" :headers="headers" :mode="mode" is-support show-date-filters />
+      <users-table-expandable
+        :statuses="statuses"
+        :headers="headers"
+        mode="tramitacion"
+        is-support
+        show-date-filters
+      />
     </v-card-text>
   </v-card>
 </template>
@@ -16,11 +22,7 @@ export default {
   },
   data() {
     return {
-      statuses: [
-        constants.statuses.KO,
-        constants.statuses.PENDIENTE_TRAMITACION,
-        constants.statuses.TRAMITACION_EN_PROCESO,
-      ],
+      statuses: Object.values(constants.statuses.tramitacion),
       mode: 'tramitacion',
       headers: ['id', 'fecha_registro', 'fullname', 'responsible_fn', 'bids_count'],
     }

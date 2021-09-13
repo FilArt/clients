@@ -19,13 +19,13 @@ const PAGADO = 'Pagado'
 
 const statuses = {
   LEED,
-  KO,
   KO_PAPELLERA,
   PENDIENTE_TRAMITACION,
   TRAMITACION_EN_PROCESO,
   PENDIENTE_PAGO,
   PAGADO,
   tramitacion: {
+    KO,
     PENDIENTE_TRAMITACION,
     TRAMITACION_EN_PROCESO,
   },
