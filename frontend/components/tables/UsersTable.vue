@@ -639,21 +639,25 @@ export default {
         })
       } catch (e) {
         const err = e.response.data
-        const text = err
-          .map((clientError) => {
-            const clientId = Object.keys(clientError)[0]
-            const clientErrors = clientError[clientId]
-            return (
-              `Errores de tarjeta ${clientId}:\n` +
-              Object.keys(clientErrors)
-                .map((field) => {
-                  const error = clientErrors[field]
-                  return `${field}: ${error}`
-                })
-                .join(';\n')
-            )
-          })
-          .join('\n----------------------------------------\n')
+        let text = err
+        if (typeof err === 'object') {
+          text = err
+            .map((clientError) => {
+              const clientId = Object.keys(clientError)[0]
+              const clientErrors = clientError[clientId]
+              return (
+                `Errores de tarjeta ${clientId}:\n` +
+                Object.keys(clientErrors)
+                  .map((field) => {
+                    const error = clientErrors[field]
+                    return `${field}: ${JSON.stringify(error)}`
+                  })
+                  .join(';\n')
+              )
+            })
+            .join('\n----------------------------------------\n')
+            .substring(0, 500)
+        }
         await this.$swal({
           title: 'Error',
           icon: 'error',

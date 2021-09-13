@@ -48,32 +48,48 @@ class CallVisitUserViewSet(viewsets.ModelViewSet):
 
         clients_ids = request.data.get("clients")
         clients = get_user_model().objects.filter(id__in=clients_ids)
-        errors = []
         client: CustomUser
         authed_cv_client = get_authed_cv_client(getattr(request.user, "callvisituser"))
+        cupses = {
+            client.id: bid.punto.cups_luz or bid.punto.cups_gas for client in clients for bid in client.bids.all()
+        }
+        cards_ids = authed_cv_client.get(f"{settings.CALL_VISIT_URL}/api/cards/get_cards_ids/?cupses={cupses}").json()
+        errors = []
         for client in clients:
             bids = getattr(client, "bids").all()
             for bid in bids:
                 punto: Punto = bid.punto
                 item = {
-                    k: v
-                    for k, v in {
-                        "name": client.fullname,
-                        "postalcode": punto.postalcode,
-                        "cups": punto.cups_luz or punto.cups_gas,
-                        "cups_gas": punto.cups_gas,
+                    "name": client.fullname,
+                    "client_type": "F" if punto.client_type == 0 else "J",
+                    "persona_contacto": punto.legal_representative or client.legal_representative,
+                    "fecha_firma": process_date(bid.fecha_firma),
+                    "email": client.email,
+                    "operator_id": request.data.get("operator"),
+                    "manager_id": request.data.get("manager"),
+                    "status": request.data.get("status"),
+                    "dni": punto.dni,
+                    "cif": client.cif_nif,
+                    "iban": punto.iban,
+                    "phones": [p for p in [client.phone, client.phone_city] if p],
+                    "is_client": True,
+                    "puntos": [],
+                }
+                cv_punto = {
+                    "address": {
+                        "locality": {
+                            "name": punto.locality,
+                            "postal_code": punto.postalcode,
+                            "state": punto.province.title() if punto.province else None,
+                        },
+                        "raw": punto.address,
+                    }
+                }
+                if punto.cups_luz:
+                    cv_punto["punto_luz"] = {
+                        "cups": punto.cups_luz,
                         "tarif": punto.tarif_luz,
-                        "tarif_gas": punto.tarif_gas,
-                        "client_type": "F" if punto.client_type == 0 else "J",
-                        "persona_contacto": punto.legal_representative or client.legal_representative,
-                        "commers": punto.company_luz.name if punto.company_luz else None,
-                        "province": punto.province,
-                        "poblacion": punto.locality,
-                        "direccion": punto.address,
-                        "fecha_firma": process_date(bid.fecha_firma),
-                        "fecha_cambio": process_date(punto.last_time_company_luz_changed),
-                        "email": client.email,
-                        "oferta": bid.offer.name if hasattr(bid, "offer") and bid.offer else None,
+                        "company": punto.company_luz.id if punto.company_luz else None,
                         "p1": punto.p1,
                         "p2": punto.p2,
                         "p3": punto.p3,
@@ -81,54 +97,47 @@ class CallVisitUserViewSet(viewsets.ModelViewSet):
                         "p5": punto.p5,
                         "p6": punto.p6,
                         "consumo": punto.consumo_annual_luz,
-                        "consumo_gas": punto.consumo_annual_gas,
-                        "operator": request.data.get("operator"),
-                        "manager": request.data.get("manager"),
-                        "status": request.data.get("status"),
-                        "tele": request.data.get("tele"),
-                        "dni": punto.dni,
-                        "cif": client.cif_nif,
-                        "iban": punto.iban,
-                        "phones2": [p for p in [client.phone, client.phone_city] if p],
-                        "is_client": True,
-                    }.items()
-                    if v
-                }
+                        "fecha_cambio": process_date(punto.last_time_company_luz_changed),
+                    }
+                if punto.cups_gas:
+                    cv_punto["punto_gas"] = {
+                        "cups": punto.cups_gas,
+                        "company": punto.company_gas.id if punto.company_gas else None,
+                        "tarif": punto.tarif_gas,
+                        "fecha_cambio": process_date(punto.last_time_company_luz_changed),
+                        "consumo": punto.consumo_annual_gas,
+                    }
+
+                item["puntos"].append(cv_punto)
+
+            card_id = cards_ids.get(cupses[client.id])
+            if card_id:
+                response = authed_cv_client.patch(
+                    f"{settings.CALL_VISIT_URL}/api/cards/{card_id}/", json={**item, "card_id": card_id}
+                )
+            else:
                 response = authed_cv_client.post(f"{settings.CALL_VISIT_URL}/api/cards/", json=item)
-                if not response.ok and (
-                    "La tarjeta con ese cups ya existe" in response.text or "Multipunto" in response.text
-                ):
-                    cups = punto.cups_luz or punto.cups_gas
-                    response = authed_cv_client.get(f"{settings.CALL_VISIT_URL}/api/cards/get_by_cups/?cups={cups}")
-                    card_id = response.json()
-                    item.pop("cups")
-                    response = authed_cv_client.patch(f"{settings.CALL_VISIT_URL}/api/cards/{card_id}/", json=item)
 
-                if not response.ok:
-                    if response.status_code == 404:
-                        errors.append({client.id: ["No ha encontrado"]})
-                    else:
-                        try:
-                            errors.append({client.id: response.json()})
-                        except json.JSONDecodeError:
-                            errors.append({client.id: response.text})
-                else:
-                    with transaction.atomic():
-                        client.renovated = True
-                        client.save(update_fields=["renovated"])
-
-                        APIRequestLog.objects.create(
-                            remote_addr=request.headers.get("X-Real-IP", "127.0.0.1"),
-                            requested_at=timezone.now(),
-                            view="apps.users.viewsets.ManageUsersViewSet",
-                            view_method="update",
-                            path="/api/users/manage_users/{pk}/",
-                            data={"renovated": True},
-                        )
+            if response.ok:
+                with transaction.atomic():
+                    clients.update(renovated=True)
+                    APIRequestLog.objects.create(
+                        remote_addr=request.headers.get("X-Real-IP", "127.0.0.1"),
+                        requested_at=timezone.now(),
+                        view="apps.users.viewsets.ManageUsersViewSet",
+                        view_method="update",
+                        path=f"/api/users/manage_users/{client.id}/",
+                        data={"renovated": True},
+                    )
+            else:
+                try:
+                    errors.append({client.id: response.json()})
+                except json.JSONDecodeError:
+                    errors.append({client.id: response.text})
 
         if errors:
             raise ValidationError(errors)
-        return Response("OK")
+        return Response("OK", status=201)
 
 
 @api_view(http_method_names=["POST"])

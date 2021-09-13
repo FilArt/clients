@@ -5,7 +5,7 @@
   "author": "Gestion Group",
   "private": true,
   "scripts": {
-    "dev": "nuxt",
+    "dev": "BACKEND_HOST=http://localhost:8001 nuxt",
     "build": "nuxt build",
     "start": "nuxt start",
     "generate": "nuxt generate",
