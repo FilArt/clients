@@ -32,6 +32,9 @@
         <template v-slot:top>
           <v-row>
             <v-col>
+              <v-text-field v-model="search" label="Buscar" />
+            </v-col>
+            <v-col>
               <v-autocomplete
                 v-model="filters.user__in"
                 :items="users"
@@ -73,7 +76,9 @@
         <template v-slot:item.response="{ item }">
           <v-dialog v-if="item.response" max-width="1000px">
             <template v-slot:activator="{ on }">
-              <v-btn v-on="on">show</v-btn>
+              <v-btn icon v-on="on">
+                <v-icon>mdi-eye</v-icon>
+              </v-btn>
             </template>
             <v-card>
               <v-card-text>
@@ -83,24 +88,11 @@
           </v-dialog>
         </template>
 
-        <template v-slot:item.query_params="{ item }">
-          <v-dialog v-if="item.query_params" max-width="1000px">
-            <template v-slot:activator="{ on }">
-              <v-btn v-on="on">show</v-btn>
-            </template>
-            <v-card>
-              <v-card-text>
-                <pre>{{ item.query_params }}</pre>
-              </v-card-text>
-            </v-card>
-          </v-dialog>
-        </template>
-
         <template v-slot:item.errors="{ item }">
           <v-dialog v-if="item.errors" max-width="1000px">
-            <template v-slot:activator="{ on }">
-              <v-btn v-on="on">show</v-btn>
-            </template>
+            <v-btn icon v-on="on">
+              <v-icon>mdi-eye</v-icon>
+            </v-btn>
             <v-card>
               <v-card-text>
                 <pre>{{ item.errors }}</pre>
@@ -112,7 +104,9 @@
         <template v-slot:item.data="{ item }">
           <v-dialog v-if="item.data" max-width="1000px">
             <template v-slot:activator="{ on }">
-              <v-btn v-on="on">show</v-btn>
+              <v-btn icon v-on="on">
+                <v-icon>mdi-eye</v-icon>
+              </v-btn>
             </template>
             <v-card>
               <v-card-text>
@@ -123,9 +117,11 @@
         </template>
 
         <template v-slot:item.query_params="{ item }">
-          <v-dialog v-if="item.query_params" max-width="1000px">
+          <v-dialog v-if="item.query_params && item.query_params !== item.data" max-width="1000px">
             <template v-slot:activator="{ on }">
-              <v-btn v-on="on">show</v-btn>
+              <v-btn icon v-on="on">
+                <v-icon>mdi-eye</v-icon>
+              </v-btn>
             </template>
             <v-card>
               <v-card-text>
@@ -144,6 +140,8 @@ import { format, parseISO } from 'date-fns'
 export default {
   data() {
     return {
+      debounceSearchTimeout: null,
+      debounceSearch: '',
       users: [],
       filters: {
         user__in: [],
@@ -190,6 +188,24 @@ export default {
       ],
     }
   },
+  computed: {
+    search: {
+      get() {
+        return this.debounceSearch
+      },
+      set(val) {
+        if (this.debounceSearchTimeout) clearTimeout(this.debounceSearchTimeout)
+        this.debounceSearchTimeout = setTimeout(() => {
+          this.debounceSearch = val
+        }, 300)
+      },
+    },
+  },
+  watch: {
+    async debounceSearch() {
+      await this.refresh()
+    },
+  },
   async mounted() {
     await this.refresh()
     await this.fetchUsers()
@@ -224,6 +240,7 @@ export default {
         'page=' + opts.page,
         'size=' + opts.itemsPerPage || 10,
         'ordering=' + ordering,
+        'search=' + this.search,
         filters,
       ]
       return params.join('&')

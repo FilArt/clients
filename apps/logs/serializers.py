@@ -1,18 +1,20 @@
+from functools import reduce
+from typing import Dict, List
+
 import ujson
 import yaml
+from clients.utils import MAP_CARD_FIELDS, PYTHON_VALUES_MAP
 from drf_dynamic_fields import DynamicFieldsMixin
 from rest_framework import serializers
 from rest_framework_tracking.models import APIRequestLog
 
-from apps.bids.models import Bid, BidStory
-from apps.calculator.models import CalculatorSettings, Company
-from apps.users.models import Attachment, CustomUser, Punto, UserSettings
-
 
 def translate_fields(json_obj: dict):
-    models = [CustomUser, Bid, BidStory, Punto, Attachment, UserSettings, Company, CalculatorSettings]
-    names = {field.name: field.verbose_name for model in models for field in model._meta.fields}
-    return {names.get(k, k) or k: v for k, v in json_obj.items()}
+    res = {}
+    for k, v in json_obj.items():
+        val = translate_fields(v) if isinstance(v, dict) else (PYTHON_VALUES_MAP.get(str(v).lower()) or v or "")
+        res[MAP_CARD_FIELDS.get(k) or k] = val
+    return res
 
 
 class PrettyJsonField(serializers.JSONField):
@@ -23,11 +25,53 @@ class PrettyJsonField(serializers.JSONField):
         elif isinstance(value, str) and "{" in value and "}" in value:
             try:
                 value = (
-                    value.replace("'", '"').replace("True", "true").replace("False", "false").replace("None", "null")
+                    value.replace("'", '"')
+                    .replace("True", "✅")
+                    .replace("False", "❌")
+                    .replace("None", "null")
+                    .replace("<", '"')
+                    .replace(">", '"')
+                    .strip()
                 )
-                json_obj = ujson.loads(value)
-                json_obj = translate_fields(json_obj)
-                return yaml.dump(json_obj)
+                obj = ujson.loads(value)
+
+                def unflat_object(o: Dict[str, str], ks: List[str], v: str, previous_key: str = None):
+                    res = {**o}
+                    if len(ks) == 1:
+                        last_key = ks[0]
+                        res[last_key] = v
+                        return res
+
+                    next_key = ks[0]
+                    ks = ks[1:]
+
+                    if next_key.isdigit():
+                        index, next_key = next_key, ks[0]
+                        arr = res.get(previous_key, {})
+                        el = arr.get(index, {})
+                        el = unflat_object(el, ks, v, previous_key=next_key)
+                        arr[index] = el
+                        res[previous_key] = arr
+
+                    return unflat_object(res, ks, v, previous_key=next_key)
+
+                def deserialize(acc, pair):
+                    key, value = pair
+                    if key.startswith("puntos["):
+                        acc["puntos"] = acc.get("puntos", {})
+                        _, index, *other_parts = [k.replace("]", "") for k in key.split("[")]
+                        puntos = acc.get("puntos", {})
+                        punto = puntos.get(index, {})
+                        punto = unflat_object(punto, other_parts, value)
+                        acc["puntos"][index] = punto
+                    else:
+                        acc[key] = value
+                    return acc
+
+                obj = reduce(deserialize, obj.items(), {})
+
+                return yaml.dump(translate_fields(obj))
+
             except ValueError:
                 pass
 

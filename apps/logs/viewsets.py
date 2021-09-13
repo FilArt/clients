@@ -1,8 +1,9 @@
 from rest_framework import viewsets
-from rest_framework_tracking.models import APIRequestLog
-from .serializers import LogSerializer
-from ..users.permissions import AdminPermission
 from rest_framework.pagination import PageNumberPagination
+from rest_framework_tracking.models import APIRequestLog
+
+from ..users.permissions import AdminPermission
+from .serializers import LogSerializer
 
 
 class LogPagination(PageNumberPagination):
@@ -19,3 +20,4 @@ class LogViewSet(viewsets.ModelViewSet):
         "user": ["exact", "in"],
         "method": ["exact", "in"],
     }
+    search_fields = ("path", 'data')
