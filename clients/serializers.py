@@ -185,7 +185,7 @@ class BidListSerializer(DynamicFieldsMixin, serializers.ModelSerializer):
     agent_type = serializers.CharField(source="user.agent_type", read_only=True)
     canal = serializers.CharField(source="user.responsible.canal", read_only=True)
     created_at = serializers.DateTimeField(format="%d.%m.%Y %H:%M")
-    fecha_firma = serializers.SerializerMethodField()
+    fecha_firma = serializers.DateTimeField(format="%d/%m/%Y %H:%M")
     internal_message = serializers.CharField(write_only=True, allow_blank=True, allow_null=True)
     message = serializers.CharField(write_only=True, allow_blank=True, allow_null=True)
     mymoney = serializers.SerializerMethodField()
@@ -208,12 +208,6 @@ class BidListSerializer(DynamicFieldsMixin, serializers.ModelSerializer):
         if bid.offer:
             return bid.offer.company.offer_status_used
         return False
-
-    # noinspection PyMethodMayBeStatic
-    def get_fecha_firma(self, bid: Bid) -> str:
-        if getattr(bid, "status") not in (TRAMITACION, PENDIENTE_TRAMITACION):
-            return bid.fecha_firma.strftime("%d/%m/%Y %H:%M") if bid.fecha_firma else ""
-        return ""
 
     def get_status(self, bid: Bid):
         by = self.context["request"].user
