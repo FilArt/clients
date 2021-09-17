@@ -25,7 +25,8 @@ class PrettyJsonField(serializers.JSONField):
         elif isinstance(value, str) and "{" in value and "}" in value:
             try:
                 value = (
-                    value.replace("'", '"')
+                    value.replace("D'", "D`")
+                    .replace("'", '"')
                     .replace("True", "✅")
                     .replace("False", "❌")
                     .replace("None", "null")

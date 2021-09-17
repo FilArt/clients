@@ -1,7 +1,8 @@
-import json
 import logging
 from datetime import datetime
 
+import ujson
+from clients.utils import humanize, notify_telegram
 from django.conf import settings
 from django.contrib.auth.base_user import BaseUserManager
 from django.contrib.auth.models import Group
@@ -17,7 +18,7 @@ from rest_framework.exceptions import ValidationError
 from rest_framework_tracking.models import APIRequestLog
 
 from apps.bids.models import Bid
-from clients.utils import notify_telegram, humanize
+
 from .models import Attachment, CustomUser, Punto
 from .utils import PENDIENTE_PAGO
 
@@ -384,6 +385,18 @@ class UserHistorySerializer(serializers.ModelSerializer):
         model = APIRequestLog
         fields = ["id", "data", "user", "requested_at", "username_persistent"]
 
-    def get_data(self, obj):
-        valid_json_string = obj.data.replace("'", '"').replace("True", '"true"').replace("False", "false")
-        return json.loads(valid_json_string)
+    def get_data(self, obj: APIRequestLog) -> str:
+        s: str = (
+            obj.data.replace("D'", "D`")
+            .replace("'", '"')
+            .replace("True", "✅")
+            .replace("False", "❌")
+            .replace("None", "null")
+            .replace("<", '"')
+            .replace(">", '"')
+            .strip()
+        )
+        try:
+            return ujson.loads(s)
+        except ValueError:
+            return s
