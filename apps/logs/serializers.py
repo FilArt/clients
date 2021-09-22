@@ -69,9 +69,12 @@ class PrettyJsonField(serializers.JSONField):
                         acc[key] = value
                     return acc
 
-                obj = reduce(deserialize, obj.items(), {})
+                if isinstance(obj, list):
+                    obj = [translate_fields(reduce(deserialize, error.items(), {})) for error in obj]
+                else:
+                    obj = translate_fields(reduce(deserialize, obj.items(), {}))
 
-                return yaml.dump(translate_fields(obj))
+                return yaml.dump(obj)
 
             except ValueError:
                 pass

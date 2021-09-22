@@ -19,5 +19,6 @@ class LogViewSet(viewsets.ModelViewSet):
     filterset_fields = {
         "user": ["exact", "in"],
         "method": ["exact", "in"],
+        "path": ["icontains"],
     }
-    search_fields = ("path", 'data')
+    search_fields = ("path", "data")
