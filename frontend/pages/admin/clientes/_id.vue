@@ -7,6 +7,12 @@
         </v-btn>
         {{ user.fullname }}
       </v-toolbar-title>
+
+      <v-spacer />
+
+      <v-toolbar-items>
+        <v-btn color="error" @click="moveToKo">Mover a papellera</v-btn>
+      </v-toolbar-items>
     </v-toolbar>
 
     <v-card-text>
@@ -189,6 +195,17 @@ export default {
   },
   computed: mapState({ bids: (state) => state.bids.bids }),
   methods: {
+    async moveToKo() {
+      const confirmed = await this.$swal({
+        title: `¿Estás seguro de que quieres hacer esto?`,
+        icon: 'warning',
+        buttons: true,
+        dangerMode: true,
+      })
+      if (!confirmed) return
+      await this.$axios.$patch(`users/users/${this.user.id}/`, { ko: true })
+      await this.$router.push(`/admin/ko/${this.user.id}`)
+    },
     formatDate(dateStr) {
       return format(new Date(dateStr), 'dd/MM/yyyy HH:mm')
     },
