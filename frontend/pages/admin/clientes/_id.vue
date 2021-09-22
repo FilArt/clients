@@ -134,8 +134,8 @@
             </v-list>
           </v-tab-item>
 
-          <v-tab-item v-if="history.length">
-            <history-list :history="history" />
+          <v-tab-item>
+            <history-list v-if="history.length" :history="history" />
           </v-tab-item>
 
           <v-tab-item>
