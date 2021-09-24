@@ -3,7 +3,7 @@
     <v-dialog v-if="punto" v-model="puntoDialog" max-width="1500">
       <template v-slot:activator="{ on }">
         <v-list-item-title>
-          <v-btn v-on="on"> (id: {{ punto.id }}) {{ punto.name || punto.cups_luz || punto.cups_gas }} </v-btn>
+          <v-btn v-on="on">(id: {{ punto.id }}) {{ punto.cups_luz || punto.cups_gas }}</v-btn>
         </v-list-item-title>
       </template>
 
