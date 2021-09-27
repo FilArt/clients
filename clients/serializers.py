@@ -8,6 +8,7 @@ from apps.users.models import Attachment, CustomUser, Punto, UserSettings
 from apps.users.utils import PENDIENTE_TRAMITACION, TRAMITACION
 from django.contrib.auth.base_user import BaseUserManager
 from django.db import transaction
+from django.db.models import Q
 from django.utils import timezone
 from drf_dynamic_fields import DynamicFieldsMixin
 from email_validator import EmailNotValidError, EmailSyntaxError, validate_email
@@ -390,12 +391,13 @@ class WithFacturaContractOnlineSerializer(AdditionalContractOnlineSerializer):
 
 class ResponsibleField(serializers.EmailField):
     def to_internal_value(self, data):
+        cif_nif = data.split("@")[0]
         try:
-            return CustomUser.objects.get(email=data).email
+            return CustomUser.objects.get(Q(email=data) | Q(cif_nif=cif_nif)).email
         except CustomUser.DoesNotExist:
             from apps.users.serializers import RegisterSerializer
 
-            ser = RegisterSerializer(data={"email": data, "role": "agent", "cif_nif": data.split("@")[0]}, tg_msg=None)
+            ser = RegisterSerializer(data={"email": data, "role": "agent", "cif_nif": cif_nif}, tg_msg=None)
             ser.is_valid(raise_exception=True)
             return ser.save().email
 
