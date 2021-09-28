@@ -98,24 +98,9 @@ class PrettyDateTimeField(serializers.DateTimeField, serializers.ReadOnlyField):
         return humanize(value, locale=self.context["request"].LANGUAGE_CODE)
 
 
-class DateTimeToDateField(serializers.CharField, serializers.Field):
-    def to_representation(self, value):
-        return value.strftime("%d/%m/%Y %H:%M") if value else "-"
-
-    def to_internal_value(self, data):
-        try:
-            return datetime.strptime(data, "%d/%m/%Y")
-        except ValueError:
-            try:
-                return datetime.strptime(data, "%d/%m/%Y %H:%M")
-            except ValueError:
-                return datetime.strptime(data, "%Y-%m-%d %H:%M")
-
-
 class UserListSerializer(DynamicFieldsMixin, serializers.ModelSerializer):
-    fecha_firma = DateTimeToDateField()
-    fecha_registro = DateTimeToDateField()
-    created_at = DateTimeToDateField()
+    fecha_firma = serializers.DateTimeField(read_only=True, format="%d/%m/%Y %H:%M")
+    fecha_registro = serializers.DateTimeField(read_only=True, format="%d/%m/%Y %H:%M")
     paid_count = serializers.SerializerMethodField()
     canal_paid_count = serializers.SerializerMethodField()
     last_login = PrettyDateTimeField()
@@ -329,7 +314,7 @@ class LoadFacturasSerializer(serializers.Serializer):
 
 
 class RequestLogSerializer(DynamicFieldsMixin, serializers.ModelSerializer):
-    requested_at = DateTimeToDateField()
+    requested_at = serializers.DateTimeField(read_only=True)
 
     class Meta:
         model = APIRequestLog
