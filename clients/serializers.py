@@ -239,14 +239,16 @@ class BidListSerializer(DynamicFieldsMixin, serializers.ModelSerializer):
 
         bid_succeeded = bid.success
         _super = super().update(bid, validated_data)
-        if not bid_succeeded:
-            bid.refresh_from_db()
-            if bid.success:
-                bid.fecha_firma = timezone.now()
-                bid.save()
-            elif bid.fecha_firma:
-                bid.fecha_firma = None
-                bid.save()
+        if "fecha_firma" not in validated_data:
+            if not bid_succeeded:
+                bid.refresh_from_db()
+                if bid.success:
+                    bid.fecha_firma = timezone.now()
+                    bid.save()
+                elif bid.fecha_firma:
+                    bid.fecha_firma = None
+                    bid.save()
+
         return _super
 
     def save(self, **kwargs):
