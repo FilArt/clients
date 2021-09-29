@@ -77,7 +77,7 @@
         <v-tab :disabled="!calls.length"> Llamadas ({{ calls.length }}) </v-tab>
         <v-tab :disabled="!history.length">Historia ({{ history.length }})</v-tab>
         <v-tab :disabled="!puntos.length"> Puntos suministros ({{ puntos.length }}) </v-tab>
-        <v-tab>Ficha</v-tab>
+        <v-tab>Call-Visit</v-tab>
 
         <v-tabs-items v-model="tabs">
           <v-tab-item>
