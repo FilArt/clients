@@ -101,6 +101,7 @@ class PrettyDateTimeField(serializers.DateTimeField, serializers.ReadOnlyField):
 class UserListSerializer(DynamicFieldsMixin, serializers.ModelSerializer):
     fecha_firma = serializers.DateTimeField(read_only=True, format="%d/%m/%Y %H:%M")
     fecha_registro = serializers.DateTimeField(read_only=True, format="%d/%m/%Y %H:%M")
+    created_at = serializers.DateTimeField(read_only=True, format="%d/%m/%Y %H:%M")
     paid_count = serializers.SerializerMethodField()
     canal_paid_count = serializers.SerializerMethodField()
     last_login = PrettyDateTimeField()
