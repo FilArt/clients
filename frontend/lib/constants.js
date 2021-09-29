@@ -17,6 +17,10 @@ const TRAMITACION_EN_PROCESO = 'Tramitación en proceso'
 const PENDIENTE_PAGO = 'Pendiente Pago'
 const PAGADO = 'Pagado'
 
+const DEBUG = process.env.NODE_ENV === 'development'
+
+const CV_URL = DEBUG ? 'http://localhost:8000' : 'https://call-visit.gestiongroup.es'
+
 const statuses = {
   LEED,
   KO_PAPELLERA,
@@ -38,6 +42,8 @@ const statuses = {
   },
 }
 export default Object.freeze({
+  DEBUG,
+  CV_URL,
   statuses,
   cleanEmpty,
   userRoles: {

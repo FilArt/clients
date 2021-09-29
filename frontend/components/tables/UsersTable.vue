@@ -589,6 +589,7 @@ export default {
         { text: 'Scoring', value: 'scorings', sortable: false },
         { text: 'Llamadas', value: 'calls', sortable: false },
         { text: 'Estado de oferta', value: 'offer_status', sortable: false },
+        { text: 'Call-Visit ID', value: 'call_visit_id' },
         { text: '', value: 'new_messages_count', sortable: false },
         { value: 'actions', sortable: false },
       ].filter((header) => this.headers.includes(header.value))

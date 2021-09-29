@@ -4,7 +4,7 @@ from typing import List
 from apps.bids.models import Bid, BidStory
 from apps.calculator.fields import ConsumoPotenciaField
 from apps.calculator.models import Offer
-from apps.users.models import Attachment, CustomUser, Punto, UserSettings
+from apps.users.models import Attachment, CallVisitToken, CustomUser, Punto, UserSettings
 from apps.users.utils import PENDIENTE_TRAMITACION, TRAMITACION
 from django.contrib.auth.base_user import BaseUserManager
 from django.db import transaction
@@ -116,6 +116,15 @@ class AccountSerializer(serializers.ModelSerializer):
             user_settings_serializer.save(user=user)
 
         return super().update(user, validated_data)
+
+    def to_representation(self, user):
+        ret = super().to_representation(user)
+        if user.role == "admin":
+            try:
+                ret["cv_token"] = CallVisitToken.objects.get(user=user).token
+            except CallVisitToken.DoesNotExist:
+                pass
+        return ret
 
 
 class OfferListSerializer(DynamicFieldsMixin, serializers.ModelSerializer):
@@ -431,6 +440,7 @@ class AgentContractSerializer(serializers.ModelSerializer):
     class Meta:
         model = CustomUser
         fields = [
+            "call_visit_id",
             "observations",
             "company_name",
             "phone",
@@ -457,14 +467,12 @@ class AgentContractSerializer(serializers.ModelSerializer):
         except (EmailSyntaxError, EmailNotValidError) as e:
             raise ValidationError({"email": e})
 
-        cif_nif = self.initial_data.get("cif_nif")
-        if cif_nif:
-            try:
-                self._user = CustomUser.objects.get(cif_nif=cif_nif)
-            except CustomUser.DoesNotExist:
-                ...
-        else:
-            raise ValidationError({"cif_nif": ["Requiredo."]})
+        cv_id = self.initial_data["call_visit_id"]
+        cif_nif = self.initial_data["cif_nif"]
+        try:
+            self._user = CustomUser.objects.get(Q(call_visit_id=cv_id) | Q(cif_nif=cif_nif))
+        except CustomUser.DoesNotExist:
+            pass
 
         if new_email:
             if CustomUser.objects.filter(email=new_email).exclude(cif_nif=cif_nif).exists():

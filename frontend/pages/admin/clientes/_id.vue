@@ -77,6 +77,7 @@
         <v-tab :disabled="!calls.length"> Llamadas ({{ calls.length }}) </v-tab>
         <v-tab :disabled="!history.length">Historia ({{ history.length }})</v-tab>
         <v-tab :disabled="!puntos.length"> Puntos suministros ({{ puntos.length }}) </v-tab>
+        <v-tab>Ficha</v-tab>
 
         <v-tabs-items v-model="tabs">
           <v-tab-item>
@@ -147,6 +148,10 @@
           <v-tab-item>
             <puntos-list :puntos="puntos" @punto-updated="fetchPuntos" />
           </v-tab-item>
+
+          <v-tab-item>
+            <ficha :card-id="user.call_visit_id" />
+          </v-tab-item>
         </v-tabs-items>
       </v-tabs>
     </v-card-text>
@@ -167,6 +172,7 @@ export default {
     HistoryList: () => import('~/components/history/HistoryList'),
     UserDetailData: () => import('@/components/forms/UserDetailData'),
     CloseButton: () => import('@/components/buttons/closeButton.vue'),
+    Ficha: () => import('../../../components/Ficha.vue'),
   },
   async asyncData({ params, $axios }) {
     const user = await $axios.$get(`/users/users/${params.id}/`)

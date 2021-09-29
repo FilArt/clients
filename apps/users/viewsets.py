@@ -2,6 +2,7 @@ import logging
 import re
 from json import JSONDecodeError
 from typing import Tuple
+
 from clients.serializers import (
     AccountSerializer,
     AdditionalContractOnlineSerializer,
@@ -143,6 +144,7 @@ class UserViewSet(
         "bids__offer_status": ["exact", "isnull"],
     }
     ordering = ("-id",)
+    ordering_fields = "__all__"
 
     def get_queryset(self):
         statuses = self.request.query_params.get("statuses_in")
@@ -171,12 +173,6 @@ class UserViewSet(
 
     def filter_queryset(self, queryset):
         queryset = super(UserViewSet, self).filter_queryset(queryset)
-
-        ordering = self.request.query_params.get("ordering", "") or ""
-        if "-status" in ordering:
-            queryset = queryset.order_by("-status")
-        elif "status" in ordering:
-            queryset = queryset.order_by("status")
 
         for company_field in ("company_luz", "company_gas"):
             company_filter_value = self.request.query_params.get(company_field)

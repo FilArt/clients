@@ -50,13 +50,11 @@ class CallVisitUserViewSet(viewsets.ModelViewSet):
         clients = get_user_model().objects.filter(id__in=clients_ids)
         client: CustomUser
         authed_cv_client = get_authed_cv_client(getattr(request.user, "callvisituser"))
-        cupses = {
-            client.id: bid.punto.cups_luz or bid.punto.cups_gas for client in clients for bid in client.bids.all()
-        }
-        cards_ids = authed_cv_client.get(f"{settings.CALL_VISIT_URL}/api/cards/get_cards_ids/?cupses={cupses}").json()
         errors = []
         for client in clients:
+            cv_id = client.call_visit_id
             bids = getattr(client, "bids").all()
+            is_default = True
             for bid in bids:
                 punto: Punto = bid.punto
                 item = {
@@ -76,15 +74,13 @@ class CallVisitUserViewSet(viewsets.ModelViewSet):
                     "puntos": [],
                 }
                 cv_punto = {
-                    "address": {
-                        "locality": {
-                            "name": punto.locality,
-                            "postal_code": punto.postalcode,
-                            "state": punto.province.title() if punto.province else None,
-                        },
-                        "raw": punto.address,
-                    }
+                    "direction": punto.address,
+                    "locality": punto.locality,
+                    "postalcode": punto.postalcode,
+                    "state": punto.province.title() if punto.province else None,
+                    "is_default": is_default,
                 }
+                is_default = False
                 if punto.cups_luz:
                     cv_punto["punto_luz"] = {
                         "cups": punto.cups_luz,
@@ -110,11 +106,12 @@ class CallVisitUserViewSet(viewsets.ModelViewSet):
 
                 item["puntos"].append(cv_punto)
 
-            card_id = cards_ids.get(cupses[client.id])
-            if card_id:
-                response = authed_cv_client.patch(
-                    f"{settings.CALL_VISIT_URL}/api/cards/{card_id}/", json={**item, "card_id": card_id}
-                )
+            if cv_id:
+                response = authed_cv_client.patch(f"{settings.CALL_VISIT_URL}/api/cards/{cv_id}/", json=item)
+                if response.ok:
+                    cv_id = response.json()["id"]
+                    client.call_visit_id = cv_id
+                    client.save(update_fields=["call_visit_id"])
             else:
                 response = authed_cv_client.post(f"{settings.CALL_VISIT_URL}/api/cards/", json=item)
 

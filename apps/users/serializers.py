@@ -137,6 +137,7 @@ class UserListSerializer(DynamicFieldsMixin, serializers.ModelSerializer):
             "agent_type",
             "company_luz",
             "company_gas",
+            "call_visit_id",
         )
 
     def get_new_messages_count(self, instance: CustomUser) -> int:
@@ -288,6 +289,7 @@ class UserSerializer(UserListSerializer):
             "created_at",
             "observations",
             "company_name",
+            "call_visit_id",
         ]
         extra_kwargs = {"ko": {"write_only": True, "required": False}}
 

@@ -65,6 +65,7 @@ class CustomUser(AbstractUser):
     )
 
     source = models.CharField(max_length=30, choices=SOURCES_CHOICES, default="default")
+    call_visit_id = models.IntegerField(blank=True, null=True)
     role = models.CharField(max_length=10, null=True, blank=True, choices=USER_ROLES_CHOICES)
     client_role = models.CharField(max_length=30, choices=CLIENT_ROLES_CHOICES, default="leed")
     avatar = models.ImageField(blank=True, null=True)
@@ -365,3 +366,8 @@ class Attachment(models.Model):
 
     def __str__(self) -> str:
         return f"{self.attachment} of punto {self.punto}"
+
+
+class CallVisitToken(models.Model):
+    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
+    token = models.CharField(max_length=40)
