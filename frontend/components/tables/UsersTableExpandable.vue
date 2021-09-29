@@ -305,7 +305,7 @@ export default {
       search: query.search || '',
       query: {
         ...query,
-        sortBy: ['fecha_firma'],
+        sortBy: this.mode === 'tramitacion' ? ['fecha_registro'] : ['fecha_firma'],
         sortDesc: [false],
         statuses_in: query.statuses_in
           ? query.statuses_in.length
