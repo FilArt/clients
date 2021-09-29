@@ -8,26 +8,44 @@
         <template v-if="card">
           <template v-for="field in cardFields">
             <div :key="field.value">
+              <cv-user-select v-if="field.type === 'user'" v-model="card[field.value]" :type="field.value" />
               <v-select
-                v-if="field.type === 'select'"
+                v-else-if="field.value === 'status'"
+                v-model="card[field.value]"
+                label="Estado"
+                :items="statuses"
+              />
+              <v-select
+                v-else-if="field.type === 'select'"
                 v-model="card[field.value]"
                 :label="field.label"
-                :items="field.items"
+                :items="[
+                  { text: 'Si', value: true },
+                  { text: 'No', value: false },
+                ]"
               />
               <v-text-field v-else v-model="card[field.value]" :label="field.label" />
             </div>
           </template>
         </template>
       </v-card-text>
+      <v-card-actions>
+        <submit-button label="Guardar" @click="submit" />
+      </v-card-actions>
     </v-card>
   </v-container>
 </template>
 
 <script>
 import constants from '../lib/constants'
+import SubmitButton from './buttons/submitButton.vue'
 
 export default {
   name: 'Ficha',
+  components: {
+    CvUserSelect: () => import('@/components/cv_components/selects/cvUserSelect'),
+    SubmitButton,
+  },
   props: {
     cardId: {
       type: Number,
@@ -40,30 +58,26 @@ export default {
       card: null,
       error: '',
       api: null,
+      statuses: Object.values(constants.cvStatuses),
       url: `${constants.CV_URL}/api/cards/${this.cardId}/`,
       cardFields: [
         {
           label: 'Nombre',
           value: 'name',
         },
-        // {
-        //     label: "Persona contacto",
-        //     value: "persona_contacto",
-        // },
         {
           label: 'Estado',
           value: 'status',
-          type: 'select',
         },
         {
           label: 'Operador',
           value: 'operator',
-          type: 'select',
+          type: 'user',
         },
         {
           label: 'Agente',
           value: 'manager',
-          type: 'select',
+          type: 'user',
         },
         {
           label: 'Cliente',
@@ -74,6 +88,7 @@ export default {
     }
   },
   async mounted() {
+    await this.$store.dispatch('fetchCvUsers')
     const token = this.$auth.user.cv_token
     if (!token) {
       alert('NO HAY TOKEN DE CALL-VISIT.')
@@ -106,6 +121,18 @@ export default {
     async getUsers() {
       const data = await this.api.$get(constants.CV_URL + '/api/users/')
       console.log(data)
+    },
+    async submit() {
+      const data = {}
+      this.cardFields.forEach((f) => {
+        data[f.value] = this.card[f.value]
+      })
+      try {
+        await this.api.$patch(this.url, data)
+        await this.refresh()
+      } catch (e) {
+        alert(JSON.stringify(e.response.data))
+      }
     },
   },
 }
