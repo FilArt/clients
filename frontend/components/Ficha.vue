@@ -37,13 +37,30 @@
                 ]"
               />
 
+              <date-time-filter
+                v-else-if="field.type === 'datetime'"
+                v-model="card[field.value]"
+                :label="field.label"
+                format="YYYY-MM-DD HH:mm"
+                formatted="DD/MM/YYYY HH:mm"
+              />
+
+              <date-time-filter
+                v-else-if="field.type === 'date'"
+                :value.sync="card[field.value]"
+                :label="field.label"
+                format="YYYY-MM-DD HH:mm"
+                formatted="DD/MM/YYYY"
+                @input="card[field.value] = $event.substring(0, 10)"
+              />
+
               <v-text-field v-else v-model="card[field.value]" :label="field.label" />
             </div>
           </template>
         </template>
       </v-card-text>
       <v-card-actions>
-        <submit-button label="Guardar" @click="submit" />
+        <submit-button label="Guardar" :loading="loading" @click="submit" />
       </v-card-actions>
     </v-card>
   </v-container>
@@ -56,6 +73,7 @@ export default {
   name: 'Ficha',
   components: {
     SubmitButton,
+    DateTimeFilter: () => import('~/components/DateTimeFilter'),
   },
   props: {
     cardId: {
@@ -102,6 +120,12 @@ export default {
         {
           label: 'Fecha vencimiento',
           value: 'next_action_date',
+          type: 'datetime',
+        },
+        {
+          label: 'Fecha firma',
+          value: 'fecha_firma',
+          type: 'date',
         },
       ],
     }
@@ -164,15 +188,19 @@ export default {
       console.log(data)
     },
     async submit() {
+      this.loading = true
       const data = {}
       this.cardFields.forEach((f) => {
         data[f.value] = this.card[f.value]
       })
       try {
         await this.api.$patch(this.url, data)
+        this.$toast.global.done()
         await this.refresh()
       } catch (e) {
         alert(JSON.stringify(e.response.data))
+      } finally {
+        this.loading = false
       }
     },
   },
