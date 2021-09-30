@@ -1,5 +1,5 @@
 from django.contrib.auth.base_user import BaseUserManager
-from django.db.models import QuerySet, Case, When, Q, Value, Sum, F, Subquery, OuterRef
+from django.db.models import Case, F, OuterRef, Q, QuerySet, Subquery, Sum, Value, When
 from django.db.models.aggregates import Count, Max
 from django.db.models.fields import CharField
 from django.utils import timezone
@@ -7,13 +7,13 @@ from django.utils.translation import gettext_lazy as _
 
 from .utils import (
     CLIENT_STATUSES,
+    FACTURACION_STATUSES,
     KO,
+    KO_PAPELLERA,
+    PAGADO,
     PENDIENTE_PAGO,
     PENDIENTE_TRAMITACION,
-    PAGADO,
-    KO_PAPELLERA,
     TRAMITACION,
-    FACTURACION_STATUSES,
     TRAMITACION_STATUSES,
 )
 
@@ -84,45 +84,6 @@ class CustomUserManager(BaseUserManager):
             raise ValueError(_("Superuser must have is_superuser=True."))
         return self.create_user(email, password, **extra_fields)
 
-    def with_statuses(self) -> QuerySet:
-        qs = self.get_queryset().filter(role__isnull=True).prefetch_related("bids")
-        qs = qs.annotate(
-            ko_bids=Count("bids", filter=Q(bids__call=False) | Q(bids__scoring=False) | Q(bids__doc=False)),
-            ok_bids=Count("bids", filter=Q(bids__call=True) & Q(bids__scoring=True) & Q(bids__doc=True)),
-            touched_bids=Count(
-                "bids",
-                filter=Q(bids__call__isnull=False) | Q(bids__scoring__isnull=False) | Q(bids__doc__isnull=False),
-            ),
-        ).annotate(
-            status=Case(
-                # When(client_role="leed", then=Value("Leed")), # When(total_bids=0, then=Value("Leed")),
-                When(ko=True, then=Value(KO_PAPELLERA)),
-                When(ko_bids__gt=0, then=Value(KO)),
-                When(touched_bids=0, then=Value(PENDIENTE_TRAMITACION)),
-                When(
-                    Q(
-                        Q(bids__paid=False) | Q(bids__canal_paid=False, responsible__canal__isnull=False),
-                        bids__doc=True,
-                        bids__call=True,
-                        bids__scoring=True,
-                    ),
-                    then=Value(PENDIENTE_PAGO),
-                ),
-                When(
-                    Q(
-                        Q(bids__paid=True) | Q(bids__canal_paid=True, responsible__canal__isnull=False),
-                        bids__doc=True,
-                        bids__call=True,
-                        bids__scoring=True,
-                    ),
-                    then=Value(PAGADO),
-                ),
-                default=Value(TRAMITACION),
-                output_field=CharField(),
-            ),
-        )
-        return qs
-
     def facturacion(self) -> QuerySet:
         from ..bids.models import Bid
 
@@ -161,3 +122,44 @@ class CustomUserManager(BaseUserManager):
 
     def ko_papellera(self) -> QuerySet:
         return self.get_queryset().filter(ko=True)
+
+
+class InternalStatusManager(CustomUserManager):
+    def get_queryset(self):
+        qs = super().get_queryset().filter(role__isnull=True).prefetch_related("bids")
+        qs = qs.annotate(
+            ko_bids=Count("bids", filter=Q(bids__call=False) | Q(bids__scoring=False) | Q(bids__doc=False)),
+            ok_bids=Count("bids", filter=Q(bids__call=True) & Q(bids__scoring=True) & Q(bids__doc=True)),
+            touched_bids=Count(
+                "bids",
+                filter=Q(bids__call__isnull=False) | Q(bids__scoring__isnull=False) | Q(bids__doc__isnull=False),
+            ),
+        ).annotate(
+            internal_status=Case(
+                # When(client_role="leed", then=Value("Leed")), # When(total_bids=0, then=Value("Leed")),
+                When(ko=True, then=Value(KO_PAPELLERA)),
+                When(ko_bids__gt=0, then=Value(KO)),
+                When(touched_bids=0, then=Value(PENDIENTE_TRAMITACION)),
+                When(
+                    Q(
+                        Q(bids__paid=False) | Q(bids__canal_paid=False, responsible__canal__isnull=False),
+                        bids__doc=True,
+                        bids__call=True,
+                        bids__scoring=True,
+                    ),
+                    then=Value(PENDIENTE_PAGO),
+                ),
+                When(
+                    Q(
+                        Q(bids__paid=True) | Q(bids__canal_paid=True, responsible__canal__isnull=False),
+                        bids__doc=True,
+                        bids__call=True,
+                        bids__scoring=True,
+                    ),
+                    then=Value(PAGADO),
+                ),
+                default=Value(TRAMITACION),
+                output_field=CharField(),
+            ),
+        )
+        return qs

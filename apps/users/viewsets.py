@@ -132,6 +132,7 @@ class UserViewSet(
     )
     pagination_class = UsersPagination
     filterset_fields = {
+        "status": ["in"],
         "role": ["exact", "isnull", "in"],
         "created_at": ["range"],
         "source": ["exact"],
@@ -155,7 +156,7 @@ class UserViewSet(
             if mode == "tramitacion":
                 qs = CustomUser.objects.tramitacion()
             elif mode == "facturacion":
-                qs = CustomUser.objects.facturacion()
+                qs = CustomUser.with_internal_status.facturacion()
             elif mode == "ko_papellera":
                 qs = CustomUser.objects.ko_papellera()
             elif mode == "client":
@@ -284,7 +285,7 @@ class ManageUsersViewSet(UserViewSet, mixins.CreateModelMixin, mixins.DestroyMod
 
     @action(methods=["GET"], detail=False, permission_classes=(AdminPermission,))
     def analytic(self, request: Request):
-        clients = self.filter_queryset(CustomUser.objects.with_statuses().filter(role__isnull=True))
+        clients = self.filter_queryset(CustomUser.with_internal_status.filter(role__isnull=True))
         filters = {
             "Total en tramitación": [TRAMITACION, PENDIENTE_TRAMITACION],
             "Total tramitación en proceso": [TRAMITACION],
@@ -298,7 +299,7 @@ class ManageUsersViewSet(UserViewSet, mixins.CreateModelMixin, mixins.DestroyMod
         stats = {
             "Total clientes": clients.count(),
             "Total solicitudes": sum(i.bids_count for i in clients),
-            **{item: clients.filter(status__in=statuses).count() for item, statuses in filters.items()},
+            **{item: clients.filter(internal_status__in=statuses).count() for item, statuses in filters.items()},
         }
         commers = {
             "headers": [
@@ -350,12 +351,12 @@ class ManageUsersViewSet(UserViewSet, mixins.CreateModelMixin, mixins.DestroyMod
     @action(methods=["GET"], detail=False, permission_classes=(AdminPermission,))
     def analytic_new(self, request: Request):
         agents = CustomUser.objects.filter(role="agent")
-        statuses = CustomUser.objects.with_statuses().values_list("status", flat=True).distinct()
+        statuses = CustomUser.with_internal_status.values_list("internal_status", flat=True).distinct()
         data = []
         for agent in agents:
-            clients = CustomUser.objects.with_statuses().filter(responsible=agent)
+            clients = CustomUser.with_internal_status.filter(responsible=agent)
             bids = [bid for client in clients for bid in client.bids.all()]
-            by_statuses = {s: clients.filter(status=s).count() for s in statuses}
+            by_statuses = {s: clients.filter(internal_status=s).count() for s in statuses}
             item = {
                 "ID": agent.id,
                 "Name": agent.fullname,
@@ -590,7 +591,7 @@ class AgentClients(viewsets.ReadOnlyModelViewSet):
     def filter_queryset(self, queryset):
         statuses = self.request.query_params.get("statuses_in")
         if statuses:
-            queryset = CustomUser.objects.with_statuses().filter(status__in=statuses.split(","))
+            queryset = CustomUser.with_internal_status.filter(internal_status__in=statuses.split(","))
 
         return super().filter_queryset(queryset).filter(responsible__canal=self.request.user, role__isnull=True)
 

@@ -19,7 +19,7 @@ from rest_framework_tracking.models import APIRequestLog
 
 from apps.bids.models import Bid
 
-from .models import Attachment, CustomUser, Punto
+from .models import Attachment, CustomUser, Punto, Status
 from .utils import PENDIENTE_PAGO
 
 logger = logging.getLogger(__name__)
@@ -111,6 +111,7 @@ class UserListSerializer(DynamicFieldsMixin, serializers.ModelSerializer):
     puntos_count = serializers.IntegerField(read_only=True)
     company_luz = serializers.CharField(read_only=True)
     company_gas = serializers.CharField(read_only=True)
+    status = serializers.ChoiceField(choices=Status.choices, source="get_status_display")
 
     class Meta:
         model = CustomUser
@@ -139,6 +140,7 @@ class UserListSerializer(DynamicFieldsMixin, serializers.ModelSerializer):
             "company_luz",
             "company_gas",
             "call_visit_id",
+            "status",
         )
 
     def get_paid_count(self, instance: CustomUser) -> str:
@@ -164,8 +166,8 @@ class UserListSerializer(DynamicFieldsMixin, serializers.ModelSerializer):
             rep["responsible_fn"] = instance.responsible.fullname
             if instance.responsible.canal:
                 rep["canal_fn"] = instance.responsible.canal.fullname
-        if hasattr(instance, "status"):
-            rep["status"] = getattr(instance, "status")
+        if hasattr(instance, "internal_status"):
+            rep["internal_status"] = getattr(instance, "internal_status")
         return rep
 
     def _get_bids(self, instance: CustomUser):
@@ -262,6 +264,8 @@ class ManageUserSerializer(UserListSerializer):
 
 
 class UserSerializer(UserListSerializer):
+    status = serializers.ChoiceField(choices=Status.choices)
+
     class Meta:
         model = CustomUser
         fields = [
@@ -288,6 +292,7 @@ class UserSerializer(UserListSerializer):
             "observations",
             "company_name",
             "call_visit_id",
+            "status",
         ]
         extra_kwargs = {"ko": {"write_only": True, "required": False}}
 

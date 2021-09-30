@@ -11,6 +11,7 @@
       <v-spacer />
 
       <v-toolbar-items>
+        <v-select v-model="user.status" solo :items="userStatuses" @change="changeStatus" />
         <v-btn color="error" @click="moveToKo">Mover a papellera</v-btn>
       </v-toolbar-items>
     </v-toolbar>
@@ -161,6 +162,8 @@
 <script>
 import { mapState } from 'vuex'
 import { format } from 'date-fns'
+import constants from '../../../lib/constants'
+
 export default {
   components: {
     SolicitudesProcess: () => import('@/components/SolicitudesProcess'),
@@ -181,6 +184,7 @@ export default {
     }
 
     return {
+      userStatuses: constants.userStatuses,
       user,
       calls,
       puntos: await $axios.$get(`/users/puntos/?user=${params.id}`),
@@ -231,6 +235,16 @@ export default {
     },
     async fetchPuntos() {
       this.puntos = await this.$axios.$get(`/users/puntos/?user=${this.$route.params.id}`)
+    },
+    async changeStatus(status) {
+      try {
+        const user = await this.$axios.$patch(`users/users/${this.user.id}/`, { status })
+        this.user = user
+        this.$toast.global.done()
+      } catch (e) {
+        const errText = e.response.data.status[0]
+        await this.$swal({ title: 'Error', text: errText, icon: 'error' })
+      }
     },
   },
 }

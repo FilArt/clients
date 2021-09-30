@@ -41,9 +41,29 @@ const statuses = {
     PAGADO,
   },
 }
+
+const userStatuses = [
+  {
+    text: 'Firmado',
+    value: '0',
+  },
+  {
+    text: 'Renovacion',
+    value: '1',
+  },
+  {
+    text: 'Fidelizacion',
+    value: '2',
+  },
+  {
+    text: 'No cliente',
+    value: '3',
+  },
+]
 export default Object.freeze({
   DEBUG,
   CV_URL,
+  userStatuses,
   statuses,
   cleanEmpty,
   userRoles: {

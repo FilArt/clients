@@ -33,7 +33,7 @@ export default {
         'canal_fn',
         'paid_count',
         'canal_paid_count',
-        'status',
+        'internal_status',
       ],
     }
   },

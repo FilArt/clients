@@ -1,4 +1,5 @@
 import math
+from enum import Enum
 from functools import cached_property
 
 from django.contrib.auth.models import AbstractUser
@@ -10,7 +11,7 @@ from django.utils.translation import pgettext_lazy
 
 from apps.calculator.models import Offer
 
-from .managers import CustomUserManager
+from .managers import CustomUserManager, InternalStatusManager
 from .validators import cups_validator
 
 
@@ -36,6 +37,28 @@ PERMISSIONS_CHOICES = (
 
 def get_default_user_permissions():
     return []
+
+
+class Status(Enum):
+    firmado = (0, "Firmado")
+    renovacion = (1, "Renovacion")
+    fidelization = (2, "Fidelization")
+    no_cliente = (3, "No cliente")
+
+    @classmethod
+    @property
+    def choices(cls):
+        return (
+            cls.firmado.value,
+            cls.renovacion.value,
+            cls.fidelization.value,
+            cls.no_cliente.value,
+        )
+
+    @classmethod
+    @property
+    def default(cls):
+        return cls.firmado.value[0]
 
 
 class CustomUser(AbstractUser):
@@ -114,8 +137,13 @@ class CustomUser(AbstractUser):
     ko = models.BooleanField(blank=True, null=True)
     observations = models.TextField(blank=True, null=True)
     renovated = models.BooleanField(blank=True, null=True)
+    status = models.IntegerField(
+        choices=Status.choices,
+        default=Status.default,
+    )
 
     objects = CustomUserManager()
+    with_internal_status = InternalStatusManager()
 
     class Meta:
         db_table = "users"

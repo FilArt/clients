@@ -257,7 +257,7 @@
               :xs="flexs.xs"
             >
               <v-select
-                v-model="query.statuses_in"
+                v-model="query.status__in"
                 label="Estado"
                 :items="statuses"
                 multiple
@@ -265,7 +265,7 @@
                 deletable-chips
                 small-chips
                 clearable
-                @change="updateQuery({ statuses_in: $event })"
+                @change="updateQuery({ status__in: $event })"
               />
             </v-col>
 
@@ -391,10 +391,6 @@ export default {
       type: Boolean,
       default: false,
     },
-    statuses: {
-      type: Array,
-      default: () => [],
-    },
     listUrl: {
       type: String,
       default: 'users/users',
@@ -462,6 +458,7 @@ export default {
     }
     return {
       constants,
+      statuses: constants.userStatuses,
       uploadToCallVisitDialog: false,
       returnRenovationStatusDialog: false,
       actionsSnackbar: false,
@@ -516,9 +513,9 @@ export default {
       search: query.search || '',
       query: {
         ...query,
+        status__in: (query.status__in || '').split(',').filter((i) => !!i && !!i.length),
         sortBy: ['fecha_firma'],
         sortDesc: [false],
-        statuses_in: query.statuses_in && query.statuses_in.length ? query.statuses_in.split(',') : [],
         mustSort: null,
         multiSort: null,
         bids__call: null,
@@ -548,12 +545,13 @@ export default {
         { text: this.bidsCountHeader, value: 'puntos_count', sortable: false },
         { text: 'Comisiones agente', value: 'paid_count' },
         { text: 'Comisiones canal', value: 'canal_paid_count' },
-        { text: 'Estado', value: 'status' },
         { text: 'Doc', value: 'docs', sortable: false },
         { text: 'Scoring', value: 'scorings', sortable: false },
         { text: 'Llamadas', value: 'calls', sortable: false },
         { text: 'Estado de oferta', value: 'offer_status', sortable: false },
         { text: 'Call-Visit ID', value: 'call_visit_id' },
+        { text: 'Estado', value: 'status' },
+        { text: 'State', value: 'internal_status' },
         { value: 'actions', sortable: false },
       ].filter((header) => this.headers.includes(header.value))
 
@@ -702,7 +700,6 @@ export default {
         role__isnull: this.role === 'null' ? true : null,
       })
       if (this.mode) query.mode = this.mode
-      if (!query.statuses_in && this.statuses && this.statuses.length) query.statuses_in = this.statuses.join(',')
       return Object.keys(query)
         .filter((k) => query[k] !== null)
         .map((k) => {

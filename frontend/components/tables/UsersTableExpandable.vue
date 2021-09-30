@@ -134,10 +134,17 @@
             />
           </v-col>
 
-          <v-col :cols="flexs.cols" :xl="flexs.xl" :lg="flexs.lg" :md="flexs.md" :xs="flexs.xs">
+          <v-col
+            v-if="statuses.length > 1"
+            :cols="flexs.cols"
+            :xl="flexs.xl"
+            :lg="flexs.lg"
+            :md="flexs.md"
+            :xs="flexs.xs"
+          >
             <v-select
               v-model="query.statuses_in"
-              label="Estado"
+              label="State"
               :items="statuses"
               multiple
               chips
@@ -148,7 +155,7 @@
             />
           </v-col>
 
-          <template v-if="headers.some((h) => h === 'status') && isSupport">
+          <template v-if="headers.some((h) => h === 'internal_status') && isSupport">
             <v-col
               v-for="q in [
                 { text: 'Doc', value: 'bids__doc' },
@@ -341,6 +348,7 @@ export default {
         { text: 'Comisiones agente', value: 'paid_count' },
         { text: 'Comisiones canal', value: 'canal_paid_count' },
         { text: 'Estado', value: 'status' },
+        { text: 'State', value: 'internal_status' },
         { text: 'Doc', value: 'docs', sortable: false },
         { text: 'Scoring', value: 'scorings', sortable: false },
         { text: 'Llamadas', value: 'calls', sortable: false },
@@ -367,8 +375,8 @@ export default {
       }
       this.expanded = [item]
       const fields = this.mode.includes('tramitacion')
-        ? 'id,status,fecha_firma,created_at,doc,call,scoring,offer_status,offer_status_accesible,success'
-        : 'id,status,fecha_firma,created_at,commission,canal_commission,fecha_de_cobro_prevista,paid,canal_paid'
+        ? 'id,internal_status,fecha_firma,created_at,doc,call,scoring,offer_status,offer_status_accesible,success'
+        : 'id,internal_status,fecha_firma,created_at,commission,canal_commission,fecha_de_cobro_prevista,paid,canal_paid'
       this.bids = await this.$axios.$get(`/bids/bids/?user=${item.id}&fields=${fields}`)
     },
     getDetailUrl(userId) {
