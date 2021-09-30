@@ -33,7 +33,7 @@ export default {
         'responsible_fn',
         'puntos_count',
         'paid_count',
-        'last_login',
+        'last_modified',
         'call_visit_id',
       ],
     }

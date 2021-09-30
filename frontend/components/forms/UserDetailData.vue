@@ -176,9 +176,9 @@ export default {
       return [
         {
           icon: 'mdi-calendar',
-          text: 'Ultima entrada',
-          field: 'last_login',
-          value: this.formatDate(user['last_login']),
+          text: 'Ultimo cambio',
+          field: 'last_modified',
+          value: this.formatDate(user['last_modified']),
           editable: false,
         },
         {
@@ -206,7 +206,6 @@ export default {
       'phone',
       'phone_city',
       'created_at',
-      'last_login',
       'email',
       'legal_representative',
       'last_modified',
@@ -237,6 +236,7 @@ export default {
     async updateUser(field, value) {
       try {
         const user = await this.$axios.$patch(`users/users/${this.userId}/`, { [field]: value })
+        this.user = user
         this.$toast.global.done()
         this.$emit('user-updated', user)
       } catch (e1) {

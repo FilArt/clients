@@ -1,18 +1,41 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
 from django.utils.translation import gettext_lazy as _
-from .models import CustomUser, Attachment, Punto
+
+from .models import Attachment, CustomUser, Punto
 
 
 class CustomUserAdmin(UserAdmin):
     fieldsets = (
         (
             None,
-            {"fields": ("email", "password", "role", "client_role", "avatar", "responsible", "source", "invited_by",)},
+            {
+                "fields": (
+                    "email",
+                    "password",
+                    "role",
+                    "client_role",
+                    "avatar",
+                    "responsible",
+                    "source",
+                    "invited_by",
+                )
+            },
         ),
         (_("Personal info"), {"fields": ("company_name", "first_name", "last_name", "phone")}),
-        (_("Permissions"), {"fields": ("is_active", "is_staff", "is_superuser", "groups", "user_permissions",)},),
-        (_("Important dates"), {"fields": ("last_login", "date_joined")}),
+        (
+            _("Permissions"),
+            {
+                "fields": (
+                    "is_active",
+                    "is_staff",
+                    "is_superuser",
+                    "groups",
+                    "user_permissions",
+                )
+            },
+        ),
+        (_("Important dates"), {"fields": ("last_login", "date_joined", "last_modified")}),
     )
     add_fieldsets = (
         (None, {"classes": ("wide",), "fields": ("email", "password1", "password2", "role", "permissions")}),

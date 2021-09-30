@@ -20,7 +20,7 @@ export default {
   },
   data() {
     return {
-      headers: ['id', 'fullname', 'agent_type', 'phone', 'created_at', 'last_login', 'actions'],
+      headers: ['id', 'fullname', 'agent_type', 'phone', 'created_at', 'last_modified', 'last_login', 'actions'],
     }
   },
 }

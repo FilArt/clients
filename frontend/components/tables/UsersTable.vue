@@ -540,6 +540,7 @@ export default {
         { text: 'Nombre/Razon social', value: 'fullname', sortable: false },
         { text: 'Tipo de agente', value: 'agent_type' },
         { text: 'Telefono', value: 'phone' },
+        { text: 'Ultimo cambio', value: 'last_modified' },
         { text: 'Ultima entrada', value: 'last_login' },
         { text: 'Responsable', value: 'responsible_fn' },
         { text: 'Canal', value: 'canal_fn' },

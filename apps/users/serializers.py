@@ -102,6 +102,7 @@ class UserListSerializer(DynamicFieldsMixin, serializers.ModelSerializer):
     fecha_firma = serializers.DateTimeField(read_only=True, format="%d/%m/%Y %H:%M")
     fecha_registro = serializers.DateTimeField(read_only=True, format="%d/%m/%Y %H:%M")
     created_at = serializers.DateTimeField(read_only=True, format="%d/%m/%Y %H:%M")
+    last_modified = serializers.DateTimeField(read_only=True, format="%d/%m/%Y %H:%M")
     paid_count = serializers.SerializerMethodField()
     canal_paid_count = serializers.SerializerMethodField()
     last_login = PrettyDateTimeField()
@@ -123,6 +124,7 @@ class UserListSerializer(DynamicFieldsMixin, serializers.ModelSerializer):
             "fecha_registro",
             "created_at",
             "last_login",
+            "last_modified",
             "bids_count",
             "puntos_count",
             "affiliate",
@@ -275,7 +277,7 @@ class UserSerializer(UserListSerializer):
             "legal_representative",
             "date_joined",
             "last_modified",
-            "last_login",
+            "last_modified",
             "affiliate",
             "responsible",
             "source",
@@ -322,7 +324,7 @@ class RequestLogSerializer(DynamicFieldsMixin, serializers.ModelSerializer):
 class CanalAgentesSerializer(serializers.ModelSerializer):
     class Meta:
         model = CustomUser
-        fields = ["id", "fullname", "clients_count", "phone", "last_login"]
+        fields = ["id", "fullname", "clients_count", "phone", "last_modified"]
 
 
 class AgentClientsSerializer(UserListSerializer):

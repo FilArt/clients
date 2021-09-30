@@ -2,7 +2,7 @@
   <v-card>
     <v-card-text>
       <users-table
-        :headers="['id', 'fullname', 'phone', 'clients_count', 'last_login']"
+        :headers="['id', 'fullname', 'phone', 'clients_count', 'last_modified']"
         list-url="users/canal_agents"
         detail-url="/agente/agentes"
         use-full-name

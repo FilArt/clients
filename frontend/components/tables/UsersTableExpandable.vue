@@ -334,7 +334,7 @@ export default {
         { text: 'Nombre/Razon social', value: 'fullname', sortable: false },
         { text: 'Tipo de agente', value: 'agent_type' },
         { text: 'Telefono', value: 'phone' },
-        { text: 'Ultima entrada', value: 'last_login' },
+        { text: 'Ultimo cambio', value: 'last_modified' },
         { text: 'Responsable', value: 'responsible_fn' },
         { text: 'Canal', value: 'canal_fn' },
         { text: this.bidsCountHeader, value: 'bids_count', sortable: false },
