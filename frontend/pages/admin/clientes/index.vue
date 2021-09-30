@@ -32,7 +32,6 @@ export default {
         'fullname',
         'responsible_fn',
         'puntos_count',
-        'paid_count',
         'last_modified',
         'status',
         'call_visit_id',

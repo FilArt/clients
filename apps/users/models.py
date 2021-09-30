@@ -139,7 +139,8 @@ class CustomUser(AbstractUser):
     renovated = models.BooleanField(blank=True, null=True)
     status = models.IntegerField(
         choices=Status.choices,
-        default=Status.default,
+        null=True,
+        blank=True,
     )
 
     objects = CustomUserManager()
