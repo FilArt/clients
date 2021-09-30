@@ -22,16 +22,11 @@
     <v-card-text>
       <v-tabs v-model="tabs" centered>
         <v-tab>Solicitudes</v-tab>
-        <v-tab :disabled="!history.length">Historia ({{ history.length }})</v-tab>
         <v-tab :disabled="!puntos.length">Puntos suministros ({{ puntos.length }})</v-tab>
 
         <v-tabs-items v-model="tabs">
           <v-tab-item>
             <solicitudes-bar :user-id="$route.params.id" />
-          </v-tab-item>
-
-          <v-tab-item>
-            <history-list :history="history" />
           </v-tab-item>
 
           <v-tab-item>
@@ -48,7 +43,6 @@ export default {
   components: {
     SolicitudesBar: () => import('@/components/support/SolicitudesBar'),
     PuntosList: () => import('~/components/puntos/PuntosList'),
-    HistoryList: () => import('~/components/history/HistoryList'),
     UserDetailData: () => import('@/components/forms/UserDetailData'),
   },
   async asyncData({ params, $axios }) {
@@ -63,7 +57,6 @@ export default {
       user,
       participant,
       puntos: await $axios.$get(`/users/puntos/?user=${params.id}`),
-      history: await $axios.$get(`/bids/history/?user=${params.id}`),
       tabs: null,
     }
   },

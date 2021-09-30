@@ -41,9 +41,6 @@
         </v-col>
       </v-row>
     </v-card-actions>
-    <v-card-text v-if="history.length">
-      <history-list :history="history" />
-    </v-card-text>
   </v-card>
 </template>
 
@@ -52,12 +49,10 @@ export default {
   components: {
     DetailOffer: () => import('~/components/detailOffer'),
     DeleteButton: () => import('~/components/buttons/deleteButton'),
-    HistoryList: () => import('~/components/history/HistoryList'),
   },
   async asyncData({ $axios, params }) {
     const bid = await $axios.$get(`bids/bids/${params.id}/`)
-    const history = await $axios.$get(`bids/bids/${params.id}/history/`)
-    return { bid, history }
+    return { bid }
   },
   methods: {
     deleteBid() {

@@ -1,6 +1,7 @@
 from operator import itemgetter
 
 import ujson
+from clients.serializers import BidListSerializer
 from django.db.models import Q
 from rest_framework import viewsets
 from rest_framework.decorators import action
@@ -11,10 +12,9 @@ from rest_framework.response import Response
 from rest_framework_tracking.mixins import LoggingMixin
 from rest_framework_tracking.models import APIRequestLog
 
-from clients.serializers import BidListSerializer
 from .models import Bid, BidStory
 from .permissions import BidsPermission
-from .serializers import CreateBidSerializer, BidStorySerializer
+from .serializers import BidStorySerializer, CreateBidSerializer
 
 
 class BidViewSet(LoggingMixin, viewsets.ModelViewSet):
@@ -56,37 +56,6 @@ class BidViewSet(LoggingMixin, viewsets.ModelViewSet):
         serializer.save(user=user)
 
     @action(methods=["GET"], detail=True)
-    def history(self, request: Request, pk: int):
-        bid = self.get_object()
-        stories = bid.stories.all()
-        logs = APIRequestLog.objects.filter(view="apps.users.viewsets.AttachmentsViewSet", data__icontains="punto")
-        story: BidStory
-        data = [
-            {
-                "user": story.user.fullname,
-                "dt": story.dt,
-                "message": story.message,
-                "internal_message": story.internal_message,
-                "status": story.status,
-            }
-            for story in stories
-        ]
-        for log in logs:
-            # Todo: CHECK
-            response = ujson.loads(log.response)
-            if str(response.get("punto")) == str(bid.punto_id):
-                data.append(
-                    {"user": log.user.fullname, "dt": log.requested_at, "data": response, "status": "Nuevo archivo",}
-                )
-
-        def format_item(item: dict) -> dict:
-            item["dt"] = item["dt"].strftime("%d/%m/%Y %H:%M")
-            return item
-
-        data = list(map(format_item, sorted(data, key=itemgetter("dt"), reverse=True)))
-        return Response(data)
-
-    @action(methods=["GET"], detail=True)
     def last_comments(self, request: Request, pk: int):
         bid = self.get_object()
         qs = bid.stories.order_by("dt")
@@ -114,7 +83,14 @@ class BidViewSet(LoggingMixin, viewsets.ModelViewSet):
         else:
             offer_status = "..."
 
-        return Response({"doc": doc, "call": call, "scoring": scoring, "offer_status": offer_status,})
+        return Response(
+            {
+                "doc": doc,
+                "call": call,
+                "scoring": scoring,
+                "offer_status": offer_status,
+            }
+        )
 
 
 class BidStoryViewSet(LoggingMixin, viewsets.ModelViewSet):

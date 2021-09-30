@@ -60,7 +60,6 @@ from .serializers import (
     RegisterByAdminSerializer,
     RegisterSerializer,
     RequestLogSerializer,
-    UploadToCallVisitSerializer,
     UserHistorySerializer,
     UserListSerializer,
     UserSerializer,
@@ -378,7 +377,7 @@ class ManageUsersViewSet(UserViewSet, mixins.CreateModelMixin, mixins.DestroyMod
             path__in=paths,
             errors__isnull=True,
             status_code__in=[200, 201],
-        ).order_by("-requested_at")
+        ).order_by("requested_at")
         data = UserHistorySerializer(logs, many=True).data
         return Response(data)
 

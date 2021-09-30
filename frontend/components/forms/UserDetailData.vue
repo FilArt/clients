@@ -1,7 +1,7 @@
 <template>
   <v-container>
     <v-row justify="space-around">
-      <v-col cols="12" lg="5" class="pa-0 ma-0">
+      <v-col>
         <v-toolbar short dense>
           <v-spacer />
           <v-toolbar-title>Datos de contacto</v-toolbar-title>
@@ -75,42 +75,42 @@
         </v-card-text>
       </v-col>
 
-      <v-col cols="12" lg="5" class="pa-0 ma-0">
+      <v-col>
         <v-toolbar short dense>
           <v-spacer />
           <v-toolbar-title>Cambias</v-toolbar-title>
           <v-spacer />
         </v-toolbar>
-        <v-card-text class="d-flex flex-row flex-wrap">
-          <v-list style="overflow-y: scroll; height: 400px">
-            <template v-for="item in userHistory">
-              <v-list-item :key="item.id">
-                <v-list-item-content>
-                  <v-list-item-title>
-                    <v-row>
-                      <v-col>
-                        <caption style="color: green">
-                          {{
-                            formatDate(item.requested_at)
-                          }}
-                        </caption>
-                      </v-col>
-                      <v-spacer />
-                      <v-col>
-                        <nuxt-link :to="'/admin/usuarios/' + item.user">{{ item.fullname }}</nuxt-link>
-                      </v-col>
-                    </v-row>
-                  </v-list-item-title>
-
-                  <pre>{{ item.data }}</pre>
-                </v-list-item-content>
-              </v-list-item>
-
-              <v-divider :key="'d' + item.id" />
-            </template>
-          </v-list>
-
+        <v-card-text class="flex-wrap">
           <v-row>
+            <v-list id="commentsList" style="overflow-y: scroll; height: 400px">
+              <template v-for="item in userHistory">
+                <v-list-item :key="item.id">
+                  <v-list-item-content>
+                    <v-list-item-title>
+                      <v-row>
+                        <v-col>
+                          <caption style="color: green">
+                            {{
+                              formatDate(item.requested_at)
+                            }}
+                          </caption>
+                        </v-col>
+                        <v-spacer />
+                        <v-col>
+                          <nuxt-link :to="'/admin/usuarios/' + item.user">{{ item.fullname }}</nuxt-link>
+                        </v-col>
+                      </v-row>
+                    </v-list-item-title>
+
+                    <pre>{{ item.data }}</pre>
+                  </v-list-item-content>
+                </v-list-item>
+
+                <v-divider :key="'d' + item.id" />
+              </template>
+            </v-list>
+
             <v-col>
               <v-text-field
                 v-model="comment"
@@ -262,6 +262,8 @@ export default {
     }
 
     await this.getUserHistory()
+    const cl = this.$el.querySelector('#commentsList')
+    cl.scrollTop = cl.scrollHeight
   },
   methods: {
     async getUserHistory() {

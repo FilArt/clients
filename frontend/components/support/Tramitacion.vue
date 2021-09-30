@@ -138,32 +138,6 @@
             />
           </v-col>
         </v-row>
-
-        <v-row>
-          <v-col>
-            <v-dialog v-model="historyDialog" max-width="1000">
-              <template v-slot:activator="{ on }">
-                <v-btn color="pink" outlined v-on="on" @click="fetchHistory">
-                  Ver historial
-                  <v-icon right>mdi-history</v-icon>
-                </v-btn>
-              </template>
-              <v-card>
-                <v-card-title>
-                  <v-row>
-                    <v-col>History</v-col>
-                    <v-col class="flex-grow-0">
-                      <close-button @click="historyDialog = false" />
-                    </v-col>
-                  </v-row>
-                </v-card-title>
-                <v-card-text v-if="history.length">
-                  <history-list :history="history" @comment-deleted="fetchHistory" />
-                </v-card-text>
-              </v-card>
-            </v-dialog>
-          </v-col>
-        </v-row>
       </v-col>
 
       <v-divider vertical />
@@ -189,7 +163,6 @@ export default {
     Facturacion: () => import('@/components/support/Facturacion'),
     CloseButton: () => import('@/components/buttons/closeButton'),
     detailOffer: () => import('@/components/detailOffer'),
-    HistoryList: () => import('@/components/history/HistoryList'),
   },
   props: {
     facturacion: {
@@ -212,8 +185,6 @@ export default {
       loading: false,
       bid: null,
       newStatus: null,
-      history: [],
-      historyDialog: false,
       groups: [
         {
           label: 'Documentacion',
@@ -291,9 +262,6 @@ export default {
         await this.fetchBid()
         if (['admin', 'support'].includes(this.$auth.user.role)) await this.fetchLastComments()
       }
-    },
-    async fetchHistory() {
-      this.history = await this.$axios.$get(`bids/bids/${this.bidId}/history/`)
     },
     async fetchBid() {
       try {

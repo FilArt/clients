@@ -26,7 +26,6 @@
         <v-tab>Facturacion</v-tab>
         <v-tab :disabled="!bids.length">Solicitud ({{ bids.length }})</v-tab>
         <v-tab :disabled="!calls.length"> Llamadas ({{ calls.length }}) </v-tab>
-        <v-tab :disabled="!history.length">Historia ({{ history.length }})</v-tab>
         <v-tab :disabled="!puntos.length"> Puntos suministros ({{ puntos.length }}) </v-tab>
         <v-tab>Call-Visit</v-tab>
 
@@ -93,10 +92,6 @@
           </v-tab-item>
 
           <v-tab-item>
-            <history-list v-if="history.length" :history="history" />
-          </v-tab-item>
-
-          <v-tab-item>
             <puntos-list :puntos="puntos" @punto-updated="fetchPuntos" />
           </v-tab-item>
 
@@ -118,7 +113,6 @@ export default {
     SolicitudesProcess: () => import('@/components/SolicitudesProcess'),
     AddNewBidDialog: () => import('@/components/dialogs/AddNewBidDialog'),
     PuntosList: () => import('~/components/puntos/PuntosList'),
-    HistoryList: () => import('~/components/history/HistoryList'),
     UserDetailData: () => import('@/components/forms/UserDetailData'),
     Ficha: () => import('../../../components/Ficha.vue'),
   },
@@ -136,7 +130,6 @@ export default {
       user,
       calls,
       puntos: await $axios.$get(`/users/puntos/?user=${params.id}`),
-      history: await $axios.$get(`/bids/history/?user=${params.id}`),
       tabs: null,
     }
   },
