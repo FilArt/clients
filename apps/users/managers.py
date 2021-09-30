@@ -97,26 +97,31 @@ class CustomUserManager(BaseUserManager):
         )
 
     def tramitacion(self) -> QuerySet:
+        from apps.users.models import Status
+
         from ..bids.models import Bid
 
         bids = Bid.objects.with_status().filter(status__in=TRAMITACION_STATUSES)
-        users = bids.values("user").distinct()
         return (
             self.get_queryset()
-            .filter(Q(id__in=users) | Q(bids__isnull=True), role__isnull=True)
+            .filter(status=Status.tramitacion.value[0], role__isnull=True)
             .exclude(ko=True)
             .annotate(bids_count=Count("bids", filter=Q(bids__in=bids), distinct=True))
         )
 
     def clients(self) -> QuerySet:
+        from apps.users.models import Status
+
         from ..bids.models import Bid
 
         bids = Bid.objects.with_status().filter(status__in=CLIENT_STATUSES)
         users = bids.values("user").distinct()
+
         return (
             self.get_queryset()
             .filter(Q(id__in=users) | Q(bids__isnull=True), role__isnull=True)
             .exclude(ko=True)
+            .exclude(status=Status.tramitacion.value[0])
             .annotate(bids_count=Count("bids", filter=Q(bids__in=bids), distinct=True))
         )
 

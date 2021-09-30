@@ -4,7 +4,7 @@ from typing import List
 from apps.bids.models import Bid, BidStory
 from apps.calculator.fields import ConsumoPotenciaField
 from apps.calculator.models import Offer
-from apps.users.models import Attachment, CallVisitToken, CustomUser, Punto, UserSettings
+from apps.users.models import Attachment, CallVisitToken, CustomUser, Punto, Status, UserSettings
 from apps.users.utils import PENDIENTE_TRAMITACION, TRAMITACION
 from django.contrib.auth.base_user import BaseUserManager
 from django.db import transaction
@@ -490,8 +490,8 @@ class AgentContractSerializer(serializers.ModelSerializer):
         validated_data["email"] = self.initial_data["email"]
 
         created_client: CustomUser = self._user or super().create(validated_data)
-        created_client.renovated = False
-        created_client.save(update_fields=["renovated"])
+        created_client.status = Status.tramitacion.value[0]
+        created_client.save()
 
         # hack
         if created_client.cif_nif == created_client.email.split("@")[0]:

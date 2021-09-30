@@ -13,7 +13,7 @@ from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework_tracking.models import APIRequestLog
 
-from ..users.models import CustomUser, Punto
+from ..users.models import CustomUser, Punto, Status
 from ..users.permissions import AdminPermission
 from .models import CallVisitUser
 from .serializers import CallVisitUserSerializer
@@ -117,14 +117,14 @@ class CallVisitUserViewSet(viewsets.ModelViewSet):
 
             if response.ok:
                 with transaction.atomic():
-                    clients.update(renovated=True)
+                    clients.update(status=Status.renovacion.value[0])
                     APIRequestLog.objects.create(
                         remote_addr=request.headers.get("X-Real-IP", "127.0.0.1"),
                         requested_at=timezone.now(),
                         view="apps.users.viewsets.ManageUsersViewSet",
                         view_method="update",
                         path=f"/api/users/manage_users/{client.id}/",
-                        data={"renovated": True},
+                        data={"status": Status.renovacion.value[0]},
                     )
             else:
                 try:

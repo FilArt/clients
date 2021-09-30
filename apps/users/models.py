@@ -44,6 +44,7 @@ class Status(Enum):
     renovacion = (1, "Renovacion")
     fidelization = (2, "Fidelization")
     no_cliente = (3, "No cliente")
+    tramitacion = (4, "Tramitacion")
 
     @classmethod
     @property
@@ -136,7 +137,6 @@ class CustomUser(AbstractUser):
     )
     ko = models.BooleanField(blank=True, null=True)
     observations = models.TextField(blank=True, null=True)
-    renovated = models.BooleanField(blank=True, null=True)
     status = models.IntegerField(
         choices=Status.choices,
         null=True,

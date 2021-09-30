@@ -11,7 +11,7 @@
       <v-spacer />
 
       <v-toolbar-items>
-        <v-select v-model="user.status" solo :items="userStatuses" @change="changeStatus" />
+        <v-select :value="status" solo :items="userStatuses" @change="changeStatus" />
         <v-btn color="error" @click="moveToKo">Mover a papellera</v-btn>
       </v-toolbar-items>
     </v-toolbar>
@@ -194,7 +194,12 @@ export default {
       userHistoryDialog: false,
     }
   },
-  computed: mapState({ bids: (state) => state.bids.bids }),
+  computed: {
+    ...mapState({ bids: (state) => state.bids.bids }),
+    status() {
+      return typeof this.user.status === 'number' ? String(this.user.status) : this.user.status
+    },
+  },
   methods: {
     async moveToKo() {
       const confirmed = await this.$swal({

@@ -160,9 +160,7 @@ class UserViewSet(
             elif mode == "ko_papellera":
                 qs = CustomUser.objects.ko_papellera()
             elif mode == "client":
-                qs = CustomUser.objects.clients().exclude(renovated=True)
-            elif mode == "renovated":
-                qs = CustomUser.objects.clients().filter(renovated=True)
+                qs = CustomUser.objects.clients()
             elif mode == "borradores":
                 qs = CustomUser.objects.filter(bids__isnull=True)
 

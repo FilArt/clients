@@ -213,7 +213,6 @@ class ManageUserSerializer(UserListSerializer):
             "permissions",
             "agents",
             "groups",
-            "renovated",
         ]
         extra_kwargs = {
             "password": {"write_only": True},

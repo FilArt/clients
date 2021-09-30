@@ -64,26 +64,6 @@
       </v-card>
     </v-snackbar>
 
-    <v-dialog v-model="returnRenovationStatusDialog" persistent>
-      <v-card>
-        <v-card-title>
-          <span>Enviar en Clientes</span>
-          <v-spacer />
-          <close-button
-            @click="
-              returnRenovationStatusDialog = false
-              actionsSnackbar = true
-            "
-          />
-        </v-card-title>
-        <v-card-text>
-          <v-form @submit.prevent="returnToClients">
-            <submit-button label="Enviar" block :loading="loading" />
-          </v-form>
-        </v-card-text>
-      </v-card>
-    </v-dialog>
-
     <v-dialog v-model="uploadToCallVisitDialog" persistent>
       <v-card>
         <v-card-title>
@@ -460,7 +440,6 @@ export default {
       constants,
       statuses: constants.userStatuses,
       uploadToCallVisitDialog: false,
-      returnRenovationStatusDialog: false,
       actionsSnackbar: false,
       selected: [],
       form: {
@@ -628,15 +607,6 @@ export default {
       } finally {
         this.loading = false
       }
-    },
-    async returnToClients() {
-      for (let index = 0; index < this.selected.length; index++) {
-        const client = this.selected[index]
-        await this.$axios.$patch(`users/manage_users/${client.id}/`, { renovated: false })
-      }
-      await this.fetchUsers()
-      this.$toast.global.done()
-      this.returnRenovationStatusDialog = false
     },
     onSelect({ item, items, value }) {
       if (!value) {
