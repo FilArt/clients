@@ -132,7 +132,7 @@
       <template v-slot:top>
         <div class="pa-3">
           <v-row align="center" class="elevation-1 pa-3 flex-wrap" justify="space-around">
-            <v-col :cols="showFilters ? 8 : showChat && !isSupport ? 11 : 12">
+            <v-col :cols="showFilters ? 8 : !isSupport ? 11 : 12">
               <v-text-field
                 v-model="search"
                 :disabled="loading"
@@ -161,23 +161,6 @@
                   <add-new-employee @added="fetchUsers" />
                 </template>
               </v-overflow-btn>
-            </v-col>
-
-            <v-col v-if="showChat && !isSupport" cols="1" lg="1" xl="1" md="1" sm="1">
-              <v-tooltip bottom>
-                <template v-slot:activator="{ on }">
-                  <v-simple-checkbox
-                    v-model="onlyNewMessages"
-                    class="text-center"
-                    on-icon="mdi-message-plus"
-                    off-icon="mdi-message-minus"
-                    color="red"
-                    v-on="on"
-                    @input="updateQuery({ onlyNewMessages: onlyNewMessages })"
-                  />
-                </template>
-                <span>Filtro por nuevo mensajes</span>
-              </v-tooltip>
             </v-col>
 
             <v-col
@@ -339,14 +322,6 @@
         </span>
       </template>
 
-      <template v-if="showChat" v-slot:[`item.new_messages_count`]="{ item }">
-        <v-badge :content="item.new_messages_count" :value="item.new_messages_count" color="error" overlap>
-          <v-btn icon @click="openChat(item)">
-            <v-icon>mdi-email</v-icon>
-          </v-btn>
-        </v-badge>
-      </template>
-
       <template v-if="allowDelete" v-slot:[`item.actions`]="{ item }">
         <delete-button @click="deleteUser(item)" />
       </template>
@@ -382,14 +357,6 @@
         {{ $dateFns.format(new Date(item.created_at), 'yyyy-MM-dd HH:mm') }}
       </template>
     </v-data-table>
-
-    <chat
-      v-if="$store.state.chat.participant"
-      :show-launcher="false"
-      is-chat-open-default
-      close-socket-on-exit
-      @close-chat="fetchUsers"
-    />
   </div>
 </template>
 
@@ -405,7 +372,6 @@ export default {
     SubmitButton: () => import('~/components/buttons/submitButton'),
     AddNewEmployee: () => import('@/components/forms/AddNewEmployee'),
     DeleteButton: () => import('@/components/buttons/deleteButton'),
-    Chat: () => import('~/components/chat/Chat'),
     DateTimeFilter: () => import('~/components/DateTimeFilter'),
   },
   props: {
@@ -566,9 +532,6 @@ export default {
   },
   computed: {
     ...mapState({ responsibles: (state) => state.responsibles }),
-    showChat() {
-      return this.headers.some((h) => h === 'new_messages_count')
-    },
     activeHeaders() {
       const headers = [
         { text: 'ID', value: 'id' },
@@ -590,7 +553,6 @@ export default {
         { text: 'Llamadas', value: 'calls', sortable: false },
         { text: 'Estado de oferta', value: 'offer_status', sortable: false },
         { text: 'Call-Visit ID', value: 'call_visit_id' },
-        { text: '', value: 'new_messages_count', sortable: false },
         { value: 'actions', sortable: false },
       ].filter((header) => this.headers.includes(header.value))
 
@@ -779,15 +741,6 @@ export default {
       })
       await this.$router.replace({ query: q })
       await this.fetchUsers()
-    },
-    openChat(user) {
-      this.$store.dispatch('chat/fetchParticipant', {
-        participant: {
-          id: user.id,
-          name: user.fullname,
-        },
-        openChat: true,
-      })
     },
     async deleteUser(user) {
       const isConfirm = await this.$swal({

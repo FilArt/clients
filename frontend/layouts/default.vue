@@ -35,7 +35,6 @@
     </v-app-bar>
     <v-main>
       <nuxt />
-      <chat v-if="showChat" />
     </v-main>
   </v-app>
 </template>
@@ -46,7 +45,6 @@ export default {
   components: {
     Notys: () => import('@/components/notys'),
     ThemeSwitcher: () => import('~/components/ThemeSwitcher'),
-    Chat: () => import('~/components/chat/Chat'),
   },
   data() {
     return {
@@ -184,12 +182,6 @@ export default {
       }
       return items
     },
-    showChat() {
-      return this.$auth.loggedIn && !this.$auth.user.role
-    },
-  },
-  async created() {
-    if (this.showChat) await this.$store.dispatch('chat/fetchParticipant')
   },
 }
 </script>

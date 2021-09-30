@@ -1,7 +1,7 @@
-from django.urls import include, path
+# from django.urls import include, path
 
-from .routers import router
+# from .routers import router
 
-urlpatterns = [
-    path("", include(router.urls)),
-]
+# urlpatterns = [
+#     path("", include(router.urls)),
+# ]

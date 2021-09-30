@@ -10,10 +10,16 @@ https://docs.djangoproject.com/en/3.0/howto/deployment/asgi/
 import os
 
 import django
-from channels.routing import get_default_application
+from channels.http import AsgiHandler
+from channels.routing import ProtocolTypeRouter
 
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "clients.settings")
 
 django.setup()
 
-application = get_default_application()
+
+application = ProtocolTypeRouter(
+    {
+        "http": AsgiHandler(),
+    }
+)

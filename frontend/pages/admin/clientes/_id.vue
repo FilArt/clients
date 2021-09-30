@@ -155,8 +155,6 @@
         </v-tabs-items>
       </v-tabs>
     </v-card-text>
-
-    <chat v-if="participant" :participant="participant" />
   </v-card>
 </template>
 
@@ -167,7 +165,6 @@ export default {
   components: {
     SolicitudesProcess: () => import('@/components/SolicitudesProcess'),
     AddNewBidDialog: () => import('@/components/dialogs/AddNewBidDialog'),
-    Chat: () => import('~/components/chat/Chat'),
     PuntosList: () => import('~/components/puntos/PuntosList'),
     HistoryList: () => import('~/components/history/HistoryList'),
     UserDetailData: () => import('@/components/forms/UserDetailData'),
@@ -183,14 +180,8 @@ export default {
       calls = await $axios.$get(`users/calls/${params.id}`)
     }
 
-    const participant = {
-      id: params.id,
-      name: user.email,
-      imageUrl: user.avatar || '',
-    }
     return {
       user,
-      participant,
       calls,
       puntos: await $axios.$get(`/users/puntos/?user=${params.id}`),
       history: await $axios.$get(`/bids/history/?user=${params.id}`),

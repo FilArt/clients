@@ -5,7 +5,6 @@
         default-role="agent"
         show-filters
         allow-delete
-        hide-chat
         :headers="headers"
         use-full-name
         detail-url="/admin/usuarios"

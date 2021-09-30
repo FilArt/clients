@@ -161,11 +161,8 @@ CORS_ALLOW_HEADERS = list(default_headers) + [
     "django-timezone",
 ]
 
-OFFERS_SHEET_URL = ""
-GOOGLE_SERVICE_ACCOUNT_CREDS = "~/.config/gspread/service_account.json"
-
 # channels
-ASGI_APPLICATION = "apps.chat.routing.application"
+ASGI_APPLICATION = "clients.asgi.application"
 CHANNEL_LAYERS = {
     "default": {
         "BACKEND": "channels_redis.core.RedisChannelLayer",

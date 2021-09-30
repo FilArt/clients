@@ -144,10 +144,6 @@ export default {
         if (role === null) {
           await this.$router.push('/ofertas')
 
-          // load chat messages
-          // TODO: move it to Chat.vue
-          this.$store.dispatch('chat/fetchParticipant')
-
           if (!user.phone) {
             await this.$swal({
               title: 'Por favor, complete su perfil por completo.',

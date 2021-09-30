@@ -40,8 +40,6 @@
         </v-tabs-items>
       </v-tabs>
     </v-card-text>
-
-    <chat v-if="participant" :participant="participant" />
   </v-card>
 </template>
 
@@ -49,7 +47,6 @@
 export default {
   components: {
     SolicitudesBar: () => import('@/components/support/SolicitudesBar'),
-    Chat: () => import('~/components/chat/Chat'),
     PuntosList: () => import('~/components/puntos/PuntosList'),
     HistoryList: () => import('~/components/history/HistoryList'),
     UserDetailData: () => import('@/components/forms/UserDetailData'),

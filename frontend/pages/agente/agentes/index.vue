@@ -3,7 +3,6 @@
     <v-card-text>
       <users-table
         :headers="['id', 'fullname', 'phone', 'clients_count', 'last_login']"
-        hide-chat
         list-url="users/canal_agents"
         detail-url="/agente/agentes"
         use-full-name

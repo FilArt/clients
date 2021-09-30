@@ -35,7 +35,6 @@ export default {
         'puntos_count',
         'paid_count',
         'last_login',
-        'new_messages_count',
       ],
     }
   },

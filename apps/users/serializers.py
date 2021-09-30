@@ -105,7 +105,6 @@ class UserListSerializer(DynamicFieldsMixin, serializers.ModelSerializer):
     paid_count = serializers.SerializerMethodField()
     canal_paid_count = serializers.SerializerMethodField()
     last_login = PrettyDateTimeField()
-    new_messages_count = serializers.SerializerMethodField()
     affiliate = serializers.CharField()
     bids_count = serializers.IntegerField(read_only=True)
     puntos_count = serializers.IntegerField(read_only=True)
@@ -126,7 +125,6 @@ class UserListSerializer(DynamicFieldsMixin, serializers.ModelSerializer):
             "last_login",
             "bids_count",
             "puntos_count",
-            "new_messages_count",
             "affiliate",
             "docs",
             "scorings",
@@ -140,9 +138,6 @@ class UserListSerializer(DynamicFieldsMixin, serializers.ModelSerializer):
             "company_gas",
             "call_visit_id",
         )
-
-    def get_new_messages_count(self, instance: CustomUser) -> int:
-        return self.context["request"].user.unread_messages.filter(message__author=instance).count()
 
     def get_paid_count(self, instance: CustomUser) -> str:
         by, mode, bids = self._get_bids(instance)
