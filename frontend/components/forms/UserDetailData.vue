@@ -19,15 +19,8 @@
             @click:append="updateUser(item.field, contactInfo[idx].value)"
           />
         </v-card-text>
-      </v-col>
 
-      <v-col cols="12" lg="5" class="pa-0 ma-0">
-        <v-toolbar short dense>
-          <v-spacer />
-          <v-toolbar-title> Otro </v-toolbar-title>
-          <v-spacer />
-        </v-toolbar>
-        <v-card-text class="d-flex flex-row flex-wrap">
+        <v-card-text>
           <v-dialog v-for="(date, idx) in datesInfo" :key="date.text" v-model="dialogs[idx]" max-width="600px">
             <template v-slot:activator="{ on }">
               <v-text-field
@@ -81,18 +74,60 @@
           />
         </v-card-text>
       </v-col>
-    </v-row>
 
-    <v-row>
-      <v-col>
-        <v-textarea
-          v-model="user['observations']"
-          label="Observaciones"
-          dense
-          prepend-icon="mdi-eye"
-          :append-icon="readonly ? null : 'mdi-content-save'"
-          @click:append="updateUser('observations', user['observations'])"
-        />
+      <v-col cols="12" lg="5" class="pa-0 ma-0">
+        <v-toolbar short dense>
+          <v-spacer />
+          <v-toolbar-title>Cambias</v-toolbar-title>
+          <v-spacer />
+        </v-toolbar>
+        <v-card-text class="d-flex flex-row flex-wrap">
+          <v-list style="overflow-y: scroll; height: 400px">
+            <template v-for="item in userHistory">
+              <v-list-item :key="item.id">
+                <v-list-item-content>
+                  <v-list-item-title>
+                    <v-row>
+                      <v-col>
+                        <caption style="color: green">
+                          {{
+                            formatDate(item.requested_at)
+                          }}
+                        </caption>
+                      </v-col>
+                      <v-spacer />
+                      <v-col>
+                        <nuxt-link :to="'/admin/usuarios/' + item.user">{{ item.fullname }}</nuxt-link>
+                      </v-col>
+                    </v-row>
+                  </v-list-item-title>
+
+                  <pre>{{ item.data }}</pre>
+                </v-list-item-content>
+              </v-list-item>
+
+              <v-divider :key="'d' + item.id" />
+            </template>
+          </v-list>
+
+          <v-row>
+            <v-col>
+              <v-text-field
+                v-model="comment"
+                label="Nuevo comentario"
+                append-icon="mdi-send"
+                @keyup.enter="
+                  updateUser('observations', comment)
+                  comment = ''
+                "
+                @click:append="
+                  updateUser('observations', comment)
+                  comment = ''
+                "
+              />
+            </v-col>
+          </v-row>
+        </v-card-text>
       </v-col>
     </v-row>
   </v-container>
@@ -117,7 +152,9 @@ export default {
   },
   data() {
     return {
+      comment: '',
       user: {},
+      userHistory: [],
       responsible: null,
       source: null,
       phone: null,
@@ -223,8 +260,30 @@ export default {
       const isAgent = this.$auth.user && this.$auth.user.role === 'agent'
       await this.$store.dispatch('fetchResponsibles', isAgent)
     }
+
+    await this.getUserHistory()
   },
   methods: {
+    async getUserHistory() {
+      this.userHistory = await this.$axios.$get(`/users/manage_users/${this.userId}/history/`)
+    },
+    formatJson(obj) {
+      const subitems = []
+      Object.keys(obj).forEach((key) => {
+        const val = obj[key]
+        if (String(val).includes('\n')) {
+          const lines = val.split('\n')
+          subitems.push(`${key}:`)
+          lines.forEach((line) => {
+            subitems.push('\t' + line)
+          })
+        } else {
+          subitems.push(`${key}: ${val}`)
+        }
+        return `${key}: ${obj[key]}`
+      })
+      return subitems
+    },
     formatDate(dt) {
       if (!dt || dt.includes('/')) return dt
       try {
@@ -239,6 +298,7 @@ export default {
         this.user = user
         this.$toast.global.done()
         this.$emit('user-updated', user)
+        this.getUserHistory()
       } catch (e1) {
         try {
           const errText = e1.response.data[field][0]

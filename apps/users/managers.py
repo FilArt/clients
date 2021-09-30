@@ -7,7 +7,6 @@ from django.utils.translation import gettext_lazy as _
 
 from .utils import (
     CLIENT_STATUSES,
-    FACTURACION_STATUSES,
     KO,
     KO_PAPELLERA,
     PAGADO,
@@ -84,18 +83,6 @@ class CustomUserManager(BaseUserManager):
             raise ValueError(_("Superuser must have is_superuser=True."))
         return self.create_user(email, password, **extra_fields)
 
-    def facturacion(self) -> QuerySet:
-        from ..bids.models import Bid
-
-        bids = Bid.objects.with_status().filter(status__in=FACTURACION_STATUSES)
-        users = bids.values("user").distinct()
-        return (
-            self.get_queryset()
-            .filter(id__in=users, role__isnull=True)
-            .exclude(ko=True)
-            .annotate(bids_count=Count("bids", filter=Q(bids__in=bids), distinct=True))
-        )
-
     def tramitacion(self) -> QuerySet:
         from apps.users.models import Status
 
@@ -121,7 +108,7 @@ class CustomUserManager(BaseUserManager):
             self.get_queryset()
             .filter(Q(id__in=users) | Q(bids__isnull=True), role__isnull=True)
             .exclude(ko=True)
-            .exclude(status=Status.tramitacion.value[0])
+            # .exclude(status=Status.tramitacion.value[0])
             .annotate(bids_count=Count("bids", filter=Q(bids__in=bids), distinct=True))
         )
 

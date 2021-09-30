@@ -18,6 +18,7 @@ from rest_framework.exceptions import ValidationError
 from rest_framework_tracking.models import APIRequestLog
 
 from apps.bids.models import Bid
+from apps.logs.serializers import PrettyJsonField
 
 from .models import Attachment, CustomUser, Punto, Status
 from .utils import PENDIENTE_PAGO
@@ -144,19 +145,11 @@ class UserListSerializer(DynamicFieldsMixin, serializers.ModelSerializer):
         )
 
     def get_paid_count(self, instance: CustomUser) -> str:
-        by, mode, bids = self._get_bids(instance)
-        if mode == "facturacion":
-            pc = sum([bid.commission for bid in bids.all() if bid.status == PENDIENTE_PAGO])
-        else:
-            pc = instance.paid_count
+        pc = instance.paid_count
         return "SF" if pc == -1 else f"{pc} €" if pc is not None else pc
 
     def get_canal_paid_count(self, instance: CustomUser) -> str:
-        by, mode, bids = self._get_bids(instance)
-        if mode == "facturacion":
-            pc = sum([bid.canal_commission for bid in bids.all() if bid.status == PENDIENTE_PAGO])
-        else:
-            pc = instance.canal_paid_count
+        pc = instance.canal_paid_count
         return "SF" if pc == -1 else f"{pc} €" if pc is not None else pc
 
     def to_representation(self, instance: CustomUser):
@@ -368,24 +361,23 @@ class UploadToCallVisitSerializer(serializers.ModelSerializer):
 
 
 class UserHistorySerializer(serializers.ModelSerializer):
-    data = serializers.SerializerMethodField()
+    data = PrettyJsonField()
+    fullname = serializers.CharField(source="user.fullname")
 
     class Meta:
         model = APIRequestLog
-        fields = ["id", "data", "user", "requested_at", "username_persistent"]
+        fields = ["id", "data", "user", "requested_at", "fullname"]
 
     def get_data(self, obj: APIRequestLog) -> str:
-        s: str = (
-            obj.data.replace("D'", "D`")
+        d: str = getattr(obj, "data")
+        s = (
+            d.replace("D'", "D`")
             .replace("'", '"')
-            .replace("True", "✅")
-            .replace("False", "❌")
+            .replace("True", '"Si"')
+            .replace("False", '"No"')
             .replace("None", "null")
             .replace("<", '"')
             .replace(">", '"')
             .strip()
         )
-        try:
-            return ujson.loads(s)
-        except ValueError:
-            return s
+        return ujson.loads(s)

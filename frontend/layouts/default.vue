@@ -70,11 +70,6 @@ export default {
             to: '/admin/tramitacion',
           },
           {
-            icon: 'mdi-currency-eur',
-            title: 'FACTURACIÓN',
-            to: '/admin/facturacion',
-          },
-          {
             icon: 'mdi-file-cancel-outline',
             title: 'PAPELERA',
             to: '/admin/ko',
@@ -164,13 +159,6 @@ export default {
       }
       if (permissions.includes('calculator')) {
         items.push({ icon: 'mdi-calculator', title: 'COMPARADOR', to: '/comparador' })
-      }
-      if (permissions.includes('facturacion')) {
-        items.push({
-          icon: 'mdi-currency-eur',
-          title: 'FACTURACIÓN',
-          to: '/agente/facturacion',
-        })
       }
       if (role) {
         items.push({ icon: 'mdi-information', title: 'INFO', to: '/info' })

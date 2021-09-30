@@ -18,56 +18,6 @@
 
     <v-card-text>
       <user-detail-data :user-id="$route.params.id" @user-updated="refresh" />
-
-      <v-dialog v-model="userHistoryDialog" scrollable max-width="750px">
-        <template v-slot:activator="{ on }">
-          <v-btn block color="primary" :disabled="!userHistory || !userHistory.length" v-on="on">
-            <v-icon left>mdi-eye</v-icon>
-            Ver el historial del usuario
-          </v-btn>
-        </template>
-        <v-card>
-          <v-card-title>
-            Cambias
-            <v-spacer />
-            <close-button @click="userHistoryDialog = false" />
-          </v-card-title>
-
-          <v-divider></v-divider>
-
-          <v-card-text style="height: 500px">
-            <v-list>
-              <v-list-item v-for="item in userHistory" :key="item.id">
-                <v-list-item-content>
-                  <v-list-item-title>
-                    <v-row>
-                      <v-col> ID: {{ item.id }} </v-col>
-                      <v-col>
-                        <caption>
-                          {{
-                            formatDate(item.requested_at)
-                          }}
-                        </caption>
-                      </v-col>
-                      <v-col>
-                        <nuxt-link :to="'/admin/usuarios/' + item.user">{{ item.username_persistent }}</nuxt-link>
-                      </v-col>
-                    </v-row>
-                  </v-list-item-title>
-                  <p
-                    v-for="(subitem, idx) in formatJson(item.data)"
-                    :key="idx"
-                    :style="subitem.startsWith('\t') ? 'text-indent: 1em' : ''"
-                    class="truncate"
-                  >
-                    {{ subitem }}
-                  </p>
-                </v-list-item-content>
-              </v-list-item>
-            </v-list>
-          </v-card-text>
-        </v-card>
-      </v-dialog>
     </v-card-text>
 
     <v-card-text>
@@ -161,7 +111,6 @@
 
 <script>
 import { mapState } from 'vuex'
-import { format } from 'date-fns'
 import constants from '../../../lib/constants'
 
 export default {
@@ -171,7 +120,6 @@ export default {
     PuntosList: () => import('~/components/puntos/PuntosList'),
     HistoryList: () => import('~/components/history/HistoryList'),
     UserDetailData: () => import('@/components/forms/UserDetailData'),
-    CloseButton: () => import('@/components/buttons/closeButton.vue'),
     Ficha: () => import('../../../components/Ficha.vue'),
   },
   async asyncData({ params, $axios }) {
@@ -189,9 +137,7 @@ export default {
       calls,
       puntos: await $axios.$get(`/users/puntos/?user=${params.id}`),
       history: await $axios.$get(`/bids/history/?user=${params.id}`),
-      userHistory: await $axios.$get(`/users/manage_users/${params.id}/history/`),
       tabs: null,
-      userHistoryDialog: false,
     }
   },
   computed: {
@@ -212,30 +158,9 @@ export default {
       await this.$axios.$patch(`users/users/${this.user.id}/`, { ko: true })
       await this.$router.push(`/admin/ko/${this.user.id}`)
     },
-    formatDate(dateStr) {
-      return format(new Date(dateStr), 'dd/MM/yyyy HH:mm')
-    },
-    formatJson(obj) {
-      const subitems = []
-      Object.keys(obj).forEach((key) => {
-        const val = obj[key]
-        if (String(val).includes('\n')) {
-          const lines = val.split('\n')
-          subitems.push(`${key}:`)
-          lines.forEach((line) => {
-            subitems.push('\t' + line)
-          })
-        } else {
-          subitems.push(`${key}: ${val}`)
-        }
-        return `${key}: ${obj[key]}`
-      })
-      return subitems
-    },
     async refresh() {
       const user = await this.$axios.$get(`/users/users/${this.$route.params.id}/`)
       await this.$store.dispatch('bids/fetchBids', { params: `user=${user.id}` })
-      this.userHistory = await this.$axios.$get(`/users/manage_users/${user.id}/history/`)
       this.user = user
     },
     async fetchPuntos() {

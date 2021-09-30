@@ -309,16 +309,22 @@ export default {
     },
     async tramitate() {
       this.loading = true
+
+      const data = {
+        doc: this.bid.doc,
+        call: this.bid.call,
+        scoring: this.bid.scoring,
+        offer_status: this.bid.offer_status,
+        new_status: this.newStatus,
+        message: this.message,
+        internal_message: this.internalMessage,
+      }
+      Object.keys(data).forEach((k) => {
+        const v = data[k]
+        if (v === null || v === '') delete data[k]
+      })
       try {
-        await this.$axios.$patch(`bids/bids/${this.bid.id}/`, {
-          doc: this.bid.doc,
-          call: this.bid.call,
-          scoring: this.bid.scoring,
-          offer_status: this.bid.offer_status,
-          new_status: this.newStatus,
-          message: this.message,
-          internal_message: this.internalMessage,
-        })
+        await this.$axios.$patch(`bids/bids/${this.bid.id}/`, data)
         this.$emit('tramitate')
         await this.fetchBid()
         await this.fetchLastComments()

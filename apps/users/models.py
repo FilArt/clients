@@ -31,7 +31,6 @@ PERMISSIONS_CHOICES = (
     ("offers", _("Offers")),
     ("calculator", _("Calculator")),
     ("leeds_access", _("Leeds")),
-    ("facturacion", _("Facturacion")),
 )
 
 
@@ -54,6 +53,7 @@ class Status(Enum):
             cls.renovacion.value,
             cls.fidelization.value,
             cls.no_cliente.value,
+            cls.tramitacion.value,
         )
 
     @classmethod

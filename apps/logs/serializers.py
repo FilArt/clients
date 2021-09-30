@@ -27,8 +27,8 @@ class PrettyJsonField(serializers.JSONField):
                 value = (
                     value.replace("D'", "D`")
                     .replace("'", '"')
-                    .replace("True", "✅")
-                    .replace("False", "❌")
+                    .replace("True", '"Si"')
+                    .replace("False", '"No"')
                     .replace("None", "null")
                     .replace("<", '"')
                     .replace(">", '"')

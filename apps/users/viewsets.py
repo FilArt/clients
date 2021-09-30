@@ -155,8 +155,6 @@ class UserViewSet(
         if mode or statuses:
             if mode == "tramitacion":
                 qs = CustomUser.objects.tramitacion()
-            elif mode == "facturacion":
-                qs = CustomUser.with_internal_status.facturacion()
             elif mode == "ko_papellera":
                 qs = CustomUser.objects.ko_papellera()
             elif mode == "client":
@@ -289,7 +287,6 @@ class ManageUsersViewSet(UserViewSet, mixins.CreateModelMixin, mixins.DestroyMod
             "Total tramitación en proceso": [TRAMITACION],
             "Total pendiente tramitación": [PENDIENTE_TRAMITACION],
             "Total KO tramitación": [KO],
-            "Total en facturacion": [PAGADO, PENDIENTE_PAGO],
             "Total pendiente pago": [PENDIENTE_PAGO],
             "Total pagado": [PAGADO],
             "Total en papelera": [KO_PAPELLERA],
@@ -367,12 +364,20 @@ class ManageUsersViewSet(UserViewSet, mixins.CreateModelMixin, mixins.DestroyMod
 
     @action(methods=["GET"], detail=True, permission_classes=(AdminPermission,))
     def history(self, request: Request, pk: int):
+        user: CustomUser = self.get_object()
+
+        paths = [
+            f"/api/users/manage_users/{pk}/",
+            f"/api/users/users/{pk}/",
+            *[f"/api/users/puntos/{punto.id}/" for punto in user.puntos.all()],
+            *[f"/api/bids/bids/{bid.id}/" for bid in user.bids.all()],
+        ]
+
         logs = APIRequestLog.objects.filter(
-            view__in=["apps.users.viewsets.ManageUsersViewSet", "apps.users.viewsets.UserViewSet"],
-            view_method__in=["partial_update", "update"],
-            path__in=[f"/api/users/manage_users/{pk}/", f"/api/users/users/{pk}/"],
+            view_method__in=["create", "partial_update", "update"],
+            path__in=paths,
             errors__isnull=True,
-            data__isnull=False,
+            status_code__in=[200, 201],
         ).order_by("-requested_at")
         data = UserHistorySerializer(logs, many=True).data
         return Response(data)

@@ -41,6 +41,14 @@ def humanize(dt, locale="es"):
 
 
 MAP_CARD_FIELDS = {
+    "internal_message": "Commentario",
+    "message": "Mensaje",
+    "new_status": "Nuevo estado",
+    "offer_status": "Estado de oferta",
+    "call": "Llamada",
+    "doc": "Doc",
+    "scoring": "Scoring",
+    "observations": "Comentario",
     "id": "ID",
     "is_shelved": "Archivo",
     "is_client": "Cliente",
