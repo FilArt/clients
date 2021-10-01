@@ -194,7 +194,7 @@ class DetailOfferSerializer(OfferListSerializer):
 class BidListSerializer(DynamicFieldsMixin, serializers.ModelSerializer):
     agent_type = serializers.CharField(source="user.agent_type", read_only=True)
     canal = serializers.CharField(source="user.responsible.canal", read_only=True)
-    created_at = serializers.DateTimeField(format="%d.%m.%Y %H:%M")
+    created_at = serializers.DateTimeField(format="%d/%m/%Y %H:%M")
     fecha_firma = serializers.DateTimeField(format="%d/%m/%Y %H:%M")
     internal_message = serializers.CharField(write_only=True, allow_blank=True, allow_null=True)
     message = serializers.CharField(write_only=True, allow_blank=True, allow_null=True)

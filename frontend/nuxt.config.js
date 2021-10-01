@@ -124,7 +124,6 @@ export default {
       locales: { es },
       current: 'es',
     },
-    customVariables: ['~/assets/variables.scss'],
     theme: {
       dark: false,
       themes: {

@@ -24,7 +24,7 @@
               <v-autocomplete
                 v-model="responsible"
                 dense
-                prepend-icon="mdi-account"
+                prepend-icon="mdi-account-tie"
                 label="Responsable"
                 item-text="fullname"
                 item-value="id"
@@ -123,7 +123,7 @@ export default {
       changedUser: {},
       userFields: [
         {
-          icon: 'mdi-person',
+          icon: 'mdi-domain',
           text: 'Nombre',
           field: 'company_name',
         },
@@ -133,12 +133,17 @@ export default {
           field: 'legal_representative',
         },
         {
+          icon: 'mdi-counter',
+          text: 'CIF/NIF',
+          field: 'cif_nif',
+        },
+        {
           icon: 'mdi-phone',
           text: 'Telefono',
           field: 'phone',
         },
         {
-          icon: 'mdi-phone',
+          icon: 'mdi-deskphone',
           text: 'Telefono fijo',
           field: 'phone_city',
         },
@@ -148,23 +153,19 @@ export default {
           field: 'email',
         },
         {
-          text: 'CIF/NIF',
-          field: 'cif_nif',
-        },
-        {
           icon: 'mdi-calendar',
           text: 'Ultimo cambio',
           field: 'last_modified',
           readonly: true,
         },
         {
-          icon: 'mdi-calendar',
+          icon: 'mdi-calendar-plus',
           text: 'Fecha de registro',
           field: 'created_at',
           readonly: true,
         },
         {
-          icon: 'mdi-calendar',
+          icon: 'mdi-calendar-check',
           text: 'Fecha firma',
           field: 'fecha_firma',
           readonly: true,

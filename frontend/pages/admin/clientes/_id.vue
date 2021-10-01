@@ -70,7 +70,11 @@
                   <v-list-item-content>
                     <v-list-item-title v-text="bid.offer_name" />
                     <v-list-item-subtitle v-text="'id: ' + bid.id" />
-                    <v-list-item-subtitle v-text="bid.fecha_firma" />
+                    <v-list-item-subtitle>
+                      FF: {{ bid.fecha_firma }}
+                      <br />
+                      FR: {{ bid.created_at }}
+                    </v-list-item-subtitle>
                   </v-list-item-content>
 
                   <v-list-item-content>

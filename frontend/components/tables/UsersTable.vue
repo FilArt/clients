@@ -144,6 +144,27 @@
             </v-col>
 
             <v-col
+              v-if="headers.some((h) => h === 'status') && statuses.length > 1"
+              :cols="flexs.cols"
+              :xl="flexs.xl"
+              :lg="flexs.lg"
+              :md="flexs.md"
+              :xs="flexs.xs"
+            >
+              <v-select
+                v-model="query.status__in"
+                label="Estado"
+                :items="statuses"
+                multiple
+                chips
+                deletable-chips
+                small-chips
+                clearable
+                @change="updateQuery({ status__in: $event })"
+              />
+            </v-col>
+
+            <v-col
               v-if="headers.some((h) => h.includes('responsible'))"
               :cols="flexs.cols"
               :xl="flexs.xl"
@@ -225,27 +246,6 @@
                 formatted="DD/MM/YYYY HH:mm"
                 range
                 @input="updateFechaFirmaFilter"
-              />
-            </v-col>
-
-            <v-col
-              v-if="headers.some((h) => h === 'status') && statuses.length > 1"
-              :cols="flexs.cols"
-              :xl="flexs.xl"
-              :lg="flexs.lg"
-              :md="flexs.md"
-              :xs="flexs.xs"
-            >
-              <v-select
-                v-model="query.status__in"
-                label="Estado"
-                :items="statuses"
-                multiple
-                chips
-                deletable-chips
-                small-chips
-                clearable
-                @change="updateQuery({ status__in: $event })"
               />
             </v-col>
 
