@@ -41,6 +41,7 @@ def humanize(dt, locale="es"):
 
 
 MAP_CARD_FIELDS = {
+    "responsible": "Responsable",
     "company_luz": "Comercializadora (Luz)",
     "company_gas": "Comercializadora (Gas)",
     "internal_message": "Commentario",

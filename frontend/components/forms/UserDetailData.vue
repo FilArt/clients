@@ -7,71 +7,33 @@
           <v-toolbar-title>Datos de contacto</v-toolbar-title>
           <v-spacer />
         </v-toolbar>
-        <v-card-text class="d-flex flex-row flex-wrap">
-          <v-text-field
-            v-for="(item, idx) in contactInfo"
-            :key="idx"
-            v-model="contactInfo[idx].value"
-            dense
-            :prepend-icon="item.icon"
-            :label="item.text"
-            :append-icon="readonly ? null : item.field ? 'mdi-content-save' : ''"
-            @click:append="updateUser(item.field, contactInfo[idx].value)"
-          />
-        </v-card-text>
-
         <v-card-text>
-          <v-dialog v-for="(date, idx) in datesInfo" :key="date.text" v-model="dialogs[idx]" max-width="600px">
-            <template v-slot:activator="{ on }">
+          <v-card-text class="flex-wrap">
+            <v-flex v-for="(item, idx) in userFields" :key="idx">
               <v-text-field
-                v-model="date.value"
-                :prepend-icon="date.icon"
-                :label="date.text"
-                :append-icon="!date.editable ? null : 'mdi-content-save'"
-                :readonly="!date.editable"
+                v-model="changedUser[item.field]"
                 dense
-                v-on="on"
+                :prepend-icon="item.icon"
+                :label="item.text"
+                :append-icon="!readonly && changedUser[item.field] !== user[item.field] ? 'mdi-content-save' : null"
+                @click:append="updateUser(item.field, changedUser[item.field])"
               />
-            </template>
-            <v-card>
-              <v-card-text>
-                <v-row>
-                  <v-col>
-                    <date-time-filter v-model="date.value" format="DD/MM/YYYY HH:mm" inline />
-                  </v-col>
-                </v-row>
-                <v-row>
-                  <v-col class="flex-grow-0">
-                    <v-btn color="warning" @click="dialogs[idx] = false"> Cancellar </v-btn>
-                  </v-col>
-                  <v-col>
-                    <v-btn
-                      block
-                      color="info"
-                      @click="
-                        updateUser(date.field, date.value)
-                        dialogs[idx] = false
-                      "
-                    >
-                      Salvar
-                    </v-btn>
-                  </v-col>
-                </v-row>
-              </v-card-text>
-            </v-card>
-          </v-dialog>
+            </v-flex>
 
-          <v-autocomplete
-            v-model="responsible"
-            dense
-            prepend-icon="mdi-account"
-            label="Responsable"
-            item-text="fullname"
-            item-value="id"
-            :items="responsibles"
-            :append-icon="responsible !== user.responsible ? 'mdi-content-save' : null"
-            @click:append="updateUser('responsible', responsible)"
-          />
+            <v-flex>
+              <v-autocomplete
+                v-model="responsible"
+                dense
+                prepend-icon="mdi-account"
+                label="Responsable"
+                item-text="fullname"
+                item-value="id"
+                :items="responsibles"
+                :append-icon="responsible !== user.responsible ? 'mdi-content-save' : null"
+                @click:append="updateUser('responsible', responsible)"
+              />
+            </v-flex>
+          </v-card-text>
         </v-card-text>
       </v-col>
 
@@ -83,35 +45,35 @@
         </v-toolbar>
         <v-card-text class="flex-wrap">
           <v-row>
-            <v-list id="commentsList" style="overflow-y: scroll; height: 400px">
-              <template v-for="item in userHistory">
-                <v-list-item :key="item.id">
-                  <v-list-item-content>
-                    <v-list-item-title>
-                      <v-row>
-                        <v-col>
-                          <caption style="color: green">
-                            {{
-                              formatDate(item.requested_at)
-                            }}
-                          </caption>
-                        </v-col>
-                        <v-spacer />
-                        <v-col>
-                          <nuxt-link :to="'/admin/usuarios/' + item.user">{{ item.fullname }}</nuxt-link>
-                        </v-col>
-                      </v-row>
-                    </v-list-item-title>
-
-                    <pre>{{ item.data }}</pre>
-                  </v-list-item-content>
-                </v-list-item>
-
-                <v-divider :key="'d' + item.id" />
-              </template>
-            </v-list>
-
             <v-col>
+              <v-list id="commentsList" style="overflow-y: scroll; height: 400px">
+                <template v-for="item in userHistory">
+                  <v-list-item :key="item.id">
+                    <v-list-item-content>
+                      <v-list-item-title>
+                        <v-row>
+                          <v-col>
+                            <caption style="color: green">
+                              {{
+                                formatDate(item.requested_at)
+                              }}
+                            </caption>
+                          </v-col>
+                          <v-spacer />
+                          <v-col>
+                            <nuxt-link :to="'/admin/usuarios/' + item.user">{{ item.fullname }}</nuxt-link>
+                          </v-col>
+                        </v-row>
+                      </v-list-item-title>
+
+                      <pre>{{ item.data }}</pre>
+                    </v-list-item-content>
+                  </v-list-item>
+
+                  <v-divider :key="'d' + item.id" />
+                </template>
+              </v-list>
+
               <v-text-field
                 v-model="comment"
                 label="Nuevo comentario"
@@ -139,7 +101,6 @@ import { format, parseISO } from 'date-fns'
 const DATE_FORMAT = 'dd/MM/yyyy HH:mm'
 export default {
   name: 'UserDetailData',
-  components: { DateTimeFilter: () => import('@/components/DateTimeFilter') },
   props: {
     userId: {
       type: [Number, String],
@@ -159,115 +120,85 @@ export default {
       source: null,
       phone: null,
       dialogs: {},
-    }
-  },
-  computed: {
-    ...mapState({ responsibles: (state) => state.responsibles }),
-    contactInfo() {
-      const { user } = this
-      return [
+      changedUser: {},
+      userFields: [
         {
           icon: 'mdi-person',
           text: 'Nombre',
-          value: user.company_name,
           field: 'company_name',
         },
         {
           icon: 'mdi-account',
           text: 'Persona de contacto',
-          value: user.legal_representative,
           field: 'legal_representative',
         },
         {
           icon: 'mdi-phone',
           text: 'Telefono',
-          value: user.phone,
           field: 'phone',
         },
         {
           icon: 'mdi-phone',
           text: 'Telefono fijo',
-          value: user['phone_city'],
           field: 'phone_city',
         },
         {
           icon: 'mdi-email',
           text: 'Email',
-          value: user.email,
           field: 'email',
         },
         {
           text: 'CIF/NIF',
           field: 'cif_nif',
-          value: user.cif_nif,
         },
-        {
-          text: 'Call-Visit ID',
-          field: 'call_visit_id',
-          value: user.call_visit_id,
-        },
-      ]
-    },
-    datesInfo() {
-      const { user } = this
-      return [
         {
           icon: 'mdi-calendar',
           text: 'Ultimo cambio',
           field: 'last_modified',
-          value: this.formatDate(user['last_modified']),
-          editable: false,
+          readonly: true,
         },
         {
           icon: 'mdi-calendar',
           text: 'Fecha de registro',
           field: 'created_at',
-          value: this.formatDate(user['created_at']),
-          editable: false,
+          readonly: true,
         },
         {
           icon: 'mdi-calendar',
           text: 'Fecha firma',
           field: 'fecha_firma',
-          value: this.formatDate(user['fecha_firma']),
-          editable: false,
+          readonly: true,
         },
-      ]
-    },
+      ],
+    }
   },
-  async created() {
-    const fields = [
-      'observations',
-      'source',
-      'responsible',
-      'phone',
-      'phone_city',
-      'created_at',
-      'email',
-      'legal_representative',
-      'last_modified',
-      'fecha_firma',
-      'company_name',
-      'cif_nif',
-      'call_visit_id',
-    ]
-    const user = await this.$axios.$get(`users/users/${this.userId}/?fields=${fields}`)
-    this.user = user
-    this.responsible = user.responsible
-    this.source = user.source
-
+  computed: {
+    ...mapState({ responsibles: (state) => state.responsibles }),
+  },
+  async mounted() {
+    await this.refresh()
     if (!this.responsibles.length) {
       const isAgent = this.$auth.user && this.$auth.user.role === 'agent'
       await this.$store.dispatch('fetchResponsibles', isAgent)
     }
-
-    await this.getUserHistory()
-    const cl = this.$el.querySelector('#commentsList')
-    cl.scrollTop = cl.scrollHeight
   },
   methods: {
+    async refresh() {
+      const fields = this.userFields.map((f) => f.field).join()
+      const user = await this.$axios.$get(`users/users/${this.userId}/?fields=${fields}`)
+      this.user = user
+      this.changedUser = { ...user }
+      this.responsible = user.responsible
+      this.source = user.source
+      await this.getUserHistory()
+    },
     async getUserHistory() {
       this.userHistory = await this.$axios.$get(`/users/manage_users/${this.userId}/history/`)
+      const self = this
+      setTimeout(function () {
+        const cl = self.$el.querySelector('#commentsList')
+        cl.scrollTop = cl.scrollHeight
+      }, 250)
     },
     formatJson(obj) {
       const subitems = []
@@ -296,10 +227,10 @@ export default {
     },
     async updateUser(field, value) {
       try {
-        const user = await this.$axios.$patch(`users/users/${this.userId}/`, { [field]: value })
-        this.user = user
+        await this.$axios.$patch(`users/users/${this.userId}/`, { [field]: value })
+        await this.refresh()
         this.$toast.global.done()
-        this.$emit('user-updated', user)
+        this.$emit('user-updated', { ...this.user })
         this.getUserHistory()
       } catch (e1) {
         try {

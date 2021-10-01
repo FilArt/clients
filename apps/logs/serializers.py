@@ -1,3 +1,4 @@
+from datetime import date, datetime
 from functools import reduce
 from typing import Dict, List
 
@@ -10,9 +11,16 @@ from rest_framework_tracking.models import APIRequestLog
 
 
 def translate_fields(json_obj: dict):
+    from apps.users.models import CustomUser
+
     res = {}
     for k, v in json_obj.items():
-        val = translate_fields(v) if isinstance(v, dict) else (PYTHON_VALUES_MAP.get(str(v).lower()) or v or "")
+        if k == "responsible" and v:
+            val = CustomUser.objects.get(id=v).fullname
+        elif isinstance(v, (datetime, date)):
+            val = v.strftime("%d/%m/%Y")
+        else:
+            val = translate_fields(v) if isinstance(v, dict) else (PYTHON_VALUES_MAP.get(str(v).lower()) or v or "")
         res[MAP_CARD_FIELDS.get(k) or k] = val
     return res
 

@@ -4,10 +4,12 @@
       <v-card-title>
         Call-Visit Ficha
         <v-spacer />
+        <v-text-field v-model="callVisitId" label="Call-Visit ID" />
         <v-btn icon color="success" @click="refresh">
           <v-icon>mdi-refresh</v-icon>
         </v-btn>
       </v-card-title>
+
       <v-card-text>
         <v-alert v-if="error" type="error">{{ error }}</v-alert>
 
@@ -17,6 +19,7 @@
               <v-select
                 v-if="field.type === 'user'"
                 v-model="card[field.value]"
+                :label="field.label"
                 :items="users.filter((u) => u.position === field.value)"
                 item-text="fullname"
                 item-value="id"
@@ -41,17 +44,16 @@
                 v-else-if="field.type === 'datetime'"
                 v-model="card[field.value]"
                 :label="field.label"
-                format="YYYY-MM-DD HH:mm"
                 formatted="DD/MM/YYYY HH:mm"
+                format="YYYY-MM-DD HH:mm"
               />
 
               <date-time-filter
                 v-else-if="field.type === 'date'"
-                :value.sync="card[field.value]"
+                v-model="card[field.value]"
                 :label="field.label"
-                format="YYYY-MM-DD HH:mm"
                 formatted="DD/MM/YYYY"
-                @input="card[field.value] = $event.substring(0, 10)"
+                format="DD/MM/YYYY HH:mm"
               />
 
               <v-text-field v-else v-model="card[field.value]" :label="field.label" />
@@ -67,6 +69,7 @@
 </template>
 
 <script>
+import { format, parse } from 'date-fns'
 import constants from '../lib/constants'
 import SubmitButton from './buttons/submitButton.vue'
 export default {
@@ -83,6 +86,7 @@ export default {
   },
   data() {
     return {
+      callVisitId: this.cardId,
       loading: false,
       card: null,
       error: '',
@@ -132,7 +136,7 @@ export default {
   },
   computed: {
     url() {
-      return `${constants.CV_URL}/api/cards/${this.cardId}/`
+      return `${constants.CV_URL}/api/cards/${this.callVisitId}/`
     },
   },
   watch: {
@@ -152,17 +156,12 @@ export default {
     const axiosInstance = this.$axios.create({ headers })
     this.api = axiosInstance
 
-    const { data } = await this.api.get(`${constants.CV_URL}/api/users/`)
-    this.users = data
+    this.fetchUsers()
 
     await this.refresh()
   },
   methods: {
     async refresh() {
-      if (!this.cardId) {
-        this.error = 'Cliente no tiene call-visit ficha ID'
-        return
-      }
       this.loading = true
 
       try {
@@ -177,21 +176,29 @@ export default {
         this.card = data
       } catch (e) {
         console.log(e)
-        const err = e.response && e.response.data ? e.response.data : e
-        this.error = err
+        if (e.response.status === 404) {
+          this.error = '404. No encontrado'
+        } else {
+          const err = e.response && e.response.data ? e.response.data : e
+          this.error = err
+        }
       } finally {
         this.loading = false
       }
     },
-    async getUsers() {
-      const data = await this.api.$get(constants.CV_URL + '/api/users/')
-      console.log(data)
+    async fetchUsers() {
+      this.users = await this.api.$get(constants.CV_URL + '/api/users/')
     },
     async submit() {
       this.loading = true
       const data = {}
       this.cardFields.forEach((f) => {
-        data[f.value] = this.card[f.value]
+        const v = this.card[f.value]
+        if (f.type === 'date') {
+          data[f.value] = v ? format(parse(v.substring(0, 10), 'dd/MM/yyyy', new Date()), 'yyyy-MM-dd') : null
+        } else {
+          data[f.value] = v
+        }
       })
       try {
         await this.api.$patch(this.url, data)

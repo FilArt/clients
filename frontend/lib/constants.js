@@ -61,7 +61,7 @@ const userStatuses = [
   },
   {
     text: 'Tramitacion',
-    value: '4',
+    value: '',
   },
 ]
 export default Object.freeze({
