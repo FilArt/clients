@@ -11,13 +11,13 @@
         <v-divider />
 
         <v-col>
-          <v-row v-for="bid in bids" :key="bid.id" align="center">
-            <v-col>
+          <v-row v-for="bid in bids" :key="bid.id" align="center" class="pa-0">
+            <v-col class="pa-0">
               <v-list-item three-line nuxt :to="getNewUrl(bid.id)" exact class="d-flex align-center">
                 <v-list-item-content>
-                  <v-icon v-if="bid['offer_kind'] === 'luz'" color="warning">mdi-flash</v-icon>
-                  <v-icon v-else color="blue">mdi-fire</v-icon>
                   <v-list-item-title>
+                    <v-icon v-if="bid['offer_kind'] === 'luz'" color="warning">mdi-flash</v-icon>
+                    <v-icon v-else color="blue">mdi-fire</v-icon>
                     <small>ID: {{ bid.id }}</small>
                   </v-list-item-title>
                   <v-list-item-title>
