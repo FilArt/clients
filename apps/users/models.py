@@ -41,7 +41,7 @@ def get_default_user_permissions():
 class Status(Enum):
     firmado = (0, "Firmado")
     renovacion = (1, "Renovacion")
-    fidelization = (2, "Fidelization")
+    fidelization = (2, "Fidelizacion")
     no_cliente = (3, "No cliente")
     tramitacion = (4, "Tramitacion")
 
