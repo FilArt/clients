@@ -470,9 +470,11 @@ class AgentContractSerializer(serializers.ModelSerializer):
         cv_id = self.initial_data["call_visit_id"]
         cif_nif = self.initial_data["cif_nif"]
         try:
-            self._user = CustomUser.objects.get(Q(call_visit_id=cv_id) | Q(cif_nif=cif_nif))
+            self._user = CustomUser.objects.get(call_visit_id=cv_id)
         except CustomUser.DoesNotExist:
             pass
+        except CustomUser.MultipleObjectsReturned:
+            raise ValidationError({"cif_nif": ["Programa error. Contactar con administrador"]})
 
         if new_email:
             if CustomUser.objects.filter(email=new_email).exclude(cif_nif=cif_nif).exists():
