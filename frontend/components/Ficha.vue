@@ -4,6 +4,11 @@
       <v-card-title>
         Call-Visit Ficha
         <v-spacer />
+        <v-btn target="_blank" :href="feUrl">
+          <v-icon left>mdi-eye</v-icon>
+          Abrir en Call-Visit
+        </v-btn>
+        <v-spacer />
         <v-text-field v-model="callVisitId" label="Call-Visit ID" />
         <v-btn icon color="success" @click="refresh">
           <v-icon>mdi-refresh</v-icon>
@@ -86,6 +91,7 @@ export default {
   },
   data() {
     return {
+      constants,
       callVisitId: this.cardId,
       loading: false,
       card: null,
@@ -137,6 +143,9 @@ export default {
   computed: {
     url() {
       return `${constants.CV_URL}/api/cards/${this.callVisitId}/`
+    },
+    feUrl() {
+      return constants.CV_URL.replace('8000', '8080') + '/admin/ficha/' + this.callVisitId
     },
   },
   watch: {

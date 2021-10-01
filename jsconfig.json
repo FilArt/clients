@@ -1,5 +1,9 @@
 {
-    "include": [
-      "./frontend/**/*"
-    ]
+  "compilerOptions": {
+    "baseUrl": "./frontend/",
+    "paths": {
+      "@/*": ["./*"]
+    }
+  },
+  "exclude": ["./frontend/node_modules"]
 }
