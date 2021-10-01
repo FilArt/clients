@@ -302,6 +302,12 @@
         </span>
       </template>
 
+      <template v-slot:[`item.status`]="{ item }">
+        <v-card class="text-center white--text pa-1" style="font-weight: bold" flat :color="statusColors[item.status]">
+          {{ item.status }}
+        </v-card>
+      </template>
+
       <template v-if="allowDelete" v-slot:[`item.actions`]="{ item }">
         <delete-button @click="deleteUser(item)" />
       </template>
@@ -438,6 +444,12 @@ export default {
     }
     return {
       constants,
+      statusColors: constants.userStatuses.reduce((prev, cur) => {
+        console.log(prev)
+        prev = prev || {}
+        prev[cur.text] = cur.color
+        return prev
+      }, {}),
       statuses: constants.userStatuses,
       uploadToCallVisitDialog: false,
       actionsSnackbar: false,

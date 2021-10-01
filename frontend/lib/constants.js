@@ -46,22 +46,27 @@ const userStatuses = [
   {
     text: 'Firmado',
     value: '0',
+    color: 'success',
   },
   {
     text: 'Renovacion',
     value: '1',
+    color: 'blue',
   },
   {
     text: 'Fidelizacion',
     value: '2',
+    color: 'purple',
   },
   {
     text: 'No cliente',
     value: '3',
+    color: 'error',
   },
   {
     text: 'Tramitacion',
     value: '',
+    color: 'orange',
   },
 ]
 export default Object.freeze({
