@@ -286,7 +286,7 @@ class UserSerializer(UserListSerializer):
             "call_visit_id",
             "status",
         ]
-        extra_kwargs = {"ko": {"write_only": True, "required": False}}
+        extra_kwargs = {"ko": {"write_only": True, "required": False}, "call_visit_id": {"allow_null": True}}
 
 
 class LoadFacturasSerializer(serializers.Serializer):

@@ -182,11 +182,12 @@ export default {
   },
   methods: {
     async onSaveNewCallVisitID() {
-      await this.$axios.$patch(`/users/users/${this.userId}/`, { call_visit_id: this.callVisitId })
+      await this.$axios.$patch(`/users/users/${this.userId}/`, { call_visit_id: parseInt(this.callVisitId) || null })
       await this.refresh()
     },
     async refresh() {
-      this.error = null
+      this.card = this.error = null
+
       this.loading = true
 
       try {
