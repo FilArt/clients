@@ -33,6 +33,7 @@
                 :items="users.filter((u) => u.position === field.value)"
                 item-text="fullname"
                 item-value="id"
+                clearable
               />
               <v-select
                 v-else-if="field.value === 'status'"
