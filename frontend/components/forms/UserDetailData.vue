@@ -10,27 +10,27 @@
         <v-card-text>
           <v-card-text class="flex-wrap">
             <v-flex v-for="(item, idx) in userFields" :key="idx">
+              <v-autocomplete
+                v-if="item.field === 'responsible'"
+                v-model="changedUser[item.field]"
+                dense
+                :prepend-icon="item.icon"
+                :label="item.text"
+                :append-icon="!readonly && changedUser[item.field] !== user[item.field] ? 'mdi-content-save' : null"
+                item-text="fullname"
+                item-value="id"
+                :items="responsibles"
+                @click:append="updateUser(item.field, changedUser[item.field])"
+              />
+
               <v-text-field
+                v-else
                 v-model="changedUser[item.field]"
                 dense
                 :prepend-icon="item.icon"
                 :label="item.text"
                 :append-icon="!readonly && changedUser[item.field] !== user[item.field] ? 'mdi-content-save' : null"
                 @click:append="updateUser(item.field, changedUser[item.field])"
-              />
-            </v-flex>
-
-            <v-flex>
-              <v-autocomplete
-                v-model="responsible"
-                dense
-                prepend-icon="mdi-account-tie"
-                label="Responsable"
-                item-text="fullname"
-                item-value="id"
-                :items="responsibles"
-                :append-icon="responsible !== user.responsible ? 'mdi-content-save' : null"
-                @click:append="updateUser('responsible', responsible)"
               />
             </v-flex>
           </v-card-text>
@@ -116,8 +116,6 @@ export default {
       comment: '',
       user: {},
       userHistory: [],
-      responsible: null,
-      source: null,
       phone: null,
       dialogs: {},
       changedUser: {},
@@ -151,6 +149,11 @@ export default {
           icon: 'mdi-email',
           text: 'Email',
           field: 'email',
+        },
+        {
+          icon: 'mdi-account-tie',
+          text: 'Responsable',
+          field: 'responsible',
         },
         {
           icon: 'mdi-calendar',
@@ -189,8 +192,6 @@ export default {
       const user = await this.$axios.$get(`users/users/${this.userId}/?fields=${fields}`)
       this.user = user
       this.changedUser = { ...user }
-      this.responsible = user.responsible
-      this.source = user.source
       await this.getUserHistory()
     },
     async getUserHistory() {
