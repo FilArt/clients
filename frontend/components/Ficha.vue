@@ -9,7 +9,12 @@
           Abrir en Call-Visit
         </v-btn>
         <v-spacer />
-        <v-text-field v-model="callVisitId" label="Call-Visit ID" />
+        <v-text-field
+          v-model="callVisitId"
+          label="Call-Visit ID"
+          append-icon="mdi-content-save"
+          @click:append="onSaveNewCallVisitID"
+        />
         <v-btn icon color="success" @click="refresh">
           <v-icon>mdi-refresh</v-icon>
         </v-btn>
@@ -87,6 +92,12 @@ export default {
     cardId: {
       type: Number,
       default: null,
+      validator: (x) => x === null || (typeof x === 'number' && x > 0),
+    },
+    userId: {
+      type: Number,
+      default: null,
+      validator: (x) => typeof x === 'number' && x > 0,
     },
   },
   data() {
@@ -170,7 +181,12 @@ export default {
     await this.refresh()
   },
   methods: {
+    async onSaveNewCallVisitID() {
+      await this.$axios.$patch(`/users/users/${this.userId}/`, { call_visit_id: this.callVisitId })
+      await this.refresh()
+    },
     async refresh() {
+      this.error = null
       this.loading = true
 
       try {

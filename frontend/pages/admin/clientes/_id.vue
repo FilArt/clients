@@ -100,7 +100,7 @@
           </v-tab-item>
 
           <v-tab-item>
-            <ficha :card-id="user.call_visit_id" />
+            <ficha :card-id="user.call_visit_id" :user-id="user.id" />
           </v-tab-item>
         </v-tabs-items>
       </v-tabs>
