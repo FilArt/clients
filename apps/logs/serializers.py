@@ -9,6 +9,8 @@ from drf_dynamic_fields import DynamicFieldsMixin
 from rest_framework import serializers
 from rest_framework_tracking.models import APIRequestLog
 
+from apps.users.models import Status
+
 
 def translate_fields(json_obj: dict):
     from apps.users.models import CustomUser
@@ -17,6 +19,8 @@ def translate_fields(json_obj: dict):
     for k, v in json_obj.items():
         if k == "responsible" and v:
             val = CustomUser.objects.get(id=v).fullname
+        elif k == "status":
+            val = dict(Status.choices)[int(v)]
         elif isinstance(v, (datetime, date)):
             val = v.strftime("%d/%m/%Y")
         else:
