@@ -401,14 +401,17 @@ class WithFacturaContractOnlineSerializer(AdditionalContractOnlineSerializer):
 
 
 class ResponsibleField(serializers.EmailField):
-    def to_internal_value(self, data):
-        cif_nif = data.split("@")[0]
+    def to_internal_value(self, email):
+        cif_nif = email.split("@")[0]
         try:
-            return CustomUser.objects.get(Q(email=data) | Q(cif_nif=cif_nif)).email
+            agent = CustomUser.objects.get(email=email)
+            if agent.role != "agent":
+                raise Exception("Agent EMAIL = Client EMAIL")
+            return agent.email
         except CustomUser.DoesNotExist:
             from apps.users.serializers import RegisterSerializer
 
-            ser = RegisterSerializer(data={"email": data, "role": "agent", "cif_nif": cif_nif}, tg_msg=None)
+            ser = RegisterSerializer(data={"email": email, "role": "agent", "cif_nif": cif_nif}, tg_msg=None)
             ser.is_valid(raise_exception=True)
             return ser.save().email
 
