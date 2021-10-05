@@ -241,11 +241,22 @@
             >
               <date-time-filter
                 :value="query.bids__fecha_firma__range"
-                label="Fecha de firma"
+                label="Fecha de firma solicitud"
                 format="YYYY-MM-DD HH:mm"
                 formatted="DD/MM/YYYY HH:mm"
                 range
                 @input="updateFechaFirmaFilter"
+              />
+            </v-col>
+
+            <v-col :cols="flexs.cols" :xl="flexs.xl" :lg="flexs.lg" :md="flexs.md" :xs="flexs.xs">
+              <date-time-filter
+                :value="query.fecha_firma__range"
+                label="Fecha ultima firma "
+                format="YYYY-MM-DD HH:mm"
+                formatted="DD/MM/YYYY HH:mm"
+                range
+                @input="updateFechaUltimaFirmaFilter"
               />
             </v-col>
 
@@ -524,7 +535,7 @@ export default {
       const headers = [
         { text: 'ID', value: 'id' },
         { text: 'Fecha de registro', value: 'created_at' },
-        { text: 'Fecha firma', value: 'fecha_firma' },
+        { text: 'Fecha de firma solicitud', value: 'fecha_firma' },
         { text: 'Nombre/Razon social', value: 'fullname', sortable: false },
         { text: 'Tipo de agente', value: 'agent_type' },
         { text: 'Telefono', value: 'phone' },
@@ -646,14 +657,14 @@ export default {
     async fetchUsers() {
       try {
         this.loading = true
-        if (
-          String(this.query.page) !== String(this.$route.query.page) ||
-          String(this.query.itemsPerPage) !== String(this.$route.query.itemsPerPage)
-        ) {
-          await this.$router.replace({
-            query: Object.entries(this.query).reduce((a, [k, v]) => (v ? ((a[k] = v), a) : a), {}),
-          })
-        }
+        // if (
+        //   String(this.query.page) !== String(this.$route.query.page) ||
+        //   String(this.query.itemsPerPage) !== String(this.$route.query.itemsPerPage)
+        // ) {
+        //   await this.$router.replace({
+        //     query: Object.entries(this.query).reduce((a, [k, v]) => (v ? ((a[k] = v), a) : a), {}),
+        //   })
+        // }
         const query = this.getQuery()
         const data = await this.$axios.$get(`${this.listUrl}/?${query}`)
         const { results, count, suma } = data
@@ -704,6 +715,14 @@ export default {
         this.updateQuery({ bids__fecha_firma__range: null })
       }
     },
+    updateFechaUltimaFirmaFilter(dates) {
+      if (dates && dates.start && dates.end) {
+        this.updateQuery({ fecha_firma__range: `${dates.start},${dates.end}` })
+      } else {
+        this.updateQuery({ fecha_firma__range: null })
+      }
+    },
+
     async updateQuery(options) {
       options = { ...options, page: 1 }
       Object.keys(options).forEach((key) => {

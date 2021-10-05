@@ -179,6 +179,10 @@ class UserViewSet(
         if user.role == "agent" and not self.detail:
             queryset = queryset.filter(responsible=user)
 
+        ff = self.request.query_params.get("fecha_firma__range")
+        if ff:
+            queryset = queryset.filter(fecha_firma__range=ff.split(","))
+
         return queryset
 
     def get_serializer_class(self):
