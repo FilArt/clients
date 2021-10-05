@@ -84,20 +84,20 @@ class CustomUserManager(BaseUserManager):
         return self.create_user(email, password, **extra_fields)
 
     def tramitacion(self) -> QuerySet:
-        from apps.users.models import Status
+        # from apps.users.models import Status
 
         from ..bids.models import Bid
 
         bids = Bid.objects.with_status().filter(status__in=TRAMITACION_STATUSES)
         return (
             self.get_queryset()
-            .filter(status=Status.tramitacion.value[0], role__isnull=True)
+            .filter(role__isnull=True)
             .exclude(ko=True)
             .annotate(bids_count=Count("bids", filter=Q(bids__in=bids), distinct=True))
         )
 
     def clients(self) -> QuerySet:
-        from apps.users.models import Status
+        # from apps.users.models import Status
 
         from ..bids.models import Bid
 
