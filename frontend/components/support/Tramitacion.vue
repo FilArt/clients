@@ -70,7 +70,7 @@
           </v-col>
         </v-row>
 
-        <v-row v-if="['admin', 'support'].includes($auth.user.role)">
+        <v-row>
           <v-col>
             <v-switch v-if="facturacion && bid" v-model="modeTramitacion" label="Modo tramitacion" />
 
@@ -260,7 +260,7 @@ export default {
     async refresh() {
       if (this.bidId && this.bidId.match(/\d+/)) {
         await this.fetchBid()
-        if (['admin', 'support'].includes(this.$auth.user.role)) await this.fetchLastComments()
+        await this.fetchLastComments()
       }
     },
     async fetchBid() {
@@ -304,6 +304,7 @@ export default {
           title: 'Error!',
           text: JSON.stringify(e.response.data),
         })
+        await this.refresh()
       } finally {
         this.loading = false
       }
