@@ -13,7 +13,6 @@ from apps.users.models import Status
 
 
 def translate_fields(json_obj: dict):
-    from apps.users.models import CustomUser
 
     res = {}
     for k, v in json_obj.items():
@@ -35,6 +34,7 @@ class PrettyJsonField(serializers.JSONField):
         if not value:
             return value
         elif isinstance(value, str) and "{" in value and "}" in value:
+            value = "".join([i if ord(i) < 128 else "" for i in value])
             value = (
                 value.replace(" D'", " D`")
                 .replace("'", '"')
@@ -44,11 +44,12 @@ class PrettyJsonField(serializers.JSONField):
                 .replace("<", '"')
                 .replace(">", '"')
                 .replace("\n", "\\n")
-                .strip()
+                .replace(r"\x91", "")
             )
             try:
                 obj = ujson.loads(value)
-            except ValueError:
+            except ValueError as e:
+                print(e)
                 print(value)
                 obj = {}
 
