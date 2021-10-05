@@ -362,22 +362,8 @@ class UploadToCallVisitSerializer(serializers.ModelSerializer):
 
 class UserHistorySerializer(serializers.ModelSerializer):
     data = PrettyJsonField()
-    fullname = serializers.CharField(source="user.fullname")
+    fullname = serializers.CharField(source="user.fullname", default=serializers.CurrentUserDefault())
 
     class Meta:
         model = APIRequestLog
         fields = ["id", "data", "user", "requested_at", "fullname"]
-
-    def get_data(self, obj: APIRequestLog) -> str:
-        d: str = getattr(obj, "data")
-        s = (
-            d.replace("D'", "D`")
-            .replace("'", '"')
-            .replace("True", '"Si"')
-            .replace("False", '"No"')
-            .replace("None", "null")
-            .replace("<", '"')
-            .replace(">", '"')
-            .strip()
-        )
-        return ujson.loads(s)

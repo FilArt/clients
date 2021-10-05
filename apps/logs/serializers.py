@@ -18,8 +18,8 @@ def translate_fields(json_obj: dict):
     res = {}
     for k, v in json_obj.items():
         if k == "responsible" and v:
-            val = CustomUser.objects.get(id=v).fullname
-        elif k == "status":
+            val = v
+        elif k == "status" and str(v).isdigit():
             val = dict(Status.choices)[int(v)]
         elif isinstance(v, (datetime, date)):
             val = v.strftime("%d/%m/%Y")
@@ -35,61 +35,62 @@ class PrettyJsonField(serializers.JSONField):
         if not value:
             return value
         elif isinstance(value, str) and "{" in value and "}" in value:
+            value = (
+                value.replace(" D'", " D`")
+                .replace("'", '"')
+                .replace("True", '"Si"')
+                .replace("False", '"No"')
+                .replace("None", "null")
+                .replace("<", '"')
+                .replace(">", '"')
+                .replace("\n", "\\n")
+                .strip()
+            )
             try:
-                value = (
-                    value.replace("D'", "D`")
-                    .replace("'", '"')
-                    .replace("True", '"Si"')
-                    .replace("False", '"No"')
-                    .replace("None", "null")
-                    .replace("<", '"')
-                    .replace(">", '"')
-                    .strip()
-                )
                 obj = ujson.loads(value)
-
-                def unflat_object(o: Dict[str, str], ks: List[str], v: str, previous_key: str = None):
-                    res = {**o}
-                    if len(ks) == 1:
-                        last_key = ks[0]
-                        res[last_key] = v
-                        return res
-
-                    next_key = ks[0]
-                    ks = ks[1:]
-
-                    if next_key.isdigit():
-                        index, next_key = next_key, ks[0]
-                        arr = res.get(previous_key, {})
-                        el = arr.get(index, {})
-                        el = unflat_object(el, ks, v, previous_key=next_key)
-                        arr[index] = el
-                        res[previous_key] = arr
-
-                    return unflat_object(res, ks, v, previous_key=next_key)
-
-                def deserialize(acc, pair):
-                    key, value = pair
-                    if key.startswith("puntos["):
-                        acc["puntos"] = acc.get("puntos", {})
-                        _, index, *other_parts = [k.replace("]", "") for k in key.split("[")]
-                        puntos = acc.get("puntos", {})
-                        punto = puntos.get(index, {})
-                        punto = unflat_object(punto, other_parts, value)
-                        acc["puntos"][index] = punto
-                    else:
-                        acc[key] = value
-                    return acc
-
-                if isinstance(obj, list):
-                    obj = [translate_fields(reduce(deserialize, error.items(), {})) for error in obj]
-                else:
-                    obj = translate_fields(reduce(deserialize, obj.items(), {}))
-
-                return yaml.dump(obj)
-
             except ValueError:
-                pass
+                print(value)
+                obj = {}
+
+            def unflat_object(o: Dict[str, str], ks: List[str], v: str, previous_key: str = None):
+                res = {**o}
+                if len(ks) == 1:
+                    last_key = ks[0]
+                    res[last_key] = v
+                    return res
+
+                next_key = ks[0]
+                ks = ks[1:]
+
+                if next_key.isdigit():
+                    index, next_key = next_key, ks[0]
+                    arr = res.get(previous_key, {})
+                    el = arr.get(index, {})
+                    el = unflat_object(el, ks, v, previous_key=next_key)
+                    arr[index] = el
+                    res[previous_key] = arr
+
+                return unflat_object(res, ks, v, previous_key=next_key)
+
+            def deserialize(acc, pair):
+                key, value = pair
+                if key.startswith("puntos["):
+                    acc["puntos"] = acc.get("puntos", {})
+                    _, index, *other_parts = [k.replace("]", "") for k in key.split("[")]
+                    puntos = acc.get("puntos", {})
+                    punto = puntos.get(index, {})
+                    punto = unflat_object(punto, other_parts, value)
+                    acc["puntos"][index] = punto
+                else:
+                    acc[key] = value
+                return acc
+
+            if isinstance(obj, list):
+                obj = [translate_fields(reduce(deserialize, error.items(), {})) for error in obj]
+            else:
+                obj = translate_fields(reduce(deserialize, obj.items(), {}))
+
+            return yaml.dump(obj)
 
         return value
 

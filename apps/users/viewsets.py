@@ -373,12 +373,19 @@ class ManageUsersViewSet(UserViewSet, mixins.CreateModelMixin, mixins.DestroyMod
         ]
 
         logs = APIRequestLog.objects.filter(
-            view_method__in=["create", "partial_update", "update"],
-            path__in=paths,
-            errors__isnull=True,
-            status_code__in=[200, 201],
+            Q(
+                path="/api/users/new_contract/",
+                data__icontains=user.company_name,
+                status_code=201,
+            )
+            | Q(
+                view_method__in=["create", "partial_update", "update"],
+                path__in=paths,
+                errors__isnull=True,
+                status_code__in=[200, 201],
+            )
         ).order_by("requested_at")
-        data = UserHistorySerializer(logs, many=True).data
+        data = UserHistorySerializer(logs, many=True, context={"request": request}).data
         return Response(data)
 
 
