@@ -65,7 +65,7 @@ const userStatuses = [
   },
   {
     text: 'Tramitacion',
-    value: '',
+    value: '4',
     color: 'orange',
   },
 ]
