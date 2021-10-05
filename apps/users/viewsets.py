@@ -263,6 +263,33 @@ class UserViewSet(
                 pass
         return Response(agent)
 
+    @action(methods=["GET"], detail=True)
+    def history(self, request: Request, pk: int):
+        user: CustomUser = self.get_object()
+
+        paths = [
+            f"/api/users/manage_users/{pk}/",
+            f"/api/users/users/{pk}/",
+            *[f"/api/users/puntos/{punto.id}/" for punto in user.puntos.all()],
+            *[f"/api/bids/bids/{bid.id}/" for bid in user.bids.all()],
+        ]
+
+        logs = APIRequestLog.objects.filter(
+            Q(
+                path="/api/users/new_contract/",
+                data__icontains=user.company_name,
+                status_code=201,
+            )
+            | Q(
+                view_method__in=["create", "partial_update", "update"],
+                path__in=paths,
+                errors__isnull=True,
+                status_code__in=[200, 201],
+            )
+        ).order_by("requested_at")
+        data = UserHistorySerializer(logs, many=True, context={"request": request}).data
+        return Response(data)
+
 
 class ManageUsersViewSet(UserViewSet, mixins.CreateModelMixin, mixins.DestroyModelMixin):
     queryset = CustomUser.objects.all()
@@ -359,33 +386,6 @@ class ManageUsersViewSet(UserViewSet, mixins.CreateModelMixin, mixins.DestroyMod
                 **by_statuses,
             }
             data.append(item)
-        return Response(data)
-
-    @action(methods=["GET"], detail=True, permission_classes=(AdminPermission,))
-    def history(self, request: Request, pk: int):
-        user: CustomUser = self.get_object()
-
-        paths = [
-            f"/api/users/manage_users/{pk}/",
-            f"/api/users/users/{pk}/",
-            *[f"/api/users/puntos/{punto.id}/" for punto in user.puntos.all()],
-            *[f"/api/bids/bids/{bid.id}/" for bid in user.bids.all()],
-        ]
-
-        logs = APIRequestLog.objects.filter(
-            Q(
-                path="/api/users/new_contract/",
-                data__icontains=user.company_name,
-                status_code=201,
-            )
-            | Q(
-                view_method__in=["create", "partial_update", "update"],
-                path__in=paths,
-                errors__isnull=True,
-                status_code__in=[200, 201],
-            )
-        ).order_by("requested_at")
-        data = UserHistorySerializer(logs, many=True, context={"request": request}).data
         return Response(data)
 
 

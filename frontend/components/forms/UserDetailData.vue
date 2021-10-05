@@ -195,7 +195,7 @@ export default {
       await this.getUserHistory()
     },
     async getUserHistory() {
-      this.userHistory = await this.$axios.$get(`/users/manage_users/${this.userId}/history/`)
+      this.userHistory = await this.$axios.$get(`/users/users/${this.userId}/history/`)
       const self = this
       setTimeout(function () {
         const cl = self.$el.querySelector('#commentsList')
