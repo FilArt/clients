@@ -471,6 +471,12 @@ class AgentContractSerializer(serializers.ModelSerializer):
         cif_nif = self.initial_data["cif_nif"]
         try:
             self._user = CustomUser.objects.get(call_visit_id=cv_id)
+            if self._user.cif_nif != cif_nif:
+                if CustomUser.objects.exclude(id=self._user.id).filter(cif_nif=cif_nif).exists():
+                    raise ValidationError({"cif_nif": ["Ya hay cliente con este CIF"]})
+                else:
+                    self._user.cif_nif = cif_nif
+
         except CustomUser.DoesNotExist:
             pass
         except CustomUser.MultipleObjectsReturned:
@@ -495,22 +501,9 @@ class AgentContractSerializer(serializers.ModelSerializer):
         created_client.status = Status.tramitacion.value[0]
         created_client.save()
 
-        # hack
-        if created_client.cif_nif == created_client.email.split("@")[0]:
-            created_client.email = validated_data["email"]
-            created_client.save(update_fields=["email"])
-
-        new_comment = validated_data.pop("observations")
-        if new_comment and new_comment != created_client.observations:
-            created_client.observations = f"{created_client.observations}\n---\n{new_comment}"
-            created_client.save(update_fields=["observations"])
-
         if created_client.responsible != responsible:
             created_client.responsible = responsible
             created_client.save(update_fields=["responsible"])
-        if not self._user:
-            created_client.cif_nif = self.initial_data["cif_nif"]
-            created_client.save(update_fields=["cif_nif"])
 
         ff = timezone.now()
         for pkey, punto_data in enumerate(puntos):
