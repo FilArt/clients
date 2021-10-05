@@ -5,16 +5,7 @@ from django.db.models.fields import CharField
 from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 
-from .utils import (
-    CLIENT_STATUSES,
-    KO,
-    KO_PAPELLERA,
-    PAGADO,
-    PENDIENTE_PAGO,
-    PENDIENTE_TRAMITACION,
-    TRAMITACION,
-    TRAMITACION_STATUSES,
-)
+from .utils import KO, KO_PAPELLERA, PAGADO, PENDIENTE_PAGO, PENDIENTE_TRAMITACION, TRAMITACION
 
 
 class CustomUserManager(BaseUserManager):
@@ -84,32 +75,24 @@ class CustomUserManager(BaseUserManager):
         return self.create_user(email, password, **extra_fields)
 
     def tramitacion(self) -> QuerySet:
-        # from apps.users.models import Status
+        from apps.users.models import Status
 
-        from ..bids.models import Bid
+        return (
+            self.get_queryset()
+            .filter(role__isnull=True, status=Status.tramitacion.value[0])
+            .exclude(ko=True)
+            .annotate(bids_count=Count("bids"))
+        )
 
-        bids = Bid.objects.with_status().filter(status__in=TRAMITACION_STATUSES)
+    def clients(self) -> QuerySet:
+        from apps.users.models import Status
+
         return (
             self.get_queryset()
             .filter(role__isnull=True)
             .exclude(ko=True)
-            .annotate(bids_count=Count("bids", filter=Q(bids__in=bids), distinct=True))
-        )
-
-    def clients(self) -> QuerySet:
-        # from apps.users.models import Status
-
-        from ..bids.models import Bid
-
-        bids = Bid.objects.with_status().filter(status__in=CLIENT_STATUSES)
-        users = bids.values("user").distinct()
-
-        return (
-            self.get_queryset()
-            .filter(Q(id__in=users) | Q(bids__isnull=True), role__isnull=True)
-            .exclude(ko=True)
-            # .exclude(status=Status.tramitacion.value[0])
-            .annotate(bids_count=Count("bids", filter=Q(bids__in=bids), distinct=True))
+            .exclude(status=Status.tramitacion.value[0])
+            .annotate(bids_count=Count("bids"))
         )
 
     def ko_papellera(self) -> QuerySet:
