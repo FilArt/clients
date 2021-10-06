@@ -77,22 +77,13 @@ class CustomUserManager(BaseUserManager):
     def tramitacion(self) -> QuerySet:
         from apps.users.models import Status
 
-        return (
-            self.get_queryset()
-            .filter(role__isnull=True, status=Status.tramitacion.value[0])
-            .exclude(ko=True)
-            .annotate(bids_count=Count("bids"))
-        )
+        return self.get_queryset().filter(role__isnull=True, status=Status.tramitacion.value[0]).exclude(ko=True)
 
     def clients(self) -> QuerySet:
         from apps.users.models import Status
 
         return (
-            self.get_queryset()
-            .filter(role__isnull=True)
-            .exclude(ko=True)
-            .exclude(status=Status.tramitacion.value[0])
-            .annotate(bids_count=Count("bids"))
+            self.get_queryset().filter(role__isnull=True).exclude(ko=True).exclude(status=Status.tramitacion.value[0])
         )
 
     def ko_papellera(self) -> QuerySet:

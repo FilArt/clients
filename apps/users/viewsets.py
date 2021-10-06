@@ -323,7 +323,7 @@ class ManageUsersViewSet(UserViewSet, mixins.CreateModelMixin, mixins.DestroyMod
         }
         stats = {
             "Total clientes": clients.count(),
-            "Total solicitudes": sum(i.bids_count for i in clients),
+            "Total solicitudes": clients.aggregate(total_bids=Sum("bids_count"))["total_bids"],
             **{item: clients.filter(internal_status__in=statuses).count() for item, statuses in filters.items()},
         }
         commers = {
