@@ -19,7 +19,7 @@ from .serializers import BidStorySerializer, CreateBidSerializer
 
 class BidViewSet(LoggingMixin, viewsets.ModelViewSet):
     permission_classes = (IsAuthenticated, BidsPermission)
-    ordering = ("-created_at",)
+    ordering = ("fecha_firma",)
     search_fields = ("id", "puntos__cups_luz", "user__first_name", "user__last_name", "user__company_name")
 
     def get_serializer_class(self):
