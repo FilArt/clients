@@ -423,7 +423,6 @@ export default {
         role__isnull: this.role === 'null' ? true : null,
       })
       if (this.mode) query.mode = this.mode
-      if (!query.statuses_in && this.statuses && this.statuses.length) query.statuses_in = this.statuses.join(',')
       return query
     },
     async updateQuery(options) {

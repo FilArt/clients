@@ -22,11 +22,13 @@ class CustomUserManager(BaseUserManager):
             super()
             .get_queryset()
             .annotate(
+                bids_count=Count("bids", distinct=True),
+            )
+            .annotate(
                 min_fr=Max("bids__created_at"),
                 max_fr=Max("bids__fecha_firma", filter=Q(bids__call=True, bids__doc=True, bids__scoring=True)),
             )
             .annotate(
-                bids_count=Count("bids"),
                 fecha_firma=Case(
                     When(max_fr__isnull=True, then=F("created_at")),
                     default=F("max_fr"),
