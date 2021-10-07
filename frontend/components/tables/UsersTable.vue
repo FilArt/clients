@@ -105,7 +105,7 @@
         itemsPerPageText: `Suma solicitud: ${suma}. Filas por página:`,
       }"
       class="elevation-1"
-      @update:options="fetchUsers"
+      @update:options="updateQuery"
       @toggle-select-all="onSelect"
       @item-selected="onSelect"
     >
@@ -227,7 +227,7 @@
                 label="Fecha de registro"
                 :value="query.created_at__range"
                 range
-                @input="updatefechaRegistroFilter"
+                @input="updateFechaRegistroFilter"
               />
             </v-col>
 
@@ -251,7 +251,7 @@
 
             <v-col :cols="flexs.cols" :xl="flexs.xl" :lg="flexs.lg" :md="flexs.md" :xs="flexs.xs">
               <date-time-filter
-                :value="query.fecha_firma__range"
+                :value.sync="query.fecha_firma__range"
                 label="Fecha ultima firma "
                 format="YYYY-MM-DD HH:mm"
                 formatted="DD/MM/YYYY HH:mm"
@@ -435,28 +435,10 @@ export default {
   },
   data() {
     const query = this.$route.query
-    let fechaRegistroFilter = query.bids__fecha_firma__range || null
-    let fechaFirmaFilter = query.bids__fecha_firma__range || null
-    if (fechaRegistroFilter) {
-      try {
-        const [start, end] = fechaRegistroFilter.split(',')
-        fechaRegistroFilter = { start: new Date(start), end: new Date(end) }
-      } catch (e) {
-        console.error(e)
-      }
-    }
-    if (fechaFirmaFilter) {
-      try {
-        const [start, end] = fechaFirmaFilter.split(',')
-        fechaFirmaFilter = { start: new Date(start), end: new Date(end) }
-      } catch (e) {
-        console.error(e)
-      }
-    }
+
     return {
       constants,
       statusColors: constants.userStatuses.reduce((prev, cur) => {
-        console.log(prev)
         prev = prev || {}
         prev[cur.text] = cur.color
         return prev
@@ -500,8 +482,6 @@ export default {
         },
       ],
       flexs: { cols: 12, xl: 3, lg: 3, md: 3, sm: 3, xs: 12 },
-      fechaRegistroFilter,
-      fechaFirmaFilter,
       userRoles: Object.values(constants.userRoles),
       role: this.defaultRole,
       users: [],
@@ -513,20 +493,7 @@ export default {
       reserved_userId: null,
 
       search: query.search || '',
-      query: {
-        ...query,
-        status__in: (query.status__in || '').split(',').filter((i) => !!i && !!i.length),
-        sortBy: ['fecha_firma'],
-        sortDesc: [false],
-        mustSort: null,
-        multiSort: null,
-        bids__call: null,
-        bids__doc: null,
-        bids__scoring: null,
-        responsible: this.responsible ? this.responsible : query.responsible ? parseInt(query.responsible) : null,
-        page: query.page ? parseInt(query.page) : 1,
-        itemsPerPage: query.itemsPerPage ? parseInt(query.itemsPerPage) : 10,
-      },
+      queryModel: {},
     }
   },
   computed: {
@@ -561,6 +528,29 @@ export default {
         return headers.filter((h) => h.value !== 'agent_type')
       }
       return headers
+    },
+    query: {
+      get() {
+        const q = this.$route.query || {}
+        if (q.sortDesc) q.sortDesc = [q.sortDesc === 'true' ? true : q.sortDesc === 'false' ? false : null]
+        if (q.sortBy) q.sortBy = [q.sortBy === 'true' ? true : q.sortBy === 'false' ? false : null]
+        const res = {
+          sortBy: ['fecha_firma'],
+          sortDesc: [false],
+          bids__call: null,
+          bids__doc: null,
+          bids__scoring: null,
+          responsible: this.responsible ? this.responsible : q.responsible ? parseInt(q.responsible) : null,
+          page: q.page ? parseInt(q.page) : 1,
+          itemsPerPage: q.itemsPerPage ? parseInt(q.itemsPerPage) : 10,
+          ...q,
+          ...this.queryModel,
+        }
+        return res
+      },
+      set(val) {
+        this.queryModel = val
+      },
     },
   },
   watch: {
@@ -657,34 +647,19 @@ export default {
     async fetchUsers() {
       try {
         this.loading = true
-        // if (
-        //   String(this.query.page) !== String(this.$route.query.page) ||
-        //   String(this.query.itemsPerPage) !== String(this.$route.query.itemsPerPage)
-        // ) {
-        //   await this.$router.replace({
-        //     query: Object.entries(this.query).reduce((a, [k, v]) => (v ? ((a[k] = v), a) : a), {}),
-        //   })
-        // }
         const query = this.getQuery()
         const data = await this.$axios.$get(`${this.listUrl}/?${query}`)
         const { results, count, suma } = data
         this.users = results
         this.suma = suma
         this.total = count
-      } catch (e) {
-        if (e.response && e.response.status === 404 && this.query.page !== 1) {
-          this.query.page = 1
-          await this.fetchUsers()
-        } else {
-          console.error(e)
-        }
       } finally {
         this.loading = false
       }
     },
     getQuery() {
       const query = constants.cleanEmpty({
-        ...this.query,
+        ...this.$route.query,
         ordering:
           this.query.sortBy instanceof Array
             ? this.query.sortBy.map((sortBy, idx) => (this.query.sortDesc[idx] ? '+' : '-') + sortBy).join()
@@ -696,49 +671,36 @@ export default {
       return Object.keys(query)
         .filter((k) => query[k] !== null)
         .map((k) => {
-          const value = query[k]
+          let value = query[k]
           return value instanceof Array ? `${k}=${value.join()}` : `${k}=${value}`
         })
         .join('&')
     },
-    updatefechaRegistroFilter(dates) {
+    updateFechaRegistroFilter(dates) {
       if (dates && dates.start && dates.end) {
         this.updateQuery({ created_at__range: `${dates.start},${dates.end}` })
       } else {
-        this.updateQuery({ created_at__range: null })
+        this.updateQuery({ created_at__range: null, page: 1 })
       }
     },
     updateFechaFirmaFilter(dates) {
       if (dates && dates.start && dates.end) {
         this.updateQuery({ bids__fecha_firma__range: `${dates.start},${dates.end}` })
       } else {
-        this.updateQuery({ bids__fecha_firma__range: null })
+        this.updateQuery({ bids__fecha_firma__range: null, page: 1 })
       }
     },
     updateFechaUltimaFirmaFilter(dates) {
       if (dates && dates.start && dates.end) {
         this.updateQuery({ fecha_firma__range: `${dates.start},${dates.end}` })
       } else {
-        this.updateQuery({ fecha_firma__range: null })
+        this.updateQuery({ fecha_firma__range: null, page: 1 })
       }
     },
-
     async updateQuery(options) {
-      options = { ...options, page: 1 }
-      Object.keys(options).forEach((key) => {
-        const value = options[key]
-        if (value) {
-          this.query[key] = options[key]
-        } else {
-          delete this.query[key]
-        }
-      })
-      const q = Object.entries(this.query).filter((entry) => {
-        const value = entry[1]
-        if (value instanceof Array) return value.length
-        return !!value
-      })
-      await this.$router.replace({ query: q })
+      if (options.page === undefined) options.page = 1
+      options = { ...this.query, ...options }
+      await this.$router.replace({ query: options }).catch(() => {})
       await this.fetchUsers()
     },
     async deleteUser(user) {

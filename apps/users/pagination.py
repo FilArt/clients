@@ -5,18 +5,23 @@ from rest_framework.response import Response
 
 
 class UsersPagination(PageNumberPagination):
+    page_size = 10
     page_size_query_param = "itemsPerPage"
     max_page_size = 100
 
     def get_paginated_response(self, data):
-        suma = sum(self.page.paginator.object_list.values_list('bids_count', flat=True))
-        return Response(OrderedDict([
-            ('count', self.page.paginator.count),
-            ('next', self.get_next_link()),
-            ('previous', self.get_previous_link()),
-            ('results', data),
-            ('suma', suma),
-        ]))
+        suma = sum(self.page.paginator.object_list.values_list("bids_count", flat=True))
+        return Response(
+            OrderedDict(
+                [
+                    ("count", self.page.paginator.count),
+                    ("next", self.get_next_link()),
+                    ("previous", self.get_previous_link()),
+                    ("results", data),
+                    ("suma", suma),
+                ]
+            )
+        )
 
 
 class AttachmentsPagination(PageNumberPagination):
