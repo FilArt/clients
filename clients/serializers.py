@@ -431,7 +431,7 @@ class ContractPuntoSerializer(serializers.ModelSerializer):
     offer_gas = serializers.PrimaryKeyRelatedField(
         queryset=Offer.objects.filter(kind="gas"), write_only=True, required=False
     )
-    attachments = ContractFileSerialzier(many=True)
+    attachments = ContractFileSerialzier(many=True, required=False)
 
     class Meta:
         model = Punto
@@ -526,7 +526,7 @@ class AgentContractSerializer(serializers.ModelSerializer):
             if not offer and not offer_gas:
                 raise ValidationError({"offer": ["Ofertas gas o oferta luz requiredo"]})
 
-            attachments = punto_data.pop("attachments")
+            attachments = punto_data.pop("attachments", [])
             try:
                 cups_luz = punto_data.get("cups_luz")
                 cups_gas = punto_data.get("cups_gas")
@@ -553,7 +553,10 @@ class AgentContractSerializer(serializers.ModelSerializer):
                 Bid.objects.get_or_create(user=created_client, offer=offer_gas, punto=punto, fecha_firma=ff)
 
             given_types = [a["attachment_type"] for a in attachments] + [*validated_data]
-            self._handle_required_fields(offer or offer_gas, punto, pkey, given_types)
+            if offer:
+                self._handle_required_fields(offer, punto, pkey, given_types)
+            if offer_gas:
+                self._handle_required_fields(offer_gas, punto, pkey, given_types)
 
             for attachment_data in attachments:
                 Attachment.objects.create(**attachment_data, punto=punto)
