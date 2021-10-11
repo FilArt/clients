@@ -28,6 +28,7 @@
             ]"
             :error-messages="errorMessages.role"
           />
+          <v-text-field v-model="user.password" label="Contrasena" />
           <submit-button block label="Guardar" />
         </v-form>
       </v-card-text>
