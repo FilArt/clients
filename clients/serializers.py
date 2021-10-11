@@ -412,8 +412,10 @@ class ResponsibleField(serializers.EmailField):
             from apps.users.serializers import RegisterSerializer
 
             cif_nif = uuid.uuid4().hex
-
-            ser = RegisterSerializer(data={"email": email, "role": "agent", "cif_nif": cif_nif}, tg_msg=None)
+            password = BaseUserManager().make_random_password()
+            ser = RegisterSerializer(
+                data={"email": email, "role": "agent", "cif_nif": cif_nif, "password": password}, tg_msg=None
+            )
             ser.is_valid(raise_exception=True)
             return ser.save().email
 

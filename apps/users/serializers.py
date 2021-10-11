@@ -1,7 +1,5 @@
 import logging
-from datetime import datetime
 
-import ujson
 from clients.utils import humanize, notify_telegram
 from django.conf import settings
 from django.contrib.auth.base_user import BaseUserManager
@@ -52,11 +50,26 @@ class RegisterSerializer(serializers.ModelSerializer):
             except Exception as e:
                 logger.exception(e)
 
-        if settings.DEBUG:
-            user.set_password("1")
-            user.save(update_fields=["password"])
-            return user
+        if not settings.DEBUG:
+            password = self.validated_data.get("password", kwargs.get("password"))
+            if not password:
+                raise ValidationError({"password": ["Contrasena invalida"]})
+        else:
+            password = "1"
 
+        user.set_password(password)
+        user.save(update_fields=["password"])
+
+        subject = _("¡Bienvenido a Gestion Group! ")
+        kwargs = {"email": user.email, "password": password}
+        html_message = render_to_string("user/register_email.html", kwargs)
+        plain_message = strip_tags(html_message)
+        try:
+            user.email_user(
+                subject=subject, message=plain_message, from_email=settings.EMAIL_HOST_USER, html_message=html_message
+            )
+        except Exception as e:
+            raise ValidationError(str(e))
         return user
 
     def reset_password(self):
