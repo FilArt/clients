@@ -128,6 +128,7 @@ class UserViewSet(
         "puntos__cups_luz",
         "puntos__cups_gas",
         "cif_nif",
+        "call_visit_id",
     )
     pagination_class = UsersPagination
     filterset_fields = {
