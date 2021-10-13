@@ -483,6 +483,7 @@ class AgentContractSerializer(serializers.ModelSerializer):
                     raise ValidationError({"cif_nif": ["Ya hay cliente con este CIF"]})
                 else:
                     self._user.cif_nif = cif_nif
+                    self._user.save(update_fields=["cif_nif"])
 
         except CustomUser.DoesNotExist:
             pass
@@ -492,6 +493,10 @@ class AgentContractSerializer(serializers.ModelSerializer):
         if new_email:
             if CustomUser.objects.filter(email=new_email).exclude(cif_nif=cif_nif).exists():
                 raise ValidationError({"email": ["Already exist"]})
+            if self._user:
+                self._user.email = new_email
+                self._user.save(update_fields=["email"])
+
         else:
             raise ValidationError({"email": ["Requiredo."]})
 
