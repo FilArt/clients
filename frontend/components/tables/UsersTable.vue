@@ -434,8 +434,6 @@ export default {
     },
   },
   data() {
-    const query = this.$route.query
-
     return {
       constants,
       statusColors: constants.userStatuses.reduce((prev, cur) => {
@@ -492,7 +490,7 @@ export default {
       reserved_responsible: null,
       reserved_userId: null,
 
-      search: query.search || '',
+      search: '',
       queryModel: {},
     }
   },
@@ -531,19 +529,15 @@ export default {
     },
     query: {
       get() {
-        const q = this.$route.query || {}
-        if (q.sortDesc) q.sortDesc = [q.sortDesc === 'true' ? true : q.sortDesc === 'false' ? false : null]
-        if (q.sortBy) q.sortBy = [q.sortBy === 'true' ? true : q.sortBy === 'false' ? false : null]
         const res = {
           sortBy: ['fecha_firma'],
           sortDesc: [false],
           bids__call: null,
           bids__doc: null,
           bids__scoring: null,
-          responsible: this.responsible ? this.responsible : q.responsible ? parseInt(q.responsible) : null,
-          page: q.page ? parseInt(q.page) : 1,
-          itemsPerPage: q.itemsPerPage ? parseInt(q.itemsPerPage) : 10,
-          ...q,
+          // responsible: this.responsible ? this.responsible : q.responsible ? parseInt(q.responsible) : null,
+          // page: q.page ? parseInt(q.page) : 1,
+          // itemsPerPage: q.itemsPerPage ? parseInt(q.itemsPerPage) : 10,
           ...this.queryModel,
         }
         return res
@@ -645,6 +639,7 @@ export default {
 
     // other
     async fetchUsers() {
+      if (this.loading) return
       try {
         this.loading = true
         const query = this.getQuery()
@@ -659,7 +654,7 @@ export default {
     },
     getQuery() {
       const query = constants.cleanEmpty({
-        ...this.$route.query,
+        ...this.query,
         ordering:
           this.query.sortBy instanceof Array
             ? this.query.sortBy.map((sortBy, idx) => (this.query.sortDesc[idx] ? '+' : '-') + sortBy).join()
@@ -699,8 +694,7 @@ export default {
     },
     async updateQuery(options) {
       if (options.page === undefined) options.page = 1
-      options = { ...this.query, ...options }
-      await this.$router.replace({ query: options }).catch(() => {})
+      this.query = { ...this.query, ...options }
       await this.fetchUsers()
     },
     async deleteUser(user) {
