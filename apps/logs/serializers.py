@@ -13,7 +13,6 @@ from apps.users.models import Status
 
 
 def translate_fields(json_obj: dict):
-
     res = {}
     for k, v in json_obj.items():
         if k == "responsible" and v:
@@ -52,6 +51,9 @@ class PrettyJsonField(serializers.JSONField):
                 print(e)
                 print(value)
                 obj = {}
+
+            if "observations" in obj:
+                return yaml.dump({"Comentario": obj["observations"]})
 
             def unflat_object(o: Dict[str, str], ks: List[str], v: str, previous_key: str = None):
                 res = {**o}
