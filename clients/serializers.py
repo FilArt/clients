@@ -446,16 +446,8 @@ class AgentContractSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = CustomUser
-        fields = [
-            "call_visit_id",
-            "observations",
-            "company_name",
-            "phone",
-            "responsible",
-            "legal_representative",
-            "client_role",
-            "puntos",
-        ]
+        exclude = ["password"]
+
         extra_kwargs = {
             "observations": {"required": False},
             "phone": {"required": False},
