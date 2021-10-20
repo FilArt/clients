@@ -455,59 +455,29 @@ class AgentContractSerializer(serializers.ModelSerializer):
             "client_role": {"default": "tramitacion", "write_only": True},
         }
 
-    def __init__(self, *args, **kwargs):
-        super(AgentContractSerializer, self).__init__(*args, **kwargs)
-        self._user = None
-
-    def is_valid(self, raise_exception: bool = True):
-        new_email = self.initial_data.get("email")
-        try:
-            validate_email(new_email)
-        except (EmailSyntaxError, EmailNotValidError) as e:
-            raise ValidationError({"email": e})
-
-        cv_id = self.initial_data["call_visit_id"]
-        cif_nif = self.initial_data["cif_nif"]
-        try:
-            self._user = CustomUser.objects.get(call_visit_id=cv_id)
-            if self._user.cif_nif != cif_nif:
-                if CustomUser.objects.exclude(id=self._user.id).filter(cif_nif=cif_nif).exists():
-                    raise ValidationError({"cif_nif": ["Ya hay cliente con este CIF"]})
-                else:
-                    self._user.cif_nif = cif_nif
-                    self._user.save(update_fields=["cif_nif"])
-
-        except CustomUser.DoesNotExist:
-            pass
-        except CustomUser.MultipleObjectsReturned:
-            raise ValidationError({"cif_nif": ["Programa error. Contactar con administrador"]})
-
-        if new_email:
-            if CustomUser.objects.filter(email=new_email).exclude(cif_nif=cif_nif).exists():
-                raise ValidationError({"email": ["Already exist"]})
-            if self._user:
-                self._user.email = new_email
-                self._user.save(update_fields=["email"])
-
-        else:
-            raise ValidationError({"email": ["Requiredo."]})
-
-        return super(AgentContractSerializer, self).is_valid(raise_exception=raise_exception)
-
-    @transaction.atomic
-    def create(self, validated_data):
-        puntos = validated_data.pop("puntos")
+    def update(self, client, validated_data):
         responsible = CustomUser.objects.get(email=validated_data["responsible"])
         validated_data["responsible"] = responsible
+        validated_data["status"] = Status.tramitacion.value[0]
         validated_data["email"] = self.initial_data["email"]
+        with transaction.atomic():
+            puntos = validated_data.pop("puntos")
+            client: CustomUser = super().update(client, validated_data)
+            self.save_puntos(puntos, responsible, client)
+        return client
 
-        created_client: CustomUser = self._user or super().create(validated_data)
-        created_client.status = Status.tramitacion.value[0]
-        created_client.save()
+    def create(self, validated_data):
+        responsible = CustomUser.objects.get(email=validated_data["responsible"])
+        validated_data["responsible"] = responsible
+        validated_data["status"] = Status.tramitacion.value[0]
+        validated_data["email"] = self.initial_data["email"]
+        with transaction.atomic():
+            puntos = validated_data.pop("puntos")
+            created_client: CustomUser = super().create(validated_data)
+            self.save_puntos(puntos, responsible, created_client)
+        return created_client
 
-        if created_client.responsible != responsible:
-            created_client.responsible = responsible
-            created_client.save(update_fields=["responsible"])
+    def save_puntos(self, puntos, responsible: CustomUser, client: CustomUser):
 
         ff = timezone.now()
         for pkey, punto_data in enumerate(puntos):
@@ -530,28 +500,21 @@ class AgentContractSerializer(serializers.ModelSerializer):
                 cups_luz = punto_data.get("cups_luz")
                 cups_gas = punto_data.get("cups_gas")
                 if cups_luz:
-                    punto, _ = Punto.objects.update_or_create(
-                        cups_luz=cups_luz, user=created_client, defaults={**punto_data}
-                    )
+                    punto, _ = Punto.objects.update_or_create(cups_luz=cups_luz, user=client, defaults={**punto_data})
                 elif cups_gas:
-                    punto, _ = Punto.objects.update_or_create(
-                        cups_gas=cups_gas, user=created_client, defaults={**punto_data}
-                    )
+                    punto, _ = Punto.objects.update_or_create(cups_gas=cups_gas, user=client, defaults={**punto_data})
                 else:
                     raise Punto.DoesNotExist
 
             except Punto.DoesNotExist:
-                punto = Punto.objects.create(**punto_data, user=created_client)
-            except Punto.MultipleObjectsReturned:
-                notify_telegram(premessage="firmado error", cif_nif=self._user.cif_nif)
-                raise ValidationError("error temporal. intente un poco más tarde (unos 15 minutos)")
+                punto = Punto.objects.create(**punto_data, user=client)
 
             if offer:
-                Bid.objects.get_or_create(user=created_client, offer=offer, punto=punto, fecha_firma=ff)
+                Bid.objects.get_or_create(user=client, offer=offer, punto=punto, fecha_firma=ff)
             if offer_gas:
-                Bid.objects.get_or_create(user=created_client, offer=offer_gas, punto=punto, fecha_firma=ff)
+                Bid.objects.get_or_create(user=client, offer=offer_gas, punto=punto, fecha_firma=ff)
 
-            given_types = [a["attachment_type"] for a in attachments] + [*validated_data]
+            given_types = [a["attachment_type"] for a in attachments] + [*self.validated_data]
             if offer:
                 self._handle_required_fields(offer, punto, pkey, given_types)
             if offer_gas:
@@ -559,8 +522,6 @@ class AgentContractSerializer(serializers.ModelSerializer):
 
             for attachment_data in attachments:
                 Attachment.objects.create(**attachment_data, punto=punto)
-
-        return created_client
 
     @staticmethod
     def _handle_required_fields(offer: Offer, punto: Punto, pkey: int, given_fields: List[str]):

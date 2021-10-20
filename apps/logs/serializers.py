@@ -9,14 +9,19 @@ from drf_dynamic_fields import DynamicFieldsMixin
 from rest_framework import serializers
 from rest_framework_tracking.models import APIRequestLog
 
-from apps.users.models import Status
+from apps.users.models import CustomUser, Status
 
 
 def translate_fields(json_obj: dict):
     res = {}
     for k, v in json_obj.items():
+        val = v
         if k == "responsible" and v:
-            val = v
+            if str(v).isnumeric():
+                try:
+                    val = CustomUser.objects.get(id=v).fullname
+                except CustomUser.DoesNotExist:
+                    pass
         elif k == "status" and str(v).isdigit():
             val = dict(Status.choices)[int(v)]
         elif isinstance(v, (datetime, date)):

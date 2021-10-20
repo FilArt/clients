@@ -21,7 +21,7 @@ from django.http import Http404, HttpResponseBadRequest
 from drf_dynamic_fields import DynamicFieldsMixin
 from notifications.models import Notification
 from notifications.signals import notify
-from rest_framework import mixins, status, viewsets
+from rest_framework import mixins, viewsets
 from rest_framework.decorators import action
 from rest_framework.exceptions import PermissionDenied, ValidationError
 from rest_framework.generics import get_object_or_404
@@ -519,11 +519,20 @@ class AgentContractViewSet(LoggingMixin, viewsets.ModelViewSet):
 
     def create(self, request, *args, **kwargs):
         data = self._parse_data(request)
-        serializer = self.get_serializer(data=data)
-        serializer.is_valid(raise_exception=True)
-        self.perform_create(serializer)
-        headers = self.get_success_headers(serializer.data)
-        return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
+        cif_nif = data.get("cif_nif")
+        if not cif_nif:
+            raise ValidationError({"cif_nif": ["Requerido"]})
+        if CustomUser.objects.filter(cif_nif=cif_nif).exists():
+            user = CustomUser.objects.get(cif_nif=cif_nif)
+            serializer = AgentContractSerializer(user, data=data)
+            serializer.is_valid(raise_exception=True)
+            self.perform_update(serializer)
+        else:
+            serializer = AgentContractSerializer(data=data)
+            serializer.is_valid(raise_exception=True)
+            self.perform_create(serializer)
+
+        return Response(serializer.data)
 
     @staticmethod
     def _parse_data(request):
