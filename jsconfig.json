@@ -1,6 +1,6 @@
 {
   "compilerOptions": {
-    "baseUrl": "./frontend/",
+    "baseUrl": "frontend",
     "paths": {
       "@/*": ["./*"]
     }
