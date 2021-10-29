@@ -89,6 +89,7 @@ class CalculatorSerializer(serializers.ModelSerializer):
     rental = NormalDecimalField(max_digits=10, decimal_places=3, required=False, default=0)
     iva_percent = NormalDecimalField(max_digits=4, decimal_places=2, required=False, default=0)
     igic_percent = NormalDecimalField(max_digits=4, decimal_places=2, required=False, default=0)
+    tax_percent = NormalDecimalField(max_digits=4, decimal_places=2, required=False, default=0)
 
     # данные агента
     agent = serializers.CharField(required=False)
@@ -156,6 +157,7 @@ class CalculatorSerializer(serializers.ModelSerializer):
             "description",
             "iva_percent",
             "igic_percent",
+            "tax_percent",
             "rental",
             "total",
             "current_price",
@@ -293,7 +295,9 @@ class CalculatorSerializer(serializers.ModelSerializer):
             "c5": data.get("c5"),
             "c6": data.get("c6"),
             "iva_percent": data["iva_percent"],
-            "tax_percent": calculator_settings.tax if is_luz else calculator_settings.carbon_tax,
+            "tax_percent": data.get(
+                "tax_percent", calculator_settings.tax if is_luz else calculator_settings.carbon_tax
+            ),
             "igic_percent": data["igic_percent"],
             "rental": data["rental"],
             "pago_power": data["pago_power"],

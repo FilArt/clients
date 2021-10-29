@@ -154,6 +154,10 @@
               <edit-field @click="editValue('iva_percent', `IVA (%)`)" />
             </span>
           </v-card>
+          <v-card flat>
+            <span class="first-word"> Impuesto electrico ({{ values.tax_percent }}%): </span> {{ values.tax }} €
+            <edit-field @click="editValue('tax_percent', `Impuesto electrico (%)`)" />
+          </v-card>
         </v-card>
 
         <br />
