@@ -138,11 +138,12 @@
           </v-card>
           <v-card flat>
             <span class="first-word">
-              <span v-if="values.kind === 'luz'"> IMP. ELECTRICIDAD: </span>
-              <span v-else>IMP. HIDROCARBUROS</span>
-              <span> ({{ values.tax_percent }}%): </span>
+              <span v-if="values.kind === 'luz'" class="first-word">
+                {{ values.kind === 'luz' ? 'IMP. ELECTRICIDAD' : 'IMP. HIDROCARBUROS' }} ({{ values.tax_percent }}%):
+              </span>
+              {{ values.tax }} €
+              <edit-field @click="editValue('tax_percent', `Impuesto electrico (%)`)" />
             </span>
-            {{ values.tax }} €
           </v-card>
           <v-card flat>
             <span v-if="values.is_igic">
@@ -153,10 +154,6 @@
               <span class="first-word"> IVA ({{ values.iva_percent }}%): </span> {{ values.iva }} €
               <edit-field @click="editValue('iva_percent', `IVA (%)`)" />
             </span>
-          </v-card>
-          <v-card flat>
-            <span class="first-word"> Impuesto electrico ({{ values.tax_percent }}%): </span> {{ values.tax }} €
-            <edit-field @click="editValue('tax_percent', `Impuesto electrico (%)`)" />
           </v-card>
         </v-card>
 
