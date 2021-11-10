@@ -1,4 +1,3 @@
-from apps.calculator.calculator import Calculator
 import os
 import shutil
 
@@ -14,6 +13,8 @@ from rest_framework.exceptions import ValidationError
 from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework_tracking.mixins import LoggingMixin
+
+from apps.calculator.calculator import Calculator
 
 from .serializers import CalculatorSerializer
 
@@ -44,9 +45,8 @@ class SendOfferView(LoggingMixin, views.APIView):
         calculator = Calculator(**args)
         calculator.calculate()
         ctx = {
-            **serializer.data,
             **calculator.results[0],
-            **serializer.validated_data,
+            **serializer.data,
             "date": timezone.now().date().strftime("%d/%m/%Y"),
             "reactive": calculator.results[0]["reactive"],
         }

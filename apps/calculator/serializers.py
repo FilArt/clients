@@ -1,4 +1,4 @@
-import decimal
+from decimal import Decimal
 
 from django.db.models.query_utils import Q
 from rest_framework import serializers
@@ -20,9 +20,7 @@ class NormalDecimalField(serializers.DecimalField):
         elif value % 1 == 0:
             return round(value)
 
-        return (
-            decimal.Decimal.from_float(float(value)).quantize(decimal.Decimal(10) ** -self.decimal_places).normalize()
-        )
+        return Decimal.from_float(float(value)).quantize(Decimal(".01")).normalize()
 
 
 class CalculatorSerializer(serializers.ModelSerializer):
