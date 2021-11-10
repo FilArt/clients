@@ -19,7 +19,6 @@ from apps.bids.models import Bid
 from apps.logs.serializers import PrettyJsonField
 
 from .models import Attachment, CustomUser, Punto, Status
-from .utils import PENDIENTE_PAGO
 
 logger = logging.getLogger(__name__)
 
@@ -362,7 +361,7 @@ class UploadToCallVisitSerializer(serializers.ModelSerializer):
 
 class UserHistorySerializer(serializers.ModelSerializer):
     data = PrettyJsonField()
-    fullname = serializers.CharField(source="user.fullname", default=serializers.CurrentUserDefault())
+    fullname = serializers.CharField(source="user.fullname")
 
     class Meta:
         model = APIRequestLog
