@@ -176,7 +176,7 @@ class Calculator:
             total += self.reactive
 
             # налоги
-            tax = Decimal(self.tax_percent) * total
+            tax = Decimal(self.tax_percent) / Decimal("100") * total
             total += tax
 
             total += self.rental

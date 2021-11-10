@@ -2,7 +2,6 @@ import decimal
 
 from django.db.models.query_utils import Q
 from rest_framework import serializers
-from rest_framework.exceptions import ValidationError
 
 from .models import CalculatorSettings, Company, Offer, PriorityOffer, Tarif
 from .validators import casi_positive_number, positive_number
