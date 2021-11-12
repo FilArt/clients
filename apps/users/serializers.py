@@ -361,7 +361,7 @@ class UploadToCallVisitSerializer(serializers.ModelSerializer):
 
 class UserHistorySerializer(serializers.ModelSerializer):
     data = PrettyJsonField()
-    fullname = serializers.CharField(source="user.fullname")
+    fullname = serializers.CharField(source="user.fullname", default='')
 
     class Meta:
         model = APIRequestLog
