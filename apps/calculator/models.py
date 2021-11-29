@@ -11,16 +11,6 @@ from apps.calculator.fields import NameField
 from .managers import WithoutOtraManager
 
 
-def str_to_float(some):
-    if isinstance(some, (int, float)):
-        return some
-    if "," in some:
-        if some.count(",") > 1 or "." in some:
-            raise Exception("Invalid value: %s" % some)
-        some = some.replace(",", ".")
-    return float(some)
-
-
 @unique
 class Tarif(Enum):
     G31 = "3.1"

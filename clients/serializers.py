@@ -5,14 +5,13 @@ from typing import List
 from apps.bids.models import Bid, BidStory
 from apps.calculator.fields import ConsumoPotenciaField
 from apps.calculator.models import Offer
-from apps.users.models import Attachment, CallVisitToken, CustomUser, Punto, Status, UserSettings
+from apps.users.models import (Attachment, CallVisitToken, CustomUser, Punto,
+                               Status, UserSettings)
 from apps.users.utils import PENDIENTE_TRAMITACION, TRAMITACION
 from django.contrib.auth.base_user import BaseUserManager
 from django.db import transaction
-from django.db.models import Q
 from django.utils import timezone
 from drf_dynamic_fields import DynamicFieldsMixin
-from email_validator import EmailNotValidError, EmailSyntaxError, validate_email
 from rest_framework import serializers
 from rest_framework.exceptions import PermissionDenied, ValidationError
 
@@ -405,7 +404,7 @@ class ResponsibleField(serializers.EmailField):
     def to_internal_value(self, email):
         try:
             agent = CustomUser.objects.get(email=email)
-            if agent.role != "agent":
+            if agent.role is None:
                 raise Exception("Agent EMAIL = Client EMAIL")
             return agent.email
         except CustomUser.DoesNotExist:
