@@ -85,7 +85,7 @@ class CallVisitUserViewSet(viewsets.ModelViewSet):
                     cv_punto["punto_luz"] = {
                         "cups": punto.cups_luz,
                         "tarif": punto.tarif_luz,
-                        "company": punto.company_luz.id if punto.company_luz else None,
+                        "company_raw": punto.company_luz.name if punto.company_luz else None,
                         "p1": punto.p1,
                         "p2": punto.p2,
                         "p3": punto.p3,
@@ -98,7 +98,7 @@ class CallVisitUserViewSet(viewsets.ModelViewSet):
                 if punto.cups_gas:
                     cv_punto["punto_gas"] = {
                         "cups": punto.cups_gas,
-                        "company": punto.company_gas.id if punto.company_gas else None,
+                        "company_raw": punto.company_gas.name if punto.company_gas else None,
                         "tarif": punto.tarif_gas,
                         "fecha_cambio": process_date(punto.last_time_company_luz_changed),
                         "consumo": punto.consumo_annual_gas,
