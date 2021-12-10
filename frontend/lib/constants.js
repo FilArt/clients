@@ -329,7 +329,7 @@ export default Object.freeze({
   },
   onlyUnique: (value, index, self) => self.indexOf(value) === index,
   ourColor: '#004680',
-  tarifs: ['2.0TD', '3.0TD'],
+  tarifs: ['2.0TD', '3.0TD', '6.1TD'],
   tarifsGas: ['3.1', '3.2', '3.3', '3.4'],
   showInput: (letter, number, tarif) => {
     if (!letter || !number || !tarif) return false

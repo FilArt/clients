@@ -20,6 +20,7 @@ class Tarif(Enum):
 
     T20TD = "2.0TD"
     T30TD = "3.0TD"
+    T61TD = '6.1TD'
 
     @staticmethod
     def all():
