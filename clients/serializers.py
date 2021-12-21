@@ -495,9 +495,10 @@ class AgentContractSerializer(serializers.ModelSerializer):
                 raise ValidationError({"offer": ["Ofertas gas o oferta luz requiredo"]})
 
             attachments = punto_data.pop("attachments", [])
+            cups_luz = cups_gas = None
             try:
-                cups_luz = punto_data.get("cups_luz")
-                cups_gas = punto_data.get("cups_gas")
+                cups_luz = punto_data.pop("cups_luz", None)
+                cups_gas = punto_data.pop("cups_gas", None)
                 if cups_luz:
                     if Punto.objects.filter(cups_luz=cups_luz, user=client).exists():
                         Punto.objects.filter(cups_luz=cups_luz, user=client).update(**punto_data)
@@ -513,7 +514,7 @@ class AgentContractSerializer(serializers.ModelSerializer):
                     raise Punto.DoesNotExist
 
             except Punto.DoesNotExist:
-                punto = Punto.objects.create(**punto_data, user=client)
+                punto = Punto.objects.create(**punto_data, cups_luz=cups_luz, cups_gas=cups_gas, user=client)
 
             if offer:
                 Bid.objects.get_or_create(user=client, offer=offer, punto=punto, fecha_firma=ff)
