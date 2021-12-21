@@ -499,12 +499,12 @@ class AgentContractSerializer(serializers.ModelSerializer):
                 cups_luz = punto_data.get("cups_luz")
                 cups_gas = punto_data.get("cups_gas")
                 if cups_luz:
-                    if Punto.objects.filter(cups_luz, user=client).exists():
+                    if Punto.objects.filter(cups_luz=cups_luz, user=client).exists():
                         Punto.objects.filter(cups_luz=cups_luz, user=client).update(**punto_data)
                     else:
                         punto = Punto.objects.create(cups_luz=cups_luz, user=client, **punto_data)
                 elif cups_gas:
-                    if Punto.objects.filter(cups_gas, user=client).exists():
+                    if Punto.objects.filter(cups_gas=cups_gas, user=client).exists():
                         Punto.objects.filter(cups_gas=cups_gas, user=client).update(**punto_data)
                     else:
                         punto = Punto.objects.create(cups_gas=cups_gas, user=client, **punto_data)
