@@ -17,6 +17,10 @@ class Tarif(Enum):
     G32 = "3.2"
     G33 = "3.3"
     G34 = "3.4"
+    RL1 = 'RL1'
+    RL2 = 'RL2'
+    RL3 = 'RL3'
+    RL4 = 'RL4'
 
     T20TD = "2.0TD"
     T30TD = "3.0TD"
