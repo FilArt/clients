@@ -508,7 +508,7 @@ class AgentContractSerializer(serializers.ModelSerializer):
                 elif cups_gas:
                     if Punto.objects.filter(cups_gas=cups_gas, user=client).exists():
                         Punto.objects.filter(cups_gas=cups_gas, user=client).update(**punto_data)
-                        punto = Punto.objects.filter(cups_gas=cups_gas, user=client)
+                        punto = Punto.objects.filter(cups_gas=cups_gas, user=client).first()
                     else:
                         punto = Punto.objects.create(cups_gas=cups_gas, user=client, **punto_data)
 
@@ -519,9 +519,9 @@ class AgentContractSerializer(serializers.ModelSerializer):
                 punto = Punto.objects.create(**punto_data, cups_luz=cups_luz, cups_gas=cups_gas, user=client)
 
             if offer:
-                Bid.objects.create(user=client, offer=offer, punto=punto, fecha_firma=ff)
+                Bid.objects.get_or_create(user=client, offer=offer, punto=punto, fecha_firma=ff)
             if offer_gas:
-                Bid.objects.create(user=client, offer=offer_gas, punto=punto, fecha_firma=ff)
+                Bid.objects.get_or_create(user=client, offer=offer_gas, punto=punto, fecha_firma=ff)
 
             given_types = [a["attachment_type"] for a in attachments] + [*self.validated_data]
             if offer:
