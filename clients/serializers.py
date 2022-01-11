@@ -519,9 +519,9 @@ class AgentContractSerializer(serializers.ModelSerializer):
                 punto = Punto.objects.create(**punto_data, cups_luz=cups_luz, cups_gas=cups_gas, user=client)
 
             if offer:
-                Bid.objects.get_or_create(user=client, offer=offer, punto=punto, fecha_firma=ff)
+                Bid.objects.create(user=client, offer=offer, punto=punto, fecha_firma=ff)
             if offer_gas:
-                Bid.objects.get_or_create(user=client, offer=offer_gas, punto=punto, fecha_firma=ff)
+                Bid.objects.create(user=client, offer=offer_gas, punto=punto, fecha_firma=ff)
 
             given_types = [a["attachment_type"] for a in attachments] + [*self.validated_data]
             if offer:
