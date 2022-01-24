@@ -145,6 +145,10 @@ def call(request: Request):
         method = data.get("method", "get")
         func = session.get if method == "get" else session.post
         response = func(data.get("url"), data=data)
-        return Response(response.json())
+        try:
+            answer = response.json()
+        except json.JSONDecodeError:
+            answer = response.text
+        return Response(answer)
     except Exception as e:
         raise ValidationError(str(e))
