@@ -69,7 +69,7 @@ class CallVisitUserViewSet(viewsets.ModelViewSet):
                     "dni": punto.dni,
                     "cif": client.cif_nif,
                     "iban": punto.iban,
-                    "phones": [p for p in [client.phone, client.phone_city] if p],
+                    "phones": [{"value": p} for p in [client.phone, client.phone_city] if p],
                     "is_client": True,
                     "puntos": [],
                 }
@@ -116,16 +116,19 @@ class CallVisitUserViewSet(viewsets.ModelViewSet):
                 response = authed_cv_client.post(f"{settings.CALL_VISIT_URL}/api/cards/", json=item)
 
             if response.ok:
-                with transaction.atomic():
-                    clients.update(status=Status.renovacion.value[0])
-                    APIRequestLog.objects.create(
-                        remote_addr=request.headers.get("X-Real-IP", "127.0.0.1"),
-                        requested_at=timezone.now(),
-                        view="apps.users.viewsets.ManageUsersViewSet",
-                        view_method="update",
-                        path=f"/api/users/manage_users/{client.id}/",
-                        data={"status": Status.renovacion.value[0]},
-                    )
+                if not cv_id:
+                    cv_id = response.json()["id"]
+                    client.call_visit_id = cv_id
+                client.status = Status.renovacion.value[0]
+                APIRequestLog.objects.create(
+                    remote_addr=request.headers.get("X-Real-IP", "127.0.0.1"),
+                    requested_at=timezone.now(),
+                    view="apps.users.viewsets.ManageUsersViewSet",
+                    view_method="update",
+                    path=f"/api/users/manage_users/{client.id}/",
+                    data={"status": Status.renovacion.value[0]},
+                )
+                client.save()
             else:
                 try:
                     errors.append({client.id: response.json()})
