@@ -68,7 +68,7 @@ class CallVisitUserViewSet(viewsets.ModelViewSet):
                     "status": request.data.get("status"),
                     "dni": punto.dni,
                     "cif": client.cif_nif,
-                    "iban": punto.iban,
+                    "iban": punto.iban.replace(" ", "").strip()[:24],
                     "phones": [{"value": p} for p in [client.phone, client.phone_city] if p],
                     "is_client": True,
                     "puntos": [],
