@@ -1,4 +1,5 @@
 import csv
+import re
 from typing import Tuple
 
 from clients.serializers import DetailOfferSerializer, OfferListSerializer
@@ -21,6 +22,16 @@ from .serializers import (
     CreateOfferSerializer,
     PriorityOfferSerializer,
 )
+
+
+def fix_float_string(s):
+    if s and isinstance(s, str):
+        return float(s.replace(",", "."))
+    try:
+        return float(s)
+    except Exception as e:
+        print(e)
+    return s
 
 
 class CompanyViewSet(LoggingMixin, viewsets.ModelViewSet):
@@ -83,7 +94,7 @@ class OfferViewSet(viewsets.ReadOnlyModelViewSet):
             if tarif == Tarif.T20TD.value:
                 p1, p2 = self.request.query_params.get("p1"), self.request.query_params.get("p2")
                 if p1 or p2:
-                    maxp = max(map(float, filter(None, (p1, p2))))
+                    maxp = max(map(fix_float_string, filter(None, (p1, p2))))
                     queryset = queryset.filter(power_min__lte=maxp, power_max__gte=maxp)
 
             elif tarif == Tarif.T30TD.value:
