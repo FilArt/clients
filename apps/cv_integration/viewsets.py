@@ -63,8 +63,8 @@ class CallVisitUserViewSet(viewsets.ModelViewSet):
                     "persona_contacto": punto.legal_representative or client.legal_representative,
                     "fecha_firma": process_date(bid.fecha_firma),
                     "email": client.email,
-                    "operator_id": request.data.get("operator"),
-                    "manager_id": request.data.get("manager"),
+                    "operator": request.data.get("operator"),
+                    "manager": request.data.get("manager"),
                     "status": request.data.get("status"),
                     "dni": punto.dni,
                     "cif": client.cif_nif,
@@ -85,7 +85,7 @@ class CallVisitUserViewSet(viewsets.ModelViewSet):
                     cv_punto["punto_luz"] = {
                         "cups": punto.cups_luz,
                         "tarif": punto.tarif_luz,
-                        "company_raw": punto.company_luz.name if punto.company_luz else None,
+                        "company": punto.company_luz.name if punto.company_luz else None,
                         "p1": punto.p1,
                         "p2": punto.p2,
                         "p3": punto.p3,
@@ -98,7 +98,7 @@ class CallVisitUserViewSet(viewsets.ModelViewSet):
                 if punto.cups_gas:
                     cv_punto["punto_gas"] = {
                         "cups": punto.cups_gas,
-                        "company_raw": punto.company_gas.name if punto.company_gas else None,
+                        "company": punto.company_gas.name if punto.company_gas else None,
                         "tarif": punto.tarif_gas,
                         "fecha_cambio": process_date(punto.last_time_company_luz_changed),
                         "consumo": punto.consumo_annual_gas,
